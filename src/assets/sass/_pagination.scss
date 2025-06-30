@@ -1,0 +1,70 @@
+.custom-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f5f7fa, #e4e5e6);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+  .v-pagination {
+    background: white;
+    padding: 5px 15px;
+    border-radius: 8px;
+
+    &__item {
+
+      .v-btn {
+        font-size: 14px;
+        color: rgba(0, 0, 0, 0.87);
+        font-weight: 400;
+
+        &:hover {
+          background: rgba(229, 236, 253, 1);
+          color: rgba(0, 0, 0, 0.87);
+        }
+      }
+
+      &--is-active {
+        .v-btn {
+          background: rgba(34, 93, 255, 1) !important;
+          color: rgba(255, 255, 255, 1) !important;
+        }
+      }
+    }
+  }
+
+  .v-btn {
+    color: #0070ba;
+    font-weight: bold;
+    border-radius: 50%;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .v-btn:hover {
+    background-color: #0070ba;
+    color: white;
+  }
+
+  .v-btn--active {
+    background-color: #0070ba;
+    color: white;
+  }
+}
+
+.sticky-pagination {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  box-shadow: none;
+  margin: 0;
+  padding: 0;
+  background: #fff !important;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  border-bottom-left-radius: 16px;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 16px;
+}

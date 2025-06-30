@@ -1,0 +1,32 @@
+.table-settings {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 20px;
+
+  &-search {
+    width: 25%;
+  }
+
+  &-filter {
+    display: flex;
+    margin: 0 -15px;
+    position: relative;
+    flex-direction: column;
+    align-items: flex-end;
+
+    &__wrapper {
+      display: flex;
+      align-items: flex-end;
+    }
+
+    &__reset {
+      margin: 0 15px;
+    }
+
+    .v-custom-select {
+      margin: 0 15px;
+    }
+  }
+}

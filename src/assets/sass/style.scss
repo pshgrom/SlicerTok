@@ -1,0 +1,46 @@
+@import "fonts";
+@import "table";
+@import "modal";
+@import "transition";
+@import "pagination";
+@import "layout";
+@import "table";
+@import "graph";
+
+$primary-color: #0F0F0F;
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter-Regular', sans-serif;
+  line-height: 1.2;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  color: rgba(17, 17, 17, 1);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.custom-container {
+  padding-top: 0 !important;
+}
