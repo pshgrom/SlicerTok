@@ -6,7 +6,9 @@
           <!--          <ImageUploader v-model="imageFile" />-->
           <img src="@/static/img/avatar.png" alt="аватарка" />
         </div>
-        <VCusomButton :customClass="['light']" @click="showDialog(true)">Изменить </VCusomButton>
+        <VCusomButton :customClass="['light']" @click="showDialog(true)"
+          >Изменить
+        </VCusomButton>
       </div>
       <div class="profile__content">
         <div class="profile__name">
@@ -20,7 +22,7 @@
         <div>
           <div class="profile-info-item">
             <div class="profile-info-item__icon">
-              <img src="@/static/icons/phone.svg" alt="phone" />
+              <SvgIcon name="phone" />
             </div>
             <div class="profile-info-item__value">
               <template v-if="user.phone">
@@ -31,7 +33,7 @@
           </div>
           <div class="profile-info-item">
             <div class="profile-info-item__icon">
-              <img src="@/static/icons/message.svg" alt="message" />
+              <SvgIcon name="message" />
             </div>
             <div class="profile-info-item__value">
               <template v-if="user.email">
@@ -43,7 +45,7 @@
         </div>
         <div class="profile-info-item">
           <div class="profile-info-item__icon">
-            <img src="@/static/icons/telegram.svg" alt="telegram" />
+            <SvgIcon name="telegram" />
           </div>
           <div class="profile-info-item__value">
             <template v-if="user.telegram">
@@ -57,26 +59,27 @@
   </div>
 </template>
 <script setup lang="ts">
-import VCusomButton from '@/components/base/VCusomButton.vue'
-import { PropType } from 'vue'
-import { IUser } from '@/interfaces/Slicer'
+import VCusomButton from "@/components/base/VCusomButton.vue";
+import { PropType } from "vue";
+import { IUser } from "@/interfaces/Slicer";
+import SvgIcon from "@/components/base/SvgIcon.vue";
 // import ImageUploader from '@/components/base/ImageUploader.vue'
 
 const props = defineProps({
   dialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   user: {
     type: Object as PropType<IUser>,
-    default: () => ({})
-  }
-})
-const emit = defineEmits(['update:dialog'])
+    default: () => ({}),
+  },
+});
+const emit = defineEmits(["update:dialog"]);
 
 const showDialog = (val: boolean) => {
-  emit('update:dialog', val)
-}
+  emit("update:dialog", val);
+};
 </script>
 
 <style scoped lang="scss">
@@ -86,7 +89,7 @@ const showDialog = (val: boolean) => {
   height: 259px;
   border-radius: 16px;
   background: rgba(0, 212, 254, 1);
-  background-image: url('@/static/img/profile-bg.png');
+  background-image: url("@/static/img/profile-bg.png");
   margin-right: 12px;
 
   &__wrapper {
@@ -118,7 +121,7 @@ const showDialog = (val: boolean) => {
     color: rgba(17, 17, 17, 1);
     font-size: 18px;
     font-weight: 500;
-    font-family: 'Inter Medium', sans-serif;
+    font-family: "Inter Medium", sans-serif;
     margin-bottom: 10px;
 
     span {
@@ -142,7 +145,7 @@ const showDialog = (val: boolean) => {
         color: rgba(17, 17, 17, 1);
         font-weight: 500;
         margin-left: 8px;
-        font-family: 'Inter Medium', sans-serif;
+        font-family: "Inter Medium", sans-serif;
 
         span {
           color: rgba(143, 150, 165, 1);

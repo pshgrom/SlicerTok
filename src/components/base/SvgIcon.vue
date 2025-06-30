@@ -1,58 +1,56 @@
 <template>
-  <div
-    class="d-flex justify-center align-center svg-wrapper"
-    :class="{ 'svg-icon-colored': colored, 'wrapper-icon_disabled': disabled }"
-    :style="`width: ${width}px; height: ${height}px;`"
-  >
-    <component
-      :is="dynamicComponent"
-      :class="className"
-      :fill="fill"
-      :style="scale && `transform:scale(${scale})`"
-    />
+  <div class="svg-icon">
+    <component :is="dynamicComponent" :class="className" :fill="fill" />
   </div>
 </template>
 <script lang="ts" setup>
-import { defineAsyncComponent, computed } from 'vue'
+import { defineAsyncComponent, computed } from "vue";
 const props = defineProps({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   width: {
     type: [String, Number],
-    required: false
+    required: false,
   },
   height: {
     type: String,
-    required: false
+    required: false,
   },
   disabled: {
     type: Boolean,
-    required: false
+    required: false,
   },
   className: {
     type: String,
-    required: false
+    required: false,
   },
   fill: {
     type: String,
-    default: 'none',
-    required: false
+    default: "none",
+    required: false,
   },
   colored: {
     type: Boolean,
-    default: false
+    default: false,
   },
   scale: {
     type: [String, Number],
-    default: null
-  }
-})
+    default: null,
+  },
+});
 
 const dynamicComponent = computed(() =>
-  defineAsyncComponent(() => import(`@/assets/icons/${props.name}.svg?skipsvgo`))
-)
+  defineAsyncComponent(
+    () => import(`@/assets/icons/${props.name}.svg?skipsvgo`)
+  )
+);
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.svg-icon {
+  display: flex;
+  align-items: center;
+}
+</style>

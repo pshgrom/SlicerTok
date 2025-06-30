@@ -2,7 +2,7 @@
   <header class="header">
     <div class="header__left">
       <div class="header__logo">
-        <img src="@/static/icons/logo.svg" alt="logo" />
+        <SvgIcon name="logo" />
       </div>
     </div>
     <div class="header__right">
@@ -15,16 +15,17 @@
   </header>
 </template>
 <script setup lang="ts">
-import { useAuth } from '@/stores/Auth'
-import { useRouter } from 'vue-router'
+import { useAuth } from "@/stores/Auth";
+import { useRouter } from "vue-router";
+import SvgIcon from "@/components/base/SvgIcon.vue";
 
-const authStore = useAuth()
-const router = useRouter()
+const authStore = useAuth();
+const router = useRouter();
 
 const logout = () => {
-  authStore.logout()
-  router.push({ name: 'Login' })
-}
+  authStore.logout();
+  router.push({ name: "Login" });
+};
 </script>
 
 <style scoped lang="scss">

@@ -2,13 +2,16 @@
   <div class="wallet" :style="{ backgroundColor: getBgColor() }">
     <div class="wallet__wrapper">
       <div v-if="wallet.is_main" class="wallet__main">Основной</div>
-      <div class="wallet__value" :class="{ wallet__value_offset: !wallet.is_main }">
+      <div
+        class="wallet__value"
+        :class="{ wallet__value_offset: !wallet.is_main }"
+      >
         {{ formatWallet(wallet.address) }}
       </div>
     </div>
     <div class="wallet-menu">
       <div class="wallet-menu-icon" @click="openDialog">
-        <img src="@/static/img/menu.svg" alt="menu" />
+        <SvgIcon name="menu" />
       </div>
       <ul v-show="openIndex === index" ref="menuRef" class="dropdown-menu">
         <li
@@ -16,19 +19,22 @@
           class="dropdown-menu-item"
           :class="{ 'dropdown-menu-item_disabled': wallet.is_main }"
         >
-          <img src="@/static/icons/main.svg" alt="main" />
+          <SvgIcon name="main" />
           <span>Основной</span>
         </li>
         <li @click="copyWallet(wallet.address)" class="dropdown-menu-item">
-          <img src="@/static/icons/copy.svg" alt="copy" />
+          <SvgIcon name="copy" />
           <span>Скопировать</span>
         </li>
         <li
           @click.prevent="removeWallet"
-          :class="{ 'dropdown-menu-item_disabled': wallets.length === 1 || wallet.is_main }"
+          :class="{
+            'dropdown-menu-item_disabled':
+              wallets.length === 1 || wallet.is_main,
+          }"
           class="dropdown-menu-item dropdown-menu-item_remove"
         >
-          <img src="@/static/icons/remove.svg" alt="main" />
+          <SvgIcon name="remove" />
           <span>Удалить</span>
         </li>
       </ul>
@@ -36,99 +42,100 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, PropType, ref } from 'vue'
-import { IWallet } from '@/interfaces/Slicer'
-import { useError } from '@/stores/Errors'
+import { computed, onBeforeUnmount, onMounted, PropType, ref } from "vue";
+import { IWallet } from "@/interfaces/Slicer";
+import { useError } from "@/stores/Errors";
+import SvgIcon from "@/components/base/SvgIcon.vue";
 
 const props = defineProps({
   wallet: {
     type: Object as PropType<IWallet>,
-    default: () => ({})
+    default: () => ({}),
   },
   wallets: {
     type: Array as PropType<IWallet[]>,
-    default: () => []
+    default: () => [],
   },
   index: {
     type: [Number, null],
-    default: null
+    default: null,
   },
   openIndex: {
     type: [Number, null],
-    default: null
-  }
-})
+    default: null,
+  },
+});
 
-const emit = defineEmits(['update:openIndex', 'setAsMain', 'removeWallet'])
-const errorStore = useError()
+const emit = defineEmits(["update:openIndex", "setAsMain", "removeWallet"]);
+const errorStore = useError();
 
-const menuRef = ref<HTMLElement | null>(null)
+const menuRef = ref<HTMLElement | null>(null);
 
 const getBgColor = () => {
   if (props.index) {
     switch (props.index) {
       case 0:
-        return 'rgba(179, 246, 255, 1)'
+        return "rgba(179, 246, 255, 1)";
       case 1:
-        return 'rgba(241, 229, 255, 1)'
+        return "rgba(241, 229, 255, 1)";
       case 2:
-        return 'rgba(254, 243, 197, 1)'
+        return "rgba(254, 243, 197, 1)";
       default:
-        return 'rgba(179, 246, 255, 1)'
+        return "rgba(179, 246, 255, 1)";
     }
   }
-  return 'rgba(179, 246, 255, 1)'
-}
+  return "rgba(179, 246, 255, 1)";
+};
 
 const openIndex = computed({
   get() {
-    return props.openIndex
+    return props.openIndex;
   },
   set(value) {
-    emit('update:openIndex', value)
-  }
-})
+    emit("update:openIndex", value);
+  },
+});
 
 const copyWallet = async (wallet: string) => {
-  if (!wallet) return
+  if (!wallet) return;
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
     try {
-      await navigator.clipboard.writeText(wallet)
-      errorStore.setErrors('Адрес успешно скопирован', 'success')
+      await navigator.clipboard.writeText(wallet);
+      errorStore.setErrors("Адрес успешно скопирован", "success");
     } catch (err) {
-      console.error('Clipboard API error:', err)
+      console.error("Clipboard API error:", err);
       // Попытка fallback
-      fallbackCopyTextToClipboard(wallet)
+      fallbackCopyTextToClipboard(wallet);
     }
   } else {
-    fallbackCopyTextToClipboard(wallet)
+    fallbackCopyTextToClipboard(wallet);
   }
 
-  closeDialog()
-}
+  closeDialog();
+};
 
 const fallbackCopyTextToClipboard = (text: string) => {
-  const textArea = document.createElement('textarea')
-  textArea.value = text
-  document.body.appendChild(textArea)
-  textArea.focus()
-  textArea.select()
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
 
   try {
-    const successful = document.execCommand('copy')
+    const successful = document.execCommand("copy");
     if (successful) {
-      errorStore.setErrors('Адрес успешно скопирован', 'success')
+      errorStore.setErrors("Адрес успешно скопирован", "success");
     } else {
-      throw new Error('execCommand failed')
+      throw new Error("execCommand failed");
     }
   } catch (err) {
-    console.error('Fallback copy failed:', err)
-    errorStore.setErrors('Не удалось скопировать текст.')
+    console.error("Fallback copy failed:", err);
+    errorStore.setErrors("Не удалось скопировать текст.");
   }
 
-  document.body.removeChild(textArea)
-}
+  document.body.removeChild(textArea);
+};
 
 function handleClickOutside(event: MouseEvent) {
   if (
@@ -136,52 +143,52 @@ function handleClickOutside(event: MouseEvent) {
     menuRef.value &&
     !menuRef.value.contains(event.target as Node)
   ) {
-    openIndex.value = null
+    openIndex.value = null;
   }
 }
 
 const formatWallet = (wallet: string) => {
-  if (!wallet) return ''
-  const firstPart = wallet.slice(0, 4)
-  const lastPart = wallet.slice(wallet.length - 4)
-  return `${firstPart}...${lastPart}`
-}
+  if (!wallet) return "";
+  const firstPart = wallet.slice(0, 4);
+  const lastPart = wallet.slice(wallet.length - 4);
+  return `${firstPart}...${lastPart}`;
+};
 
 const setAsMain = () => {
   if (!props.wallet.is_main) {
-    emit('setAsMain', props.wallet.id)
-    closeDialog()
+    emit("setAsMain", props.wallet.id);
+    closeDialog();
   }
-}
+};
 
 const removeWallet = () => {
-  emit('removeWallet', props.index, props.wallet.id, props.wallet.is_main)
-  closeDialog()
-}
+  emit("removeWallet", props.index, props.wallet.id, props.wallet.is_main);
+  closeDialog();
+};
 
 const openDialog = () => {
-  openIndex.value = openIndex.value === props.index ? null : props.index
-}
+  openIndex.value = openIndex.value === props.index ? null : props.index;
+};
 
 const closeDialog = () => {
-  openIndex.value = null
-}
+  openIndex.value = null;
+};
 
 const handleEscape = (event: KeyboardEvent) => {
-  if (event.key === 'Escape' && openIndex.value === props.index) {
-    openIndex.value = null
+  if (event.key === "Escape" && openIndex.value === props.index) {
+    openIndex.value = null;
   }
-}
+};
 
 onMounted(() => {
-  document.addEventListener('mousedown', handleClickOutside)
-  document.addEventListener('keydown', handleEscape)
-})
+  document.addEventListener("mousedown", handleClickOutside);
+  document.addEventListener("keydown", handleEscape);
+});
 
 onBeforeUnmount(() => {
-  document.removeEventListener('mousedown', handleClickOutside)
-  document.removeEventListener('keydown', handleEscape)
-})
+  document.removeEventListener("mousedown", handleClickOutside);
+  document.removeEventListener("keydown", handleEscape);
+});
 </script>
 
 <style scoped lang="scss">
@@ -193,7 +200,7 @@ onBeforeUnmount(() => {
   margin-right: 8px;
   padding: 16px;
   position: relative;
-  background-image: url('@/static/img/pattern.png');
+  background-image: url("@/static/img/pattern.png");
 
   &-menu {
     position: absolute;
@@ -213,14 +220,14 @@ onBeforeUnmount(() => {
     height: 23px;
     border-radius: 16px;
     color: rgba(255, 255, 255, 1);
-    font-family: 'Inter Medium', sans-serif;
+    font-family: "Inter Medium", sans-serif;
     font-size: 12px;
     margin-bottom: 8px;
   }
 
   &__value {
     cursor: pointer;
-    font-family: 'Inter Medium', sans-serif;
+    font-family: "Inter Medium", sans-serif;
     color: rgba(17, 17, 17, 1);
     font-size: 14px;
     position: relative;
@@ -249,7 +256,7 @@ onBeforeUnmount(() => {
     cursor: pointer;
     display: flex;
     align-items: center;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-size: 14px;
     color: rgba(17, 17, 17, 1);
     padding-left: 12px;

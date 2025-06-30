@@ -6,15 +6,26 @@ import svgLoader from "vite-svg-loader";
 import dynamicImport from "vite-plugin-dynamic-import";
 
 export default defineConfig({
-  plugins: [vue({
-    template: {
-      compilerOptions: {
-        isCustomElement: (tag) => ['masked-input'].includes(tag)
-      }
-    }
-  }), dynamicImport(), svgLoader()],
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => ["masked-input"].includes(tag),
+        },
+      },
+    }),
+    dynamicImport(),
+    svgLoader({
+      svgoConfig: {
+        plugins: [
+          { name: "removeViewBox", active: false },
+          { name: "removeDimensions", active: true },
+        ],
+      },
+    }),
+  ],
   optimizeDeps: {
-    include: ['vue-the-mask']
+    include: ["vue-the-mask"],
   },
   resolve: {
     alias: {
