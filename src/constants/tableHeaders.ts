@@ -94,7 +94,6 @@ export const supportHeaders = [
   },
   { title: 'Ключ', value: 'key' },
   { title: 'Просмотры', value: 'number_views' },
-  { title: 'Платформа', value: 'resource' },
   { title: 'Ссылка', value: 'url' },
   { title: 'Статистика', value: 'video_stat_link' },
   { title: 'Статус модераторов', value: 'status_moderation' }
@@ -109,7 +108,6 @@ export const adminInfoCheckedHeaders = [
   { title: 'Ключ', value: 'key' },
   { title: 'Статистика', value: 'video_stat_link' },
   { title: 'Просмотры', value: 'number_views' },
-  { title: 'Платформа', value: 'resource' },
   { title: 'Статус', value: 'status' },
   { title: 'Комментарии', value: 'status_comment' }
 ]
@@ -130,7 +128,6 @@ export const adminMain = [
   },
   { title: 'Ключ', value: 'key' },
   { title: 'Количество просмотров', value: 'number_views' },
-  { title: 'Платформа', value: 'resource' },
   { title: 'Статус', value: 'status' },
   { title: 'Статус модераторов', value: 'status_moderation' },
   { title: 'Ссылка', value: 'url' },

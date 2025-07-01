@@ -1,24 +1,22 @@
 <template>
-  <v-container fluid>
-    <TableAdminInfo
-      class="table-settings__table"
-      :headers="headers"
-      :isLoading="isLoading"
-      :items="calcDataItems"
-      :itemsPerPage="queryParams.perPage"
-      @changeStatus="changeStatus"
-      @finishCheck="finishCheck"
-      @saveComment="saveComment"
-    ></TableAdminInfo>
-    <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
-      <TablePagination
-        v-model:queryParams="queryParams"
-        :loading="isLoading"
-        :totalPages="totalPages"
-        @changePage="changePage"
-      />
-    </div>
-  </v-container>
+  <TableAdminInfo
+    class="table-settings__table"
+    :headers="headers"
+    :isLoading="isLoading"
+    :items="calcDataItems"
+    :itemsPerPage="queryParams.perPage"
+    @changeStatus="changeStatus"
+    @finishCheck="finishCheck"
+    @saveComment="saveComment"
+  ></TableAdminInfo>
+  <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
+    <TablePagination
+      v-model:queryParams="queryParams"
+      :loading="isLoading"
+      :totalPages="totalPages"
+      @changePage="changePage"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">

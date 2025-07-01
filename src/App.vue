@@ -3,7 +3,12 @@
     <ErrorAlert />
     <LeftSideBar v-if="isShowLeftSidebar" />
     <v-main class="main">
-      <v-container class="custom-container" fluid style="max-width: 1000px">
+      <v-container
+        class="custom-container"
+        :class="{ 'custom-container_none': isAdmin }"
+        fluid
+        style="max-width: 1000px"
+      >
         <HeaderMain v-if="isShowHeader" />
         <router-view />
       </v-container>
@@ -17,8 +22,10 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import ErrorAlert from '@/components/base/ErrorAlert.vue'
 import HeaderMain from '@/components/layout/HeaderMain.vue'
+import { useAuth } from '@/stores/Auth.ts'
 
 const router = useRouter()
+const authStore = useAuth()
 
 const page = computed(() => router.currentRoute.value.name)
 const isShowLeftSidebar = computed(() => {
@@ -29,6 +36,8 @@ const isShowLeftSidebar = computed(() => {
     page.value !== 'UserInfo'
   )
 })
+
+const isAdmin = computed(() => authStore.role !== 'slicer')
 
 const isShowHeader = computed(() => page.value === 'UserInfo')
 </script>

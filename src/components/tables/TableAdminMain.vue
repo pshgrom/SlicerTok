@@ -37,8 +37,12 @@
       </v-row>
     </template>
     <template v-slot:[`item.url`]="{ item }">
-      <a class="custom-table__link" :href="item.url" target="_blank">
-        {{ formatUrl(item.url) }}
+      <a :href="item.url" target="_blank" class="custom-table-ref">
+        <SvgIcon class="custom-table-ref__social" :name="getIconSocial(item.url)" />
+        <span>
+          {{ getNameSocialMedia(item.url) }}
+        </span>
+        <SvgIcon name="arrow-up-right" />
       </a>
     </template>
     <template v-slot:[`item.status`]="{ item }">
@@ -69,17 +73,19 @@
       </div>
     </template>
     <template v-slot:[`item.video_stat_link`]="{ item }">
-      <a class="custom-table__link" :href="item.video_stat_link" target="_blank">
-        {{ formatUrl(item.video_stat_link) }}
+      <a :href="item.video_stat_link" target="_blank" class="custom-table-ref">
+        <span> Смотреть </span>
+        <SvgIcon name="arrow-up-right" />
       </a>
     </template>
   </v-data-table>
 </template>
 
 <script setup lang="ts">
-import { computed, PropType, ref } from 'vue'
-import { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
-import VCustomSelect from '@/components/base/VCustomSelect.vue'
+import { computed, type PropType, ref } from 'vue'
+import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
+// import VCustomSelect from '@/components/base/VCustomSelect.vue'
+import SvgIcon from '@/components/base/SvgIcon.vue'
 
 const emit = defineEmits(['changeStatus', 'saveComment', 'finishCheck'])
 
@@ -113,6 +119,32 @@ const computedHeaders = computed<ITableHeaders[]>({
   }
 })
 
+const getNameSocialMedia = (url: string) => {
+  if (url.includes('inst')) {
+    return 'Instagram'
+  } else if (url.includes('tik')) {
+    return 'TikTok'
+  } else if (url.includes('shorts')) {
+    return 'Shorts'
+  } else if (url.includes('vk')) {
+    return 'VK Video'
+  }
+}
+
+const getIconSocial = (url: string) => {
+  let icon = ''
+  if (url.includes('inst')) {
+    icon = 'instagram'
+  } else if (url.includes('tik')) {
+    icon = 'tiktok'
+  } else if (url.includes('shorts')) {
+    icon = 'shorts'
+  } else if (url.includes('vk')) {
+    icon = 'vk'
+  }
+  return icon
+}
+
 const formatLabel = (label: string) => {
   switch (label) {
     case 'group_a':
@@ -120,13 +152,6 @@ const formatLabel = (label: string) => {
     case 'group_b':
       return 'Админ группы B'
   }
-}
-
-const formatUrl = (url: string) => {
-  if (!url) return ''
-  const firstPart = url.slice(0, 30)
-  const lastPart = url.slice(url.length - 3)
-  return `${firstPart}...${lastPart}`
 }
 
 const getTextStatus = (status: string) => {

@@ -1,33 +1,31 @@
 <template>
-  <v-container fluid>
-    <TableSupport
-      class="table-settings__table"
-      :headers="headers"
-      :isLoading="isLoading"
-      :items="calcDataItems"
-      :itemsPerPage="queryParams.perPage"
-      @returnRecord="returnRecord"
-    ></TableSupport>
-    <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
-      <TablePagination
-        v-model:queryParams="queryParams"
-        :loading="isLoading"
-        :totalPages="totalPages"
-        @changePage="changePage"
-      />
-    </div>
-  </v-container>
+  <TableSupport
+    class="table-settings__table"
+    :headers="headers"
+    :isLoading="isLoading"
+    :items="calcDataItems"
+    :itemsPerPage="queryParams.perPage"
+    @returnRecord="returnRecord"
+  ></TableSupport>
+  <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
+    <TablePagination
+      v-model:queryParams="queryParams"
+      :loading="isLoading"
+      :totalPages="totalPages"
+      @changePage="changePage"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
 import TablePagination from '@/components/tables/TablePagination.vue'
 import { computed, ref, onMounted } from 'vue'
-import { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
+import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import { supportHeaders } from '@/constants/tableHeaders'
 import { useRouter } from 'vue-router'
 import { useSupport } from '@/stores/Support'
 import TableSupport from '@/components/tables/TableSupport.vue'
-import { ISupportSaveStatus } from '@/interfaces/ISupport'
+import type { ISupportSaveStatus } from '@/interfaces/ISupport'
 
 const headers = ref<ITableHeaders[]>(supportHeaders)
 
