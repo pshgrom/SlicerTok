@@ -1,7 +1,6 @@
 <template>
   <v-app>
     <ErrorAlert />
-    <LeftSideBar v-if="isShowLeftSidebar" />
     <v-main class="main">
       <v-container
         class="custom-container"
@@ -9,7 +8,7 @@
         fluid
         style="max-width: 1000px"
       >
-        <HeaderMain v-if="isShowHeader" />
+        <HeaderMain v-if="showHeader || isShowHeader" />
         <router-view />
       </v-container>
     </v-main>
@@ -17,7 +16,6 @@
 </template>
 
 <script setup lang="ts">
-import LeftSideBar from '@/components/layout/LeftSideBar.vue'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import ErrorAlert from '@/components/base/ErrorAlert.vue'
@@ -28,7 +26,7 @@ const router = useRouter()
 const authStore = useAuth()
 
 const page = computed(() => router.currentRoute.value.name)
-const isShowLeftSidebar = computed(() => {
+const showHeader = computed(() => {
   return (
     page.value !== 'Login' &&
     page.value !== 'LoginAdmin' &&

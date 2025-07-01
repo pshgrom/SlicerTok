@@ -38,8 +38,8 @@
     </template>
     <template v-slot:[`item.url`]="{ item }">
       <a :href="item.url" target="_blank" class="custom-table-ref">
-        <SvgIcon class="custom-table-ref__social" :name="getIconSocial(item.url)" />
-        <span>
+        <SvgIcon v-if="item.url" class="custom-table-ref__social" :name="getIconSocial(item.url)" />
+        <span v-if="item.url">
           {{ getNameSocialMedia(item.url) }}
         </span>
         <SvgIcon name="arrow-up-right" />
