@@ -1,7 +1,10 @@
 <template>
-  <v-dialog v-model="dialogModel" max-width="600px" max-height="526px" persistent>
+  <v-dialog class="custom-modal" v-model="dialogModel" max-width="831px" persistent>
     <v-card>
-      <v-card-title>Добавление видео</v-card-title>
+      <v-card-title>
+        <span class="headline">Подать заявку</span>
+        <v-btn icon="mdi-close" variant="text" @click="dialogModel = false" />
+      </v-card-title>
       <v-card-text>
         <v-form ref="formRef">
           <v-card class="pa-4 mb-4 d-flex align-center justify-space-between">
@@ -15,43 +18,55 @@
           </v-card>
           <VCustomInput
             v-model="videoFields.videoLink"
-            label="Ссылка на видео"
+            label="Ссылка на видео *"
             :rules="[videoRules.required, videoRules.url, videoRules.noShare]"
+            class="mb-4"
           />
           <VCustomInput
             v-model="videoFields.number_views"
-            label="Количество просмотров"
+            label="Количество просмотров *"
             :rules="[videoRules.required]"
+            class="mb-4"
             required
           />
           <!--          @input="onInput"-->
-          <div class="mb-4">Загрузка видео для проверки</div>
+          <div class="mb-4"></div>
           <VideoUploader v-model="videoFields.videoFile" />
         </v-form>
+        <div>
+          <span class="custom-modal__label">Вы получите деньги на кошелек:</span>
+          <CurrentWallet :key="wallet.id" :wallet="wallet" :index="0" :onlyRead="true" />
+        </div>
       </v-card-text>
-      <v-spacer></v-spacer>
       <v-card-actions>
-        <v-spacer />
-        <v-btn @click="closeDialog">Отмена</v-btn>
-        <v-btn color="primary" @click="submitVideo">Добавить</v-btn>
+        <VCusomButton :customClass="['light', 'avg']" @click="closeDialog"> Отмена </VCusomButton>
+        <VCusomButton :customClass="['dark', 'avg']" @click="submitVideo">
+          Отправить заявку
+        </VCusomButton>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, type PropType } from 'vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import VideoUploader from '@/components/modals/VideoUploader.vue'
 import { useError } from '@/stores/Errors'
-import { IUploadVideo } from '@/interfaces/Slicer'
+import type { IUploadVideo, IWallet } from '@/interfaces/Slicer'
 import { videoRules } from '@/utils/validators'
+import VCusomButton from '@/components/base/VCusomButton.vue'
+import CurrentWallet from '@/components/wallets/CurrentWallet.vue'
 
 const props = defineProps({
   modelValue: Boolean,
   preloadKey: {
     type: String,
     default: ''
+  },
+  wallet: {
+    type: Object as PropType<IWallet>,
+    default: () => ({})
   }
 })
 
@@ -99,4 +114,36 @@ const submitVideo = async () => {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+:deep(.v-card-text) {
+  display: flex;
+}
+
+:deep(.v-card-text) {
+  display: flex;
+  justify-content: space-between;
+}
+
+:deep(.v-form) {
+  position: relative;
+  &:after {
+    content: '';
+    position: absolute;
+    right: -15px;
+    top: 0;
+    height: 100%;
+    width: 1px;
+    background: rgba(242, 246, 254, 1);
+  }
+}
+
+:deep(.v-card-actions) {
+  justify-content: center !important;
+  padding-top: 85px !important;
+
+  button {
+    position: relative;
+    left: -60px;
+  }
+}
+</style>

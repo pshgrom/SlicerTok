@@ -23,6 +23,10 @@
     img {
       margin-right: 6px;
     }
+
+    div + div {
+      margin-left: 6px;
+    }
   }
 
   &-ref {
@@ -92,5 +96,6 @@
     font-family: 'Inter Medium', sans-serif;
     color: rgba(17, 17, 17, 1);
     font-weight: 400;
+    font-size: 18px;
   }
 }

@@ -4,48 +4,32 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { defineAsyncComponent, computed } from "vue";
+import { defineAsyncComponent, computed } from 'vue'
 const props = defineProps({
   name: {
     type: String,
-    required: true,
-  },
-  width: {
-    type: [String, Number],
-    required: false,
-  },
-  height: {
-    type: String,
-    required: false,
+    required: true
   },
   disabled: {
     type: Boolean,
-    required: false,
+    required: false
   },
   className: {
     type: String,
-    required: false,
+    required: false
   },
   fill: {
     type: String,
-    default: "none",
-    required: false,
-  },
-  colored: {
-    type: Boolean,
-    default: false,
-  },
-  scale: {
-    type: [String, Number],
-    default: null,
-  },
-});
+    default: 'none',
+    required: false
+  }
+})
 
-const dynamicComponent = computed(() =>
-  defineAsyncComponent(
-    () => import(`@/assets/icons/${props.name}.svg?skipsvgo`)
-  )
-);
+const dynamicComponent = computed(() => {
+  return props.name
+    ? defineAsyncComponent(() => import(`@/assets/icons/${props.name}.svg?skipsvgo`))
+    : ''
+})
 </script>
 
 <style lang="scss" scoped>

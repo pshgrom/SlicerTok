@@ -45,6 +45,7 @@
     <AddVideoDialog
       v-if="dialogVideo"
       v-model="dialogVideo"
+      :wallet="currentWallet"
       :preloadKey="preloadUserInfo?.key"
       @submit="submitVideo"
     />
@@ -54,7 +55,7 @@
 <script setup lang="ts">
 import TablePagination from '@/components/tables/TablePagination.vue'
 import { computed, ref, watch, onMounted } from 'vue'
-import { ITableHeaders, ITableParams, IUserInfo, IUserInfoData } from '@/interfaces/AppModel'
+import type { ITableHeaders, ITableParams, IUserInfo, IUserInfoData } from '@/interfaces/AppModel'
 import { userInfoHeaders } from '@/constants/tableHeaders'
 import { useUserInfo } from '@/stores/UserInfo'
 import TableUserInfo from '@/components/tables/TableUserInfo.vue'
@@ -63,7 +64,7 @@ import { useError } from '@/stores/Errors'
 import EditProfileDialog from '@/components/modals/EditProfileDialog.vue'
 import AddVideoDialog from '@/components/modals/AddVideoDialog.vue'
 import WalletModal from '@/components/modals/WalletModal.vue'
-import { IUploadVideo, IUser, IWallet } from '@/interfaces/Slicer'
+import type { IUploadVideo, IUser, IWallet } from '@/interfaces/Slicer'
 import ProfileCard from '@/components/profile/ProfileCard.vue'
 import WalletsCard from '@/components/wallets/WalletsCard.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
@@ -95,6 +96,8 @@ const router = useRouter()
 const dialogVideo = ref(false)
 
 const calcDataItems = computed<IUserInfoData[]>(() => userInfo.userInfoData)
+
+const currentWallet = computed(() => wallets.value.find((wallet) => wallet.is_main))
 
 const closeDialog = () => {
   dialogVideo.value = false

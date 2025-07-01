@@ -1,22 +1,35 @@
 <template>
-  <v-dialog v-model="dialog" max-width="500px">
+  <v-dialog class="custom-modal" v-model="dialog" max-width="500px">
     <v-card>
-      <v-card-title>Добавить кошелек </v-card-title>
+      <v-card-title>
+        <span class="headline">Добавить кошелек</span>
+        <v-btn icon="mdi-close" variant="text" @click="dialog = false" />
+      </v-card-title>
       <v-card-text>
-        <VCustomInput label="Адрес кошелька" v-model="wallet.address" required autofocus />
+        <v-form ref="formRef">
+          <VCustomInput
+            label="Адрес кошелька"
+            required
+            v-model="wallet.address"
+            :rules="[requiredRules.required]"
+            autofocus
+          />
+        </v-form>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn @click="closeModal">Отмена</v-btn>
-        <v-btn color="primary" @click="submit">Сохранить</v-btn>
+        <VCusomButton :customClass="['light', 'avg']" @click="closeModal"> Отмена </VCusomButton>
+        <VCusomButton :customClass="['dark', 'avg']" @click="submit"> Сохранить </VCusomButton>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script setup lang="ts">
-import { reactive, computed } from 'vue'
+import { reactive, computed, ref } from 'vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
+import { requiredRules } from '@/utils/validators.ts'
+import VCusomButton from '@/components/base/VCusomButton.vue'
 
 const props = defineProps({
   modelValue: {
@@ -26,6 +39,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue', 'save'])
 
+const formRef = ref(null)
 const wallet = reactive({
   id: null,
   address: '',
@@ -45,9 +59,11 @@ const closeModal = () => {
   dialog.value = false
 }
 
-function submit() {
-  if (!wallet.address) return
-  emit('save', { ...wallet })
-  dialog.value = false
+const submit = async () => {
+  const isValid = await formRef?.value?.validate()
+  if (isValid.valid) {
+    emit('save', { ...wallet })
+    dialog.value = false
+  }
 }
 </script>

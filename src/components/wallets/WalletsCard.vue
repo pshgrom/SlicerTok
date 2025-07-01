@@ -6,7 +6,10 @@
           Кошельки
           <span class="wallets__length">{{ wallets.length }}</span>
         </div>
-        <VCusomButton :customClass="['dark']" @click="openDialog" :disabled="wallets.length >= 3"
+        <VCusomButton
+          :customClass="['dark']"
+          @click="openDialog"
+          :disabled="wallets.length >= 3"
           >Добавить
         </VCusomButton>
       </div>
@@ -26,44 +29,55 @@
   </div>
 </template>
 <script setup lang="ts">
-import VCusomButton from '@/components/base/VCusomButton.vue'
-import CurrentWallet from '@/components/wallets/CurrentWallet.vue'
-import { PropType, ref } from 'vue'
-import { IWallet } from '@/interfaces/Slicer'
+import VCusomButton from "@/components/base/VCusomButton.vue";
+import CurrentWallet from "@/components/wallets/CurrentWallet.vue";
+import { PropType, ref } from "vue";
+import { IWallet } from "@/interfaces/Slicer";
 
 const props = defineProps({
   wallets: {
     type: Array as PropType<IWallet[]>,
-    default: () => []
-  }
-})
+    default: () => [],
+  },
+});
 
-const emit = defineEmits(['openModalWallet', 'setAsMain', 'removeWallet'])
-const openIndex = ref(null)
+const emit = defineEmits(["openModalWallet", "setAsMain", "removeWallet"]);
+const openIndex = ref(null);
 const openDialog = () => {
   if (props.wallets.length <= 3) {
-    emit('openModalWallet')
+    emit("openModalWallet");
   }
-}
+};
 
 const setAsMain = (id: number) => {
-  emit('setAsMain', id)
-}
+  emit("setAsMain", id);
+};
 
 const removeWallet = (index: number, id: number, is_main: boolean) => {
-  emit('removeWallet', index, id, is_main)
-}
+  emit("removeWallet", index, id, is_main);
+};
 </script>
 
 <style scoped lang="scss">
 .wallets {
   padding: 17px 0 20px 20px;
+  width: 100%;
+
+  @media (max-width: 1024px) {
+    min-width: 358px;
+    height: auto;
+  }
+
+  @media (max-width: 767px) {
+    padding-bottom: 0;
+  }
 
   &__label {
-    font-family: 'Inter Medium', sans-serif;
+    font-family: "Inter Medium", sans-serif;
     color: rgba(17, 17, 17, 1);
     display: inline-flex;
     align-items: center;
+    font-size: 18px;
   }
 
   &__length {
@@ -76,7 +90,7 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
     align-items: center;
     justify-content: center;
     color: rgba(17, 17, 17, 1);
-    font-family: 'Inter Medium', sans-serif;
+    font-family: "Inter Medium", sans-serif;
     font-size: 12px;
     margin-left: 8px;
   }

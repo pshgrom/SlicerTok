@@ -9,6 +9,8 @@
     :autofocus="autofocus"
     :type="type"
     :hide-details="hideDetails"
+    :color="color"
+    :base-color="baseColor"
     clearable
   >
   </v-text-field>
@@ -16,49 +18,62 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed } from "vue";
 
 const props = defineProps({
   rules: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   label: {
     type: String,
-    default: ''
+    default: "",
+  },
+  color: {
+    type: String,
+    default: "rgba(96, 135, 242, 1)",
+  },
+  baseColor: {
+    type: String,
+    default: "rgba(211, 219, 237, 1)",
   },
   variant: {
-    type: String as () => 'underlined' | 'outlined' | 'filled' | 'solo' | 'plain',
-    default: 'outlined'
+    type: String as () =>
+      | "underlined"
+      | "outlined"
+      | "filled"
+      | "solo"
+      | "plain",
+    default: "outlined",
   },
   density: {
-    type: String as () => 'default' | 'comfortable' | 'compact',
-    default: 'comfortable'
+    type: String as () => "default" | "comfortable" | "compact",
+    default: "comfortable",
   },
   type: {
     type: String,
-    default: 'string'
+    default: "string",
   },
   modelValue: {
     type: [String, Number],
-    default: ''
+    default: "",
   },
   hideDetails: {
     type: Boolean,
-    default: false
+    default: false,
   },
   autofocus: {
     type: Boolean,
-    default: false
-  }
-})
+    default: false,
+  },
+});
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(["update:modelValue"]);
 
 const value = computed({
   get: () => props.modelValue,
-  set: (value) => emit('update:modelValue', value)
-})
+  set: (value) => emit("update:modelValue", value),
+});
 
 // const updateValue = (e: string) => {
 //   console.error('e', e)
@@ -69,9 +84,32 @@ const value = computed({
 <style lang="scss" scoped>
 .custom-input {
   :deep(input) {
-    font-size: 14px;
+    font-size: 14px !important;
     color: rgba(17, 17, 17, 1);
-    border: rgba(211, 219, 237, 1) !important;
   }
+}
+:deep(.v-field--outlined) {
+  --v-field-border-opacity: 1;
+  border-color: rgba(100, 100, 100, 1) !important;
+  outline: none;
+}
+
+//:deep(.v-field__input::placeholder) {
+//  color: #999 !important;
+//  opacity: 1;
+//}
+
+:deep(.v-label) {
+  font-family: "Inter Medium", sans-serif;
+  color: rgba(143, 150, 165, 1) !important;
+  font-size: 14px !important;
+}
+
+:deep(.v-field--focused .v-field__outline__start),
+:deep(.v-field--focused .v-field__outline__notch::before),
+:deep(.v-field--focused .v-field__outline__notch::after),
+:deep(.v-field--focused .v-field__outline__end) {
+  border-color: rgba(96, 135, 242, 1) !important;
+  --v-field-border-width: 1px !important;
 }
 </style>

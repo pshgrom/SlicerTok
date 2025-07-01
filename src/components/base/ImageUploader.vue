@@ -88,47 +88,4 @@ function clearImage() {
 }
 </script>
 
-<style lang="scss">
-.wavy-button {
-  background: linear-gradient(135deg, #ff90b3, #0070be);
-  border: none;
-  color: white;
-  font-weight: bold;
-  font-size: 16px;
-  padding: 12px 24px;
-  border-radius: 999px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  transition: transform 0.2s, box-shadow 0.2s;
-  position: relative;
-  overflow: hidden;
-}
-
-.wavy-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
-}
-
-.wavy-button::after {
-  content: '';
-  position: absolute;
-  top: -20%;
-  left: -10%;
-  width: 120%;
-  height: 140%;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3), transparent 70%);
-  transform: rotate(-20deg);
-  animation: shimmer 2s infinite linear;
-}
-
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%) rotate(-20deg);
-  }
-  100% {
-    transform: translateX(100%) rotate(-20deg);
-  }
-}
-</style>
+<style lang="scss"></style>

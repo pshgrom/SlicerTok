@@ -3,6 +3,7 @@
     <v-card>
       <v-card-title>
         <span class="headline">Изменить профиль</span>
+        <v-btn icon="mdi-close" variant="text" @click="dialogModel = false" />
       </v-card-title>
       <v-card-text>
         <v-form ref="formRef">
@@ -33,7 +34,7 @@
         </v-form>
       </v-card-text>
 
-      <v-card-actions class="custom-modal-actions">
+      <v-card-actions>
         <v-spacer />
         <VCusomButton :customClass="['light', 'avg']" @click="cancel"> Отмена </VCusomButton>
         <VCusomButton :customClass="['dark', 'avg']" @click="save"> Сохранить </VCusomButton>
@@ -43,9 +44,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, PropType } from 'vue'
+import { ref, computed, watch } from 'vue'
+import type { PropType } from 'vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
-import { IUser } from '@/interfaces/Slicer'
+import type { IUser } from '@/interfaces/Slicer'
 import { infoRules } from '@/utils/validators'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 
@@ -95,3 +97,5 @@ const cancel = () => {
   dialogModel.value = false
 }
 </script>
+
+<style lang="scss" scoped></style>
