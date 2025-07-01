@@ -12,36 +12,19 @@
       <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
     </template>
     <template v-slot:[`item.url`]="{ item }">
-      <a class="custom-table__link" :href="item.url" target="_blank">
-        {{ formatUrl(item.url) }}
+      <a :href="item.url" target="_blank" class="custom-table-ref">
+        <SvgIcon class="custom-table-ref__social" :name="getIconSocial(item.url)" />
+        <span>
+          {{ getNameSocialMedia(item.url) }}
+        </span>
+        <SvgIcon name="arrow-up-right" />
       </a>
     </template>
     <template v-slot:[`item.video_stat_link`]="{ item }">
-      <a class="custom-table__link" :href="item.video_stat_link" target="_blank">
-        {{ formatUrl(item.video_stat_link) }}
+      <a :href="item.video_stat_link" target="_blank" class="custom-table-ref">
+        <span> Смотреть </span>
+        <SvgIcon name="arrow-up-right" />
       </a>
-    </template>
-    <template v-slot:[`item.resource`]="{ item }">
-      <div class="flex gap-4">
-        <v-chip
-          v-if="item.resource === 'INSTAGRAM'"
-          class="social-chip instagram"
-          text="Instagram"
-          prepend-icon="mdi-instagram"
-        />
-        <v-chip
-          v-else-if="item.resource === 'TIKTOK'"
-          class="social-chip tiktok"
-          text="TikTok"
-          prepend-icon="mdi-music-note"
-        />
-        <v-chip
-          v-else-if="item.resource === 'YOUTIBE'"
-          class="social-chip youtube"
-          text="YouTube"
-          prepend-icon="mdi-youtube"
-        />
-      </div>
     </template>
     <template v-slot:[`item.status`]="{ item }">
       <VCustomSelect
@@ -79,6 +62,7 @@
 import { computed, PropType, ref } from 'vue'
 import { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import VCustomSelect from '@/components/base/VCustomSelect.vue'
+import SvgIcon from '@/components/base/SvgIcon.vue'
 
 const emit = defineEmits(['changeStatus', 'saveComment', 'finishCheck'])
 
@@ -128,11 +112,30 @@ const computedHeaders = computed<ITableHeaders[]>({
   }
 })
 
-const formatUrl = (url: string) => {
-  if (!url) return ''
-  const firstPart = url.slice(0, 30)
-  const lastPart = url.slice(url.length - 3)
-  return `${firstPart}...${lastPart}`
+const getNameSocialMedia = (url: string) => {
+  if (url.includes('inst')) {
+    return 'Instagram'
+  } else if (url.includes('tik')) {
+    return 'TikTok'
+  } else if (url.includes('shorts')) {
+    return 'Shorts'
+  } else if (url.includes('vk')) {
+    return 'VK Video'
+  }
+}
+
+const getIconSocial = (url: string) => {
+  let icon = ''
+  if (url.includes('inst')) {
+    icon = 'instagram'
+  } else if (url.includes('tik')) {
+    icon = 'tiktok'
+  } else if (url.includes('shorts')) {
+    icon = 'shorts'
+  } else if (url.includes('vk')) {
+    icon = 'vk'
+  }
+  return icon
 }
 
 const finishCheck = (id: number) => {
@@ -169,23 +172,5 @@ const changeStatus = (id: number | string, status: string, status_comment: strin
     opacity: 0.7;
     border-color: #000;
   }
-}
-.social-chip {
-  color: white !important;
-  font-weight: bold !important;
-}
-
-.instagram {
-  background: radial-gradient(circle at 30% 30%, #feda75, #d62976, #962fbf) !important;
-}
-
-.tiktok {
-  background-color: #010101 !important;
-  border: 1px solid #25f4ee !important;
-  color: #25f4ee !important;
-}
-
-.youtube {
-  background-color: #ff0000 !important;
 }
 </style>

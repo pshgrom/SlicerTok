@@ -50,28 +50,6 @@
         <div>{{ getTextStatus(item.status) }}</div>
       </v-chip>
     </template>
-    <template v-slot:[`item.resource`]="{ item }">
-      <div class="flex gap-4">
-        <v-chip
-          v-if="item.resource === 'INSTAGRAM'"
-          class="social-chip instagram"
-          text="Instagram"
-          prepend-icon="mdi-instagram"
-        />
-        <v-chip
-          v-else-if="item.resource === 'TIKTOK'"
-          class="social-chip tiktok"
-          text="TikTok"
-          prepend-icon="mdi-music-note"
-        />
-        <v-chip
-          v-else-if="item.resource === 'YOUTIBE'"
-          class="social-chip youtube"
-          text="YouTube"
-          prepend-icon="mdi-youtube"
-        />
-      </div>
-    </template>
     <template v-slot:[`item.video_stat_link`]="{ item }">
       <a :href="item.video_stat_link" target="_blank" class="custom-table-ref">
         <span> Смотреть </span>

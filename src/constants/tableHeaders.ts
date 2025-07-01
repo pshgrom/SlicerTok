@@ -81,7 +81,6 @@ export const adminInfoHeaders = [
   { title: 'Ключ', value: 'key' },
   { title: 'Статистика', value: 'video_stat_link' },
   { title: 'Просмотры', value: 'number_views' },
-  { title: 'Платформа', value: 'resource' },
   { title: 'Статус', value: 'status' },
   { title: 'Комментарии', value: 'status_comment' },
   { title: 'Действия', value: 'actions' }

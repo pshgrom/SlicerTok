@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import TablePagination from '@/components/tables/TablePagination.vue'
 import { computed, ref, onMounted } from 'vue'
-import { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
+import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import { adminInfoHeaders } from '@/constants/tableHeaders'
 import { useRouter } from 'vue-router'
 import { useAdminInfo } from '@/stores/AdminInfo'

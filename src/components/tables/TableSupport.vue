@@ -26,28 +26,6 @@
         <SvgIcon name="arrow-up-right" />
       </a>
     </template>
-    <template v-slot:[`item.resource`]="{ item }">
-      <div class="flex gap-4">
-        <v-chip
-          v-if="item.resource === 'INSTAGRAM'"
-          class="social-chip instagram"
-          text="Instagram"
-          prepend-icon="mdi-instagram"
-        />
-        <v-chip
-          v-else-if="item.resource === 'TIKTOK'"
-          class="social-chip tiktok"
-          text="TikTok"
-          prepend-icon="mdi-music-note"
-        />
-        <v-chip
-          v-else-if="item.resource === 'YOUTIBE'"
-          class="social-chip youtube"
-          text="YouTube"
-          prepend-icon="mdi-youtube"
-        />
-      </div>
-    </template>
     <template v-slot:[`item.status_moderation`]="{ item }">
       <v-row no-gutters class="flex-nowrap" style="overflow-x: auto; white-space: nowrap">
         <v-col
@@ -241,23 +219,5 @@ const formatUrl = (url: string) => {
     opacity: 0.7;
     border-color: #000;
   }
-}
-.social-chip {
-  color: white !important;
-  font-weight: bold !important;
-}
-
-.instagram {
-  background: radial-gradient(circle at 30% 30%, #feda75, #d62976, #962fbf) !important;
-}
-
-.tiktok {
-  background-color: #010101 !important;
-  border: 1px solid #25f4ee !important;
-  color: #25f4ee !important;
-}
-
-.youtube {
-  background-color: #ff0000 !important;
 }
 </style>
