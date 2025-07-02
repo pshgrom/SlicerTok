@@ -8,7 +8,11 @@
         fluid
         style="max-width: 1000px"
       >
-        <HeaderMain v-if="showHeader || isShowHeader" />
+        <HeaderMain v-if="showContent || showForSlicer" />
+        <div v-if="showMainChat || showForSlicer">
+          <VCusomButton @click="showChat = !showChat">Чат с поддержкой</VCusomButton>
+          <UserChat v-if="showChat" />
+        </div>
         <router-view />
       </v-container>
     </v-main>
@@ -16,28 +20,35 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import ErrorAlert from '@/components/base/ErrorAlert.vue'
 import HeaderMain from '@/components/layout/HeaderMain.vue'
 import { useAuth } from '@/stores/Auth.ts'
+import UserChat from '@/components/base/UserChat.vue'
+import VCusomButton from '@/components/base/VCusomButton.vue'
 
 const router = useRouter()
 const authStore = useAuth()
+const showChat = ref(false)
 
 const page = computed(() => router.currentRoute.value.name)
-const showHeader = computed(() => {
-  return (
+const showContent = computed(
+  () => page.value !== 'Login' && page.value !== 'LoginAdmin' && page.value !== 'NotFound'
+)
+
+const showMainChat = computed(
+  () =>
     page.value !== 'Login' &&
     page.value !== 'LoginAdmin' &&
     page.value !== 'NotFound' &&
-    page.value !== 'UserInfo'
-  )
-})
+    page.value !== 'AdminMain' &&
+    page.value !== 'Support'
+)
 
 const isAdmin = computed(() => authStore.role !== 'slicer')
 
-const isShowHeader = computed(() => page.value === 'UserInfo')
+const showForSlicer = computed(() => page.value === 'UserInfo')
 </script>
 
 <style lang="scss">
