@@ -33,7 +33,7 @@
           <div class="mb-4"></div>
           <VideoUploader v-model="videoFields.videoFile" />
         </v-form>
-        <div>
+        <div class="custom-modal-wallet">
           <span class="custom-modal__label">Вы получите деньги на кошелек:</span>
           <CurrentWallet :key="wallet.id" :wallet="wallet" :index="0" :onlyRead="true" />
         </div>
@@ -119,13 +119,43 @@ const submitVideo = async () => {
   display: flex;
 }
 
+.custom-modal {
+  :deep(.v-overlay__content) {
+    @media (max-width: 1024px) {
+      max-width: 727px !important;
+    }
+    @media (max-width: 767px) {
+      max-width: 480px !important;
+    }
+  }
+
+  &-wallet {
+    position: relative;
+    @media (max-width: 767px) {
+      order: -1;
+      top: -26px;
+    }
+  }
+}
+
 :deep(.v-card-text) {
   display: flex;
   justify-content: space-between;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+  }
 }
 
 :deep(.v-form) {
   position: relative;
+
+  @media (max-width: 1024px) {
+    max-width: 420px;
+  }
+  @media (max-width: 767px) {
+    max-width: 100%;
+  }
   &:after {
     content: '';
     position: absolute;
@@ -134,6 +164,10 @@ const submitVideo = async () => {
     height: 100%;
     width: 1px;
     background: rgba(242, 246, 254, 1);
+
+    @media (max-width: 767px) {
+      display: none;
+    }
   }
 }
 
@@ -141,9 +175,18 @@ const submitVideo = async () => {
   justify-content: center !important;
   padding-top: 85px !important;
 
+  @media (max-width: 767px) {
+    padding-top: 25px !important;
+    justify-content: end !important;
+  }
+
   button {
     position: relative;
     left: -60px;
+
+    @media (max-width: 767px) {
+      left: -4px !important;
+    }
   }
 }
 </style>

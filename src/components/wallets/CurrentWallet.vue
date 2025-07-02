@@ -312,6 +312,15 @@ onBeforeUnmount(() => {
     width: 299px;
     height: 110px;
     margin: 0;
+
+    @media (max-width: 1024px) {
+      width: 237px;
+    }
+
+    @media (max-width: 767px) {
+      width: 100%;
+      height: 80px;
+    }
   }
 }
 </style>
