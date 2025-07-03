@@ -113,6 +113,7 @@ const getChatsSupport = async () => {
       })
       roomId.value = rooms.value[0].id
       await getMessages()
+      scrollToBottom()
     }
   } catch (error) {
     console.log(error)

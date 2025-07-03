@@ -49,7 +49,6 @@ const scrollToBottom = () => {
 const sendMessage = async () => {
   if (!newMessage.value.trim()) return
   try {
-    console.log(newMessage.value)
     const newData = {
       chatRoomId: roomId.value,
       message: newMessage.value
@@ -69,6 +68,7 @@ const getChat = async () => {
     if (data.code === 200) {
       roomId.value = data.data.chat_room_id
       await getMessages()
+      scrollToBottom()
     }
   } catch (error) {
     console.log(error)
