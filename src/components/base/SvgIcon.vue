@@ -1,6 +1,14 @@
 <template>
-  <div class="svg-icon">
-    <component :is="dynamicComponent" :class="className" :fill="fill" />
+  <div class="svg-icon" :style="{ transform: `scale(${scale})` }">
+    <component
+      v-if="width && height"
+      :is="dynamicComponent"
+      :class="className"
+      :fill="fill"
+      :width="width"
+      :height="height"
+    />
+    <component v-else :is="dynamicComponent" :class="className" :fill="fill" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -22,6 +30,18 @@ const props = defineProps({
     type: String,
     default: 'none',
     required: false
+  },
+  scale: {
+    type: [Number, String],
+    default: 1
+  },
+  width: {
+    type: [Number, String],
+    default: null
+  },
+  height: {
+    type: [Number, String],
+    default: null
   }
 })
 

@@ -36,11 +36,11 @@ export const loginConfirmationQuery = (data: IAuthConfirmation) => {
   return instWithCred.post('/auth/phone-confirmation')
 }
 
-// export const getCountryCodesQuery = () => {
-//   const instWithCred = axios.create({
-//     baseURL: 'http://localhost:80/api',
-//     // baseURL: 'http://185.228.235.34/api/api',
-//     params: {}
-//   })
-//   return instWithCred.get('/country-colling-codes')
-// }
+export const getCountryCodesQuery = () => {
+  const instWithCred = axios.create({
+    baseURL: 'http://localhost:80/api',
+    // baseURL: 'http://185.228.235.34/api/api',
+    params: {}
+  })
+  return instWithCred.get('/country-colling-codes')
+}

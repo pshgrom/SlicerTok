@@ -53,7 +53,7 @@ const props = defineProps({
   },
   variant: {
     type: String as () => 'underlined' | 'outlined' | 'filled' | 'solo' | 'plain',
-    default: 'underlined'
+    default: 'outlined'
   },
   density: {
     type: String as () => 'default' | 'comfortable' | 'compact',
@@ -72,3 +72,31 @@ const updateStatus = (e: string | number) => {
   emit('updateStatus', e)
 }
 </script>
+
+<style lang="scss" scoped>
+.custom-input {
+  :deep(input) {
+    font-size: 14px !important;
+    color: rgba(17, 17, 17, 1);
+  }
+}
+:deep(.v-field--outlined) {
+  --v-field-border-opacity: 1;
+  border-color: rgba(100, 100, 100, 1) !important;
+  outline: none;
+}
+
+:deep(.v-label) {
+  font-family: 'Inter Medium', sans-serif;
+  color: rgba(143, 150, 165, 1) !important;
+  font-size: 14px !important;
+}
+
+:deep(.v-field--focused .v-field__outline__start),
+:deep(.v-field--focused .v-field__outline__notch::before),
+:deep(.v-field--focused .v-field__outline__notch::after),
+:deep(.v-field--focused .v-field__outline__end) {
+  border-color: rgba(96, 135, 242, 1) !important;
+  --v-field-border-width: 1px !important;
+}
+</style>

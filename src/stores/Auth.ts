@@ -1,6 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { loginUser, loginByPhoneQuery, loginConfirmationQuery } from '@/api/auth'
+import {
+  loginUser,
+  loginByPhoneQuery,
+  loginConfirmationQuery,
+  getCountryCodesQuery
+} from '@/api/auth'
 import type { IAuth, IAuthByPhone, IAuthConfirmation, LoginResult } from '@/interfaces/Auth'
 import { useError } from '@/stores/Errors'
 import { ROLES } from '@/constants/roles'
@@ -10,27 +15,9 @@ export const useAuth = defineStore('authStore', () => {
   const role = ref<string>(localStorage.getItem('role') || ROLES.SLICER)
   const errorStore = useError()
   const phone = ref('')
-  const countryIds = ref([
-    {
-      value: 1,
-      label: 'Беларусь'
-    },
-    {
-      value: 2,
-      label: 'Россия'
-    }
-  ])
+  const currentCountryCode = ref<string | number | null>(null)
 
-  const countryCodes = ref([
-    {
-      value: 1,
-      label: '🇧🇾 +375'
-    },
-    {
-      value: 2,
-      label: '🇷🇺 +7'
-    }
-  ])
+  const countryCodes = ref([])
 
   const login = async ({ login, password }: IAuth): Promise<LoginResult | undefined> => {
     try {
@@ -63,23 +50,33 @@ export const useAuth = defineStore('authStore', () => {
     phone.value = value
   }
 
-  // const getCountryCodes = async () => {
-  //   try {
-  //     const { data } = await getCountryCodesQuery()
-  //     if (data.status === 'Success') {
-  //       countryCodes.value = data?.data ?? []
-  //       console.warn(countryCodes.value)
-  //     }
-  //   } catch (error: any) {
-  //     throw error?.response?.data?.message ?? ''
-  //   }
-  // }
+  const getCountryCodes = async () => {
+    try {
+      const countries = []
+      const { data } = await getCountryCodesQuery()
+      const { data: newData, status } = data ?? {}
+      if (status === 'Success' && newData) {
+        Object.keys(newData).forEach((item) => {
+          const { id, code, name } = newData[item]
+          countries.push({
+            value: id,
+            label: `${code} ${name}`
+          })
+        })
+        if (!countryCodes.value.length) {
+          countryCodes.value = countries
+        }
+        currentCountryCode.value = countryCodes.value[0].value
+      }
+    } catch (error: any) {
+      throw error?.response?.data?.message ?? ''
+    }
+  }
 
   const loginConfirmation = async (data: IAuthConfirmation) => {
     try {
       return await loginConfirmationQuery(data)
     } catch (error: any) {
-      console.log('error', error)
       throw error?.response?.data?.message ?? error.message ?? ''
     }
   }
@@ -95,12 +92,12 @@ export const useAuth = defineStore('authStore', () => {
     logout,
     loginByPhone,
     loginConfirmation,
-    // getCountryCodes,
+    getCountryCodes,
     countryCodes,
-    countryIds,
     role,
     token,
     setPhone,
-    phone
+    phone,
+    currentCountryCode
   }
 })
