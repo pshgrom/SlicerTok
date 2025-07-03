@@ -74,8 +74,8 @@ const updateStatus = (e: string | number) => {
 </script>
 
 <style lang="scss" scoped>
-.custom-input {
-  :deep(input) {
+.v-custom-select {
+  :deep(.v-select__selection-text) {
     font-size: 14px !important;
     color: rgba(17, 17, 17, 1);
   }

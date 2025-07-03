@@ -4,11 +4,9 @@
     fill-height
     style="height: 100vh"
   >
-    <v-card max-width="400" min-width="400" class="pa-6">
-      <v-card-title class="text-h5 text-center"> Вход в аккаунт </v-card-title>
-      <v-card-subtitle class="text-center mb-6">
-        Введите свои учетные данные, чтобы войти
-      </v-card-subtitle>
+    <v-card max-width="400" min-width="400" class="pa-6 login-admin">
+      <SvgIcon class="login-admin__logo" name="logo" :width="120" :height="31" />
+      <h3 class="login-admin__title">Введите свои учетные данные</h3>
       <v-form ref="formRef" @submit.prevent="handleLogin">
         <VCustomInput
           v-model.trim="login"
@@ -23,7 +21,11 @@
           :rules="[requiredRules.required]"
           class="mb-3"
         />
-        <v-btn type="submit" color="primary">Войти</v-btn>
+        <div class="login-admin__actions">
+          <VCusomButton type="submit" :customClass="['dark', 'avg']" :loading="loading">
+            Войти
+          </VCusomButton>
+        </div>
       </v-form>
     </v-card>
   </v-container>
@@ -38,6 +40,8 @@ import VCustomInput from '@/components/base/VCustomInput.vue'
 import { useError } from '@/stores/Errors'
 import { ROLES } from '@/constants/roles'
 import { requiredRules } from '@/utils/validators'
+import VCusomButton from '@/components/base/VCusomButton.vue'
+import SvgIcon from '@/components/base/SvgIcon.vue'
 
 const authStore = useAuth()
 const errorStore = useError()
@@ -47,6 +51,7 @@ const login = ref('adminGroupA')
 const phone = ref('')
 const password = ref('adminGroupA')
 const currentCountry = ref(1)
+const loading = ref(false)
 const currentCountryCode = ref<string | null>(null)
 
 const countryCodes = computed(() => authStore.countryCodes ?? [])
@@ -59,6 +64,7 @@ const handleLogin = async () => {
         login: login.value,
         password: password.value
       }
+      loading.value = true
       const { token, role } = await authStore.login(data)
       if (token && role) {
         switch (role) {
@@ -78,6 +84,8 @@ const handleLogin = async () => {
       }
     } catch (error: any) {
       errorStore.setErrors(error)
+    } finally {
+      loading.value = false
     }
   }
 }
@@ -95,14 +103,29 @@ watch(
 </script>
 
 <style scoped lang="scss">
-.v-card {
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
 .auth-container {
   height: 100vh;
   position: relative;
   top: -16px;
+}
+
+.login-admin {
+  box-shadow: none !important;
+  border-radius: 12px;
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+  &__logo {
+    margin-bottom: 25px;
+  }
+  &__title {
+    font-family: 'Inter Medium', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: rgba(0, 0, 0, 1);
+    margin-bottom: 25px;
+  }
 }
 </style>

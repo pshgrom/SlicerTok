@@ -6,10 +6,19 @@
   >
     <v-card class="pa-6 login-view" max-width="400" min-width="400">
       <SvgIcon class="login-view__logo" name="logo" :width="120" :height="31" />
-      <h3 class="login-view__title">Вход по номеру телефона</h3>
+      <h3 class="login-view__title">
+        <template v-if="step === 1"> Вход по номеру телефона </template>
+        <template v-else> Подтвердите код </template>
+      </h3>
       <p class="login-view__description">
-        Введите свой номер телефона, который привязан <br />
-        к Telegram и мы вышлем вам код для входа.
+        <template v-if="step === 1">
+          Введите свой номер телефона, который привязан <br />
+          к Telegram и мы вышлем вам код для входа.
+        </template>
+        <template v-else>
+          Мы выслали вам код на указанный вами номер: <br />
+          {{ phone }}
+        </template>
       </p>
 
       <v-form ref="formRef" @submit.prevent="handleLoginByPhone">
@@ -47,11 +56,17 @@
           </template>
         </div>
         <div class="login-view__actions">
+          <VCusomButton
+            v-if="step === 2"
+            class="mr-1"
+            :customClass="['light', 'avg']"
+            @click="reset"
+          >
+            Назад
+          </VCusomButton>
           <VCusomButton type="submit" :customClass="['dark', 'avg']" :loading="loading">
             {{ step === 1 ? 'Отправить код' : 'Подтвердить' }}
           </VCusomButton>
-
-          <v-btn v-if="step === 2" class="mt-2" variant="text" @click="reset" block> Назад </v-btn>
         </div>
       </v-form>
     </v-card>
@@ -172,7 +187,7 @@ const handleLoginByPhone = async () => {
       try {
         const dataQuery: IAuthConfirmation = {
           country_calling_codes_id: +currentCountryCode.value,
-          phone: phone.value,
+          phone: cleanNumber(phone.value),
           key: code.value
         }
         loading.value = true
@@ -210,11 +225,6 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.v-card {
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
 .auth-container {
   height: 100vh;
   position: relative;
@@ -223,6 +233,7 @@ onMounted(() => {
 
 .login-view {
   box-shadow: none !important;
+  border-radius: 12px;
   &__logo {
     margin-bottom: 40px;
   }
