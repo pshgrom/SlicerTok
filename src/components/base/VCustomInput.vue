@@ -1,6 +1,7 @@
 <template>
   <v-text-field
     class="custom-input"
+    :class="customClasses"
     v-model="value"
     :label="label"
     :rules="rules"
@@ -60,7 +61,8 @@ const props = defineProps({
   autofocus: {
     type: Boolean,
     default: false
-  }
+  },
+  customClass: { type: Array, default: () => [] }
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -69,6 +71,8 @@ const value = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value)
 })
+
+const customClasses = computed(() => props.customClass.join(' '))
 
 // const updateValue = (e: string) => {
 //   console.error('e', e)
@@ -82,6 +86,12 @@ const value = computed({
     font-size: 14px !important;
     color: rgba(17, 17, 17, 1);
   }
+
+  //&.avg :deep(.v-field),
+  //:deep(.v-field__field),
+  //:deep(input) {
+  //  height: 40px;
+  //}
 }
 :deep(.v-field--outlined) {
   --v-field-border-opacity: 1;

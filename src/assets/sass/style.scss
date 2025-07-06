@@ -48,3 +48,16 @@ img {
     max-width: 100% !important;
   }
 }
+
+.chat-open {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  cursor: pointer;
+  transition: opacity .15s ease-in;
+
+  &:hover {
+    opacity: .7;
+  }
+}

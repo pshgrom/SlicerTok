@@ -1,39 +1,65 @@
 <template>
-  <v-container>
-    <div class="chat-box" ref="chatBoxRef">
-      <template v-if="userMessages.length">
-        <div v-for="msg in userMessages" :class="{ 'text-right': msg.is_your }">
-          <v-chip :color="msg.is_your ? 'blue' : 'grey'" class="ma-1" label>
-            {{ msg.content }}
-          </v-chip>
+  <div class="chat" v-click-outside="closeChat" :class="{ chat_mobile: isMobile }">
+    <div class="chat-box">
+      <div class="chat__title">
+        <span>Чат с поддержкой</span>
+        <v-btn icon="mdi-close" variant="text" @click="closeChat" />
+      </div>
+      <div class="chat-messages" ref="chatBoxRef" v-if="userMessages.length">
+        <div
+          v-for="msg in userMessages"
+          class="chat-messages-item"
+          :class="{ 'chat-messages-item_your': msg.is_your }"
+        >
+          <div class="chat-messages-item__role">
+            {{ msg.is_your ? 'Вы' : 'Поддержка' }}
+          </div>
+          <div class="chat-messages-item__msg">{{ msg.content }}</div>
+          <div class="chat-messages-item__time">{{ getTime(msg.created_at) }}</div>
         </div>
-      </template>
+      </div>
       <h2 v-else>Пока нет сообщений</h2>
     </div>
-
-    <v-row class="mt-2" align="center">
-      <v-col cols="10">
-        <v-text-field v-model="newMessage" label="Ваше сообщение" @keyup.enter="sendMessage" />
-      </v-col>
-      <v-col cols="2">
-        <v-btn @click="sendMessage" color="primary">Отправить</v-btn>
-      </v-col>
-    </v-row>
-  </v-container>
+    <div class="chat__actions">
+      <VCustomInput
+        v-model="newMessage"
+        :hideDetails="true"
+        autofocus
+        label="Введите текст"
+        class="mr-1"
+        @keyup.enter="sendMessage"
+      />
+      <SvgIcon class="chat__actions-send" @click="sendMessage" name="send" />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, nextTick } from 'vue'
+import { onMounted, ref, nextTick, onBeforeUnmount } from 'vue'
 import { getChatQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
+import VCustomInput from '@/components/base/VCustomInput.vue'
+import SvgIcon from '@/components/base/SvgIcon.vue'
+import { useSocket } from '@/composables/useSocket.ts'
+import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
+
+defineProps({
+  showChat: {
+    type: Boolean,
+    default: false
+  }
+})
+const emit = defineEmits(['update:showChat'])
+const { subscribeToChannel, unsubscribeFromChannel } = useSocket()
 
 type Message = {
   id: number
   sender: 'you' | 'support'
   text: string
 }
+
 const roomId = ref<null | number>(null)
 const chatBoxRef = ref<HTMLElement | null>(null)
-
+const { isMobile } = useDeviceDetection()
 const userMessages = ref<Message[]>([])
 
 const newMessage = ref<string>('')
@@ -44,6 +70,15 @@ const scrollToBottom = () => {
       chatBoxRef.value.scrollTop = chatBoxRef.value.scrollHeight
     }
   })
+}
+
+const getTime = (time: string) => {
+  const date = new Date(time)
+
+  const hours = date.getHours().toString().padStart(2, '0')
+  const minutes = date.getMinutes().toString().padStart(2, '0')
+
+  return `${hours}:${minutes}`
 }
 
 const sendMessage = async () => {
@@ -69,9 +104,19 @@ const getChat = async () => {
       roomId.value = data.data.chat_room_id
       await getMessages()
       scrollToBottom()
+      subscribeToChannel('chat.2')
     }
   } catch (error) {
     console.log(error)
+  }
+}
+
+const closeChat = (event: KeyboardEvent) => {
+  if (event.type === 'click') {
+    emit('update:showChat', false)
+  }
+  if (event.key === 'Escape') {
+    emit('update:showChat', false)
   }
 }
 
@@ -88,19 +133,134 @@ const getMessages = async () => {
 
 onMounted(() => {
   getChat()
+  document.addEventListener('keydown', closeChat)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('keydown', closeChat)
+  // unsubscribeFromChannel()
 })
 </script>
 
-<style scoped>
-.chat-box {
-  height: 400px;
-  overflow-y: auto;
-  border: 1px solid #ccc;
-  padding: 1rem;
-  background: #f0f0f0;
-  border-radius: 8px;
-}
-.text-right {
-  text-align: right;
+<style scoped lang="scss">
+.chat {
+  bottom: 87px;
+  right: 24px;
+  position: fixed;
+  background: #fff;
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+  width: 432px;
+  border-radius: 16px;
+  z-index: 9999;
+
+  &_mobile {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 90vh;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+
+    &-send {
+      cursor: pointer;
+      transition: opacity 0.15s ease-in;
+
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+
+  &__title {
+    display: flex;
+    justify-content: space-between;
+    height: 64px;
+    border-bottom: 1px solid rgba(229, 236, 253, 1);
+    align-items: center;
+    padding: 0 20px;
+    color: rgba(17, 17, 17, 1);
+    font-family: 'Inter Medium', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+  }
+
+  &-messages {
+    max-height: 450px;
+    min-height: 450px;
+    overflow-y: scroll;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+
+    &-item {
+      max-width: 350px;
+      width: 100%;
+      background: rgba(179, 246, 255, 1);
+      padding: 16px;
+      border-radius: 16px;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 16px;
+      position: relative;
+
+      &:first-child {
+        margin-top: 10px;
+      }
+
+      &__msg {
+        color: rgba(17, 17, 17, 1);
+        font-size: 14px;
+        line-height: 140%;
+        margin-bottom: 10px;
+        font-weight: 400;
+      }
+
+      &__role {
+        color: rgba(0, 0, 0, 1);
+        font-family: 'Inter Medium', sans-serif;
+        font-size: 12px;
+        font-weight: 400;
+        position: absolute;
+        left: 0;
+        top: -22px;
+      }
+
+      &__time {
+        font-family: 'Inter Medium', sans-serif;
+        font-size: 12px;
+        color: rgba(143, 150, 165, 1);
+        text-align: right;
+      }
+
+      &_your {
+        background: rgba(34, 93, 255, 1);
+        align-self: flex-end;
+        border-top-right-radius: 4px;
+        border-top-left-radius: 16px;
+
+        .chat-messages-item__msg {
+          color: rgba(255, 255, 255, 1);
+        }
+
+        .chat-messages-item__time {
+          color: rgba(211, 219, 237, 1);
+          text-align: left;
+        }
+
+        .chat-messages-item__role {
+          left: auto;
+          right: 0;
+        }
+      }
+
+      & + .chat-messages-item {
+        margin-top: 40px;
+      }
+    }
+  }
 }
 </style>

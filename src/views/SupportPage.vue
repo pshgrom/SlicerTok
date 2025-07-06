@@ -1,6 +1,8 @@
 <template>
   <VCusomButton @click="showChat = !showChat">Чат со всеми</VCusomButton>
-  <SupportChat v-show="showChat" />
+  <transition name="fade" mode="out-in">
+    <SupportChat v-show="showChat" />
+  </transition>
   <TableSupport
     class="table-settings__table"
     :headers="headers"

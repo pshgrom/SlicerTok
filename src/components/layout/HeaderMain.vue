@@ -1,13 +1,19 @@
 <template>
   <header class="header">
     <div class="header__left">
-      <div class="header__logo">
+      <div class="header__logo" @click="goHome()">
         <SvgIcon name="logo" />
       </div>
     </div>
     <div class="header__right">
       <ul class="menu">
-        <li v-if="role === ROLES.SLICER"><span>Правила загрузки</span></li>
+        <li v-if="role === ROLES.SLICER"><span>Правила</span></li>
+        <li
+          v-if="role === ROLES.SLICER && isMobile"
+          @click="userInfoStore.showChat = !userInfoStore.showChat"
+        >
+          <span>Поддержка</span>
+        </li>
         <template v-else-if="role === ROLES.ADMIN">
           <li @click="goToPage('/admin-info')"><span>Информация</span></li>
           <li @click="goToPage('/admin-info-checked')"><span>Проверенные</span></li>
@@ -31,15 +37,28 @@ import { useRouter } from 'vue-router'
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import { ROLES } from '@/constants/roles.ts'
 import { computed, onMounted } from 'vue'
+import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
+import { useUserInfo } from '@/stores/UserInfo.ts'
 
 const authStore = useAuth()
 const router = useRouter()
+const userInfoStore = useUserInfo()
 
 const role = computed(() => authStore.role)
+const { isMobile } = useDeviceDetection()
 
 const logout = () => {
   authStore.logout()
   router.push({ name: 'Login' })
+}
+
+const goHome = () => {
+  console.log(authStore.role)
+  switch (authStore.role) {
+    case ROLES.SLICER:
+      router.push({ name: 'UserInfo' })
+  }
+  // router.push()
 }
 
 const goToPage = (path: string) => {

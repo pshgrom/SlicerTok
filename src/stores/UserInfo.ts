@@ -17,6 +17,7 @@ import { useError } from '@/stores/Errors'
 
 export const useUserInfo = defineStore('userInfoStore', () => {
   const isLoading = ref<boolean>(false)
+  const showChat = ref<boolean>(false)
   const queryParams = ref<ITableParams>({
     page: 1,
     perPage: 20,
@@ -160,6 +161,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     addWallet,
     getWallets,
     setWalletMain,
-    removeWallet
+    removeWallet,
+    showChat
   }
 })

@@ -10,8 +10,15 @@
       >
         <HeaderMain v-if="showContent || showForSlicer" />
         <div v-if="showMainChat || showForSlicer">
-          <VCusomButton @click="showChat = !showChat">Чат с поддержкой</VCusomButton>
-          <UserChat v-if="showChat" />
+          <SvgIcon
+            v-if="!isMobile"
+            @click="userInfoStore.showChat = !userInfoStore.showChat"
+            name="chat"
+            class="chat-open"
+          />
+          <transition name="fade" mode="out-in">
+            <UserChat v-if="userInfoStore.showChat" v-model:showChat="userInfoStore.showChat" />
+          </transition>
         </div>
         <router-view />
       </v-container>
@@ -26,16 +33,19 @@ import ErrorAlert from '@/components/base/ErrorAlert.vue'
 import HeaderMain from '@/components/layout/HeaderMain.vue'
 import { useAuth } from '@/stores/Auth.ts'
 import UserChat from '@/components/base/UserChat.vue'
-import VCusomButton from '@/components/base/VCusomButton.vue'
+import SvgIcon from '@/components/base/SvgIcon.vue'
+import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
+import { useUserInfo } from '@/stores/UserInfo.ts'
 
 const router = useRouter()
 const authStore = useAuth()
-const showChat = ref(false)
+const userInfoStore = useUserInfo()
 
 const page = computed(() => router.currentRoute.value.name)
 const showContent = computed(
   () => page.value !== 'Login' && page.value !== 'LoginAdmin' && page.value !== 'NotFound'
 )
+const { isMobile } = useDeviceDetection()
 
 const showMainChat = computed(
   () =>
