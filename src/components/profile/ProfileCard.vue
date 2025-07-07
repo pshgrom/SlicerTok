@@ -41,15 +41,28 @@
             </div>
           </div>
         </div>
-        <div class="profile-info-item">
-          <div class="profile-info-item__icon">
-            <SvgIcon name="telegram" />
+        <div>
+          <div class="profile-info-item">
+            <div class="profile-info-item__icon">
+              <SvgIcon name="telegram" />
+            </div>
+            <div class="profile-info-item__value">
+              <template v-if="user.telegram">
+                {{ user.telegram }}
+              </template>
+              <span v-else>не указано</span>
+            </div>
           </div>
-          <div class="profile-info-item__value">
-            <template v-if="user.telegram">
-              {{ user.telegram }}
-            </template>
-            <span v-else>не указано</span>
+          <div class="profile-info-item">
+            <div class="profile-info-item__icon">
+              <SvgIcon name="telegram" />
+            </div>
+            <div class="profile-info-item__value">
+              <template v-if="user.key">
+                {{ user.key }}
+              </template>
+              <span v-else>не указано</span>
+            </div>
           </div>
         </div>
       </div>
@@ -58,12 +71,12 @@
 </template>
 <script setup lang="ts">
 import VCusomButton from '@/components/base/VCusomButton.vue'
-import { PropType } from 'vue'
-import { IUser } from '@/interfaces/Slicer'
+import { type PropType } from 'vue'
+import type { IUser } from '@/interfaces/Slicer'
 import SvgIcon from '@/components/base/SvgIcon.vue'
 // import ImageUploader from '@/components/base/ImageUploader.vue'
 
-const props = defineProps({
+defineProps({
   dialog: {
     type: Boolean,
     default: false

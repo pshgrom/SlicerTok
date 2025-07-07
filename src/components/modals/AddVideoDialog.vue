@@ -128,9 +128,11 @@ const submitVideo = async () => {
 
 :deep(.v-form) {
   position: relative;
+  width: 420px;
 
   @media (max-width: 1024px) {
     max-width: 420px;
+    width: 100%;
   }
   @media (max-width: 767px) {
     max-width: 100%;

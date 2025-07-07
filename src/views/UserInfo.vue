@@ -113,10 +113,10 @@ const openModalWallet = () => {
 }
 
 const submitVideo = async ({ videoFile, videoLink, number_views }: IUploadVideo) => {
-  const { id, key } = preloadUserInfo.value
+  // const { id, key } = preloadUserInfo.value
   const formData = new FormData()
-  formData.append('id', id)
-  formData.append('key', key)
+  // formData.append('id', id)
+  // formData.append('key', key)
   formData.append('link', videoLink)
   formData.append('video_stat', videoFile)
   formData.append('number_views', +number_views)
@@ -204,10 +204,11 @@ const getRequest = () => {
 
 const getInfo = async () => {
   const resp = await userInfo.getInfo()
-  const { contacts, name: userName } = resp.data?.profile ?? {}
+  const { contacts, name: userName, key } = resp.data?.profile ?? {}
   user.value = {
     ...contacts,
-    name: userName
+    name: userName,
+    key
   }
 }
 
