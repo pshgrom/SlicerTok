@@ -3,8 +3,8 @@ import type { IAuth, IAuthByPhone, IAuthConfirmation } from '@/interfaces/Auth'
 
 export const loginUser = ({ login, password }: IAuth) => {
   const instWithCred = axios.create({
-    baseURL: 'http://localhost:80/api',
-    // baseURL: 'http://185.228.235.34/api/api',
+    // baseURL: 'http://localhost:80/api',
+    baseURL: 'http://185.228.235.34/api/api',
     params: {
       login,
       password
@@ -15,8 +15,8 @@ export const loginUser = ({ login, password }: IAuth) => {
 
 export const loginByPhoneQuery = ({ country_calling_codes_id, phone }: IAuthByPhone) => {
   const instWithCred = axios.create({
-    baseURL: 'http://localhost:80/api',
-    // baseURL: 'http://185.228.235.34/api/api',
+    // baseURL: 'http://localhost:80/api',
+    baseURL: 'http://185.228.235.34/api/api',
     params: {
       country_calling_codes_id,
       phone
@@ -27,8 +27,8 @@ export const loginByPhoneQuery = ({ country_calling_codes_id, phone }: IAuthByPh
 
 export const loginConfirmationQuery = (data: IAuthConfirmation) => {
   const instWithCred = axios.create({
-    baseURL: 'http://localhost:80/api',
-    // baseURL: 'http://185.228.235.34/api/api',
+    // baseURL: 'http://localhost:80/api',
+    baseURL: 'http://185.228.235.34/api/api',
     params: {
       ...data
     }
@@ -38,8 +38,8 @@ export const loginConfirmationQuery = (data: IAuthConfirmation) => {
 
 export const getCountryCodesQuery = () => {
   const instWithCred = axios.create({
-    baseURL: 'http://localhost:80/api',
-    // baseURL: 'http://185.228.235.34/api/api',
+    // baseURL: 'http://localhost:80/api',
+    baseURL: 'http://185.228.235.34/api/api',
     params: {}
   })
   return instWithCred.get('/country-colling-codes')
