@@ -1,61 +1,69 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="3">
-        <v-list>
-          <h2>Чаты</h2>
-          <v-list-item
-            v-for="room in rooms"
-            :key="room.id"
-            :value="room.id"
-            @click="selectRoom(room.id)"
-            :active="room.id === roomId"
+  <div class="chat-wrapper">
+    <div class="chat-list">
+      <div class="chat-list__top">
+        <div class="chat-list__title">Чаты</div>
+      </div>
+      <div
+        class="chat-list-item"
+        :class="{ 'chat-list-item_active': roomId === room.id }"
+        v-for="room in rooms"
+        :key="room.id"
+        @click="selectRoom(room.id)"
+      >
+        <div class="chat-list-item__title">
+          {{ room.name }}
+        </div>
+      </div>
+    </div>
+    <div class="chat" :class="{ chat_mobile: isMobile }">
+      <div class="chat-box">
+        <div class="chat__title">
+          <span>Чат</span>
+        </div>
+        <div class="chat-messages" ref="chatBoxRef" v-if="messages.length">
+          <div
+            v-for="msg in messages"
+            class="chat-messages-item"
+            :class="{ 'chat-messages-item_your': msg.is_your }"
           >
-            <v-list-item-title>{{ room.name }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-col>
-
-      <v-col cols="9">
-        <div
-          class="chat-box"
-          ref="chatBoxRef"
-          style="height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 1rem"
-        >
-          <div v-for="msg in messages" :class="{ 'text-right': msg.is_your }">
-            <v-chip :color="msg.is_your ? 'blue' : 'grey'" class="ma-1" label>
-              {{ msg.content }}
-            </v-chip>
+            <div class="chat-messages-item__role">
+              {{ msg.is_your ? 'Поддержка' : 'Юзер' }}
+            </div>
+            <div class="chat-messages-item__msg">{{ msg.content }}</div>
+            <div class="chat-messages-item__time">{{ getTime(msg.created_at) }}</div>
           </div>
         </div>
-
-        <v-row class="mt-2" align="center">
-          <v-col cols="10">
-            <v-text-field
-              v-model="newMessage"
-              label="Введите сообщение"
-              @keyup.enter="sendMessage"
-            />
-          </v-col>
-          <v-col cols="2">
-            <v-btn @click="sendMessage" color="primary">Отправить</v-btn>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-  </v-container>
+        <h2 v-else>Пока нет сообщений</h2>
+      </div>
+      <div class="chat__actions">
+        <VCustomInput
+          v-model="newMessage"
+          :hideDetails="true"
+          autofocus
+          label="Введите текст"
+          class="mr-1"
+          @keyup.enter="sendMessage"
+        />
+        <SvgIcon class="chat__actions-send" @click="sendMessage" name="send" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, nextTick, onMounted } from 'vue'
 import { getChatsSupportQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
+import SvgIcon from '@/components/base/SvgIcon.vue'
+import VCustomInput from '@/components/base/VCustomInput.vue'
+import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 
 type Room = { id: number; name: string }
 const rooms = ref<Room[]>([])
+const { isMobile } = useDeviceDetection()
 const roomId = ref<null | number>(null)
 
 const chatBoxRef = ref<HTMLElement | null>(null)
-
 const newMessage = ref<string>('')
 
 const messages = ref([])
@@ -93,6 +101,15 @@ const getMessages = async () => {
   }
 }
 
+const getTime = (time: string) => {
+  const date = new Date(time)
+
+  const hours = date.getHours().toString().padStart(2, '0')
+  const minutes = date.getMinutes().toString().padStart(2, '0')
+
+  return `${hours}:${minutes}`
+}
+
 const scrollToBottom = () => {
   nextTick(() => {
     if (chatBoxRef.value) {
@@ -125,12 +142,171 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.chat-box {
-  background-color: #f9f9f9;
-  border-radius: 8px;
-}
-.text-right {
-  text-align: right;
+<style scoped lang="scss">
+.chat {
+  background: #fff;
+  box-shadow: none;
+  width: 636px;
+  border-radius: 16px;
+
+  &-list {
+    background: #fff;
+    width: 312px;
+    border-radius: 16px;
+    margin-right: 12px;
+    padding: 20px 4px;
+
+    &__title {
+      font-size: 18px;
+      font-family: 'Inter Medium', sans-serif;
+      color: rgba(17, 17, 17, 1);
+      font-weight: 400;
+      margin-bottom: 10px;
+    }
+
+    &__top {
+      padding: 0 20px;
+    }
+
+    &-item {
+      height: 72px;
+      width: 304px;
+      border-radius: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      transition: background-color 0.2s ease-in;
+      margin-bottom: 2px;
+
+      &_active {
+        background: rgba(242, 246, 254, 1);
+        pointer-events: none;
+      }
+
+      &:hover {
+        background: rgba(242, 246, 254, 1);
+      }
+    }
+  }
+
+  &-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+
+  h2 {
+    padding: 20px;
+  }
+
+  &_mobile {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 90vh;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+
+    &-send {
+      cursor: pointer;
+      transition: opacity 0.15s ease-in;
+
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+
+  &__title {
+    display: flex;
+    justify-content: space-between;
+    height: 64px;
+    border-bottom: 1px solid rgba(229, 236, 253, 1);
+    align-items: center;
+    padding: 0 20px;
+    color: rgba(17, 17, 17, 1);
+    font-family: 'Inter Medium', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+  }
+
+  &-messages {
+    max-height: 450px;
+    min-height: 450px;
+    overflow-y: scroll;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+
+    &-item {
+      max-width: 420px;
+      width: 100%;
+      background: rgba(179, 246, 255, 1);
+      padding: 16px;
+      border-radius: 16px;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 16px;
+      position: relative;
+
+      &:first-child {
+        margin-top: 10px;
+      }
+
+      &__msg {
+        color: rgba(17, 17, 17, 1);
+        font-size: 14px;
+        line-height: 140%;
+        margin-bottom: 10px;
+        font-weight: 400;
+      }
+
+      &__role {
+        color: rgba(0, 0, 0, 1);
+        font-family: 'Inter Medium', sans-serif;
+        font-size: 12px;
+        font-weight: 400;
+        position: absolute;
+        left: 0;
+        top: -22px;
+      }
+
+      &__time {
+        font-family: 'Inter Medium', sans-serif;
+        font-size: 12px;
+        color: rgba(143, 150, 165, 1);
+        text-align: right;
+      }
+
+      &_your {
+        background: rgba(34, 93, 255, 1);
+        align-self: flex-end;
+        border-top-right-radius: 4px;
+        border-top-left-radius: 16px;
+
+        .chat-messages-item__msg {
+          color: rgba(255, 255, 255, 1);
+        }
+
+        .chat-messages-item__time {
+          color: rgba(211, 219, 237, 1);
+          text-align: left;
+        }
+
+        .chat-messages-item__role {
+          left: auto;
+          right: 0;
+        }
+      }
+
+      & + .chat-messages-item {
+        margin-top: 40px;
+      }
+    }
+  }
 }
 </style>

@@ -1,10 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { INewPublication, ITableParams, IUserInfo, IUserInfoData } from '@/interfaces/AppModel'
+import type { INewPublication, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import {
   createPublicationQuery,
   getInfoQuery,
-  getPrecreatePublicationQuery,
   getPublicationListQuery,
   updateContactQuery,
   updateNameQuery,
@@ -25,24 +24,11 @@ export const useUserInfo = defineStore('userInfoStore', () => {
   })
   const errorStore = useError()
   const userInfoData = ref<IUserInfoData[]>([])
-  const preloadUserInfo = ref<IUserInfo | null>(null)
 
   const setQueryParams = (val: ITableParams) => {
     queryParams.value = {
       ...queryParams.value,
       ...val
-    }
-  }
-
-  const getPrecreatePublication = async () => {
-    try {
-      const { data } = await getPrecreatePublicationQuery()
-      if (data?.code === 200) {
-        preloadUserInfo.value = data?.data ?? {}
-      }
-    } catch (error: any) {
-      const msg = error?.response?.data?.message ?? 'Error'
-      errorStore.setErrors(msg)
     }
   }
 
@@ -150,10 +136,8 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     isLoading,
     getPublicationsList,
     userInfoData,
-    preloadUserInfo,
     queryParams,
     setQueryParams,
-    getPrecreatePublication,
     createPublication,
     updateContact,
     updateName,

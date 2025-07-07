@@ -39,7 +39,7 @@ import { onMounted, ref, nextTick, onBeforeUnmount } from 'vue'
 import { getChatQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
-import { useSocket } from '@/composables/useSocket.ts'
+// import { useSocket } from '@/composables/useSocket.ts'
 import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 
 defineProps({
@@ -49,7 +49,7 @@ defineProps({
   }
 })
 const emit = defineEmits(['update:showChat'])
-const { subscribeToChannel, unsubscribeFromChannel } = useSocket()
+// const { socket, subscribeToChannel, unsubscribeFromChannel, isConnected } = useSocket()
 
 type Message = {
   id: number
@@ -81,6 +81,36 @@ const getTime = (time: string) => {
   return `${hours}:${minutes}`
 }
 
+// const sendMessage = async () => {
+//   try {
+//     if (!isConnected.value) {
+//       throw new Error('Not connected to socket')
+//     }
+//
+//     await new Promise((resolve, reject) => {
+//       socket.emit(
+//         'send_message',
+//         {
+//           channel: `chat.${roomId.value}`,
+//           text: newMessage.value
+//         },
+//         (response) => {
+//           console.warn('response', response)
+//           if (response.success) {
+//             resolve(response)
+//           } else {
+//             reject(new Error(response.error))
+//           }
+//         }
+//       )
+//     })
+//
+//     newMessage.value = ''
+//   } catch (error) {
+//     console.error('Failed to send message:', error)
+//   }
+// }
+
 const sendMessage = async () => {
   if (!newMessage.value.trim()) return
   try {
@@ -104,7 +134,8 @@ const getChat = async () => {
       roomId.value = data.data.chat_room_id
       await getMessages()
       scrollToBottom()
-      subscribeToChannel('chat.2')
+      // console.log(`chat.${roomId.value}`)
+      // subscribeToChannel(`chat.${roomId.value}`)
     }
   } catch (error) {
     console.log(error)

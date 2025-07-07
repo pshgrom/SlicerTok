@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import ErrorAlert from '@/components/base/ErrorAlert.vue'
 import HeaderMain from '@/components/layout/HeaderMain.vue'
@@ -53,7 +53,8 @@ const showMainChat = computed(
     page.value !== 'LoginAdmin' &&
     page.value !== 'NotFound' &&
     page.value !== 'AdminMain' &&
-    page.value !== 'Support'
+    page.value !== 'Support' &&
+    page.value !== 'SupportChat'
 )
 
 const isAdmin = computed(() => authStore.role !== 'slicer')

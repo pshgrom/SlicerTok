@@ -1,8 +1,4 @@
 <template>
-  <VCusomButton @click="showChat = !showChat">Чат со всеми</VCusomButton>
-  <transition name="fade" mode="out-in">
-    <SupportChat v-show="showChat" />
-  </transition>
   <TableSupport
     class="table-settings__table"
     :headers="headers"
@@ -26,12 +22,10 @@ import TablePagination from '@/components/tables/TablePagination.vue'
 import { computed, ref, onMounted } from 'vue'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import { supportHeaders } from '@/constants/tableHeaders'
-import VCusomButton from '@/components/base/VCusomButton.vue'
 import { useRouter } from 'vue-router'
 import { useSupport } from '@/stores/Support'
 import TableSupport from '@/components/tables/TableSupport.vue'
 import type { ISupportSaveStatus } from '@/interfaces/ISupport'
-import SupportChat from '@/components/base/SupportChat.vue'
 
 const headers = ref<ITableHeaders[]>(supportHeaders)
 
@@ -39,7 +33,6 @@ const supportStore = useSupport()
 
 const isLoading = computed(() => supportStore.isLoading)
 const router = useRouter()
-const showChat = ref(false)
 
 const calcDataItems = computed<IUserInfoData[]>(() => supportStore.items)
 

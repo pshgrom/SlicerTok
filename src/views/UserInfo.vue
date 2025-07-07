@@ -46,7 +46,6 @@
       v-if="dialogVideo"
       v-model="dialogVideo"
       :wallet="currentWallet"
-      :preloadKey="preloadUserInfo?.key"
       @submit="submitVideo"
     />
   </div>
@@ -54,7 +53,7 @@
 
 <script setup lang="ts">
 import TablePagination from '@/components/tables/TablePagination.vue'
-import { computed, ref, watch, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import type { ITableHeaders, ITableParams, IUserInfo, IUserInfoData } from '@/interfaces/AppModel'
 import { userInfoHeaders } from '@/constants/tableHeaders'
 import { useUserInfo } from '@/stores/UserInfo'
@@ -218,20 +217,6 @@ const getWallets = async () => {
     wallets.value = data?.data
   }
 }
-
-const getPrecreatePublication = async () => {
-  await userInfo.getPrecreatePublication()
-}
-
-watch(
-  () => dialogVideo.value,
-  (newVal) => {
-    if (newVal) {
-      getPrecreatePublication()
-    }
-  },
-  { immediate: true }
-)
 
 onMounted(() => {
   const { page = 1, perPage = 20 } = router.currentRoute.value.query

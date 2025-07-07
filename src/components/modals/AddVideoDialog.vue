@@ -7,15 +7,6 @@
       </v-card-title>
       <v-card-text>
         <v-form ref="formRef">
-          <v-card class="pa-4 mb-4 d-flex align-center justify-space-between">
-            <div>
-              <div class="text-subtitle-1">Твой секретный ключ(добавь в описание видео):</div>
-              <v-chip color="#0070BE" dark>{{ preloadKey }}</v-chip>
-            </div>
-            <v-btn icon @click="copyToClipboard">
-              <v-icon>mdi-content-copy</v-icon>
-            </v-btn>
-          </v-card>
           <VCustomInput
             v-model="videoFields.videoLink"
             label="Ссылка на видео *"
@@ -60,10 +51,6 @@ import CurrentWallet from '@/components/wallets/CurrentWallet.vue'
 
 const props = defineProps({
   modelValue: Boolean,
-  preloadKey: {
-    type: String,
-    default: ''
-  },
   wallet: {
     type: Object as PropType<IWallet>,
     default: () => ({})
@@ -90,14 +77,6 @@ const dialogModel = computed({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val)
 })
-
-const copyToClipboard = async () => {
-  try {
-    await navigator.clipboard.writeText(props.preloadKey || '')
-  } catch (e) {
-    console.error('Ошибка при копировании', e)
-  }
-}
 
 const closeDialog = () => {
   emit('update:modelValue', false)

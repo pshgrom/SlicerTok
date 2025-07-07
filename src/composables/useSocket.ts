@@ -1,65 +1,154 @@
+// composables/useSocket.ts
 import { ref, onUnmounted } from 'vue'
-import { io } from 'socket.io-client'
+import { io, type Socket } from 'socket.io-client'
 
 export function useSocket() {
-  const socket = io(import.meta.env.VUE_APP_WS_URL, {
-    path: import.meta.env.VUE_APP_WS_PATH,
-    query: import.meta.env.VUE_APP_WS_QUERY
+  // Инициализация сокета с автоматическим подключением
+  const socket: Socket = io(import.meta.env.VITE_WS_URL, {
+    path: import.meta.env.VITE_WS_PATH,
+    autoConnect: false, // Отключаем авто-подключение
+    reconnection: true,
+    reconnectionAttempts: 3,
+    reconnectionDelay: 3000,
+    transports: ['websocket']
   })
+
+  // Состояния
   const isConnected = ref(false)
-  const message = ref(null)
-  const subscribedChannels = ref(new Set())
+  const isConnecting = ref(false)
+  const error = ref<Error | null>(null)
+  const messages = ref<Record<string, any[]>>({})
+  const activeSubscriptions = ref<Set<string>>(new Set())
 
-  socket.on('connect', () => {
-    isConnected.value = true
-    // При реконнекте подписываемся на все ранее подписанные каналы
-    subscribedChannels.value.forEach((channel) => {
-      subscribeToChannel(channel)
+  // Обработчики событий
+  const setupEventHandlers = () => {
+    socket.on('connect', () => {
+      isConnected.value = true
+      isConnecting.value = false
+      error.value = null
+      console.log('Socket connected, ID:', socket.id)
+
+      // Восстанавливаем подписки при реконнекте
+      activeSubscriptions.value.forEach((channel) => {
+        subscribeToChannel(channel)
+      })
     })
-  })
 
-  socket.on('disconnect', () => {
-    isConnected.value = false
-  })
+    socket.on('connecting', () => {
+      console.log('socker connected')
+      isConnecting.value = true
+    })
 
-  socket.on('message', (data) => {
-    message.value = data
-  })
+    socket.on('connect_error', (err) => {
+      isConnected.value = false
+      isConnecting.value = false
+      error.value = err
+      console.error('Connection error:', err)
+    })
 
-  const subscribeToChannel = (channel) => {
-    console.log('channel', channel)
-    if (!subscribedChannels.value.has(channel)) {
-      socket.emit('pusher:subscribe', {
-        channel: channel
-      })
-      console.warn('subscribedChannels.value', subscribedChannels.value)
-      subscribedChannels.value.add(channel)
+    socket.on('disconnect', () => {
+      isConnected.value = false
+      console.log('Socket disconnected')
+    })
+
+    // Глобальный обработчик сообщений
+    socket.on('channel_message', (data: { channel: string; message: any }) => {
+      if (!messages.value[data.channel]) {
+        messages.value[data.channel] = []
+      }
+      messages.value[data.channel].push(data.message)
+    })
+  }
+
+  // Подключение к серверу
+  const connect = () => {
+    if (!isConnected.value && !isConnecting.value) {
+      console.log('Initializing socket connection...')
+      setupEventHandlers()
+      socket.connect()
     }
   }
 
-  const unsubscribeFromChannel = (channel) => {
-    if (subscribedChannels.value.has(channel)) {
-      socket.emit('pusher:unsubscribe', {
-        channel: channel
-      })
-      subscribedChannels.value.delete(channel)
+  // Отключение от сервера
+  const disconnect = () => {
+    if (isConnected.value || isConnecting.value) {
+      socket.disconnect()
     }
   }
 
+  // Подписка на канал
+  const subscribeToChannel = (channel: string) => {
+    if (!activeSubscriptions.value.has(channel)) {
+      socket.emit('pusher:subscribe', { channel }, (response: any) => {
+        if (response?.success) {
+          activeSubscriptions.value.add(channel)
+          console.log(`Successfully subscribed to ${channel}`)
+
+          // Добавляем обработчик для конкретного канала
+          socket.on(`channel:${channel}`, (message: any) => {
+            if (!messages.value[channel]) {
+              messages.value[channel] = []
+            }
+            messages.value[channel].push(message)
+          })
+        }
+      })
+    }
+  }
+
+  // Отписка от канала
+  const unsubscribeFromChannel = (channel: string) => {
+    if (activeSubscriptions.value.has(channel)) {
+      socket.emit('pusher:unsubscribe', { channel }, (response: any) => {
+        if (response?.success) {
+          activeSubscriptions.value.delete(channel)
+          socket.off(`channel:${channel}`)
+          console.log(`Successfully unsubscribed from ${channel}`)
+        }
+      })
+    }
+  }
+
+  // Отправка сообщения
+  const sendMessage = (channel: string, message: any) => {
+    return new Promise((resolve, reject) => {
+      if (!isConnected.value) {
+        reject(new Error('Not connected to socket'))
+        return
+      }
+
+      socket.emit('send_message', { channel, message }, (response: any) => {
+        if (response?.error) {
+          reject(new Error(response.error))
+        } else {
+          resolve(response)
+        }
+      })
+    })
+  }
+
+  // Автоматическое подключение при первом использовании
+  connect()
+
+  // Очистка при демонтировании
   onUnmounted(() => {
-    if (socket) socket.disconnect()
+    disconnect()
+    socket.off('connect')
+    socket.off('connect_error')
+    socket.off('disconnect')
+    socket.off('channel_message')
   })
-
-  const emit = (event, data) => {
-    socket.emit(event, data)
-  }
 
   return {
     socket,
     isConnected,
-    message,
-    emit,
+    isConnecting,
+    error,
+    messages,
+    connect,
+    disconnect,
     subscribeToChannel,
-    unsubscribeFromChannel
+    unsubscribeFromChannel,
+    sendMessage
   }
 }
