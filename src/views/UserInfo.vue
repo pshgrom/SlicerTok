@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import TablePagination from '@/components/tables/TablePagination.vue'
 import { computed, ref, onMounted } from 'vue'
-import type { ITableHeaders, ITableParams, IUserInfo, IUserInfoData } from '@/interfaces/AppModel'
+import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import { userInfoHeaders } from '@/constants/tableHeaders'
 import { useUserInfo } from '@/stores/UserInfo'
 import TableUserInfo from '@/components/tables/TableUserInfo.vue'
@@ -90,7 +90,6 @@ const editDialog = ref(false)
 const imageFile = ref<File | null>(null)
 
 const isLoading = computed(() => userInfo.isLoading)
-const preloadUserInfo = computed<IUserInfo | null>(() => userInfo.preloadUserInfo)
 const router = useRouter()
 const dialogVideo = ref(false)
 
@@ -112,24 +111,41 @@ const openModalWallet = () => {
   isModalOpen.value = true
 }
 
+const cleanNumber = (str: string) => {
+  return str.replace(/\D/g, '')
+}
+
 const submitVideo = async ({ videoFile, videoLink, number_views }: IUploadVideo) => {
-  // const { id, key } = preloadUserInfo.value
   const formData = new FormData()
-  // formData.append('id', id)
-  // formData.append('key', key)
   formData.append('link', videoLink)
   formData.append('video_stat', videoFile)
-  formData.append('number_views', +number_views)
+  formData.append('number_views', cleanNumber(number_views))
   try {
+    resetPage()
     await userInfo.createPublication(formData)
-    closeDialog()
   } catch (e: any) {
     if (e.length) {
       e.forEach((msg: any) => {
         errorStore.setErrors(msg.link)
       })
     }
+  } finally {
+    closeDialog()
   }
+}
+
+const resetPage = () => {
+  queryParams.value = {
+    ...queryParams.value,
+    page: 1
+  }
+  const { page, perPage } = queryParams.value
+  router.push({
+    query: {
+      page,
+      perPage
+    }
+  })
 }
 
 const setAsMain = async (id: number) => {

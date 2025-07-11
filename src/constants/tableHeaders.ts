@@ -126,6 +126,7 @@ export const adminMain = [
     value: 'id'
   },
   { title: 'Ключ', value: 'key' },
+  { title: 'Дата загрузки', value: 'created_at' },
   { title: 'Количество просмотров', value: 'number_views' },
   { title: 'Статус', value: 'status' },
   { title: 'Статус модераторов', value: 'status_moderation' },

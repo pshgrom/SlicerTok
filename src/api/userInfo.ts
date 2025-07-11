@@ -4,8 +4,8 @@ import type { INewPublication, ITableParams } from '@/interfaces/AppModel'
 export const createPublicationQuery = (data: INewPublication) => {
   const token = localStorage.getItem('authToken')
   const instWithCred = axios.create({
+    baseURL: 'http://localhost:80/api',
     // baseURL: 'http://localhost:80/api',
-    baseURL: 'http://185.228.235.34/api/api',
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
@@ -17,8 +17,8 @@ export const createPublicationQuery = (data: INewPublication) => {
 export const updateContactQuery = (data: any) => {
   const token = localStorage.getItem('authToken')
   const instWithCred = axios.create({
+    baseURL: 'http://localhost:80/api',
     // baseURL: 'http://localhost:80/api',
-    baseURL: 'http://185.228.235.34/api/api',
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -29,8 +29,8 @@ export const updateContactQuery = (data: any) => {
 export const addWalletQuery = (data: any) => {
   const token = localStorage.getItem('authToken')
   const instWithCred = axios.create({
+    baseURL: 'http://localhost:80/api',
     // baseURL: 'http://localhost:80/api',
-    baseURL: 'http://185.228.235.34/api/api',
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -41,8 +41,8 @@ export const addWalletQuery = (data: any) => {
 export const getWalletsQuery = () => {
   const token = localStorage.getItem('authToken')
   const instWithCred = axios.create({
+    baseURL: 'http://localhost:80/api',
     // baseURL: 'http://localhost:80/api',
-    baseURL: 'http://185.228.235.34/api/api',
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -54,8 +54,8 @@ export const updateNameQuery = (name: string) => {
   console.error('name', name)
   const token = localStorage.getItem('authToken')
   const instWithCred = axios.create({
+    baseURL: 'http://localhost:80/api',
     // baseURL: 'http://localhost:80/api',
-    baseURL: 'http://185.228.235.34/api/api',
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -66,8 +66,8 @@ export const updateNameQuery = (name: string) => {
 export const setWalletMainQuery = (id: number) => {
   const token = localStorage.getItem('authToken')
   const instWithCred = axios.create({
+    baseURL: 'http://localhost:80/api',
     // baseURL: 'http://localhost:80/api',
-    baseURL: 'http://185.228.235.34/api/api',
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -78,8 +78,8 @@ export const setWalletMainQuery = (id: number) => {
 export const removeWalletQuery = (id: number) => {
   const token = localStorage.getItem('authToken')
   const instWithCred = axios.create({
+    baseURL: 'http://localhost:80/api',
     // baseURL: 'http://localhost:80/api',
-    baseURL: 'http://185.228.235.34/api/api',
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -90,8 +90,8 @@ export const removeWalletQuery = (id: number) => {
 export const getInfoQuery = () => {
   const token = localStorage.getItem('authToken')
   const instWithCred = axios.create({
+    baseURL: 'http://localhost:80/api',
     // baseURL: 'http://localhost:80/api',
-    baseURL: 'http://185.228.235.34/api/api',
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -102,8 +102,8 @@ export const getInfoQuery = () => {
 export const getPublicationListQuery = (data: ITableParams) => {
   const token = localStorage.getItem('authToken')
   const instWithCred = axios.create({
+    baseURL: 'http://localhost:80/api',
     // baseURL: 'http://localhost:80/api',
-    baseURL: 'http://185.228.235.34/api/api',
     params: data,
     headers: {
       Authorization: `Bearer ${token}`

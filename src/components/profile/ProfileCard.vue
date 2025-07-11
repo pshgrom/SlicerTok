@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="profile-info">
-        <div>
+        <div class="profile-info__wrap">
           <div class="profile-info-item">
             <div class="profile-info-item__icon">
               <SvgIcon name="phone" />
@@ -41,7 +41,7 @@
             </div>
           </div>
         </div>
-        <div>
+        <div class="profile-info__wrap">
           <div class="profile-info-item">
             <div class="profile-info-item__icon">
               <SvgIcon name="telegram" />
@@ -55,7 +55,7 @@
           </div>
           <div class="profile-info-item">
             <div class="profile-info-item__icon">
-              <SvgIcon name="telegram" />
+              <!--              <SvgIcon name="telegram" />-->
             </div>
             <div class="profile-info-item__value">
               <template v-if="user.key">
@@ -99,10 +99,21 @@ const showDialog = (val: boolean) => {
   min-width: 474px;
   height: 259px;
   border-radius: 16px;
-  background: rgba(0, 212, 254, 1);
-  background-image: url('@/static/img/profile-bg.png');
   margin-right: 12px;
   width: 100%;
+  position: relative;
+
+  &:after {
+    content: '';
+    width: 100%;
+    height: 100px;
+    position: absolute;
+    background: rgba(0, 212, 254, 1);
+    background-image: url('@/static/img/profile-bg.png');
+    left: 0;
+    top: 0;
+    border-radius: 16px;
+  }
 
   @media (max-width: 1024px) {
     min-width: 358px;
@@ -120,6 +131,8 @@ const showDialog = (val: boolean) => {
     margin-top: 60px;
     border-radius: 16px;
     padding-bottom: 12px;
+    position: relative;
+    z-index: 50;
 
     @media (max-width: 1024px) {
       border-radius: 0;
@@ -159,6 +172,12 @@ const showDialog = (val: boolean) => {
 
   &-info {
     margin: 0 -4px;
+
+    &__wrap {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
 
     &-item {
       background: rgba(229, 236, 253, 1);

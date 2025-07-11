@@ -37,7 +37,7 @@
       </v-row>
     </template>
     <template v-slot:[`item.url`]="{ item }">
-      <a :href="item.url" target="_blank" class="custom-table-ref">
+      <a v-if="item.url" :href="item.url" target="_blank" class="custom-table-ref">
         <SvgIcon v-if="item.url" class="custom-table-ref__social" :name="getIconSocial(item.url)" />
         <span v-if="item.url">
           {{ getNameSocialMedia(item.url) }}
@@ -49,6 +49,9 @@
       <v-chip :color="getStatusColor(item.status)">
         <div>{{ getTextStatus(item.status) }}</div>
       </v-chip>
+    </template>
+    <template v-slot:[`item.created_at`]="{ item }">
+      {{ formatData(item.created_at) }}
     </template>
     <template v-slot:[`item.video_stat_link`]="{ item }">
       <a :href="item.video_stat_link" target="_blank" class="custom-table-ref">
@@ -97,6 +100,17 @@ const computedHeaders = computed<ITableHeaders[]>({
   }
 })
 
+const formatData = (str: string) => {
+  if (!str) return ''
+  const date = new Date(str)
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const year = date.getFullYear()
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  return `${day}.${month}.${year} ${hours}:${minutes}`
+}
+
 const getNameSocialMedia = (url: string) => {
   if (url.includes('inst')) {
     return 'Instagram'
@@ -141,7 +155,7 @@ const getTextStatus = (status: string) => {
     case 'rejected':
       return 'Отклонено'
     default:
-      return ''
+      return 'Неизвестно'
   }
 }
 

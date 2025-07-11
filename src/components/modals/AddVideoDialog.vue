@@ -19,8 +19,8 @@
             :rules="[videoRules.required]"
             class="mb-4"
             required
+            @input="onInput"
           />
-          <!--          @input="onInput"-->
           <div class="mb-4"></div>
           <VideoUploader v-model="videoFields.videoFile" />
         </v-form>
@@ -68,10 +68,10 @@ const errorStore = useError()
 
 const formRef = ref(null)
 
-// function onInput(val) {
-//   const digitsOnly = val.target.value.replace(/\D/g, '')
-//   videoFields.value.number_views = digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-// }
+const onInput = (val) => {
+  const digitsOnly = val.target.value.replace(/\D/g, '')
+  videoFields.value.number_views = digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+}
 
 const dialogModel = computed({
   get: () => props.modelValue,

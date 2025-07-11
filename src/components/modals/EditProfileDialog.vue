@@ -12,13 +12,13 @@
             label="Ваше имя"
             class="mb-5"
             autofocus
-            :rules="[infoRules.required]"
+            :rules="[infoRules.required, infoRules.name]"
           />
           <VCustomInput
             v-model.trim="form.phone"
             label="Номер телефона"
             class="mb-5"
-            :rules="[infoRules.required]"
+            :rules="[infoRules.required, infoRules.phone]"
           />
           <VCustomInput
             v-model.trim="form.email"
