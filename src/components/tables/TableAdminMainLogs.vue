@@ -8,10 +8,10 @@
     hover
     hide-default-footer
   >
-    <template v-slot:loading>
+    <template #loading>
       <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
     </template>
-    <template v-slot:[`item.datetime`]="{ item }">
+    <template #[`item.datetime`]="{ item }">
       <div>{{ formatDate(item.datetime) }}</div>
     </template>
   </v-data-table>
