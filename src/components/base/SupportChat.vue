@@ -5,10 +5,10 @@
         <div class="chat-list__title">Чаты</div>
       </div>
       <div
-        class="chat-list-item"
-        :class="{ 'chat-list-item_active': roomId === room.id }"
         v-for="room in rooms"
         :key="room.id"
+        class="chat-list-item"
+        :class="{ 'chat-list-item_active': roomId === room.id }"
         @click="selectRoom(room.id)"
       >
         <div class="chat-list-item__title">
@@ -16,12 +16,12 @@
         </div>
       </div>
     </div>
-    <div class="chat" :class="{ chat_mobile: isMobile }">
+    <div class="chat">
       <div class="chat-box">
         <div class="chat__title">
           <span>Чат</span>
         </div>
-        <div class="chat-messages" ref="chatBoxRef" v-if="messages.length">
+        <div v-if="messages.length" ref="chatBoxRef" class="chat-messages">
           <div
             v-for="msg in messages"
             class="chat-messages-item"
@@ -39,13 +39,13 @@
       <div class="chat__actions">
         <VCustomInput
           v-model="newMessage"
-          :hideDetails="true"
+          :hide-details="true"
           autofocus
           label="Введите текст"
           class="mr-1"
           @keyup.enter="sendMessage"
         />
-        <SvgIcon class="chat__actions-send" @click="sendMessage" name="send" />
+        <SvgIcon class="chat__actions-send" name="send" @click="sendMessage" />
       </div>
     </div>
   </div>
@@ -56,9 +56,13 @@ import { ref, nextTick, onMounted } from 'vue'
 import { getChatsSupportQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
+import { useChat } from '@/composables/useChat.ts'
 import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 
 type Room = { id: number; name: string }
+
+// const { connectSocket, joinRoom, sendMessage, messages } = useChat()
+const { connectSocket } = useChat()
 const rooms = ref<Room[]>([])
 const { isMobile } = useDeviceDetection()
 const roomId = ref<null | number>(null)
@@ -138,6 +142,7 @@ const getChatsSupport = async () => {
 }
 
 onMounted(() => {
+  connectSocket()
   getChatsSupport()
 })
 </script>
@@ -149,12 +154,24 @@ onMounted(() => {
   width: 636px;
   border-radius: 16px;
 
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+
   &-list {
     background: #fff;
     width: 312px;
     border-radius: 16px;
     margin-right: 12px;
     padding: 20px 4px;
+
+    @media (max-width: 767px) {
+      width: 100%;
+      margin: 0;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
 
     &__title {
       font-size: 18px;
@@ -166,6 +183,10 @@ onMounted(() => {
 
     &__top {
       padding: 0 20px;
+
+      @media (max-width: 767px) {
+        display: none;
+      }
     }
 
     &-item {
@@ -193,6 +214,10 @@ onMounted(() => {
   &-wrapper {
     display: flex;
     justify-content: center;
+
+    @media (max-width: 767px) {
+      flex-direction: column;
+    }
   }
 
   h2 {

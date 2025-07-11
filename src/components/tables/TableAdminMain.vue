@@ -51,7 +51,7 @@
       </v-chip>
     </template>
     <template v-slot:[`item.created_at`]="{ item }">
-      {{ formatData(item.created_at) }}
+      {{ formatDate(item.created_at) }}
     </template>
     <template v-slot:[`item.video_stat_link`]="{ item }">
       <a :href="item.video_stat_link" target="_blank" class="custom-table-ref">
@@ -67,6 +67,13 @@ import { computed, type PropType, ref } from 'vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 // import VCustomSelect from '@/components/base/VCustomSelect.vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
+import {
+  getTextStatus,
+  getStatusColor,
+  getIconSocial,
+  getNameSocialMedia
+} from '@/utils/socials.ts'
+import { formatDate } from '@/utils/formatDate.ts'
 
 const emit = defineEmits(['changeStatus', 'saveComment', 'finishCheck'])
 
@@ -100,43 +107,6 @@ const computedHeaders = computed<ITableHeaders[]>({
   }
 })
 
-const formatData = (str: string) => {
-  if (!str) return ''
-  const date = new Date(str)
-  const day = String(date.getDate()).padStart(2, '0')
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const year = date.getFullYear()
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
-  return `${day}.${month}.${year} ${hours}:${minutes}`
-}
-
-const getNameSocialMedia = (url: string) => {
-  if (url.includes('inst')) {
-    return 'Instagram'
-  } else if (url.includes('tik')) {
-    return 'TikTok'
-  } else if (url.includes('shorts')) {
-    return 'Shorts'
-  } else if (url.includes('vk')) {
-    return 'VK Video'
-  }
-}
-
-const getIconSocial = (url: string) => {
-  let icon = ''
-  if (url.includes('inst')) {
-    icon = 'instagram'
-  } else if (url.includes('tik')) {
-    icon = 'tiktok'
-  } else if (url.includes('shorts')) {
-    icon = 'shorts'
-  } else if (url.includes('vk')) {
-    icon = 'vk'
-  }
-  return icon
-}
-
 const formatLabel = (label: string) => {
   switch (label) {
     case 'group_a':
@@ -145,53 +115,4 @@ const formatLabel = (label: string) => {
       return 'Админ группы B'
   }
 }
-
-const getTextStatus = (status: string) => {
-  switch (status) {
-    case 'create':
-      return 'Новая'
-    case 'approved':
-      return 'Одобрено'
-    case 'rejected':
-      return 'Отклонено'
-    default:
-      return 'Неизвестно'
-  }
-}
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'create':
-      return 'primary'
-    case 'approved':
-      return 'green'
-    case 'rejected':
-      return 'red'
-    default:
-      return ''
-  }
-}
 </script>
-
-<style lang="scss">
-.cell-link {
-  text-decoration: underline;
-  transition: opacity 0.15s ease-in;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.7;
-  }
-}
-
-.custom-table__link {
-  cursor: pointer;
-  transition: opacity 0.15s ease-in;
-  border-bottom: 1px solid transparent;
-
-  &:hover {
-    opacity: 0.7;
-    border-color: #000;
-  }
-}
-</style>

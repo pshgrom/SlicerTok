@@ -2,16 +2,16 @@
   <TableAdminMain
     class="table-settings__table"
     :headers="headers"
-    :isLoading="isLoading"
+    :is-loading="isLoading"
     :items="calcDataItems"
-    :itemsPerPage="queryParams.perPage"
+    :items-per-page="queryParams.perPage"
   ></TableAdminMain>
   <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
     <TablePagination
-      v-model:queryParams="queryParams"
+      v-model:query-params="queryParams"
       :loading="isLoading"
-      :totalPages="totalPages"
-      @changePage="changePage"
+      :total-pages="totalPages"
+      @change-page="changePage"
     />
   </div>
 </template>
@@ -19,7 +19,7 @@
 <script setup lang="ts">
 import TablePagination from '@/components/tables/TablePagination.vue'
 import { computed, ref, onMounted } from 'vue'
-import { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
+import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import { adminMain } from '@/constants/tableHeaders'
 import { useRouter } from 'vue-router'
 import { useAdminMain } from '@/stores/AdminMain'
@@ -77,5 +77,3 @@ onMounted(() => {
   getRequest()
 })
 </script>
-
-<style scoped lang="scss"></style>

@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import type { ITableParams } from '@/interfaces/AppModel'
-import { computed, PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 
 const props = defineProps({
   queryParams: {
@@ -32,7 +32,7 @@ const emit = defineEmits(['changePage'])
 
 const page = computed<number>({
   get() {
-    return +props.queryParams.page
+    return +props.queryParams.page!
   },
   set(val) {
     emit('changePage', val)

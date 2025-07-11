@@ -12,7 +12,7 @@
       <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
     </template>
     <template v-slot:[`item.url`]="{ item }">
-      <a :href="item.url" target="_blank" class="custom-table-ref">
+      <a v-if="item.url" :href="item.url" target="_blank" class="custom-table-ref">
         <SvgIcon class="custom-table-ref__social" :name="getIconSocial(item.url)" />
         <span>
           {{ getNameSocialMedia(item.url) }}
@@ -58,10 +58,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, PropType, ref } from 'vue'
-import { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
+import { computed, type PropType, ref } from 'vue'
+import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import { formatNumber } from '@/utils/formatNumbers'
 import SvgIcon from '@/components/base/SvgIcon.vue'
+import {
+  getNameSocialMedia,
+  getTextStatus,
+  getStatusColor,
+  getIconSocial
+} from '@/utils/socials.ts'
 
 const props = defineProps({
   headers: {
@@ -83,32 +89,6 @@ const props = defineProps({
 })
 
 const headersData = ref(props.headers)
-
-const getTextStatus = (status: string) => {
-  switch (status) {
-    case 'create':
-      return 'Новая'
-    case 'approved':
-      return 'Одобрено'
-    case 'rejected':
-      return 'Отклонено'
-    default:
-      return ''
-  }
-}
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'create':
-      return 'rgba(229, 236, 253, 1)'
-    case 'approved':
-      return 'rgba(187, 251, 228, 1)'
-    case 'rejected':
-      return 'rgba(255, 224, 224, 1)'
-    default:
-      return ''
-  }
-}
 
 const getColor = (status: string) => {
   switch (status) {
@@ -139,39 +119,6 @@ const getIcon = (status: string) => {
   return icon
 }
 
-const formatUrl = (url: string) => {
-  if (!url) return ''
-  const firstPart = url.slice(0, 30)
-  const lastPart = url.slice(url.length - 3)
-  return `${firstPart}...${lastPart}`
-}
-
-const getNameSocialMedia = (url: string) => {
-  if (url.includes('inst')) {
-    return 'Instagram'
-  } else if (url.includes('tik')) {
-    return 'TikTok'
-  } else if (url.includes('shorts')) {
-    return 'Shorts'
-  } else if (url.includes('vk')) {
-    return 'VK Video'
-  }
-}
-
-const getIconSocial = (url: string) => {
-  let icon = ''
-  if (url.includes('inst')) {
-    icon = 'instagram'
-  } else if (url.includes('tik')) {
-    icon = 'tiktok'
-  } else if (url.includes('shorts')) {
-    icon = 'shorts'
-  } else if (url.includes('vk')) {
-    icon = 'vk'
-  }
-  return icon
-}
-
 const computedHeaders = computed<ITableHeaders[]>({
   get() {
     return headersData.value
@@ -181,15 +128,3 @@ const computedHeaders = computed<ITableHeaders[]>({
   }
 })
 </script>
-
-<style lang="scss">
-.cell-link {
-  text-decoration: underline;
-  transition: opacity 0.15s ease-in;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.7;
-  }
-}
-</style>

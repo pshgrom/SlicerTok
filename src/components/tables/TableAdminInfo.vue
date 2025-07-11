@@ -12,7 +12,7 @@
       <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
     </template>
     <template v-slot:[`item.url`]="{ item }">
-      <a :href="item.url" target="_blank" class="custom-table-ref">
+      <a v-if="item.url" :href="item.url" target="_blank" class="custom-table-ref">
         <SvgIcon class="custom-table-ref__social" :name="getIconSocial(item.url)" />
         <span>
           {{ getNameSocialMedia(item.url) }}
@@ -25,6 +25,12 @@
         <span> Смотреть </span>
         <SvgIcon name="arrow-up-right" />
       </a>
+    </template>
+    <template v-slot:[`item.number_views`]="{ item }">
+      <div v-if="item.number_views" class="custom-table-views">
+        <SvgIcon name="show" />
+        <div>{{ formatNumber(item.number_views) }}</div>
+      </div>
     </template>
     <template v-slot:[`item.status`]="{ item }">
       <VCustomSelect
@@ -59,10 +65,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, PropType, ref } from 'vue'
-import { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
+import { computed, type PropType, ref } from 'vue'
+import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import VCustomSelect from '@/components/base/VCustomSelect.vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
+import { formatNumber } from '@/utils/formatNumbers.ts'
+import { getNameSocialMedia, getIconSocial } from '@/utils/socials.ts'
 
 const emit = defineEmits(['changeStatus', 'saveComment', 'finishCheck'])
 
@@ -112,32 +120,6 @@ const computedHeaders = computed<ITableHeaders[]>({
   }
 })
 
-const getNameSocialMedia = (url: string) => {
-  if (url.includes('inst')) {
-    return 'Instagram'
-  } else if (url.includes('tik')) {
-    return 'TikTok'
-  } else if (url.includes('shorts')) {
-    return 'Shorts'
-  } else if (url.includes('vk')) {
-    return 'VK Video'
-  }
-}
-
-const getIconSocial = (url: string) => {
-  let icon = ''
-  if (url.includes('inst')) {
-    icon = 'instagram'
-  } else if (url.includes('tik')) {
-    icon = 'tiktok'
-  } else if (url.includes('shorts')) {
-    icon = 'shorts'
-  } else if (url.includes('vk')) {
-    icon = 'vk'
-  }
-  return icon
-}
-
 const finishCheck = (id: number) => {
   emit('finishCheck', id)
 }
@@ -151,26 +133,3 @@ const changeStatus = (id: number | string, status: string, status_comment: strin
   emit('changeStatus', id, status, status_comment)
 }
 </script>
-
-<style lang="scss">
-.cell-link {
-  text-decoration: underline;
-  transition: opacity 0.15s ease-in;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.7;
-  }
-}
-
-.custom-table__link {
-  cursor: pointer;
-  transition: opacity 0.15s ease-in;
-  border-bottom: 1px solid transparent;
-
-  &:hover {
-    opacity: 0.7;
-    border-color: #000;
-  }
-}
-</style>

@@ -12,7 +12,7 @@
       <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
     </template>
     <template v-slot:[`item.url`]="{ item }">
-      <a :href="item.url" target="_blank" class="custom-table-ref">
+      <a v-if="item.url" :href="item.url" target="_blank" class="custom-table-ref">
         <SvgIcon class="custom-table-ref__social" :name="getIconSocial(item.url)" />
         <span>
           {{ getNameSocialMedia(item.url) }}
@@ -20,13 +20,24 @@
         <SvgIcon name="arrow-up-right" />
       </a>
     </template>
+    <template v-slot:[`item.number_views`]="{ item }">
+      <div v-if="item.number_views" class="custom-table-views">
+        <SvgIcon name="show" />
+        <div>{{ formatNumber(item.number_views) }}</div>
+      </div>
+    </template>
     <template v-slot:[`item.status`]="{ item }">
       <v-chip :color="getStatusColor(item.status)">
         <div>{{ getTextStatus(item.status) }}</div>
       </v-chip>
     </template>
     <template v-slot:[`item.video_stat_link`]="{ item }">
-      <a :href="item.video_stat_link" target="_blank" class="custom-table-ref">
+      <a
+        v-if="item.video_stat_link"
+        :href="item.video_stat_link"
+        target="_blank"
+        class="custom-table-ref"
+      >
         <span> Смотреть </span>
         <SvgIcon name="arrow-up-right" />
       </a>
@@ -38,6 +49,13 @@
 import { computed, type PropType, ref } from 'vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import SvgIcon from '@/components/base/SvgIcon.vue'
+import {
+  getNameSocialMedia,
+  getTextStatus,
+  getStatusColor,
+  getIconSocial
+} from '@/utils/socials.ts'
+import { formatNumber } from '@/utils/formatNumbers.ts'
 
 const props = defineProps({
   headers: {
@@ -68,58 +86,4 @@ const computedHeaders = computed<ITableHeaders[]>({
     headersData.value = val
   }
 })
-
-const getTextStatus = (status: string) => {
-  switch (status) {
-    case 'create':
-      return 'Новая'
-    case 'approved':
-      return 'Одобрено'
-    case 'rejected':
-      return 'Отклонено'
-    default:
-      return ''
-  }
-}
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'create':
-      return 'primary'
-    case 'approved':
-      return 'green'
-    case 'rejected':
-      return 'red'
-    default:
-      return ''
-  }
-}
-
-const getNameSocialMedia = (url: string) => {
-  if (url.includes('inst')) {
-    return 'Instagram'
-  } else if (url.includes('tik')) {
-    return 'TikTok'
-  } else if (url.includes('shorts')) {
-    return 'Shorts'
-  } else if (url.includes('vk')) {
-    return 'VK Video'
-  }
-}
-
-const getIconSocial = (url: string) => {
-  let icon = ''
-  if (url.includes('inst')) {
-    icon = 'instagram'
-  } else if (url.includes('tik')) {
-    icon = 'tiktok'
-  } else if (url.includes('shorts')) {
-    icon = 'shorts'
-  } else if (url.includes('vk')) {
-    icon = 'vk'
-  }
-  return icon
-}
 </script>
-
-<style lang="scss"></style>

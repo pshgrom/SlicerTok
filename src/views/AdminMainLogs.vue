@@ -1,6 +1,6 @@
 <template>
   <TableAdminMainLogs
-    class="table-settings__table"
+    class="custom-table"
     :headers="headers"
     :isLoading="isLoading"
     :items="calcDataItems"
@@ -77,5 +77,3 @@ onMounted(() => {
   getRequest()
 })
 </script>
-
-<style scoped lang="scss"></style>

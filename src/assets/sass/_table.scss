@@ -1,4 +1,24 @@
 .custom-table {
+  .cell-link {
+    text-decoration: underline;
+    transition: opacity 0.15s ease-in;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+
+  .custom-table__link {
+    cursor: pointer;
+    transition: opacity 0.15s ease-in;
+    border-bottom: 1px solid transparent;
+
+    &:hover {
+      opacity: 0.7;
+      border-color: #000;
+    }
+  }
 
   &-chip {
     height: 32px;

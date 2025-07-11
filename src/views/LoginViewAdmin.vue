@@ -35,7 +35,7 @@
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/stores/Auth'
-import { IAuth } from '@/interfaces/Auth'
+import { type IAuth } from '@/interfaces/Auth'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import { useError } from '@/stores/Errors'
 import { ROLES } from '@/constants/roles'

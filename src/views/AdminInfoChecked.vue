@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import TablePagination from '@/components/tables/TablePagination.vue'
 import { computed, ref, onMounted } from 'vue'
-import { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
+import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import { adminInfoCheckedHeaders } from '@/constants/tableHeaders'
 import { useRouter } from 'vue-router'
 import { useAdminInfo } from '@/stores/AdminInfo'
@@ -76,9 +76,3 @@ onMounted(() => {
   getRequest()
 })
 </script>
-
-<style scoped lang="scss">
-.table-settings-filter {
-  margin: 0;
-}
-</style>

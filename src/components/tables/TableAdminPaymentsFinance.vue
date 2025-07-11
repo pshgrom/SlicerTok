@@ -25,9 +25,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, PropType, ref } from 'vue'
-import { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
-import VCustomSelect from '@/components/base/VCustomSelect.vue'
+import { computed, type PropType, ref } from 'vue'
+import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
+// import VCustomSelect from '@/components/base/VCustomSelect.vue'
 
 const emit = defineEmits(['changeStatus', 'saveComment', 'finishCheck'])
 

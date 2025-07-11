@@ -39,7 +39,7 @@ import { onMounted, ref, nextTick, onBeforeUnmount } from 'vue'
 import { getChatQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
-// import { useSocket } from '@/composables/useSocket.ts'
+// import { useSocket } from '@/composables/useuseChat.ts'
 import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 
 defineProps({

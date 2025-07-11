@@ -248,10 +248,6 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.table-settings-filter {
-  margin: 0;
-}
-
 .user-info {
   &__wrapper {
     display: flex;

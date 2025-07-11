@@ -1,12 +1,17 @@
 {
-  "name": "tiktok",
-  "version": "0.1.0",
+  "name": "slicertok",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "lint": "eslint . --ext .ts,.vue",
+    "type-check": "vue-tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
@@ -16,7 +21,6 @@
     "lodash": "^4.17.21",
     "pinia": "^2.3.0",
     "socket.io-client": "^4.8.1",
-    "typescript": "~5.8.3",
     "v-click-outside": "^3.2.0",
     "vite-plugin-dynamic-import": "^1.6.0",
     "vite-svg-loader": "^5.1.0",
@@ -28,18 +32,19 @@
   },
   "devDependencies": {
     "@types/node": "^24.0.7",
-    "@typescript-eslint/eslint-plugin": "^5.4.0",
-    "@typescript-eslint/parser": "^5.4.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "@vitejs/plugin-vue": "^6.0.0",
-    "@vue/eslint-config-typescript": "^9.1.0",
+    "@vue/eslint-config-typescript": "^13.0.0",
     "@vue/tsconfig": "^0.7.0",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-vue": "^8.0.3",
-    "prettier": "^2.4.1",
-    "sass": "^1.32.7",
-    "sass-loader": "^12.0.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-vue": "^9.23.0",
+    "prettier": "^3.3.2",
+    "sass": "^1.70.0",
+    "sass-loader": "^13.3.2",
+    "typescript": "~5.8.3",
     "vite": "^7.0.0",
     "vue-tsc": "^2.2.10"
   },

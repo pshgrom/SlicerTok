@@ -50,8 +50,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, PropType, ref } from 'vue'
-import { IPayoutListItems, ITableHeaders } from '@/interfaces/AppModel'
+import { computed, type PropType, ref } from 'vue'
+import type { IPayoutListItems, ITableHeaders } from '@/interfaces/AppModel'
 
 const props = defineProps({
   headers: {
@@ -88,26 +88,3 @@ const goToTelegram = (user: string) => {
   window.open(url, '_blank')
 }
 </script>
-
-<style lang="scss">
-.cell-link {
-  text-decoration: underline;
-  transition: opacity 0.15s ease-in;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.7;
-  }
-}
-
-.custom-table__link {
-  cursor: pointer;
-  transition: opacity 0.15s ease-in;
-  border-bottom: 1px solid transparent;
-
-  &:hover {
-    opacity: 0.7;
-    border-color: #000;
-  }
-}
-</style>

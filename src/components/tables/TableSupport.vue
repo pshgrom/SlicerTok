@@ -20,6 +20,12 @@
         <SvgIcon name="arrow-up-right" />
       </a>
     </template>
+    <template v-slot:[`item.number_views`]="{ item }">
+      <div v-if="item.number_views" class="custom-table-views">
+        <SvgIcon name="show" />
+        <div>{{ formatNumber(item.number_views) }}</div>
+      </div>
+    </template>
     <template v-slot:[`item.video_stat_link`]="{ item }">
       <a :href="item.video_stat_link" target="_blank" class="custom-table-ref">
         <span> Смотреть </span>
@@ -64,11 +70,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, PropType, ref } from 'vue'
-import { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
+import { computed, type PropType, ref } from 'vue'
+import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import CheckDialog from '@/components/modals/CheckDialog.vue'
-import { ISupportSaveStatus } from '@/interfaces/ISupport'
+import type { ISupportSaveStatus } from '@/interfaces/ISupport'
 import SvgIcon from '@/components/base/SvgIcon.vue'
+import { formatNumber } from '@/utils/formatNumbers.ts'
+import {
+  getNameSocialMedia,
+  getStatusColor,
+  getTextStatus,
+  getIconSocial
+} from '@/utils/socials.ts'
 
 const emit = defineEmits(['returnRecord'])
 
@@ -96,22 +109,6 @@ const headersData = ref(props.headers)
 const openDialog = ref(false)
 const currentIdStatus = ref<null | number>(null)
 
-const allStatuses = [
-  {
-    label: 'Новая',
-    value: 'create',
-    disabled: true
-  },
-  {
-    label: 'Одобрено',
-    value: 'approved'
-  },
-  {
-    label: 'Отклонено',
-    value: 'rejected'
-  }
-]
-
 const computedHeaders = computed<ITableHeaders[]>({
   get() {
     return headersData.value
@@ -130,19 +127,6 @@ const returnRecord = (data: ISupportSaveStatus) => {
   emit('returnRecord', data)
 }
 
-const getTextStatus = (status: string) => {
-  switch (status) {
-    case 'create':
-      return 'Новая'
-    case 'approved':
-      return 'Одобрено'
-    case 'rejected':
-      return 'Отклонено'
-    default:
-      return ''
-  }
-}
-
 const formatLabel = (label: string) => {
   switch (label) {
     case 'group_a':
@@ -151,73 +135,4 @@ const formatLabel = (label: string) => {
       return 'Админ группы B'
   }
 }
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'create':
-      return 'primary'
-    case 'approved':
-      return 'green'
-    case 'rejected':
-      return 'red'
-    default:
-      return ''
-  }
-}
-
-const getNameSocialMedia = (url: string) => {
-  if (url.includes('inst')) {
-    return 'Instagram'
-  } else if (url.includes('tik')) {
-    return 'TikTok'
-  } else if (url.includes('shorts')) {
-    return 'Shorts'
-  } else if (url.includes('vk')) {
-    return 'VK Video'
-  }
-}
-
-const getIconSocial = (url: string) => {
-  let icon = ''
-  if (url.includes('inst')) {
-    icon = 'instagram'
-  } else if (url.includes('tik')) {
-    icon = 'tiktok'
-  } else if (url.includes('shorts')) {
-    icon = 'shorts'
-  } else if (url.includes('vk')) {
-    icon = 'vk'
-  }
-  return icon
-}
-
-const formatUrl = (url: string) => {
-  if (!url) return ''
-  const firstPart = url.slice(0, 30)
-  const lastPart = url.slice(url.length - 3)
-  return `${firstPart}...${lastPart}`
-}
 </script>
-
-<style lang="scss">
-.cell-link {
-  text-decoration: underline;
-  transition: opacity 0.15s ease-in;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.7;
-  }
-}
-
-.custom-table__link {
-  cursor: pointer;
-  transition: opacity 0.15s ease-in;
-  border-bottom: 1px solid transparent;
-
-  &:hover {
-    opacity: 0.7;
-    border-color: #000;
-  }
-}
-</style>

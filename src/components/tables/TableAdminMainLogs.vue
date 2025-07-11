@@ -18,8 +18,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, PropType, ref } from 'vue'
-import { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
+import { computed, type PropType, ref } from 'vue'
+import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 
 defineEmits(['changeStatus', 'saveComment', 'finishCheck'])
 
