@@ -176,7 +176,7 @@ onMounted(() => {
 
     &__title {
       font-size: 18px;
-      font-family: 'Inter Medium', sans-serif;
+      font-weight: 500;
       color: rgba(17, 17, 17, 1);
       font-weight: 400;
       margin-bottom: 10px;
@@ -256,7 +256,7 @@ onMounted(() => {
     align-items: center;
     padding: 0 20px;
     color: rgba(17, 17, 17, 1);
-    font-family: 'Inter Medium', sans-serif;
+    font-weight: 500;
     font-size: 18px;
     font-weight: 400;
   }
@@ -293,7 +293,7 @@ onMounted(() => {
 
       &__role {
         color: rgba(0, 0, 0, 1);
-        font-family: 'Inter Medium', sans-serif;
+        font-weight: 500;
         font-size: 12px;
         font-weight: 400;
         position: absolute;
@@ -302,7 +302,7 @@ onMounted(() => {
       }
 
       &__time {
-        font-family: 'Inter Medium', sans-serif;
+        font-weight: 500;
         font-size: 12px;
         color: rgba(143, 150, 165, 1);
         text-align: right;

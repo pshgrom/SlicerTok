@@ -63,7 +63,7 @@ const showForSlicer = computed(() => page.value === 'UserInfo')
 </script>
 
 <style lang="scss">
-@import './assets/sass/style.scss';
+@use './assets/sass/style.scss' as *;
 
 .main {
   background: rgba(226, 238, 243, 1);

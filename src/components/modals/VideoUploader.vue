@@ -120,7 +120,7 @@ function handleFileChange(file) {
     left: 0;
     top: -20px;
     color: rgba(143, 150, 165, 1);
-    font-family: 'Inter Medium', sans-serif;
+    font-weight: 500;
     font-size: 14px;
     letter-spacing: 0;
   }

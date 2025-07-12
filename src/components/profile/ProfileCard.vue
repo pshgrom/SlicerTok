@@ -162,7 +162,7 @@ const showDialog = (val: boolean) => {
     color: rgba(17, 17, 17, 1);
     font-size: 18px;
     font-weight: 500;
-    font-family: 'Inter Medium', sans-serif;
+    font-weight: 500;
     margin-bottom: 10px;
 
     span {
@@ -192,7 +192,7 @@ const showDialog = (val: boolean) => {
         color: rgba(17, 17, 17, 1);
         font-weight: 500;
         margin-left: 8px;
-        font-family: 'Inter Medium', sans-serif;
+        font-weight: 500;
 
         span {
           color: rgba(143, 150, 165, 1);

@@ -43,7 +43,7 @@ const customClasses = computed(() => props.customClass.join(' '))
   box-shadow: none;
   padding: 0 10px !important;
   border-radius: 12px;
-  font-family: 'Inter Medium', sans-serif;
+  font-weight: 500;
   letter-spacing: 0;
   transition: all 0.15s ease-in;
 

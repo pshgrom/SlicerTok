@@ -107,7 +107,7 @@ onMounted(async () => {
 
     li {
       color: rgba(17, 17, 17, 1);
-      font-family: 'Inter Medium', sans-serif;
+      font-weight: 500;
       font-size: 14px;
       font-weight: 400;
       cursor: pointer;

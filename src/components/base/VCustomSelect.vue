@@ -87,7 +87,7 @@ const updateStatus = (e: string | number) => {
 }
 
 :deep(.v-label) {
-  font-family: 'Inter Medium', sans-serif;
+  font-weight: 500;
   color: rgba(143, 150, 165, 1) !important;
   font-size: 14px !important;
 }

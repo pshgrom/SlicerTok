@@ -120,7 +120,7 @@ watch(
     margin-bottom: 25px;
   }
   &__title {
-    font-family: 'Inter Medium', sans-serif;
+    font-weight: 500;
     font-size: 18px;
     font-weight: 400;
     letter-spacing: 0;

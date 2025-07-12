@@ -7,15 +7,6 @@ import {
 } from 'vue-router'
 import LoginView from '@/views/LoginView.vue'
 import LoginViewAdmin from '@/views/LoginViewAdmin.vue'
-import UserInfo from '@/views/UserInfo.vue'
-import Support from '@/views/SupportPage.vue'
-import SupportChatPage from '@/views/SupportChatPage.vue'
-import AdminInfo from '@/views/AdminInfo.vue'
-import AdminInfoChecked from '@/views/AdminInfoChecked.vue'
-import AdminPaymentsFinance from '@/views/AdminPaymentsFinance.vue'
-import AdminMain from '@/views/AdminMain.vue'
-import AdminMainLogs from '@/views/AdminMainLogs.vue'
-import NotFound from '@/views/NotFound.vue'
 import { ROLES, type RoleType } from '@/constants/roles'
 
 // Типизация мета-полей роута
@@ -34,22 +25,22 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'Login',
-    component: LoginView
+    component: () => LoginView
   },
   {
     path: '/login-admin',
     name: 'LoginAdmin',
-    component: LoginViewAdmin
+    component: () => LoginViewAdmin
   },
   {
     path: '/:catchAll(.*)',
     name: 'NotFound',
-    component: NotFound
+    component: () => import('@/views/NotFound.vue')
   },
   {
     path: '/admin-info',
     name: 'AdminInfo',
-    component: AdminInfo,
+    component: () => import('@/views/AdminInfo.vue'),
     meta: {
       requiresAuth: true,
       roles: [ROLES.ADMIN]
@@ -58,7 +49,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/support',
     name: 'Support',
-    component: Support,
+    component: () => import('@/views/SupportPage.vue'),
     meta: {
       requiresAuth: true,
       roles: [ROLES.SUPPORT]
@@ -67,7 +58,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/support-chat',
     name: 'SupportChat',
-    component: SupportChatPage,
+    component: () => import('@/views/SupportChatPage.vue'),
     meta: {
       requiresAuth: true,
       roles: [ROLES.SUPPORT]
@@ -76,7 +67,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/admin-info-checked',
     name: 'AdminInfoChecked',
-    component: AdminInfoChecked,
+    component: () => import('@/views/AdminInfoChecked.vue'),
     meta: {
       requiresAuth: true,
       roles: [ROLES.ADMIN]
@@ -85,7 +76,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/admin-payments-finance',
     name: 'AdminPaymentsFinance',
-    component: AdminPaymentsFinance,
+    component: () => import('@/views/AdminPaymentsFinance.vue'),
     meta: {
       requiresAuth: true,
       roles: [ROLES.ADMIN_FINANCE]
@@ -94,7 +85,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/admin-main',
     name: 'AdminMain',
-    component: AdminMain,
+    component: () => import('@/views/AdminMain.vue'),
     meta: {
       requiresAuth: true,
       roles: [ROLES.ADMIN_MAIN]
@@ -103,7 +94,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/admin-main-logs',
     name: 'AdminMainLogs',
-    component: AdminMainLogs,
+    component: () => import('@/views/AdminMainLogs.vue'),
     meta: {
       requiresAuth: true,
       roles: [ROLES.ADMIN_MAIN]
@@ -112,7 +103,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/user-info',
     name: 'UserInfo',
-    component: UserInfo,
+    component: () => import('@/views/UserInfo.vue'),
     meta: {
       requiresAuth: true,
       roles: [ROLES.SLICER]

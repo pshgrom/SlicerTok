@@ -74,7 +74,7 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
   }
 
   &__label {
-    font-family: 'Inter Medium', sans-serif;
+    font-weight: 500;
     color: rgba(17, 17, 17, 1);
     display: inline-flex;
     align-items: center;
@@ -91,7 +91,7 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
     align-items: center;
     justify-content: center;
     color: rgba(17, 17, 17, 1);
-    font-family: 'Inter Medium', sans-serif;
+    font-weight: 500;
     font-size: 12px;
     margin-left: 8px;
   }

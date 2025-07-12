@@ -244,13 +244,13 @@ onBeforeUnmount(() => {
     height: 23px;
     border-radius: 16px;
     color: rgba(255, 255, 255, 1);
-    font-family: 'Inter Medium', sans-serif;
+    font-weight: 500;
     font-size: 12px;
     margin-bottom: 8px;
   }
 
   &__value {
-    font-family: 'Inter Medium', sans-serif;
+    font-weight: 500;
     color: rgba(17, 17, 17, 1);
     font-size: 14px;
     position: relative;

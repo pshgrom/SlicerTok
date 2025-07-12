@@ -1,11 +1,10 @@
-@import "fonts";
-@import "table";
-@import "modal";
-@import "transition";
-@import "pagination";
-@import "layout";
-@import "table";
-@import "graph";
+@use "fonts";
+@use "table";
+@use "modal";
+@use "transition";
+@use "pagination";
+@use "layout";
+@use "graph";
 
 $primary-color: #0F0F0F;
 
@@ -18,9 +17,9 @@ $primary-color: #0F0F0F;
 }
 
 body {
-  font-family: 'Inter-Regular', sans-serif;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
   line-height: 1.2;
-  font-weight: bold;
   margin: 0;
   padding: 0;
   font-size: 16px;
