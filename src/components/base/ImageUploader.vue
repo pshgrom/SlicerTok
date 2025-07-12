@@ -1,16 +1,16 @@
 <template>
   <v-file-input
+    ref="fileInput"
     label="Загрузить изображение"
     accept="image/*"
-    ref="fileInput"
     prepend-icon="mdi-image"
     show-size
     :multiple="false"
     :model-value="internalFile"
-    @update:model-value="handleFileChange"
     class="mb-4 d-none"
+    @update:model-value="handleFileChange"
   ></v-file-input>
-  <v-btn class="wavy-button" @click="triggerFileSelect" disabled>
+  <v-btn class="wavy-button" disabled @click="triggerFileSelect">
     <v-icon size="28" class="me-2">mdi-camera</v-icon>
     <span>Загрузить фото</span>
   </v-btn>

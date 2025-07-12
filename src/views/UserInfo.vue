@@ -5,9 +5,9 @@
       <ProfileCard v-model:dialog="editDialog" :user="user" />
       <WalletsCard
         :wallets="wallets"
-        @setAsMain="setAsMain"
-        @removeWallet="removeWallet"
-        @openModalWallet="openModalWallet"
+        @set-as-main="setAsMain"
+        @remove-wallet="removeWallet"
+        @open-modal-wallet="openModalWallet"
       />
       <EditProfileDialog
         v-if="editDialog"
@@ -39,7 +39,7 @@
         v-model:queryParams="queryParams"
         :loading="isLoading"
         :totalPages="totalPages"
-        @changePage="changePage"
+        @change-page="changePage"
       />
     </div>
     <AddVideoDialog

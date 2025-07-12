@@ -24,6 +24,7 @@
         <div v-if="messages.length" ref="chatBoxRef" class="chat-messages">
           <div
             v-for="msg in messages"
+            :key="msg.created_at"
             class="chat-messages-item"
             :class="{ 'chat-messages-item_your': msg.is_your }"
           >
@@ -57,14 +58,14 @@ import { getChatsSupportQuery, getMessagesQuery, sendMessageQuery } from '@/api/
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import { useChat } from '@/composables/useChat.ts'
-import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
+// import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 
 type Room = { id: number; name: string }
 
 // const { connectSocket, joinRoom, sendMessage, messages } = useChat()
 const { connectSocket } = useChat()
 const rooms = ref<Room[]>([])
-const { isMobile } = useDeviceDetection()
+// const { isMobile } = useDeviceDetection()
 const roomId = ref<null | number>(null)
 
 const chatBoxRef = ref<HTMLElement | null>(null)

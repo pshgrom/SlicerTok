@@ -1,14 +1,14 @@
 <template>
   <div class="svg-icon" :style="{ transform: `scale(${scale})` }">
     <component
-      v-if="width && height"
       :is="dynamicComponent"
+      v-if="width && height"
       :class="className"
       :fill="fill"
       :width="width"
       :height="height"
     />
-    <component v-else :is="dynamicComponent" :class="className" :fill="fill" />
+    <component :is="dynamicComponent" v-else :class="className" :fill="fill" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -24,7 +24,7 @@ const props = defineProps({
   },
   className: {
     type: String,
-    required: false
+    default: ''
   },
   fill: {
     type: String,
@@ -46,6 +46,7 @@ const props = defineProps({
 })
 
 const dynamicComponent = computed(() => {
+  // eslint-disable-next-line
   return props.name
     ? defineAsyncComponent(() => import(`@/assets/icons/${props.name}.svg?skipsvgo`))
     : ''

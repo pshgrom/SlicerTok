@@ -8,15 +8,15 @@
     hover
     hide-default-footer
   >
-    <template v-slot:loading>
+    <template #loading>
       <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
     </template>
-    <template v-slot:[`item.url`]="{ item }">
+    <template #[`item.url`]="{ item }">
       <a class="custom-table__link" :href="item.url" target="_blank">
         {{ formatUrl(item.url) }}
       </a>
     </template>
-    <template v-slot:[`item.video_stat_link`]="{ item }">
+    <template #[`item.video_stat_link`]="{ item }">
       <a class="custom-table__link" :href="item.video_stat_link" target="_blank">
         {{ formatUrl(item.video_stat_link) }}
       </a>
@@ -29,7 +29,7 @@ import { computed, type PropType, ref } from 'vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 // import VCustomSelect from '@/components/base/VCustomSelect.vue'
 
-const emit = defineEmits(['changeStatus', 'saveComment', 'finishCheck'])
+defineEmits(['changeStatus', 'saveComment', 'finishCheck'])
 
 const props = defineProps({
   headers: {

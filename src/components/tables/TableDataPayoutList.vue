@@ -8,16 +8,16 @@
     hover
     hide-default-footer
   >
-    <template v-slot:loading>
+    <template #loading>
       <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
     </template>
-    <template v-slot:[`item.wallet`]="{ item }">
+    <template #[`item.wallet`]="{ item }">
       {{ item.wallet.address }}
     </template>
-    <template v-slot:[`item.number_views`]="{ item }">
+    <template #[`item.number_views`]="{ item }">
       <div>
         <div class="custom-table__increase">
-          <v-icon @click.stop="item.viewsDialog = true" class="mdi-eye">visibility</v-icon>
+          <v-icon class="mdi-eye" @click.stop="item.viewsDialog = true">visibility</v-icon>
         </div>
         <v-dialog v-model="item.viewsDialog" width="auto">
           <v-card title="Просмотры" class="text-center">
@@ -28,20 +28,20 @@
         </v-dialog>
       </div>
     </template>
-    <template v-slot:[`item.nikname`]="{ item }">
+    <template #[`item.nikname`]="{ item }">
       <div class="d-flex justify-space-between">
-        <div @click="goToTelegram(item.nikname)" class="cell-link">
+        <div class="cell-link" @click="goToTelegram(item.nikname)">
           {{ item.nikname }}
         </div>
       </div>
     </template>
-    <template v-slot:[`item.publications`]="{ item }">
+    <template #[`item.publications`]="{ item }">
       <a
+        v-for="el in item.publications"
+        :key="el.id"
         class="custom-table__link"
         :href="el.url"
         target="_blank"
-        v-for="el in item.publications"
-        :key="el.id"
       >
         {{ el.url }}
       </a>

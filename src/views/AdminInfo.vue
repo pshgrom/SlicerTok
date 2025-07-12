@@ -5,16 +5,16 @@
     :isLoading="isLoading"
     :items="calcDataItems"
     :itemsPerPage="queryParams.perPage"
-    @changeStatus="changeStatus"
-    @finishCheck="finishCheck"
-    @saveComment="saveComment"
+    @change-status="changeStatus"
+    @finish-check="finishCheck"
+    @save-comment="saveComment"
   ></TableAdminInfo>
   <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
     <TablePagination
       v-model:queryParams="queryParams"
       :loading="isLoading"
       :totalPages="totalPages"
-      @changePage="changePage"
+      @change-page="changePage"
     />
   </div>
 </template>

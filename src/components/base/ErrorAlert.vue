@@ -9,8 +9,10 @@
 <script setup>
 import { computed, onBeforeUnmount, watch } from 'vue'
 import { useError } from '@/stores/Errors'
+// import { useSafeHtml } from '@/composables/useSafeHtml'
 
 const errors = useError()
+// const { safeHtml } = useSafeHtml(errors.errorsValue.msg)
 
 const props = defineProps({
   duration: {

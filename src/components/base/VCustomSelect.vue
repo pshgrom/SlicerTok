@@ -1,8 +1,8 @@
 <template>
   <div class="v-custom-select">
     <v-select
-      class="v-custom-select__select"
       v-model="select"
+      class="v-custom-select__select"
       :items="items"
       :label="label"
       item-title="label"
@@ -14,9 +14,9 @@
       :density="density"
       hide-details
       :readonly="readonly"
-      @update:modelValue="updateStatus"
+      @update:model-value="updateStatus"
     >
-      <template v-slot:item="{ props, item }">
+      <template #item="{ props, item }">
         <v-list-item v-bind="props" :disabled="item.raw.disabled" />
       </template>
     </v-select>

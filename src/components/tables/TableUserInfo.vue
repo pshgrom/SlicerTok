@@ -8,10 +8,10 @@
     hover
     hide-default-footer
   >
-    <template v-slot:loading>
+    <template #loading>
       <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
     </template>
-    <template v-slot:[`item.url`]="{ item }">
+    <template #[`item.url`]="{ item }">
       <a v-if="item.url" :href="item.url" target="_blank" class="custom-table-ref">
         <SvgIcon class="custom-table-ref__social" :name="getIconSocial(item.url)" />
         <span>
@@ -20,19 +20,19 @@
         <SvgIcon name="arrow-up-right" />
       </a>
     </template>
-    <template v-slot:[`item.video_stat_link`]="{ item }">
+    <template #[`item.video_stat_link`]="{ item }">
       <a :href="item.video_stat_link" target="_blank" class="custom-table-ref">
         <span> Смотреть </span>
         <SvgIcon name="arrow-up-right" />
       </a>
     </template>
-    <template v-slot:[`item.number_views`]="{ item }">
+    <template #[`item.number_views`]="{ item }">
       <div v-if="item.number_views" class="custom-table-views">
         <SvgIcon name="show" />
         <div>{{ formatNumber(item.number_views) }}</div>
       </div>
     </template>
-    <template v-slot:[`item.status`]="{ item }">
+    <template #[`item.status`]="{ item }">
       <div
         v-if="item.status"
         class="custom-table-chip"

@@ -6,7 +6,7 @@
           Кошельки
           <span class="wallets__length">{{ wallets.length }}</span>
         </div>
-        <VCusomButton :customClass="['dark']" @click="openDialog" :disabled="wallets.length >= 3"
+        <VCusomButton :customClass="['dark']" :disabled="wallets.length >= 3" @click="openDialog"
           >Добавить
         </VCusomButton>
       </div>
@@ -14,12 +14,12 @@
         <CurrentWallet
           v-for="(wallet, index) in wallets"
           :key="wallet.id"
+          v-model:openIndex="openIndex"
           :wallet="wallet"
           :wallets="wallets"
           :index="index"
-          v-model:openIndex="openIndex"
-          @setAsMain="setAsMain"
-          @removeWallet="removeWallet"
+          @set-as-main="setAsMain"
+          @remove-wallet="removeWallet"
         />
       </div>
     </div>
@@ -59,6 +59,10 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
 .wallets {
   padding: 17px 0 20px 20px;
   width: 100%;
+  min-width: 474px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 1);
+  height: 259px;
 
   @media (max-width: 1024px) {
     min-width: 358px;
@@ -91,11 +95,6 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
     font-size: 12px;
     margin-left: 8px;
   }
-
-  min-width: 474px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 1);
-  height: 259px;
 
   &__top {
     display: flex;

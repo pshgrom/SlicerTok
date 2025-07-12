@@ -9,7 +9,7 @@ export const useError = defineStore('errorStore', () => {
   })
 
   const setErrors = (msg: string, type = 'error') => {
-    ;(errorsValue.show = true), (errorsValue.msg = msg), (errorsValue.type = type)
+    ;((errorsValue.show = true), (errorsValue.msg = msg), (errorsValue.type = type))
   }
 
   return {

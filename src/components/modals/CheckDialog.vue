@@ -23,8 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, ref } from 'vue'
-import VCustomInput from '@/components/base/VCustomInput.vue'
+import { computed, ref } from 'vue'
 
 const props = defineProps({
   modelValue: {

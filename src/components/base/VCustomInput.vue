@@ -1,8 +1,8 @@
 <template>
   <v-text-field
+    v-model="value"
     class="custom-input"
     :class="customClasses"
-    v-model="value"
     :label="label"
     :rules="rules"
     :variant="variant"

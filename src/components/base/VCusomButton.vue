@@ -17,22 +17,22 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits, computed } from "vue";
+import { defineProps, defineEmits, computed } from 'vue'
 
 const props = defineProps({
-  color: { type: String, default: "primary" },
+  color: { type: String, default: 'primary' },
   customClass: { type: Array, default: () => [] },
-  variant: { type: String, default: "elevated" }, // flat, outlined, text, plain, tonal, etc.
-  size: { type: String, default: "default" }, // x-small, small, default, large, x-large
+  variant: { type: String, default: 'elevated' }, // flat, outlined, text, plain, tonal, etc.
+  size: { type: String, default: 'default' }, // x-small, small, default, large, x-large
   loading: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
   icon: { type: Boolean, default: false },
-  block: { type: Boolean, default: false }, // full-width
-});
+  block: { type: Boolean, default: false } // full-width
+})
 
-defineEmits(["click"]);
+defineEmits(['click'])
 
-const customClasses = computed(() => props.customClass.join(" "));
+const customClasses = computed(() => props.customClass.join(' '))
 </script>
 
 <style scoped lang="scss">
@@ -43,7 +43,7 @@ const customClasses = computed(() => props.customClass.join(" "));
   box-shadow: none;
   padding: 0 10px !important;
   border-radius: 12px;
-  font-family: "Inter Medium", sans-serif;
+  font-family: 'Inter Medium', sans-serif;
   letter-spacing: 0;
   transition: all 0.15s ease-in;
 

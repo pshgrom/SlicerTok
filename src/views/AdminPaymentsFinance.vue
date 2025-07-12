@@ -11,7 +11,7 @@
       v-model:queryParams="queryParams"
       :loading="isLoading"
       :totalPages="totalPages"
-      @changePage="changePage"
+      @change-page="changePage"
     />
   </div>
 </template>

@@ -33,11 +33,11 @@
                 class="mr-2"
               />
               <VCustomInput
-                v-model="phone"
                 :key="currentCountryCode"
+                v-model="phone"
+                v-mask="currentMask"
                 label="Номер телефона"
                 autofocus
-                v-mask="currentMask"
                 :placeholder="placeholderPhone"
                 :rules="[...phoneRules, requiredRules.required]"
                 required

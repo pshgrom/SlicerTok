@@ -1,5 +1,5 @@
 <template>
-  <v-dialog class="custom-modal" v-model="dialog" max-width="500px">
+  <v-dialog v-model="dialog" class="custom-modal" max-width="500px">
     <v-card>
       <v-card-title>
         <span class="headline">Добавить кошелек</span>
@@ -8,9 +8,9 @@
       <v-card-text>
         <v-form ref="formRef">
           <VCustomInput
+            v-model="wallet.address"
             label="Адрес кошелька"
             required
-            v-model="wallet.address"
             :rules="[requiredRules.required]"
             autofocus
           />

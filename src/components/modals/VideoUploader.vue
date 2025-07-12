@@ -1,14 +1,14 @@
 <template>
   <v-file-input
+    ref="fileInput"
     v-model="internalFile"
     accept="video/*"
-    ref="fileInput"
     label="Выберите видео"
     class="d-none"
     prepend-icon="mdi-video"
-    @change="handleFileChange"
     :show-size="true"
     clearable
+    @change="handleFileChange"
   ></v-file-input>
   <div class="upload-video" :class="{ 'upload-video_uploaded': videoUrl }">
     <template v-if="!videoUrl">
@@ -18,7 +18,7 @@
         >Загрузить видео</VCusomButton
       >
     </template>
-    <div class="upload-video__uploaded" v-else>
+    <div v-else class="upload-video__uploaded">
       <div class="upload-video__value">Uploaded</div>
       <SvgIcon name="delete" />
     </div>

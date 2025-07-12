@@ -12,9 +12,9 @@
         <div v-if="showMainChat || showForSlicer">
           <SvgIcon
             v-if="!isMobile"
-            @click="userInfoStore.showChat = !userInfoStore.showChat"
             name="chat"
             class="chat-open"
+            @click="userInfoStore.showChat = !userInfoStore.showChat"
           />
           <transition name="fade" mode="out-in">
             <UserChat v-if="userInfoStore.showChat" v-model:showChat="userInfoStore.showChat" />

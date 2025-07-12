@@ -8,10 +8,10 @@
     hover
     hide-default-footer
   >
-    <template v-slot:loading>
+    <template #loading>
       <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
     </template>
-    <template v-slot:[`item.status_moderation`]="{ item }">
+    <template #[`item.status_moderation`]="{ item }">
       <v-row no-gutters class="flex-nowrap" style="overflow-x: auto; white-space: nowrap">
         <v-col
           v-for="(group, groupName) in item.status_moderation"
@@ -36,7 +36,7 @@
         </v-col>
       </v-row>
     </template>
-    <template v-slot:[`item.url`]="{ item }">
+    <template #[`item.url`]="{ item }">
       <a v-if="item.url" :href="item.url" target="_blank" class="custom-table-ref">
         <SvgIcon v-if="item.url" class="custom-table-ref__social" :name="getIconSocial(item.url)" />
         <span v-if="item.url">
@@ -45,15 +45,15 @@
         <SvgIcon name="arrow-up-right" />
       </a>
     </template>
-    <template v-slot:[`item.status`]="{ item }">
+    <template #[`item.status`]="{ item }">
       <v-chip :color="getStatusColor(item.status)">
         <div>{{ getTextStatus(item.status) }}</div>
       </v-chip>
     </template>
-    <template v-slot:[`item.created_at`]="{ item }">
+    <template #[`item.created_at`]="{ item }">
       {{ formatDate(item.created_at) }}
     </template>
-    <template v-slot:[`item.video_stat_link`]="{ item }">
+    <template #[`item.video_stat_link`]="{ item }">
       <a :href="item.video_stat_link" target="_blank" class="custom-table-ref">
         <span> Смотреть </span>
         <SvgIcon name="arrow-up-right" />
@@ -75,7 +75,7 @@ import {
 } from '@/utils/socials.ts'
 import { formatDate } from '@/utils/formatDate.ts'
 
-const emit = defineEmits(['changeStatus', 'saveComment', 'finishCheck'])
+defineEmits(['changeStatus', 'saveComment', 'finishCheck'])
 
 const props = defineProps({
   headers: {

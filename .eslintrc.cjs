@@ -8,7 +8,8 @@ module.exports = {
   extends: [
     'plugin:vue/vue3-recommended',
     '@vue/eslint-config-typescript/recommended',
-    'plugin:prettier/recommended'
+    'plugin:prettier/recommended',
+    'prettier'
   ],
   parserOptions: {
     ecmaVersion: 2021,
@@ -16,6 +17,7 @@ module.exports = {
   },
   rules: {
     'vue/multi-word-component-names': 'off',
+    'vue/attribute-hyphenation': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'prettier/prettier': ['error', { endOfLine: 'auto' }]
   }

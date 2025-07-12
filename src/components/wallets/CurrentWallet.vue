@@ -12,23 +12,23 @@
       </div>
       <ul v-show="openIndex === index" ref="menuRef" class="dropdown-menu">
         <li
-          @click.prevent="setAsMain"
           class="dropdown-menu-item"
           :class="{ 'dropdown-menu-item_disabled': wallet.is_main }"
+          @click.prevent="setAsMain"
         >
           <SvgIcon name="main" :fill="wallet.is_main ? '#000' : '#fff'" />
           <span>Основной</span>
         </li>
-        <li @click="copyWallet(wallet.address)" class="dropdown-menu-item">
+        <li class="dropdown-menu-item" @click="copyWallet(wallet.address)">
           <SvgIcon name="copy" />
           <span>Скопировать</span>
         </li>
         <li
-          @click.prevent="removeWallet"
           :class="{
             'dropdown-menu-item_disabled': wallets.length === 1 || wallet.is_main
           }"
           class="dropdown-menu-item dropdown-menu-item_remove"
+          @click.prevent="removeWallet"
         >
           <SvgIcon name="remove" />
           <span>Удалить</span>

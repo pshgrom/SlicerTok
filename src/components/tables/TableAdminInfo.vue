@@ -8,10 +8,10 @@
     hover
     hide-default-footer
   >
-    <template v-slot:loading>
+    <template #loading>
       <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
     </template>
-    <template v-slot:[`item.url`]="{ item }">
+    <template #[`item.url`]="{ item }">
       <a v-if="item.url" :href="item.url" target="_blank" class="custom-table-ref">
         <SvgIcon class="custom-table-ref__social" :name="getIconSocial(item.url)" />
         <span>
@@ -20,27 +20,27 @@
         <SvgIcon name="arrow-up-right" />
       </a>
     </template>
-    <template v-slot:[`item.video_stat_link`]="{ item }">
+    <template #[`item.video_stat_link`]="{ item }">
       <a :href="item.video_stat_link" target="_blank" class="custom-table-ref">
         <span> Смотреть </span>
         <SvgIcon name="arrow-up-right" />
       </a>
     </template>
-    <template v-slot:[`item.number_views`]="{ item }">
+    <template #[`item.number_views`]="{ item }">
       <div v-if="item.number_views" class="custom-table-views">
         <SvgIcon name="show" />
         <div>{{ formatNumber(item.number_views) }}</div>
       </div>
     </template>
-    <template v-slot:[`item.status`]="{ item }">
+    <template #[`item.status`]="{ item }">
       <VCustomSelect
         v-model="item.status"
         :items="allStatuses"
-        @updateStatus="changeStatus(item.id, item.status, item.status_comment)"
         :style="{ width: '140px' }"
+        @update-status="changeStatus(item.id, item.status, item.status_comment)"
       />
     </template>
-    <template v-slot:[`item.status_comment`]="{ item }">
+    <template #[`item.status_comment`]="{ item }">
       <v-textarea
         v-model="item.status_comment"
         variant="underlined"
@@ -52,7 +52,7 @@
         @blur="() => saveComment(item.id, item.status, item.status_comment)"
       />
     </template>
-    <template v-slot:[`item.actions`]="{ item }">
+    <template #[`item.actions`]="{ item }">
       <v-btn
         size="small"
         :disabled="item.status === 'todo'"

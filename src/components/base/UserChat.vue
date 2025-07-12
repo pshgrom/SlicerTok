@@ -1,13 +1,14 @@
 <template>
-  <div class="chat" v-click-outside="closeChat" :class="{ chat_mobile: isMobile }">
+  <div v-click-outside="closeChat" class="chat" :class="{ chat_mobile: isMobile }">
     <div class="chat-box">
       <div class="chat__title">
         <span>Чат с поддержкой</span>
         <v-btn icon="mdi-close" variant="text" @click="closeChat" />
       </div>
-      <div class="chat-messages" ref="chatBoxRef" v-if="userMessages.length">
+      <div v-if="userMessages.length" ref="chatBoxRef" class="chat-messages">
         <div
           v-for="msg in userMessages"
+          :key="msg.created_at"
           class="chat-messages-item"
           :class="{ 'chat-messages-item_your': msg.is_your }"
         >
@@ -15,7 +16,7 @@
             {{ msg.is_your ? 'Вы' : 'Поддержка' }}
           </div>
           <div class="chat-messages-item__msg">{{ msg.content }}</div>
-          <div class="chat-messages-item__time">{{ getTime(msg.created_at) }}</div>
+          <div class="chat-messages-item__time">{{ getTime(msg.c) }}</div>
         </div>
       </div>
       <h2 v-else>Пока нет сообщений</h2>
@@ -29,7 +30,7 @@
         class="mr-1"
         @keyup.enter="sendMessage"
       />
-      <SvgIcon class="chat__actions-send" @click="sendMessage" name="send" />
+      <SvgIcon class="chat__actions-send" name="send" @click="sendMessage" />
     </div>
   </div>
 </template>

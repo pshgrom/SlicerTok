@@ -1,5 +1,5 @@
 <template>
-  <v-dialog class="custom-modal" v-model="dialogModel" max-width="831px" persistent>
+  <v-dialog v-model="dialogModel" class="custom-modal" max-width="831px" persistent>
     <v-card>
       <v-card-title>
         <span class="headline">Подать заявку</span>

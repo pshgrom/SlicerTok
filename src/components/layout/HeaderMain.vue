@@ -28,7 +28,7 @@
         </template>
       </ul>
       <div class="header__logout">
-        <v-btn icon @click="logout" size="small">
+        <v-btn icon size="small" @click="logout">
           <v-icon>mdi-logout</v-icon>
         </v-btn>
       </div>
