@@ -13,13 +13,16 @@ const prodPlugins = [
   viteCompression({
     algorithm: 'gzip',
     ext: '.gz',
-    threshold: 10240
+    threshold: 10240,
+    filter: /\.(js|mjs|json|css|html|svg)$/i
   }),
 
   viteCompression({
     algorithm: 'brotliCompress',
     ext: '.br',
-    threshold: 10240
+    threshold: 10240,
+    filter: /\.(js|mjs|json|css|html|svg)$/i,
+    compressionOptions: { level: 11 }
   }),
 
   visualizer({
@@ -32,6 +35,7 @@ const prodPlugins = [
 ]
 
 export default defineConfig({
+  cacheDir: 'node_modules/.vite_cache',
   plugins: [
     vue({
       template: {
@@ -45,9 +49,16 @@ export default defineConfig({
 
     svgLoader({
       svgoConfig: {
+        multipass: true,
         plugins: [
           { name: 'removeViewBox', active: false },
-          { name: 'removeDimensions', active: true }
+          { name: 'removeDimensions', active: true },
+          { name: 'removeTitle', active: true },
+          { name: 'removeDesc', active: true },
+          { name: 'removeUselessDefs', active: true },
+          { name: 'cleanupIDs', active: true },
+          { name: 'mergePaths', active: true },
+          { name: 'convertShapeToPath', active: true }
         ]
       }
     }),
@@ -72,22 +83,44 @@ export default defineConfig({
         manualChunks(id) {
           if (id.includes('node_modules')) {
             if (id.includes('vue')) return 'vendor_vue'
-            if (id.includes('vuetify')) return 'vendor_vuetify'
+            if (id.includes('axios')) return 'vendor_network'
             if (id.includes('lodash')) return 'vendor_lodash'
             if (id.includes('vue-router')) return 'vendor_router'
             if (id.includes('pinia')) return 'vendor_pinia'
-            return 'vendor_misc'
+            if (id.includes('node_modules')) return 'vendor_misc'
+            if (id.includes('vuetify')) {
+              if (id.includes('lib/components')) return 'vendor_vuetify_components'
+              if (id.includes('lib/labs')) return 'vendor_vuetify_labs'
+              return 'vendor_vuetify_core'
+            }
           }
+          if (id.includes('src/views/')) return 'views'
+          if (id.includes('src/components/')) return 'components'
         },
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[ext]'
+        assetFileNames: 'assets/[name]-[hash].[ext]',
+        hoistTransitiveImports: false,
+        preserveModules: false,
+        generatedCode: {
+          preset: 'es2015',
+          arrowFunctions: true,
+          constBindings: true,
+          objectShorthand: true
+        }
       }
     }
   },
 
   optimizeDeps: {
-    include: ['vue', 'vue-router', 'pinia', 'vue-the-mask', 'lodash-es'],
+    include: [
+      'vue',
+      'vue-router',
+      'pinia',
+      'vue-the-mask',
+      'lodash-es',
+      'vuetify/lib/components/*'
+    ],
     exclude: []
   },
 
