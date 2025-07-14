@@ -11,6 +11,7 @@
     <template #loading>
       <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
     </template>
+
     <template #[`item.url`]="{ item }">
       <a v-if="item.url" :href="item.url" target="_blank" class="custom-table-ref">
         <SvgIcon class="custom-table-ref__social" :name="getIconSocial(item.url)" />
@@ -33,46 +34,45 @@
       </div>
     </template>
     <template #[`item.status`]="{ item }">
-      <VCustomSelect
-        v-model="item.status"
-        :items="allStatuses"
-        :style="{ width: '140px' }"
-        @update-status="changeStatus(item.id, item.status, item.status_comment)"
-      />
+      <p>{{ getStatus(item.status) }}</p>
     </template>
     <template #[`item.status_comment`]="{ item }">
-      <v-textarea
-        v-model="item.status_comment"
-        variant="underlined"
-        label="Текст..."
-        auto-grow
-        rows="1"
-        dense
-        hide-details
-        @blur="() => saveComment(item.id, item.status, item.status_comment)"
-      />
+      <p>{{ item.status_comment ? item.status_comment : '-' }}</p>
     </template>
     <template #[`item.actions`]="{ item }">
-      <v-btn
-        size="small"
-        :disabled="item.status === 'todo'"
-        color="primary"
-        @click="finishCheck(item.id)"
-        >Закончить проверку</v-btn
-      >
+      <div class="d-flex" style="min-width: 210px">
+        <div class="custom-table__icon mr-2">
+          <SvgIcon name="edit-row" @click="showDialog(item)" />
+        </div>
+        <VCusomButton
+          class="custom-table__button"
+          size="small"
+          :disabled="item.status === 'todo'"
+          color="primary"
+          @click="finishCheck(item.id)"
+          >Закончить проверку
+        </VCusomButton>
+      </div>
     </template>
   </v-data-table>
+  <ModerationDialog
+    v-if="dialog"
+    v-model="dialog"
+    v-model:currentItem="currentItem"
+    @change-state="changeState"
+  />
 </template>
 
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
-import VCustomSelect from '@/components/base/VCustomSelect.vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import { formatNumber } from '@/utils/formatNumbers.ts'
 import { getNameSocialMedia, getIconSocial } from '@/utils/socials.ts'
+import ModerationDialog from '@/components/modals/ModerationDialog.vue'
+import VCusomButton from '@/components/base/VCusomButton.vue'
 
-const emit = defineEmits(['changeStatus', 'saveComment', 'finishCheck'])
+const emit = defineEmits(['finishCheck', 'changeState'])
 
 const props = defineProps({
   headers: {
@@ -94,22 +94,8 @@ const props = defineProps({
 })
 
 const headersData = ref(props.headers)
-
-const allStatuses = [
-  {
-    label: 'Новая',
-    value: 'create',
-    disabled: true
-  },
-  {
-    label: 'Одобрено',
-    value: 'approved'
-  },
-  {
-    label: 'Отклонено',
-    value: 'rejected'
-  }
-]
+const dialog = ref(false)
+const currentItem = ref({})
 
 const computedHeaders = computed<ITableHeaders[]>({
   get() {
@@ -124,12 +110,56 @@ const finishCheck = (id: number) => {
   emit('finishCheck', id)
 }
 
-const saveComment = (id: number | string, status: string, status_comment: string) => {
-  if (!status_comment) return
-  emit('saveComment', id, status, status_comment)
+const getStatus = (status: string) => {
+  let formatStatus = ''
+  switch (status) {
+    case 'todo':
+      formatStatus = 'Новая'
+      break
+    case 'approved':
+      formatStatus = 'Одобрено'
+      break
+    case 'rejected':
+      formatStatus = 'Отклонено'
+      break
+  }
+  return formatStatus
 }
 
-const changeStatus = (id: number | string, status: string, status_comment: string) => {
-  emit('changeStatus', id, status, status_comment)
+const showDialog = (item) => {
+  currentItem.value = item
+  dialog.value = true
+}
+
+const changeState = (item: any, selectedTasks: any) => {
+  emit('changeState', item, selectedTasks)
 }
 </script>
+
+<style lang="scss" scoped>
+.custom-table__button {
+  display: none;
+}
+.custom-table__icon {
+  display: none;
+  cursor: pointer;
+
+  &:hover {
+    :deep(svg) {
+      & > path {
+        fill: rgba(229, 236, 253, 1);
+        stroke: rgba(0, 212, 254, 1);
+      }
+    }
+  }
+}
+
+:deep(.v-data-table__tr) {
+  &:hover {
+    .custom-table__icon,
+    .custom-table__button {
+      display: block;
+    }
+  }
+}
+</style>

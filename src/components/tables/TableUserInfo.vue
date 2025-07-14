@@ -66,7 +66,9 @@ import {
   getNameSocialMedia,
   getTextStatus,
   getStatusColor,
-  getIconSocial
+  getIconSocial,
+  getColor,
+  getIcon
 } from '@/utils/socials.ts'
 
 const props = defineProps({
@@ -89,35 +91,6 @@ const props = defineProps({
 })
 
 const headersData = ref(props.headers)
-
-const getColor = (status: string) => {
-  switch (status) {
-    case 'create':
-      return 'rgba(34, 93, 255, 1)'
-    case 'approved':
-      return 'rgba(16, 154, 106, 1)'
-    case 'rejected':
-      return 'rgba(255, 0, 0, 1)'
-    default:
-      return ''
-  }
-}
-
-const getIcon = (status: string) => {
-  let icon = ''
-  switch (status) {
-    case 'create':
-      icon = 'status-new'
-      break
-    case 'approved':
-      icon = 'status-ok'
-      break
-    case 'rejected':
-      icon = 'status-bad'
-      break
-  }
-  return icon
-}
 
 const computedHeaders = computed<ITableHeaders[]>({
   get() {

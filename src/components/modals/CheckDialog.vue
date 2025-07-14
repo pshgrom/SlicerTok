@@ -14,9 +14,8 @@
         />
       </v-card-text>
       <v-card-actions>
-        <v-spacer />
-        <v-btn @click="closeModal">Отмена</v-btn>
-        <v-btn color="primary" @click="submit">Сохранить</v-btn>
+        <VCusomButton :customClass="['light', 'avg']" @click="closeModal"> Отмена </VCusomButton>
+        <VCusomButton :customClass="['dark', 'avg']" @click="submit"> Сохранить </VCusomButton>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -24,6 +23,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import VCusomButton from '@/components/base/VCusomButton.vue'
 
 const props = defineProps({
   modelValue: {

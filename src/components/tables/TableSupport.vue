@@ -45,9 +45,21 @@
             <div class="font-weight-medium text-primary mb-4">{{ formatLabel(groupName) }}</div>
             <div class="d-flex align-center mb-4">
               <strong class="mr-4" style="color: #1867c0">Статус:</strong>
-              <v-chip :color="getStatusColor(group.status)">
-                <div>{{ getTextStatus(group.status) }}</div>
-              </v-chip>
+              <div
+                v-if="group.status"
+                class="custom-table-chip"
+                :style="{
+                  'background-color': getStatusColor(group.status),
+                  color: getColor(group.status)
+                }"
+              >
+                <div class="custom-table-chip__icon">
+                  <SvgIcon :name="getIcon(group.status)" />
+                </div>
+                <div class="custom-table-chip__status">
+                  {{ getTextStatus(group.status) }}
+                </div>
+              </div>
               <v-btn class="ml-2" icon size="24" @click="openModal(group.id)">
                 <v-icon>mdi-refresh</v-icon>
               </v-btn>
@@ -56,6 +68,14 @@
               <strong class="mr-4">Комментарий:</strong>
               {{ group.status_comment }}
             </div>
+            <VCusomButton
+              :disabled="!group.rules?.length"
+              class="mt-4"
+              :customClass="['light']"
+              @click="openRules(group)"
+            >
+              Показать нарушения
+            </VCusomButton>
           </v-card>
         </v-col>
       </v-row>
@@ -67,6 +87,7 @@
     :currentIdStatus="currentIdStatus"
     @return-record="returnRecord"
   />
+  <ShowRulesModal v-if="showRules" v-model="showRules" :currentRules="currentRules" />
 </template>
 
 <script setup lang="ts">
@@ -80,8 +101,12 @@ import {
   getNameSocialMedia,
   getStatusColor,
   getTextStatus,
-  getIconSocial
+  getIconSocial,
+  getColor,
+  getIcon
 } from '@/utils/socials.ts'
+import VCusomButton from '@/components/base/VCusomButton.vue'
+import ShowRulesModal from '@/components/modals/ShowRulesModal.vue'
 
 const emit = defineEmits(['returnRecord'])
 
@@ -107,6 +132,8 @@ const props = defineProps({
 const headersData = ref(props.headers)
 
 const openDialog = ref(false)
+const showRules = ref(false)
+const currentRules = ref([])
 const currentIdStatus = ref<null | number>(null)
 
 const computedHeaders = computed<ITableHeaders[]>({
@@ -117,6 +144,12 @@ const computedHeaders = computed<ITableHeaders[]>({
     headersData.value = val
   }
 })
+
+const openRules = (group) => {
+  currentRules.value = group.rules
+  console.log(group)
+  showRules.value = true
+}
 
 const openModal = (id: number) => {
   currentIdStatus.value = id

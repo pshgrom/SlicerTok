@@ -83,7 +83,7 @@ onMounted(async () => {
   justify-content: space-between;
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 150;
 
   &__logo {
     cursor: pointer;
@@ -107,7 +107,6 @@ onMounted(async () => {
 
     li {
       color: rgba(17, 17, 17, 1);
-      font-weight: 500;
       font-size: 14px;
       font-weight: 400;
       cursor: pointer;

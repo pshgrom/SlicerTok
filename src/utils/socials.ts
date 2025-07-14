@@ -45,3 +45,32 @@ export const getIconSocial = (url: string): string => {
   }
   return icon
 }
+
+export const getColor = (status: string): string => {
+  switch (status) {
+    case 'create':
+      return 'rgba(34, 93, 255, 1)'
+    case 'approved':
+      return 'rgba(16, 154, 106, 1)'
+    case 'rejected':
+      return 'rgba(255, 0, 0, 1)'
+    default:
+      return ''
+  }
+}
+
+export const getIcon = (status: string): string => {
+  let icon = ''
+  switch (status) {
+    case 'create':
+      icon = 'status-new'
+      break
+    case 'approved':
+      icon = 'status-ok'
+      break
+    case 'rejected':
+      icon = 'status-bad'
+      break
+  }
+  return icon
+}

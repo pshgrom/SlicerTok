@@ -91,5 +91,14 @@ const customClasses = computed(() => props.customClass.join(' '))
     height: 40px !important;
     padding: 0 16px !important;
   }
+  &.v-btn--disabled {
+    background: rgba(211, 219, 237, 1) !important;
+    color: rgba(17, 17, 17, 1) !important;
+    border: 1px solid rgba(211, 219, 237, 1) !important;
+
+    :deep(.v-btn__overlay) {
+      opacity: 0 !important;
+    }
+  }
 }
 </style>

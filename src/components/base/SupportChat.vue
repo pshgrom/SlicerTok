@@ -53,20 +53,40 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, onMounted } from 'vue'
+import { ref, nextTick, onMounted, onUnmounted, watch } from 'vue'
 import { getChatsSupportQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
-import { useChat } from '@/composables/useChat.ts'
-// import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
+// import { useChatSocketStore } from '@/stores/chatSocket.ts'
 
 type Room = { id: number; name: string }
 
-// const { connectSocket, joinRoom, sendMessage, messages } = useChat()
-const { connectSocket } = useChat()
 const rooms = ref<Room[]>([])
+
+// const chatStore = useChatSocketStore()
 // const { isMobile } = useDeviceDetection()
 const roomId = ref<null | number>(null)
+
+const wsUrl = 'ws://localhost:8080/app/mthueomipj7f2dhac0g1?protocol=7&client=js&version=4.4.0'
+
+// Подписываемся на несколько комнат (комнат может быть много)
+// const supportChannels = ['chat.1', 'chat.2', 'chat.3', 'chat.4']
+// supportChannels.forEach((channel) => chatStore.subscribeChannel(channel))
+
+// Смотрим новые сообщения только из своих комнат
+// watch(
+//   () => chatStore.messages,
+//   (messages) => {
+//     messages.forEach((msg) => {
+//       if (supportChannels.includes(msg.channel) && msg.event === 'client-new-message') {
+//         console.log('Support получил:', msg.channel, msg.data)
+//       }
+//     })
+//   }
+// )
+
+// Подключаемся (один раз)
+// chatStore.connect(wsUrl)
 
 const chatBoxRef = ref<HTMLElement | null>(null)
 const newMessage = ref<string>('')
@@ -79,6 +99,16 @@ const selectRoom = async (id: number) => {
   scrollToBottom()
 }
 
+// Отправка сообщения в одну из комнат
+// function sendMessage() {
+//   if (!newMessage.value.trim()) return
+//   chatStore.sendMessage(`chat.${roomId.value}`, 'new-message', {
+//     text: newMessage.value,
+//     sent_by: 'Support'
+//   })
+//   newMessage.value = ''
+//   scrollToBottom()
+// }
 const sendMessage = async () => {
   if (!newMessage.value.trim()) return
   try {
@@ -143,9 +173,12 @@ const getChatsSupport = async () => {
 }
 
 onMounted(() => {
-  connectSocket()
   getChatsSupport()
 })
+
+// onUnmounted(() => {
+//   disconnect()
+// })
 </script>
 
 <style scoped lang="scss">

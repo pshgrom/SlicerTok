@@ -5,9 +5,8 @@
     :isLoading="isLoading"
     :items="calcDataItems"
     :itemsPerPage="queryParams.perPage"
-    @change-status="changeStatus"
     @finish-check="finishCheck"
-    @save-comment="saveComment"
+    @change-state="changeState"
   ></TableAdminInfo>
   <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
     <TablePagination
@@ -60,20 +59,14 @@ const changePage = (page: number) => {
   getRequest()
 }
 
-const changeStatus = (id: number, status: string, status_comment: string) => {
-  const data = {
-    id,
-    status,
-    status_comment
-  }
-  adminInfo.setPublicationStatus(data)
-}
+const changeState = (item, selectedTasks) => {
+  const { id, status, status_comment } = item
 
-const saveComment = (id: number, status: string, status_comment: string) => {
   const data = {
     id,
     status,
-    status_comment
+    status_comment,
+    rules: selectedTasks
   }
   adminInfo.setPublicationStatus(data)
 }

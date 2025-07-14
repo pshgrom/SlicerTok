@@ -5,6 +5,7 @@ import {
   finishCheckQuery,
   getCompletedListQuery,
   getPublicationListQuery,
+  getTaskQuery,
   setPublicationStatusQuery
 } from '@/api/adminInfo'
 import { useError } from '@/stores/Errors'
@@ -16,6 +17,8 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     perPage: 10,
     total: 0
   })
+  const tasks = ref([])
+  const selectedTasks = ref<Record<string, boolean>>({})
   const adminInfoData = ref<IAdminInfoData[]>([])
   const preloadUserInfo = ref<IUserInfo | null>(null)
   const errorStore = useError()
@@ -27,12 +30,18 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     }
   }
 
-  const setPublicationStatus = async ({ id = '', status = '', status_comment = '' }) => {
+  const setPublicationStatus = async ({
+    id = '',
+    status = '',
+    status_comment = '',
+    rules = {}
+  }) => {
     try {
       const data = {
         id,
         status,
-        ...(status_comment ? { status_comment } : {})
+        ...(status_comment ? { status_comment } : {}),
+        rules
       }
       await setPublicationStatusQuery(data)
     } catch (error: any) {
@@ -43,6 +52,20 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
   const finishCheck = async (id: number) => {
     try {
       return await finishCheckQuery(id)
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    }
+  }
+
+  const getTask = async () => {
+    try {
+      const { data } = await getTaskQuery()
+      const { status, data: tasksArr } = data
+      if (status === 'Success') {
+        tasks.value = tasksArr[0].rules
+        const newTasks = tasks.value.map((item) => item.key)
+        selectedTasks.value = Object.fromEntries([...new Set(newTasks)].map((key) => [key, false]))
+      }
     } catch (error: any) {
       errorStore.setErrors(error.response?.data?.message ?? '')
     }
@@ -105,6 +128,9 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     queryParams,
     setQueryParams,
     finishCheck,
-    getCompletedList
+    getCompletedList,
+    getTask,
+    tasks,
+    selectedTasks
   }
 })

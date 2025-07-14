@@ -16,7 +16,7 @@
             {{ msg.is_your ? 'Вы' : 'Поддержка' }}
           </div>
           <div class="chat-messages-item__msg">{{ msg.content }}</div>
-          <div class="chat-messages-item__time">{{ getTime(msg.c) }}</div>
+          <div class="chat-messages-item__time">{{ getTime(msg.created_at) }}</div>
         </div>
       </div>
       <h2 v-else>Пока нет сообщений</h2>
@@ -36,12 +36,12 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, nextTick, onBeforeUnmount } from 'vue'
+import { onMounted, ref, nextTick, onBeforeUnmount, watch } from 'vue'
 import { getChatQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
-// import { useSocket } from '@/composables/useuseChat.ts'
 import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
+// import { useChatSocketStore } from '@/stores/chatSocket'
 
 defineProps({
   showChat: {
@@ -50,13 +50,18 @@ defineProps({
   }
 })
 const emit = defineEmits(['update:showChat'])
-// const { socket, subscribeToChannel, unsubscribeFromChannel, isConnected } = useSocket()
 
 type Message = {
   id: number
   sender: 'you' | 'support'
   text: string
 }
+
+// const chatStore = useChatSocketStore()
+// const wsUrl = 'ws://localhost:8080/app/mthueomipj7f2dhac0g1?protocol=7&client=js&version=4.4.0'
+
+// Подключаемся (один раз — уже будет, но безопасно вызвать)
+// chatStore.connect(wsUrl)
 
 const roomId = ref<null | number>(null)
 const chatBoxRef = ref<HTMLElement | null>(null)
@@ -82,34 +87,13 @@ const getTime = (time: string) => {
   return `${hours}:${minutes}`
 }
 
-// const sendMessage = async () => {
-//   try {
-//     if (!isConnected.value) {
-//       throw new Error('Not connected to socket')
-//     }
-//
-//     await new Promise((resolve, reject) => {
-//       socket.emit(
-//         'send_message',
-//         {
-//           channel: `chat.${roomId.value}`,
-//           text: newMessage.value
-//         },
-//         (response) => {
-//           console.warn('response', response)
-//           if (response.success) {
-//             resolve(response)
-//           } else {
-//             reject(new Error(response.error))
-//           }
-//         }
-//       )
-//     })
-//
-//     newMessage.value = ''
-//   } catch (error) {
-//     console.error('Failed to send message:', error)
-//   }
+// function sendMessage() {
+//   chatStore.sendMessage(`chat.${roomId.value}`, 'new-message', {
+//     text: newMessage.value,
+//     sent_by: 'User'
+//   })
+//   newMessage.value = ''
+//   scrollToBottom()
 // }
 
 const sendMessage = async () => {
@@ -135,15 +119,13 @@ const getChat = async () => {
       roomId.value = data.data.chat_room_id
       await getMessages()
       scrollToBottom()
-      // console.log(`chat.${roomId.value}`)
-      // subscribeToChannel(`chat.${roomId.value}`)
     }
   } catch (error) {
     console.log(error)
   }
 }
 
-const closeChat = (event: KeyboardEvent) => {
+const closeChat = (event: KeyboardEvent | MouseEvent): void => {
   if (event.type === 'click') {
     emit('update:showChat', false)
   }
@@ -163,14 +145,25 @@ const getMessages = async () => {
   }
 }
 
+// watch(
+//   () => chatStore.messages,
+//   (messages) => {
+//     messages.forEach((msg) => {
+//       if (msg.channel === `chat.${roomId.value}` && msg.event === 'client-new-message') {
+//         console.log('User получил:', msg.data)
+//       }
+//     })
+//   }
+// )
+
 onMounted(() => {
   getChat()
+  // chatStore.subscribeChannel(`chat.${roomId.value}`)
   document.addEventListener('keydown', closeChat)
 })
 
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', closeChat)
-  // unsubscribeFromChannel()
 })
 </script>
 
