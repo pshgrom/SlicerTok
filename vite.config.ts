@@ -76,7 +76,7 @@ export default defineConfig({
 
     rollupOptions: {
       output: {
-        inlineDynamicImports: true,
+        inlineDynamicImports: false,
         manualChunks(id) {
           if (id.includes('node_modules')) {
             if (id.includes('vue')) return 'vendor_vue'
