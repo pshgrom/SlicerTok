@@ -69,6 +69,7 @@ const goToPage = (path: string) => {
 }
 
 onMounted(async () => {
+  console.log('header')
   await router.isReady()
 })
 </script>
