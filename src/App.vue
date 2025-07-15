@@ -60,6 +60,8 @@ const showMainChat = computed(
 const isAdmin = computed(() => authStore.role !== 'slicer')
 
 const showForSlicer = computed(() => page.value === 'UserInfo')
+
+console.log('app page')
 </script>
 
 <style lang="scss">
