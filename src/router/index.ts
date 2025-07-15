@@ -5,11 +5,11 @@ import {
   type RouteLocationNormalized,
   type NavigationGuardNext
 } from 'vue-router'
-// import LoginView from '@/views/LoginView.vue'
-// import LoginViewAdmin from '@/views/LoginViewAdmin.vue'
+import { useLoader } from '@/stores/GlobalLoader.ts'
+import LoginView from '@/views/LoginView.vue'
+import LoginViewAdmin from '@/views/LoginViewAdmin.vue'
 import { ROLES, type RoleType } from '@/constants/roles'
 
-// Типизация мета-полей роута
 declare module 'vue-router' {
   interface RouteMeta {
     requiresAuth: boolean
@@ -25,12 +25,12 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/LoginView.vue')
+    component: () => LoginView
   },
   {
     path: '/login-admin',
     name: 'LoginAdmin',
-    component: () => import('@/views/LoginViewAdmin.vue')
+    component: () => LoginViewAdmin
   },
   {
     path: '/:catchAll(.*)',
@@ -118,6 +118,7 @@ const router = createRouter({
 
 router.beforeEach(
   (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+    const loader = useLoader()
     const token = localStorage.getItem('authToken')
     const role = localStorage.getItem('role') as RoleType | null
     const { requiresAuth, roles: allowedRoles } = to.meta
@@ -139,9 +140,14 @@ router.beforeEach(
       // Если роль не соответствует требованиям маршрута
       return next({ name: 'Login' })
     }
-
+    loader.start()
     next()
   }
 )
+
+router.afterEach(() => {
+  const loader = useLoader()
+  setTimeout(() => loader.stop(), 200)
+})
 
 export default router

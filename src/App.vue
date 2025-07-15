@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <ErrorAlert />
+    <GlobalLoader v-if="loader.isLoading" />
     <v-main class="main">
       <v-container
         class="custom-container"
@@ -34,34 +35,29 @@ import HeaderMain from '@/components/layout/HeaderMain.vue'
 import { useAuth } from '@/stores/Auth.ts'
 import UserChat from '@/components/base/UserChat.vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
-import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 import { useUserInfo } from '@/stores/UserInfo.ts'
+import GlobalLoader from '@/components/GlobalLoader.vue'
+import { useLoader } from '@/stores/GlobalLoader.ts'
+import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
+
+const loader = useLoader()
 
 const router = useRouter()
 const authStore = useAuth()
 const userInfoStore = useUserInfo()
-
-const page = computed(() => router.currentRoute.value.name)
-const showContent = computed(
-  () => page.value !== 'Login' && page.value !== 'LoginAdmin' && page.value !== 'NotFound'
-)
 const { isMobile } = useDeviceDetection()
 
-const showMainChat = computed(
-  () =>
-    page.value !== 'Login' &&
-    page.value !== 'LoginAdmin' &&
-    page.value !== 'NotFound' &&
-    page.value !== 'AdminMain' &&
-    page.value !== 'Support' &&
-    page.value !== 'SupportChat'
-)
+const page = computed(() => router.currentRoute.value.name)
+
+const loginPages = ['Login', 'LoginAdmin', 'NotFound']
+const noChatPages = ['Login', 'LoginAdmin', 'NotFound', 'AdminMain', 'Support', 'SupportChat']
+
+const showContent = computed(() => !loginPages.includes(page.value as string))
+const showMainChat = computed(() => !noChatPages.includes(page.value as string))
 
 const isAdmin = computed(() => authStore.role !== 'slicer')
 
 const showForSlicer = computed(() => page.value === 'UserInfo')
-
-console.log('app page')
 </script>
 
 <style lang="scss">

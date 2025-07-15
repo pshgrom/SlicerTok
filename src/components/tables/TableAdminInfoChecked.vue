@@ -27,9 +27,21 @@
       </div>
     </template>
     <template #[`item.status`]="{ item }">
-      <v-chip :color="getStatusColor(item.status)">
-        <div>{{ getTextStatus(item.status) }}</div>
-      </v-chip>
+      <div
+        v-if="item.status"
+        class="custom-table-chip"
+        :style="{
+          'background-color': getStatusColor(item.status),
+          color: getColor(item.status)
+        }"
+      >
+        <div class="custom-table-chip__icon">
+          <SvgIcon :name="getIcon(item.status)" />
+        </div>
+        <div class="custom-table-chip__status">
+          {{ getTextStatus(item.status) }}
+        </div>
+      </div>
     </template>
     <template #[`item.video_stat_link`]="{ item }">
       <a
@@ -53,7 +65,9 @@ import {
   getNameSocialMedia,
   getTextStatus,
   getStatusColor,
-  getIconSocial
+  getIconSocial,
+  getColor,
+  getIcon
 } from '@/utils/socials.ts'
 import { formatNumber } from '@/utils/formatNumbers.ts'
 
