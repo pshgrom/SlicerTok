@@ -57,7 +57,6 @@ const logout = () => {
 }
 
 const goHome = () => {
-  console.log(authStore.role)
   switch (authStore.role) {
     case ROLES.SLICER:
       router.push({ name: 'UserInfo' })
