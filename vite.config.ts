@@ -2,7 +2,6 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
-import dynamicImport from 'vite-plugin-dynamic-import'
 import viteCompression from 'vite-plugin-compression'
 import { visualizer } from 'rollup-plugin-visualizer'
 import svgLoader from 'vite-svg-loader'
@@ -63,8 +62,6 @@ export default defineConfig({
       }
     }),
 
-    dynamicImport(),
-
     ...(isProd ? prodPlugins : [])
   ],
 
@@ -75,7 +72,7 @@ export default defineConfig({
     minify: 'esbuild',
     assetsInlineLimit: 4096,
     emptyOutDir: true,
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 2000,
 
     rollupOptions: {
       output: {
