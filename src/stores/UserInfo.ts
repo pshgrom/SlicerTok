@@ -39,7 +39,10 @@ export const useUserInfo = defineStore('userInfoStore', () => {
         return await getPublicationsList(queryParams.value)
       }
     } catch (error: any) {
-      throw error?.response?.data?.data ?? 'Error'
+      const err = error?.response?.data?.data
+      const link = err?.message?.link
+      if (link) throw link
+      else throw err ?? 'Error'
     }
   }
 

@@ -87,7 +87,7 @@ const user = ref<IUser>({
 const userInfo = useUserInfo()
 const errorStore = useError()
 const editDialog = ref(false)
-const imageFile = ref<File | null>(null)
+// const imageFile = ref<File | null>(null)
 
 const isLoading = computed(() => userInfo.isLoading)
 const router = useRouter()
@@ -124,11 +124,7 @@ const submitVideo = async ({ videoFile, videoLink, number_views }: IUploadVideo)
     resetPage()
     await userInfo.createPublication(formData)
   } catch (e: any) {
-    if (e.length) {
-      e.forEach((msg: any) => {
-        errorStore.setErrors(msg.link)
-      })
-    }
+    errorStore.setErrors(e)
   } finally {
     closeDialog()
   }

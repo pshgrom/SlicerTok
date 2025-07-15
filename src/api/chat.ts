@@ -1,52 +1,12 @@
-import axios from 'axios'
+import api from './axios'
 
-export const getChatQuery = () => {
-  const token = localStorage.getItem('authToken')
-  const instWithCred = axios.create({
-    baseURL: 'http://localhost:80/api',
-    // baseURL: 'http://localhost:80/api',
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-  return instWithCred.get('/chat/get-chat-support')
-}
+export const getChatQuery = () => api.get('/chat/get-chat-support')
 
-export const getChatsSupportQuery = () => {
-  const token = localStorage.getItem('authToken')
-  const instWithCred = axios.create({
-    baseURL: 'http://localhost:80/api',
-    // baseURL: 'http://localhost:80/api',
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-  return instWithCred.get('/chat/get-chats')
-}
+export const getChatsSupportQuery = () => api.get('/chat/get-chats')
 
-export const getMessagesQuery = (roomId: number) => {
-  const token = localStorage.getItem('authToken')
-  const instWithCred = axios.create({
-    baseURL: 'http://localhost:80/api',
-    // baseURL: 'http://localhost:80/api',
-    params: {
-      chatRoomId: roomId
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
+export const getMessagesQuery = (roomId: number) =>
+  api.get('/chat/get-chat-messages', {
+    params: { chatRoomId: roomId }
   })
-  return instWithCred.get('/chat/get-chat-messages')
-}
 
-export const sendMessageQuery = (data: any) => {
-  const token = localStorage.getItem('authToken')
-  const instWithCred = axios.create({
-    baseURL: 'http://localhost:80/api',
-    // baseURL: 'http://localhost:80/api',
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-  return instWithCred.post('/chat/send-chat-messages', data)
-}
+export const sendMessageQuery = (data: any) => api.post('/chat/send-chat-messages', data)

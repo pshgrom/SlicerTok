@@ -1,29 +1,9 @@
-import axios from 'axios'
+import api from './axios'
 import type { ITableParams } from '@/interfaces/AppModel'
 import type { ISupportSaveStatus } from '@/interfaces/ISupport'
 
-export const getPublicationListQuery = (data: ITableParams) => {
-  const token = localStorage.getItem('authToken')
-  const instWithCred = axios.create({
-    baseURL: 'http://localhost:80/api',
-    // baseURL: 'http://localhost:80/api',
-    params: data,
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-  return instWithCred.get('/admin-support/publication/get-publication-list')
-}
+export const getPublicationListQuery = (data: ITableParams) =>
+  api.get('/admin-support/publication/get-publication-list', { params: data })
 
-export const doubleCheckQuery = (data: ISupportSaveStatus) => {
-  const token = localStorage.getItem('authToken')
-  const instWithCred = axios.create({
-    baseURL: 'http://localhost:80/api',
-    // baseURL: 'http://localhost:80/api',
-    // params: data,
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-  return instWithCred.post('/admin-support/publication/double-check', data)
-}
+export const doubleCheckQuery = (data: ISupportSaveStatus) =>
+  api.post('/admin-support/publication/double-check', data)

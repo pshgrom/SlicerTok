@@ -19,8 +19,8 @@
       >
     </template>
     <div v-else class="upload-video__uploaded">
-      <div class="upload-video__value">Uploaded</div>
-      <SvgIcon name="delete" />
+      <div class="upload-video__value">{{ videoName }}</div>
+      <SvgIcon name="delete" @click="removeVideo" />
     </div>
   </div>
 </template>
@@ -43,11 +43,13 @@ const emit = defineEmits(['update:modelValue'])
 const internalFile = ref(props.modelValue || null)
 const fileInput = ref(null)
 const videoUrl = ref(null)
+const videoName = ref('')
 
 watch(internalFile, (newFile) => {
   emit('update:modelValue', newFile)
   if (newFile) {
     videoUrl.value = URL.createObjectURL(newFile)
+    videoName.value = newFile.name ?? ''
   } else {
     videoUrl.value = null
   }
@@ -63,11 +65,16 @@ watch(
   }
 )
 
-function triggerFileSelect() {
+const removeVideo = () => {
+  videoUrl.value = null
+  emit('update:modelValue', videoUrl.value)
+}
+
+const triggerFileSelect = () => {
   fileInput?.value?.click()
 }
 
-function handleFileChange(file) {
+const handleFileChange = (file) => {
   console.error(file)
 }
 </script>

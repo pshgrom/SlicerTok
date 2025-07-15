@@ -1,27 +1,7 @@
-import axios from 'axios'
+import api from './axios'
 import type { ITableParams } from '@/interfaces/AppModel'
 
-export const getDataWallet = (data: ITableParams) => {
-  const token = localStorage.getItem('authToken')
-  const instWithCred = axios.create({
-    baseURL: 'http://localhost:80/api',
-    // baseURL: 'http://localhost:80/api',
-    params: data,
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-  return instWithCred.get('/admin/payment-list')
-}
+export const getDataWallet = (data: ITableParams) =>
+  api.get('/admin/payment-list', { params: data })
 
-export const getPaymentStatistic = () => {
-  const token = localStorage.getItem('authToken')
-  const instWithCred = axios.create({
-    baseURL: 'http://localhost:80/api',
-    // baseURL: 'http://localhost:80/api',
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-  return instWithCred.get('/admin/payment-statistic')
-}
+export const getPaymentStatistic = () => api.get('/admin/payment-statistic')
