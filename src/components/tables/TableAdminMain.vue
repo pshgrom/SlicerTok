@@ -24,9 +24,21 @@
             <div class="font-weight-medium text-primary mb-4">{{ formatLabel(groupName) }}</div>
             <div class="d-flex align-center mb-4">
               <strong class="mr-4" style="color: #1867c0">Статус:</strong>
-              <v-chip :color="getStatusColor(group.status)">
-                <div>{{ getTextStatus(group.status) }}</div>
-              </v-chip>
+              <div
+                v-if="group.status"
+                class="custom-table-chip"
+                :style="{
+                  'background-color': getStatusColor(group.status),
+                  color: getColor(group.status)
+                }"
+              >
+                <div class="custom-table-chip__icon">
+                  <SvgIcon :name="getIcon(group.status)" />
+                </div>
+                <div class="custom-table-chip__status">
+                  {{ getTextStatus(group.status) }}
+                </div>
+              </div>
             </div>
             <div style="color: #1867c0">
               <strong class="mr-4">Комментарий:</strong>
@@ -46,9 +58,21 @@
       </a>
     </template>
     <template #[`item.status`]="{ item }">
-      <v-chip :color="getStatusColor(item.status)">
-        <div>{{ getTextStatus(item.status) }}</div>
-      </v-chip>
+      <div
+        v-if="item.status"
+        class="custom-table-chip"
+        :style="{
+          'background-color': getStatusColor(item.status),
+          color: getColor(item.status)
+        }"
+      >
+        <div class="custom-table-chip__icon">
+          <SvgIcon :name="getIcon(item.status)" />
+        </div>
+        <div class="custom-table-chip__status">
+          {{ getTextStatus(item.status) }}
+        </div>
+      </div>
     </template>
     <template #[`item.created_at`]="{ item }">
       {{ formatDate(item.created_at) }}
@@ -71,7 +95,9 @@ import {
   getTextStatus,
   getStatusColor,
   getIconSocial,
-  getNameSocialMedia
+  getNameSocialMedia,
+  getColor,
+  getIcon
 } from '@/utils/socials.ts'
 import { formatDate } from '@/utils/formatDate.ts'
 

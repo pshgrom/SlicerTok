@@ -9,6 +9,7 @@ export const getNameSocialMedia = (url: string): string => {
 export const getTextStatus = (status: string): string => {
   switch (status) {
     case 'create':
+    case 'todo':
       return 'Новая'
     case 'approved':
       return 'Одобрено'
@@ -22,6 +23,7 @@ export const getTextStatus = (status: string): string => {
 export const getStatusColor = (status: string): string => {
   switch (status) {
     case 'create':
+    case 'todo':
       return 'rgba(229, 236, 253, 1)'
     case 'approved':
       return 'rgba(187, 251, 228, 1)'
@@ -49,6 +51,7 @@ export const getIconSocial = (url: string): string => {
 export const getColor = (status: string): string => {
   switch (status) {
     case 'create':
+    case 'todo':
       return 'rgba(34, 93, 255, 1)'
     case 'approved':
       return 'rgba(16, 154, 106, 1)'
@@ -63,6 +66,7 @@ export const getIcon = (status: string): string => {
   let icon = ''
   switch (status) {
     case 'create':
+    case 'todo':
       icon = 'status-new'
       break
     case 'approved':

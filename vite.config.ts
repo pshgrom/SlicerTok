@@ -91,7 +91,7 @@ export default defineConfig({
               return 'vendor_vuetify_core'
             }
           }
-          // if (id.includes('src/views/') && !id.includes('LoginView.vue')) return 'views'
+          if (id.includes('src/views/')) return 'views'
           if (id.includes('src/components/')) return 'components'
         },
         chunkFileNames: 'assets/[name]-[hash].js',
