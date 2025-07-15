@@ -6,8 +6,8 @@ import {
   type NavigationGuardNext
 } from 'vue-router'
 import { useLoader } from '@/stores/GlobalLoader.ts'
-import LoginView from '@/views/LoginView.vue'
-import LoginViewAdmin from '@/views/LoginViewAdmin.vue'
+// import LoginView from '@/views/LoginView.vue'
+// import LoginViewAdmin from '@/views/LoginViewAdmin.vue'
 import { ROLES, type RoleType } from '@/constants/roles'
 
 declare module 'vue-router' {
@@ -25,12 +25,12 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'Login',
-    component: () => LoginView
+    component: () => import('@/views/LoginView.vue')
   },
   {
     path: '/login-admin',
     name: 'LoginAdmin',
-    component: () => LoginViewAdmin
+    component: () => import('@/views/LoginViewAdmin.vue')
   },
   {
     path: '/:catchAll(.*)',
