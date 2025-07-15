@@ -10,13 +10,18 @@
           <VCustomInput
             v-model="videoFields.videoLink"
             label="Ссылка на видео *"
-            :rules="[videoRules.required, videoRules.url, videoRules.noShare]"
+            :rules="[
+              videoRules.required,
+              videoRules.url,
+              videoRules.noShare,
+              videoRules.quantityLink
+            ]"
             class="mb-4"
           />
           <VCustomInput
             v-model="videoFields.number_views"
             label="Количество просмотров *"
-            :rules="[videoRules.required]"
+            :rules="[videoRules.required, videoRules.quantityViews]"
             class="mb-4"
             required
             @input="onInput"
