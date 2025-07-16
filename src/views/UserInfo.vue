@@ -46,6 +46,7 @@
       v-if="dialogVideo"
       v-model="dialogVideo"
       :wallet="currentWallet"
+      :loading="loading"
       @submit="submitVideo"
     />
   </div>
@@ -74,6 +75,7 @@ const authStore = useAuth()
 
 const wallets = ref<IWallet[]>([])
 const isModalOpen = ref(false)
+const loading = ref(false)
 
 const phoneStore = computed(() => authStore.phone)
 
@@ -121,12 +123,14 @@ const submitVideo = async ({ videoFile, videoLink, number_views }: IUploadVideo)
   formData.append('video_stat', videoFile)
   formData.append('number_views', cleanNumber(number_views))
   try {
+    loading.value = true
     resetPage()
     await userInfo.createPublication(formData)
   } catch (e: any) {
     errorStore.setErrors(e)
   } finally {
     closeDialog()
+    loading.value = false
   }
 }
 

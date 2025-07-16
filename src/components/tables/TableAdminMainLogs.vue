@@ -6,6 +6,8 @@
     :items-per-page="itemsPerPage"
     class="custom-table"
     hover
+    height="80vh"
+    fixed-header
     hide-default-footer
   >
     <template #loading>

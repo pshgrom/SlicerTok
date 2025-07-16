@@ -6,6 +6,8 @@
     :items-per-page="itemsPerPage"
     class="custom-table"
     hover
+    height="80vh"
+    fixed-header
     hide-default-footer
   >
     <template #loading>
@@ -20,10 +22,15 @@
           cols="auto"
           style="min-width: 250px"
         >
-          <v-card class="pa-3" color="grey-lighten-4" variant="outlined" rounded>
+          <v-card
+            class="pa-3"
+            color="grey-lighten-4"
+            variant="outlined"
+            rounded
+            style="border: none !important"
+          >
             <div class="font-weight-medium text-primary mb-4">{{ formatLabel(groupName) }}</div>
             <div class="d-flex align-center mb-4">
-              <strong class="mr-4" style="color: #1867c0">Статус:</strong>
               <div
                 v-if="group.status"
                 class="custom-table-chip"
@@ -41,7 +48,7 @@
               </div>
             </div>
             <div style="color: #1867c0">
-              <strong class="mr-4">Комментарий:</strong>
+              <strong class="mr-4">Комментарий:</strong><br />
               {{ group.status_comment }}
             </div>
           </v-card>

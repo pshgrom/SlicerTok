@@ -78,7 +78,7 @@ export const adminInfoHeaders = [
     value: 'id'
   },
   { title: 'Ссылка', value: 'url' },
-  { title: 'Ключ', value: 'key' },
+  { title: 'Ключ', value: 'identifier' },
   { title: 'Статистика', value: 'video_stat_link' },
   { title: 'Просмотры', value: 'number_views' },
   { title: 'Статус', value: 'status' },
@@ -91,11 +91,12 @@ export const supportHeaders = [
     title: 'ID',
     value: 'id'
   },
-  { title: 'Ключ', value: 'key' },
+  { title: 'Ключ', value: 'identifier' },
   { title: 'Просмотры', value: 'number_views' },
   { title: 'Ссылка', value: 'url' },
   { title: 'Статистика', value: 'video_stat_link' },
-  { title: 'Статус модераторов', value: 'status_moderation' }
+  { title: 'Статус модераторов', value: 'status_moderation' },
+  { title: 'Действия', value: 'actions' }
 ]
 
 export const adminInfoCheckedHeaders = [
@@ -104,7 +105,7 @@ export const adminInfoCheckedHeaders = [
     value: 'id'
   },
   { title: 'Ссылка', value: 'url' },
-  { title: 'Ключ', value: 'key' },
+  { title: 'Ключ', value: 'identifier' },
   { title: 'Статистика', value: 'video_stat_link' },
   { title: 'Просмотры', value: 'number_views' },
   { title: 'Статус', value: 'status' },
@@ -125,7 +126,7 @@ export const adminMain = [
     title: 'ID',
     value: 'id'
   },
-  { title: 'Ключ', value: 'key' },
+  { title: 'Ключ', value: 'identifier' },
   { title: 'Дата загрузки', value: 'created_at' },
   { title: 'Количество просмотров', value: 'number_views' },
   { title: 'Статус', value: 'status' },

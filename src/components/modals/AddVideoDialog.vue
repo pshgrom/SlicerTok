@@ -36,7 +36,7 @@
       </v-card-text>
       <v-card-actions>
         <VCusomButton :customClass="['light', 'avg']" @click="closeDialog"> Отмена </VCusomButton>
-        <VCusomButton :customClass="['dark', 'avg']" @click="submitVideo">
+        <VCusomButton :customClass="['dark', 'avg']" :loading="loading" @click="submitVideo">
           Отправить заявку
         </VCusomButton>
       </v-card-actions>
@@ -59,6 +59,10 @@ const props = defineProps({
   wallet: {
     type: Object as PropType<IWallet>,
     default: () => ({})
+  },
+  loading: {
+    type: Boolean,
+    default: false
   }
 })
 

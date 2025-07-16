@@ -5,6 +5,7 @@
     :isLoading="isLoading"
     :items="calcDataItems"
     :itemsPerPage="queryParams.perPage"
+    @actionRequest="actionRequest"
   ></TableSupport>
   <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
     <TablePagination
@@ -67,6 +68,15 @@ const getRequest = () => {
     }
   })
   supportStore.getPublicationsList(queryParams.value)
+}
+
+const actionRequest = (id: number, status: string) => {
+  const data = {
+    id,
+    status
+  }
+  supportStore.actionRequest(data)
+  getRequest()
 }
 
 onMounted(() => {

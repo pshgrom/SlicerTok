@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import type { ITableParams, IUserInfo, IAdminInfoData } from '@/interfaces/AppModel'
-import { doubleCheckQuery, getPublicationListQuery } from '@/api/support'
+import { actionRequestQuery, getPublicationListQuery } from '@/api/support'
 import { useError } from '@/stores/Errors'
 // import type { ISupportSaveStatus } from '@/interfaces/ISupport'
 
@@ -23,13 +23,13 @@ export const useSupport = defineStore('supportStore', () => {
     }
   }
 
-  // const doubleCheck = async (data: ISupportSaveStatus) => {
-  //   try {
-  //     await doubleCheckQuery(data)
-  //   } catch (error: any) {
-  //     errorStore.setErrors(error.response?.data?.message ?? '')
-  //   }
-  // }
+  const actionRequest = async (data: any) => {
+    try {
+      await actionRequestQuery(data)
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    }
+  }
 
   const getPublicationsList = async (params: ITableParams) => {
     try {
@@ -58,7 +58,7 @@ export const useSupport = defineStore('supportStore', () => {
   return {
     isLoading,
     getPublicationsList,
-    // doubleCheck,
+    actionRequest,
     items,
     preloadUserInfo,
     queryParams,
