@@ -189,7 +189,6 @@ const totalPages = computed(() =>
 
 const openPaymentDialog = () => {
   const { phone, telegram } = user.value
-  // wallets.value.length = 0
   if (!phone || !telegram || !wallets.value.length) {
     errorStore.setErrors(
       'Пожалуйста, заполните поля: <br> Имя <br> Телефон <br> Telegram <br> и добавьте хотя бы один кошелёк.'

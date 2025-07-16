@@ -39,42 +39,33 @@
         <v-col
           v-for="(group, groupName) in item.status_moderation"
           :key="groupName"
-          class="pa-2"
           cols="auto"
           style="min-width: 250px"
         >
-          <v-card
-            class="pa-3"
-            color="grey-lighten-4"
-            variant="outlined"
-            rounded
-            style="border: none !important"
-          >
-            <div class="font-weight-medium text-primary mb-4">{{ formatLabel(groupName) }}</div>
-            <div class="d-flex align-center mb-4">
-              <div
-                v-if="group.status"
-                class="custom-table-chip"
-                :style="{
-                  'background-color': getStatusColor(group.status),
-                  color: getColor(group.status)
-                }"
-              >
-                <div class="custom-table-chip__icon">
-                  <SvgIcon :name="getIcon(group.status)" />
-                </div>
-                <div class="custom-table-chip__status">
-                  {{ getTextStatus(group.status) }}
-                </div>
+          <v-card class="info-admin" variant="outlined" rounded style="border: none !important">
+            <div class="info-admin__title">{{ formatLabel(groupName) }}</div>
+            <div
+              v-if="group.status"
+              class="custom-table-chip"
+              :style="{
+                'background-color': getStatusColor(group.status),
+                color: getColor(group.status)
+              }"
+            >
+              <div class="custom-table-chip__icon">
+                <SvgIcon :name="getIcon(group.status)" />
+              </div>
+              <div class="custom-table-chip__status">
+                {{ getTextStatus(group.status) }}
               </div>
             </div>
-            <div style="color: #1867c0">
-              <strong class="mr-4">Комментарий:</strong><br />
-              {{ group.status_comment }}
+            <div class="info-admin-comment">
+              <div class="info-admin-comment__label">Комментарий:</div>
+              <div class="info-admin-comment__value">{{ group.status_comment }}</div>
             </div>
             <VCusomButton
               :disabled="!group.rules?.length"
-              class="mt-4"
+              class="mt-3"
               :customClass="['light']"
               @click="openRules(group)"
             >
@@ -176,3 +167,31 @@ const formatLabel = (label: string) => {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.info-admin {
+  padding: 12px 12px 12px 0;
+
+  &__title {
+    font-weight: 500;
+    font-size: 14px;
+    color: rgba(17, 17, 17, 1);
+    margin-bottom: 12px;
+  }
+
+  &-comment {
+    margin-top: 10px;
+
+    &__label {
+      color: rgba(143, 150, 165, 1);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    &__value {
+      color: rgba(0, 0, 0, 1);
+      font-size: 14px;
+      line-height: 140%;
+    }
+  }
+}
+</style>

@@ -6,12 +6,13 @@
         <v-btn icon="mdi-close" variant="text" @click="dialog = false" />
       </v-card-title>
       <v-card-text>
+        <!--        TPAgKfYzRdK83Qocc4gXvEVu4jPKfeuer5-->
         <v-form ref="formRef">
           <VCustomInput
             v-model="wallet.address"
             label="Адрес кошелька"
             required
-            :rules="[requiredRules.required]"
+            :rules="[requiredRules.required, walletRules.isValidWallet]"
             autofocus
           />
         </v-form>
@@ -28,7 +29,7 @@
 <script setup lang="ts">
 import { reactive, computed, ref } from 'vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
-import { requiredRules } from '@/utils/validators.ts'
+import { requiredRules, walletRules } from '@/utils/validators.ts'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 
 const props = defineProps({

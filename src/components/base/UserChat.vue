@@ -19,7 +19,7 @@
           <div class="chat-messages-item__time">{{ getTime(msg.created_at) }}</div>
         </div>
       </div>
-      <h2 v-else>Пока нет сообщений</h2>
+      <h3 v-else class="chat-messages">Пока нет сообщений</h3>
     </div>
     <div class="chat__actions">
       <VCustomInput

@@ -5,7 +5,7 @@
     :isLoading="isLoading"
     :items="calcDataItems"
     :itemsPerPage="queryParams.perPage"
-    @actionRequest="actionRequest"
+    @action-request="actionRequest"
   ></TableSupport>
   <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
     <TablePagination

@@ -73,7 +73,7 @@ const errorStore = useError()
 const menuRef = ref<HTMLElement | null>(null)
 
 const getBgColor = () => {
-  if (props.index) {
+  if (props.index && !props.onlyRead) {
     switch (props.index) {
       case 0:
         return 'rgba(179, 246, 255, 1)'
@@ -84,8 +84,9 @@ const getBgColor = () => {
       default:
         return 'rgba(179, 246, 255, 1)'
     }
+  } else if (props.onlyRead) {
+    return 'rgb(242, 246, 254)'
   }
-  return 'rgba(179, 246, 255, 1)'
 }
 
 const openIndex = computed({
@@ -312,6 +313,8 @@ onBeforeUnmount(() => {
     width: 299px;
     height: 110px;
     margin: 0;
+    background: transparent;
+    border: 1px solid rgb(211, 219, 237) !important;
 
     @media (max-width: 1024px) {
       width: 237px;

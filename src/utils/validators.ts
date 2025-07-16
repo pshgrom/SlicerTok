@@ -18,3 +18,22 @@ export const infoRules = {
 export const requiredRules = {
   required: (v: any) => !!v || 'Обязательное поле'
 }
+
+export const walletRules = {
+  required: (v: any) => !!v || 'Обязательное поле',
+
+  isValidWallet: (v: string) => {
+    if (!v || typeof v !== 'string') return true // не дублируем required
+
+    const trimmed = v.trim()
+
+    const isETH = /^0x[a-fA-F0-9]{40}$/.test(trimmed)
+    const isBTC = /^(1|3)[a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(trimmed)
+    const isBTCBech32 = /^bc1[ac-hj-np-z02-9]{11,71}$/.test(trimmed)
+    const isTRC20 = /^T[a-zA-Z0-9]{33}$/.test(trimmed)
+
+    if (isETH || isBTC || isBTCBech32 || isTRC20) return true
+
+    return 'Неверный формат адреса кошелька'
+  }
+}
