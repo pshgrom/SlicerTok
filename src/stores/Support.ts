@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import type { ITableParams, IUserInfo, IAdminInfoData } from '@/interfaces/AppModel'
 import { doubleCheckQuery, getPublicationListQuery } from '@/api/support'
 import { useError } from '@/stores/Errors'
-import type { ISupportSaveStatus } from '@/interfaces/ISupport'
+// import type { ISupportSaveStatus } from '@/interfaces/ISupport'
 
 export const useSupport = defineStore('supportStore', () => {
   const isLoading = ref<boolean>(false)
@@ -23,13 +23,13 @@ export const useSupport = defineStore('supportStore', () => {
     }
   }
 
-  const doubleCheck = async (data: ISupportSaveStatus) => {
-    try {
-      await doubleCheckQuery(data)
-    } catch (error: any) {
-      errorStore.setErrors(error.response?.data?.message ?? '')
-    }
-  }
+  // const doubleCheck = async (data: ISupportSaveStatus) => {
+  //   try {
+  //     await doubleCheckQuery(data)
+  //   } catch (error: any) {
+  //     errorStore.setErrors(error.response?.data?.message ?? '')
+  //   }
+  // }
 
   const getPublicationsList = async (params: ITableParams) => {
     try {
@@ -58,7 +58,7 @@ export const useSupport = defineStore('supportStore', () => {
   return {
     isLoading,
     getPublicationsList,
-    doubleCheck,
+    // doubleCheck,
     items,
     preloadUserInfo,
     queryParams,

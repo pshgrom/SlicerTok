@@ -9,15 +9,21 @@
     :show-size="true"
     clearable
     @change="handleFileChange"
-  ></v-file-input>
+  />
+
   <div class="upload-video" :class="{ 'upload-video_uploaded': videoUrl }">
-    <template v-if="!videoUrl">
+    <template v-if="isUploading">
+      <VProgressCircular indeterminate color="primary" size="40" />
+    </template>
+
+    <template v-else-if="!videoUrl">
       <div class="upload-video__label">{{ label }}</div>
       <div class="upload-video__text">Загрузите короткое видео с доказательством статистики</div>
-      <VCusomButton :customClass="['light']" @click="triggerFileSelect"
-        >Загрузить видео</VCusomButton
-      >
+      <VCusomButton :customClass="['light']" @click="triggerFileSelect">
+        Загрузить видео
+      </VCusomButton>
     </template>
+
     <div v-else class="upload-video__uploaded">
       <div class="upload-video__value">{{ videoName }}</div>
       <SvgIcon name="delete" @click="removeVideo" />
@@ -29,6 +35,7 @@
 import { ref, watch } from 'vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
+import { VProgressCircular } from 'vuetify/components'
 
 const props = defineProps({
   modelValue: File,
@@ -44,14 +51,21 @@ const internalFile = ref(props.modelValue || null)
 const fileInput = ref(null)
 const videoUrl = ref(null)
 const videoName = ref('')
+const isUploading = ref(false)
 
 watch(internalFile, (newFile) => {
   emit('update:modelValue', newFile)
+
   if (newFile) {
-    videoUrl.value = URL.createObjectURL(newFile)
-    videoName.value = newFile.name ?? ''
+    isUploading.value = true
+    setTimeout(() => {
+      videoUrl.value = URL.createObjectURL(newFile)
+      videoName.value = newFile.name ?? ''
+      isUploading.value = false
+    }, 500)
   } else {
     videoUrl.value = null
+    isUploading.value = false
   }
 })
 
@@ -67,7 +81,7 @@ watch(
 
 const removeVideo = () => {
   videoUrl.value = null
-  emit('update:modelValue', videoUrl.value)
+  emit('update:modelValue', null)
 }
 
 const triggerFileSelect = () => {
@@ -75,7 +89,7 @@ const triggerFileSelect = () => {
 }
 
 const handleFileChange = (file) => {
-  console.error(file)
+  // Валидация или доп. логика если нужно
 }
 </script>
 

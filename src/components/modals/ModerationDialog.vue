@@ -2,12 +2,11 @@
   <v-dialog v-model="dialogModel" class="custom-modal" max-width="500px" persistent>
     <v-card>
       <v-card-title>
-        <span class="headline">Модерировать заявку</span>
+        <span class="headline">Проверка заявки</span>
         <v-btn icon="mdi-close" variant="text" @click="dialogModel = false" />
       </v-card-title>
       <v-card-text>
         <v-form ref="formRef">
-          <VCustomSelect v-model="currentItem.status" :items="allStatuses" :label="'Статус'" />
           <div v-for="option in tasks" :key="option.key">
             <v-checkbox
               :label="option.name"
@@ -16,9 +15,16 @@
               @update:model-value="(val) => (selectedTasks[option.key] = val)"
             />
           </div>
+          <VCustomSelect
+            v-model="currentItem.status"
+            :items="allStatuses"
+            class="mt-4"
+            :label="'Статус'"
+          />
           <v-textarea
             v-model="currentItem.status_comment"
             variant="underlined"
+            class="mb-4"
             label="Комментарий..."
             auto-grow
             rows="1"
@@ -34,7 +40,7 @@
           :disabled="currentItem.status === 'todo'"
           @click="change"
         >
-          Изменить
+          Сохранить
         </VCusomButton>
       </v-card-actions>
     </v-card>
@@ -96,7 +102,6 @@ const closeDialog = () => {
 
 const resetForm = () => {
   currentItem.value = { ...initialValue.value }
-  console.error('currentItem.value', currentItem.value)
 }
 
 const change = () => {

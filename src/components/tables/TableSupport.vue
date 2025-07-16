@@ -60,9 +60,6 @@
                   {{ getTextStatus(group.status) }}
                 </div>
               </div>
-              <v-btn class="ml-2" icon size="24" @click="openModal(group.id)">
-                <v-icon>mdi-refresh</v-icon>
-              </v-btn>
             </div>
             <div style="color: #1867c0">
               <strong class="mr-4">Комментарий:</strong>
@@ -81,20 +78,13 @@
       </v-row>
     </template>
   </v-data-table>
-  <CheckDialog
-    v-if="openDialog"
-    v-model="openDialog"
-    :currentIdStatus="currentIdStatus"
-    @return-record="returnRecord"
-  />
   <ShowRulesModal v-if="showRules" v-model="showRules" :currentRules="currentRules" />
 </template>
 
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
-import CheckDialog from '@/components/modals/CheckDialog.vue'
-import type { ISupportSaveStatus } from '@/interfaces/ISupport'
+// import type { ISupportSaveStatus } from '@/interfaces/ISupport'
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import { formatNumber } from '@/utils/formatNumbers.ts'
 import {
@@ -107,8 +97,6 @@ import {
 } from '@/utils/socials.ts'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import ShowRulesModal from '@/components/modals/ShowRulesModal.vue'
-
-const emit = defineEmits(['returnRecord'])
 
 const props = defineProps({
   headers: {
@@ -131,10 +119,8 @@ const props = defineProps({
 
 const headersData = ref(props.headers)
 
-const openDialog = ref(false)
 const showRules = ref(false)
 const currentRules = ref([])
-const currentIdStatus = ref<null | number>(null)
 
 const computedHeaders = computed<ITableHeaders[]>({
   get() {
@@ -149,15 +135,6 @@ const openRules = (group) => {
   currentRules.value = group.rules
   console.log(group)
   showRules.value = true
-}
-
-const openModal = (id: number) => {
-  currentIdStatus.value = id
-  openDialog.value = true
-}
-
-const returnRecord = (data: ISupportSaveStatus) => {
-  emit('returnRecord', data)
 }
 
 const formatLabel = (label: string) => {

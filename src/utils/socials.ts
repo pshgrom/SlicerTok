@@ -11,6 +11,8 @@ export const getTextStatus = (status: string): string => {
     case 'create':
     case 'todo':
       return 'Новая'
+    case 'moderation':
+      return 'На модерации'
     case 'approved':
       return 'Одобрено'
     case 'rejected':
@@ -24,6 +26,8 @@ export const getStatusColor = (status: string): string => {
   switch (status) {
     case 'create':
     case 'todo':
+      return 'rgba(229, 236, 253, 1)'
+    case 'moderation':
       return 'rgba(229, 236, 253, 1)'
     case 'approved':
       return 'rgba(187, 251, 228, 1)'
@@ -53,6 +57,8 @@ export const getColor = (status: string): string => {
     case 'create':
     case 'todo':
       return 'rgba(34, 93, 255, 1)'
+    case 'moderation':
+      return 'rgba(34, 93, 255, 1)'
     case 'approved':
       return 'rgba(16, 154, 106, 1)'
     case 'rejected':
@@ -68,6 +74,9 @@ export const getIcon = (status: string): string => {
     case 'create':
     case 'todo':
       icon = 'status-new'
+      break
+    case 'moderation':
+      icon = 'status-ok'
       break
     case 'approved':
       icon = 'status-ok'

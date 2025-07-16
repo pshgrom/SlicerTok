@@ -5,7 +5,6 @@
     :isLoading="isLoading"
     :items="calcDataItems"
     :itemsPerPage="queryParams.perPage"
-    @return-record="returnRecord"
   ></TableSupport>
   <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
     <TablePagination
@@ -25,7 +24,7 @@ import { supportHeaders } from '@/constants/tableHeaders'
 import { useRouter } from 'vue-router'
 import { useSupport } from '@/stores/Support'
 import TableSupport from '@/components/tables/TableSupport.vue'
-import type { ISupportSaveStatus } from '@/interfaces/ISupport'
+// import type { ISupportSaveStatus } from '@/interfaces/ISupport'
 
 const headers = ref<ITableHeaders[]>(supportHeaders)
 
@@ -68,11 +67,6 @@ const getRequest = () => {
     }
   })
   supportStore.getPublicationsList(queryParams.value)
-}
-
-const returnRecord = async (data: ISupportSaveStatus) => {
-  await supportStore.doubleCheck(data)
-  getRequest()
 }
 
 onMounted(() => {
