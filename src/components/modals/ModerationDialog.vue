@@ -10,6 +10,7 @@
           <div v-for="option in tasks" :key="option.key">
             <v-checkbox
               :label="option.name"
+              density="compact"
               hide-details
               :model-value="selectedTasks[option.key] || false"
               @update:model-value="(val) => (selectedTasks[option.key] = val)"

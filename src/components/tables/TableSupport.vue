@@ -63,14 +63,10 @@
               <div class="info-admin-comment__label">Комментарий:</div>
               <div class="info-admin-comment__value">{{ group.status_comment }}</div>
             </div>
-            <VCusomButton
-              :disabled="!group.rules?.length"
-              class="mt-3"
-              :customClass="['light']"
-              @click="openRules(group)"
-            >
-              Показать нарушения
-            </VCusomButton>
+            <div class="info-admin-comment">
+              <div class="info-admin-comment__label">Нарушения:</div>
+              <div class="info-admin-comment__value" v-html="showViolations(group.rules)"></div>
+            </div>
           </v-card>
         </v-col>
       </v-row>
@@ -94,7 +90,7 @@
       </div>
     </template>
   </v-data-table>
-  <ShowRulesModal v-if="showRules" v-model="showRules" :currentRules="currentRules" />
+  <!--  <ShowRulesModal v-if="showRules" v-model="showRules" :currentRules="currentRules" />-->
 </template>
 
 <script setup lang="ts">
@@ -112,7 +108,7 @@ import {
   getIcon
 } from '@/utils/socials.ts'
 import VCusomButton from '@/components/base/VCusomButton.vue'
-import ShowRulesModal from '@/components/modals/ShowRulesModal.vue'
+// import ShowRulesModal from '@/components/modals/ShowRulesModal.vue'
 
 const props = defineProps({
   headers: {
@@ -137,8 +133,8 @@ const emit = defineEmits(['actionRequest'])
 
 const headersData = ref(props.headers)
 
-const showRules = ref(false)
-const currentRules = ref([])
+// const showRules = ref(false)
+// const currentRules = ref([])
 
 const computedHeaders = computed<ITableHeaders[]>({
   get() {
@@ -149,9 +145,18 @@ const computedHeaders = computed<ITableHeaders[]>({
   }
 })
 
-const openRules = (group) => {
-  currentRules.value = group.rules
-  showRules.value = true
+// const openRules = (group) => {
+//   // currentRules.value = group.rules
+//   // showRules.value = true
+// }
+
+const showViolations = (rules: any) => {
+  return (
+    rules
+      .filter((item) => !item.value)
+      .map((el, index) => `${index + 1}. ${el.name}`)
+      .join('<br>') || '-'
+  )
 }
 
 const actionRequest = (id: number, status: string) => {
