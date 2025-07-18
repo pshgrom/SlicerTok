@@ -7,6 +7,14 @@
       </v-card-title>
       <v-card-text>
         <v-form ref="formRef">
+          <v-checkbox
+            v-model="selectAll"
+            label="Выбрать все"
+            density="compact"
+            hide-details
+            @change="toggleSelectAll"
+          />
+          <v-divider />
           <div v-for="option in tasks" :key="option.key">
             <v-checkbox
               :label="option.name"
@@ -49,7 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useAdminInfo } from '@/stores/AdminInfo.ts'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomSelect from '@/components/base/VCustomSelect.vue'
@@ -68,6 +76,8 @@ const adminInfo = useAdminInfo()
 
 const initialValue = ref({})
 
+const selectAll = ref(false)
+
 const allStatuses = [
   { label: 'Новая', value: 'todo', disabled: true },
   { label: 'Одобрено', value: 'approved' },
@@ -76,6 +86,11 @@ const allStatuses = [
 
 const formRef = ref(null)
 
+const toggleSelectAll = () => {
+  Object.keys(selectedTasks.value).forEach((key) => {
+    selectedTasks.value[key] = selectAll.value
+  })
+}
 const dialogModel = computed({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val)
@@ -109,6 +124,17 @@ const change = () => {
   emit('changeState', currentItem.value, selectedTasks.value)
   emit('update:modelValue', false)
 }
+
+watch(
+  () => Object.values(selectedTasks.value),
+  (vals) => {
+    const allChecked = vals.length === tasks.value.length && vals.every((v) => v)
+    if (selectAll.value !== allChecked) {
+      selectAll.value = allChecked
+    }
+  },
+  { deep: true }
+)
 
 adminInfo.getTask()
 </script>
