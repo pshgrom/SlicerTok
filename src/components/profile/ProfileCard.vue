@@ -97,11 +97,13 @@ const showDialog = (val: boolean) => {
 .profile {
   border: 4px solid rgba(255, 255, 255, 1);
   min-width: 474px;
-  height: 259px;
+  min-height: 259px;
   border-radius: 16px;
   margin-right: 12px;
   width: 100%;
+  height: 100%;
   position: relative;
+  background: #fff;
 
   &:after {
     content: '';
@@ -190,9 +192,12 @@ const showDialog = (val: boolean) => {
 
       &__value {
         color: rgba(17, 17, 17, 1);
-        font-weight: 500;
         margin-left: 8px;
         font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 280px;
 
         span {
           color: rgba(143, 150, 165, 1);
