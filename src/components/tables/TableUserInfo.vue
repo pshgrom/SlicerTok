@@ -49,11 +49,9 @@
         </div>
       </div>
     </template>
-    <!--    <template v-slot:[`item.status_comment`]="{ item }">-->
-    <!--      <div style="white-space: pre-wrap">-->
-    <!--        {{ item.status_comment || '—' }}-->
-    <!--      </div>-->
-    <!--    </template>-->
+    <template #[`item.rules`]="{ item }">
+      <div class="pt-4 pb-4" v-html="showRules(item.rules)"></div>
+    </template>
   </v-data-table>
 </template>
 
@@ -91,6 +89,15 @@ const props = defineProps({
 })
 
 const headersData = ref(props.headers)
+
+const showRules = (rules: any) => {
+  return (
+    rules
+      .filter((item) => !item.value)
+      .map((el, index) => `${index + 1}. ${el.name}`)
+      .join('<br>') || '-'
+  )
+}
 
 const computedHeaders = computed<ITableHeaders[]>({
   get() {

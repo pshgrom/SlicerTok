@@ -68,8 +68,8 @@ export const userInfoHeaders = [
   { title: 'Ссылка', value: 'url' },
   { title: 'Статистика', value: 'video_stat_link' },
   { title: 'Просмотры', value: 'number_views' },
-  { title: 'Статус', value: 'status' }
-  // { title: 'Комментарии', value: 'status_moderation_comment' }
+  { title: 'Статус', value: 'status' },
+  { title: 'Причины отказа', value: 'rules' }
 ]
 
 export const adminInfoHeaders = [

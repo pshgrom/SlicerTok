@@ -81,11 +81,11 @@ export const getIcon = (status: string): string => {
   switch (status) {
     case 'create':
     case 'todo':
+    case 'moderation':
       icon = 'status-new'
       break
-    case 'moderation':
     case 'awaiting_payment':
-      icon = 'status-ok'
+      icon = 'status-awaiting-payment'
       break
     case 'approved':
     case 'paid':
