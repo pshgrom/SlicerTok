@@ -34,6 +34,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     id = '',
     status = '',
     status_comment = '',
+    number_views = '',
     rules = {}
   }) => {
     try {
@@ -41,6 +42,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
         id,
         status,
         ...(status_comment ? { status_comment } : {}),
+        number_views: +number_views,
         rules
       }
       await setPublicationStatusQuery(data)
