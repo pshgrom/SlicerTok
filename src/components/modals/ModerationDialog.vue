@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialogModel" class="custom-modal" max-width="500px" persistent>
+  <v-dialog v-model="dialogModel" class="custom-modal" max-width="600px" persistent>
     <v-card>
       <v-card-title>
         <span class="headline">Проверка заявки</span>
@@ -15,7 +15,7 @@
             @change="toggleSelectAll"
           />
           <v-divider />
-          <div v-for="option in tasks" :key="option.key">
+          <div v-for="(option, index) in tasks" :key="option.key">
             <v-checkbox
               :label="option.name"
               density="compact"
