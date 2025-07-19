@@ -27,8 +27,14 @@
           <VCustomSelect
             v-model="currentItem.status"
             :items="allStatuses"
-            class="mt-4"
+            class="mt-4 mb-4"
             :label="'Статус'"
+          />
+          <VCustomInput
+            v-model="currentItem.number_views"
+            label="Количество просмотров по факту"
+            :rules="[videoRules.quantityViews]"
+            @input="onInput"
           />
           <v-textarea
             v-model="currentItem.status_comment"
@@ -61,6 +67,8 @@ import { ref, computed, watch } from 'vue'
 import { useAdminInfo } from '@/stores/AdminInfo.ts'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomSelect from '@/components/base/VCustomSelect.vue'
+import VCustomInput from '@/components/base/VCustomInput.vue'
+import { videoRules } from '@/utils/validators.ts'
 
 const props = defineProps({
   modelValue: Boolean,
@@ -123,6 +131,11 @@ const resetForm = () => {
 const change = () => {
   emit('changeState', currentItem.value, selectedTasks.value)
   emit('update:modelValue', false)
+}
+
+const onInput = (val) => {
+  const digitsOnly = val.target.value.replace(/\D/g, '')
+  currentItem.value.number_views = digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
 
 watch(

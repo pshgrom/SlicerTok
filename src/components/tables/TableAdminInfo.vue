@@ -129,7 +129,10 @@ const getStatus = (status: string) => {
 }
 
 const showDialog = (item) => {
-  currentItem.value = item
+  currentItem.value = {
+    ...item,
+    number_views: item.number_views ?? ''
+  }
   dialog.value = true
 }
 

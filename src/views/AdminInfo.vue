@@ -59,13 +59,18 @@ const changePage = (page: number) => {
   getRequest()
 }
 
+const cleanNumber = (str: string) => {
+  return str.replace(/\D/g, '')
+}
+
 const changeState = (item, selectedTasks) => {
-  const { id, status, status_comment } = item
+  const { id, status, status_comment, number_views } = item
 
   const data = {
     id,
     status,
     status_comment,
+    number_views: cleanNumber(number_views),
     rules: selectedTasks
   }
   adminInfo.setPublicationStatus(data)
