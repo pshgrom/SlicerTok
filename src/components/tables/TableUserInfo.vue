@@ -94,7 +94,7 @@ const showRules = (rules: any) => {
   return (
     rules
       .filter((item) => !item.value)
-      .map((el, index) => `${index + 1}. ${el.name}`)
+      .map((el, index) => `${index + 1}. ${el.name_reverse}`)
       .join('<br>') || '-'
   )
 }

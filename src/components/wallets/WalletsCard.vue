@@ -64,6 +64,7 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
   border-radius: 16px;
   background: rgba(255, 255, 255, 1);
   min-height: 259px;
+  max-height: 259px;
 
   @media (max-width: 1024px) {
     min-width: 358px;
