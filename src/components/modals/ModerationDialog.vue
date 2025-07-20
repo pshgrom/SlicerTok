@@ -7,33 +7,36 @@
       </v-card-title>
       <v-card-text>
         <v-form ref="formRef">
-          <v-checkbox
-            v-model="selectAll"
-            label="Выбрать все"
-            density="compact"
-            hide-details
-            @change="toggleSelectAll"
-          />
-          <v-divider />
-          <div v-for="option in tasks" :key="option.key">
-            <v-checkbox
-              :label="option.name"
-              density="compact"
-              hide-details
-              :model-value="selectedTasks[option.key] || false"
-              @update:model-value="(val) => (selectedTasks[option.key] = val)"
-            />
-          </div>
           <VCustomSelect
             v-model="currentItem.status"
             :items="allStatuses"
             class="mt-4 mb-4"
             :label="'Статус'"
           />
+          <template v-if="currentItem.status === 'rejected'">
+            <v-checkbox
+              v-model="selectAll"
+              label="Выбрать все"
+              density="compact"
+              hide-details
+              @change="toggleSelectAll"
+            />
+            <v-divider />
+            <div v-for="option in tasks" :key="option.key">
+              <v-checkbox
+                :label="option.name_reverse"
+                density="compact"
+                hide-details
+                :model-value="selectedTasks[option.key] || false"
+                @update:model-value="(val) => (selectedTasks[option.key] = val)"
+              />
+            </div>
+          </template>
           <VCustomInput
             v-model="currentItem.number_views_moderation"
             label="Количество просмотров по факту"
             :rules="[videoRules.quantityViews]"
+            class="mt-4"
             @input="onInput"
           />
           <v-textarea
@@ -106,7 +109,9 @@ const dialogModel = computed({
 
 const currentItem = computed({
   get: () => props.currentItem,
-  set: (val) => emit('update:currentItem', val)
+  set: (val) => {
+    emit('update:currentItem', val)
+  }
 })
 
 const tasks = computed({

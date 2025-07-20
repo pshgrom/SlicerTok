@@ -66,7 +66,6 @@
     </template>
   </v-data-table>
   <ModerationDialog
-    v-if="dialog"
     v-model="dialog"
     v-model:currentItem="currentItem"
     @change-state="changeState"
