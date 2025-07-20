@@ -23,9 +23,17 @@
       </a>
     </template>
     <template #[`item.number_views`]="{ item }">
-      <div v-if="item.number_views" class="custom-table-views">
+      <div
+        v-if="item.number_views"
+        class="custom-table-views"
+        :class="{ 'custom-table-views_cross': item.number_views_moderation }"
+      >
         <SvgIcon name="show" />
         <div>{{ formatNumber(item.number_views) }}</div>
+      </div>
+      <div v-if="item.number_views_moderation" class="custom-table-views">
+        <SvgIcon name="show" />
+        <div>{{ formatNumber(item.number_views_moderation) }}</div>
       </div>
     </template>
     <template #[`item.video_stat_link`]="{ item }">

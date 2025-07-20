@@ -47,6 +47,10 @@
     div + div {
       margin-left: 6px;
     }
+
+    &_cross {
+      text-decoration: line-through;
+    }
   }
 
   &-ref {

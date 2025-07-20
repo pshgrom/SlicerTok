@@ -15,7 +15,7 @@
             @change="toggleSelectAll"
           />
           <v-divider />
-          <div v-for="(option, index) in tasks" :key="option.key">
+          <div v-for="option in tasks" :key="option.key">
             <v-checkbox
               :label="option.name"
               density="compact"
@@ -31,7 +31,7 @@
             :label="'Статус'"
           />
           <VCustomInput
-            v-model="currentItem.number_views"
+            v-model="currentItem.number_views_moderation"
             label="Количество просмотров по факту"
             :rules="[videoRules.quantityViews]"
             @input="onInput"

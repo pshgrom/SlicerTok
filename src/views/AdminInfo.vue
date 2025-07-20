@@ -74,6 +74,7 @@ const changeState = (item, selectedTasks) => {
     rules: selectedTasks
   }
   adminInfo.setPublicationStatus(data)
+  getRequest()
 }
 
 const finishCheck = async (id: number) => {
