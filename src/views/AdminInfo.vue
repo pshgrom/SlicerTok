@@ -63,7 +63,7 @@ const cleanNumber = (str: string) => {
   return str.replace(/\D/g, '')
 }
 
-const changeState = (item, selectedTasks) => {
+const changeState = async (item, selectedTasks) => {
   const { id, status, status_comment, number_views } = item
 
   const data = {
@@ -73,7 +73,7 @@ const changeState = (item, selectedTasks) => {
     number_views: cleanNumber(number_views),
     rules: selectedTasks
   }
-  adminInfo.setPublicationStatus(data)
+  await adminInfo.setPublicationStatus(data)
   getRequest()
 }
 
