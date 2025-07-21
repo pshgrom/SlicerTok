@@ -61,17 +61,15 @@ const changePage = (page: number) => {
   getRequest()
 }
 
-const cleanNumber = (str: string) => {
-  return str.replace(/\D/g, '')
-}
+const cleanNumber = (str: string) => str.replace(/\D/g, '')
 
 const changeState = async (item, selectedTasks) => {
-  const { id, status, status_comment, number_views } = item
+  const { id, status, status_comment, number_views_moderation } = item
   const data = {
     id,
     status,
     status_comment,
-    number_views: cleanNumber(number_views),
+    number_views_moderation: cleanNumber(number_views_moderation),
     rules: selectedTasks
   }
   try {

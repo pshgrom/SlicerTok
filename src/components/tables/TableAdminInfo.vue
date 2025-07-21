@@ -34,17 +34,13 @@
         v-if="item.number_views"
         class="custom-table-views"
         :class="{
-          'custom-table-views_cross':
-            item.number_views_moderation && item.number_views !== item.number_views_moderation
+          'custom-table-views_cross': showNumberViews(item)
         }"
       >
         <SvgIcon name="show" />
         <div>{{ formatNumber(item.number_views) }}</div>
       </div>
-      <div
-        v-if="item.number_views_moderation && item.number_views !== item.number_views_moderation"
-        class="custom-table-views"
-      >
+      <div v-if="showNumberViews(item)" class="custom-table-views">
         <SvgIcon name="show" />
         <div>{{ formatNumber(item.number_views_moderation) }}</div>
       </div>
@@ -121,6 +117,14 @@ const computedHeaders = computed<ITableHeaders[]>({
   }
 })
 
+const showNumberViews = (item) => {
+  return (
+    item.number_views_moderation &&
+    item.number_views !== item.number_views_moderation &&
+    item.number_views_moderation !== '0'
+  )
+}
+
 const finishCheck = (id: number | string) => {
   emit('finishCheck', id)
 }
@@ -144,7 +148,7 @@ const getStatus = (status: string) => {
 const showDialog = (item) => {
   currentItem.value = {
     ...item,
-    number_views: item.number_views ?? ''
+    number_views_moderation: item.number_views_moderation ?? ''
   }
   dialog.value = true
 }

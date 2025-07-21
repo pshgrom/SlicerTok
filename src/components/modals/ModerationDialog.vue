@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialogModel" class="custom-modal" max-width="600px" persistent>
+  <v-dialog v-model="dialogModel" class="custom-modal" max-width="500px" persistent>
     <v-card>
       <v-card-title>
         <span class="headline">Проверка заявки</span>
@@ -22,7 +22,7 @@
               @change="toggleSelectAll"
             />
             <v-divider />
-            <div v-for="option in tasks" :key="option.key">
+            <div v-for="option in allTasks" :key="option.key">
               <v-checkbox
                 :label="option.name_reverse"
                 density="compact"
@@ -37,6 +37,7 @@
             label="Количество просмотров по факту"
             :rules="[videoRules.quantityViews]"
             class="mt-4"
+            hide-details
             @input="onInput"
           />
           <v-textarea
@@ -119,6 +120,12 @@ const tasks = computed({
   set: (val) => (adminInfo.tasks = val)
 })
 
+const allTasks = computed(() => {
+  console.log(currentItem.value.rules)
+  console.warn(tasks.value)
+  return currentItem.value.rules?.length ? currentItem.value.rules : tasks.value
+})
+
 const selectedTasks = computed({
   get: () => adminInfo.selectedTasks,
   set: (val) => (adminInfo.selectedTasks = val)
@@ -170,4 +177,14 @@ onMounted(() => {
 })
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+:deep(.v-card-text) {
+  padding-top: 0 !important;
+}
+
+//:deep(.v-card-actions) {
+//  position: sticky;
+//  bottom: 0;
+//  background: #fff;
+//}
+</style>
