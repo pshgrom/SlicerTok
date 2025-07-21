@@ -105,7 +105,7 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
   }
 
   &__list {
-    overflow-x: scroll;
+    overflow-x: auto;
     padding-top: 14px;
     display: flex;
     align-items: center;

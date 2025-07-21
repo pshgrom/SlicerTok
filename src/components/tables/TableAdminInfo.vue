@@ -46,7 +46,21 @@
       </div>
     </template>
     <template #[`item.status`]="{ item }">
-      <p>{{ getStatus(item.status) }}</p>
+      <div
+        v-if="item.status"
+        class="custom-table-chip"
+        :style="{
+          'background-color': getStatusColor(item.status),
+          color: getColor(item.status)
+        }"
+      >
+        <div class="custom-table-chip__icon">
+          <SvgIcon :name="getIcon(item.status)" />
+        </div>
+        <div class="custom-table-chip__status">
+          {{ getTextStatus(item.status) }}
+        </div>
+      </div>
     </template>
     <template #[`item.status_comment`]="{ item }">
       <p>{{ item.status_comment ? item.status_comment : '-' }}</p>
@@ -79,7 +93,14 @@ import { computed, type PropType, ref } from 'vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import { formatNumber } from '@/utils/formatNumbers.ts'
-import { getNameSocialMedia, getIconSocial } from '@/utils/socials.ts'
+import {
+  getNameSocialMedia,
+  getIconSocial,
+  getStatusColor,
+  getColor,
+  getIcon,
+  getTextStatus
+} from '@/utils/socials.ts'
 import ModerationDialog from '@/components/modals/ModerationDialog.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 
@@ -127,22 +148,6 @@ const showNumberViews = (item) => {
 
 const finishCheck = (id: number | string) => {
   emit('finishCheck', id)
-}
-
-const getStatus = (status: string) => {
-  let formatStatus = ''
-  switch (status) {
-    case 'todo':
-      formatStatus = 'Новая'
-      break
-    case 'approved':
-      formatStatus = 'Одобрено'
-      break
-    case 'rejected':
-      formatStatus = 'Отклонено'
-      break
-  }
-  return formatStatus
 }
 
 const showDialog = (item) => {
