@@ -55,7 +55,7 @@
         <VCusomButton :customClass="['light', 'avg']" @click="closeDialog"> Отмена </VCusomButton>
         <VCusomButton
           :customClass="['dark', 'avg']"
-          :disabled="currentItem.status === 'todo'"
+          :disabled="currentItem.status === 'todo' || !currentItem.status"
           @click="change"
         >
           Сохранить
@@ -66,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useAdminInfo } from '@/stores/AdminInfo.ts'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomSelect from '@/components/base/VCustomSelect.vue'
@@ -139,8 +139,9 @@ const change = () => {
 }
 
 const onInput = (val) => {
-  const digitsOnly = val.target.value.replace(/\D/g, '')
-  currentItem.value.number_views = digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+  const rawValue = typeof val === 'string' ? val : val?.target?.value || ''
+  const digitsOnly = rawValue.replace(/\D/g, '')
+  currentItem.value.number_views_moderation = digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
 
 watch(
@@ -154,7 +155,19 @@ watch(
   { deep: true }
 )
 
+watch(
+  () => currentItem.value.number_views_moderation,
+  (newVal) => {
+    onInput(newVal)
+  },
+  { immediate: false }
+)
+
 adminInfo.getTask()
+
+onMounted(() => {
+  onInput(currentItem.value.number_views_moderation)
+})
 </script>
 
 <style scoped lang="scss"></style>

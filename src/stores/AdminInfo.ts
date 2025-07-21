@@ -47,7 +47,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
       }
       await setPublicationStatusQuery(data)
     } catch (error: any) {
-      errorStore.setErrors(error.response?.data?.message ?? '')
+      throw error
     }
   }
 

@@ -95,6 +95,7 @@ export interface IUserInfoData {
   resource: string
   key: string
   number_views: number
+  number_views_moderation: number
   status: string
   status_comment: string
   video_stat_link: string

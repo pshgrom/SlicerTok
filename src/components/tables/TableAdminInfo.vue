@@ -33,12 +33,18 @@
       <div
         v-if="item.number_views"
         class="custom-table-views"
-        :class="{ 'custom-table-views_cross': item.number_views_moderation }"
+        :class="{
+          'custom-table-views_cross':
+            item.number_views_moderation && item.number_views !== item.number_views_moderation
+        }"
       >
         <SvgIcon name="show" />
         <div>{{ formatNumber(item.number_views) }}</div>
       </div>
-      <div v-if="item.number_views_moderation" class="custom-table-views">
+      <div
+        v-if="item.number_views_moderation && item.number_views !== item.number_views_moderation"
+        class="custom-table-views"
+      >
         <SvgIcon name="show" />
         <div>{{ formatNumber(item.number_views_moderation) }}</div>
       </div>
@@ -57,7 +63,7 @@
         <VCusomButton
           class="custom-table__button"
           size="small"
-          :disabled="item.status === 'todo'"
+          :disabled="item.status === 'todo' || !item.status"
           color="primary"
           @click="finishCheck(item.id)"
           >Закончить проверку
@@ -115,7 +121,7 @@ const computedHeaders = computed<ITableHeaders[]>({
   }
 })
 
-const finishCheck = (id: number) => {
+const finishCheck = (id: number | string) => {
   emit('finishCheck', id)
 }
 

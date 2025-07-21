@@ -26,8 +26,10 @@ import { adminInfoHeaders } from '@/constants/tableHeaders'
 import { useRouter } from 'vue-router'
 import { useAdminInfo } from '@/stores/AdminInfo'
 import TableAdminInfo from '@/components/tables/TableAdminInfo.vue'
+import { useError } from '@/stores/Errors.ts'
 
 const headers = ref<ITableHeaders[]>(adminInfoHeaders)
+const errorStore = useError()
 
 const adminInfo = useAdminInfo()
 
@@ -65,7 +67,6 @@ const cleanNumber = (str: string) => {
 
 const changeState = async (item, selectedTasks) => {
   const { id, status, status_comment, number_views } = item
-
   const data = {
     id,
     status,
@@ -73,8 +74,12 @@ const changeState = async (item, selectedTasks) => {
     number_views: cleanNumber(number_views),
     rules: selectedTasks
   }
-  await adminInfo.setPublicationStatus(data)
-  getRequest()
+  try {
+    await adminInfo.setPublicationStatus(data)
+    getRequest()
+  } catch (error: any) {
+    errorStore.setErrors(error.response?.data?.message ?? '')
+  }
 }
 
 const finishCheck = async (id: number) => {
