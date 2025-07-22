@@ -70,12 +70,12 @@ const getRequest = () => {
   supportStore.getPublicationsList(queryParams.value)
 }
 
-const actionRequest = (id: number, status: string) => {
+const actionRequest = async (id: number, status: string) => {
   const data = {
     id,
     status
   }
-  supportStore.actionRequest(data)
+  await supportStore.actionRequest(data)
   getRequest()
 }
 

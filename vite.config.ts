@@ -44,7 +44,7 @@ export default defineConfig({
       }
     }),
 
-    vuetify({ autoImport: true }),
+    vuetify({ autoImport: true, styles: 'sass' }),
 
     svgLoader({
       svgoConfig: {

@@ -6,7 +6,7 @@
           Кошельки
           <span class="wallets__length">{{ wallets.length }}</span>
         </div>
-        <VCusomButton :customClass="['dark']" :disabled="wallets.length >= 3" @click="openDialog"
+        <VCusomButton :customClass="['light']" :disabled="wallets.length >= 3" @click="openDialog"
           >Добавить
         </VCusomButton>
       </div>
