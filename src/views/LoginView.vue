@@ -175,6 +175,8 @@ const handleLoginByPhone = async () => {
         }
         loading.value = true
         const { data } = await authStore.loginByPhone(dataQuery)
+        const msg = data?.message ?? ''
+        errorStore.setErrors(msg, 'success')
         if (data.status === 'Success') {
           step.value = 2
         }
@@ -192,6 +194,8 @@ const handleLoginByPhone = async () => {
         }
         loading.value = true
         const { data } = await authStore.loginConfirmation(dataQuery)
+        const msg = data?.message ?? ''
+        errorStore.setErrors(msg, 'success')
         const { token: tokenValue, role } = data?.data
         if (tokenValue && role?.length) {
           localStorage.setItem('authToken', tokenValue)

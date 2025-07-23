@@ -35,6 +35,8 @@ export const useUserInfo = defineStore('userInfoStore', () => {
   const createPublication = async (value: INewPublication) => {
     try {
       const { data } = await createPublicationQuery(value)
+      const msg = data?.message ?? ''
+      errorStore.setErrors(msg, 'success')
       if (data.code === 200) {
         return await getPublicationsList(queryParams.value)
       }

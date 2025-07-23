@@ -85,6 +85,7 @@ export const useAuth = defineStore('authStore', () => {
     token.value = null
     localStorage.removeItem('authToken')
     localStorage.removeItem('role')
+    errorStore.setErrors('Вы вышли из системы', 'default')
   }
 
   return {

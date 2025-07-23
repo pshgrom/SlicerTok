@@ -2,12 +2,12 @@
   <div class="alert-container">
     <transition-group name="fade" tag="div">
       <VAlert
-        v-for="(message, index) in errors.errorsValue.messages"
-        :key="message.msg + index"
+        v-for="message in errors.errorsValue.messages"
+        :key="message.id"
         :type="message.type"
         class="error-alert"
         closable
-        @click:close="close(index)"
+        @click:close="close(message.id)"
       >
         <div class="error-alert__text" :class="message.type" v-html="message.msg" />
       </VAlert>
@@ -16,36 +16,33 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount, watch } from 'vue'
+import { watch, onBeforeUnmount } from 'vue'
 import { useError } from '@/stores/Errors'
 
-const errors = useError()
 const props = defineProps({
-  duration: {
-    type: Number,
-    default: 4000
-  }
+  duration: { type: Number, default: 4000 }
 })
 
+const errors = useError()
 const timers = new Map()
 
-const close = (index) => {
-  clearTimeout(timers.get(index))
-  timers.delete(index)
-  errors.clearError(index)
+const close = (id) => {
+  clearTimeout(timers.get(id))
+  timers.delete(id)
+  errors.clearError(id)
 }
 
 watch(
-  () => errors.errorsValue.messages,
+  () => [...errors.errorsValue.messages],
   (newMessages) => {
-    newMessages.forEach((_, index) => {
-      if (!timers.has(index)) {
-        const timeout = setTimeout(() => close(index), props.duration)
-        timers.set(index, timeout)
+    newMessages.forEach((msg) => {
+      if (!timers.has(msg.id)) {
+        const timeout = setTimeout(() => close(msg.id), props.duration)
+        timers.set(msg.id, timeout)
       }
     })
   },
-  { immediate: true, deep: true }
+  { immediate: true }
 )
 
 onBeforeUnmount(() => {
@@ -70,6 +67,28 @@ onBeforeUnmount(() => {
   max-width: 361px;
   border-radius: 16px;
   box-shadow: 0 0 14.6px 0 rgba(0, 0, 0, 0.15);
+  background: #fff !important;
+  margin-bottom: 15px;
+
+  :deep(.v-alert__prepend) {
+    display: none;
+  }
+
+  :deep(.v-alert__content) {
+    padding: 0 !important;
+  }
+
+  :deep(.v-alert__close) {
+    display: inline-flex;
+    position: relative;
+    top: -5px;
+    right: -5px;
+
+    button {
+      color: black;
+      font-size: 14px;
+    }
+  }
 }
 
 .error-alert__text {
