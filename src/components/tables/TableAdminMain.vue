@@ -49,7 +49,7 @@
             </div>
             <div style="color: #1867c0">
               <strong class="mr-4">Комментарий:</strong><br />
-              {{ group.status_comment }}
+              {{ group.status_comment || '-' }}
             </div>
           </v-card>
         </v-col>

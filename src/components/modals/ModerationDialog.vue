@@ -13,7 +13,7 @@
             class="mt-4 mb-4"
             :label="'Статус'"
           />
-          <template v-if="currentItem.status === 'rejected'">
+          <div v-show="currentItem.status === 'rejected'">
             <v-checkbox
               v-model="selectAll"
               label="Выбрать все"
@@ -24,14 +24,14 @@
             <v-divider />
             <div v-for="option in allTasks" :key="option.key">
               <v-checkbox
+                v-model="selectedTasks"
                 :label="option.name_reverse"
+                :value="option.key"
                 density="compact"
                 hide-details
-                :model-value="selectedTasks[option.key] || false"
-                @update:model-value="(val) => (selectedTasks[option.key] = val)"
               />
             </div>
-          </template>
+          </div>
           <VCustomInput
             v-model="currentItem.number_views_moderation"
             label="Количество просмотров по факту"
@@ -68,7 +68,6 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
-import { useAdminInfo } from '@/stores/AdminInfo.ts'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomSelect from '@/components/base/VCustomSelect.vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
@@ -84,11 +83,11 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'update:currentItem', 'changeState'])
 
-const adminInfo = useAdminInfo()
-
 const initialValue = ref({})
 
 const selectAll = ref(false)
+
+const selectedTasks = ref([])
 
 const allStatuses = [
   { label: 'Новая', value: 'todo', disabled: true },
@@ -99,10 +98,13 @@ const allStatuses = [
 const formRef = ref(null)
 
 const toggleSelectAll = () => {
-  Object.keys(selectedTasks.value).forEach((key) => {
-    selectedTasks.value[key] = selectAll.value
-  })
+  if (selectAll.value) {
+    selectedTasks.value = allTasks.value.map((item) => item.key)
+  } else {
+    selectedTasks.value = []
+  }
 }
+
 const dialogModel = computed({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val)
@@ -110,26 +112,10 @@ const dialogModel = computed({
 
 const currentItem = computed({
   get: () => props.currentItem,
-  set: (val) => {
-    emit('update:currentItem', val)
-  }
+  set: (val) => emit('update:currentItem', val)
 })
 
-const tasks = computed({
-  get: () => adminInfo.tasks,
-  set: (val) => (adminInfo.tasks = val)
-})
-
-const allTasks = computed(() => {
-  console.log(currentItem.value.rules)
-  console.warn(tasks.value)
-  return currentItem.value.rules?.length ? currentItem.value.rules : tasks.value
-})
-
-const selectedTasks = computed({
-  get: () => adminInfo.selectedTasks,
-  set: (val) => (adminInfo.selectedTasks = val)
-})
+const allTasks = computed(() => currentItem.value?.task?.rules ?? [])
 
 const closeDialog = () => {
   resetForm()
@@ -152,11 +138,12 @@ const onInput = (val) => {
 }
 
 watch(
-  () => Object.values(selectedTasks.value),
-  (vals) => {
-    const allChecked = vals.length === tasks.value.length && vals.every((v) => v)
-    if (selectAll.value !== allChecked) {
-      selectAll.value = allChecked
+  () => currentItem.value,
+  (val) => {
+    if (val.rules?.length) {
+      selectedTasks.value = val.rules.map((rule) => rule.key)
+    } else {
+      selectedTasks.value = []
     }
   },
   { deep: true }
@@ -170,7 +157,13 @@ watch(
   { immediate: false }
 )
 
-adminInfo.getTask()
+watch(
+  () => selectedTasks.value,
+  (newSelected) => {
+    selectAll.value = newSelected.length === allTasks.value.length
+  },
+  { deep: true }
+)
 
 onMounted(() => {
   onInput(currentItem.value.number_views_moderation)

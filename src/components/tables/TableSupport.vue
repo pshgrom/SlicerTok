@@ -75,7 +75,7 @@
             </div>
             <div class="info-admin-comment">
               <div class="info-admin-comment__label">Комментарий:</div>
-              <div class="info-admin-comment__value">{{ group.status_comment }}</div>
+              <div class="info-admin-comment__value">{{ group.status_comment || '-' }}</div>
             </div>
             <div class="info-admin-comment">
               <div class="info-admin-comment__label">Нарушения:</div>
@@ -165,12 +165,7 @@ const computedHeaders = computed<ITableHeaders[]>({
 // }
 
 const showViolations = (rules: any) => {
-  return (
-    rules
-      .filter((item) => item.value)
-      .map((el, index) => `${index + 1}. ${el.name_reverse}`)
-      .join('<br>') || '-'
-  )
+  return rules.map((el, index) => `${index + 1}. ${el.name_reverse}`).join('<br>') || '-'
 }
 
 const actionRequest = (id: number, status: string) => {

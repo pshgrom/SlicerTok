@@ -16,8 +16,6 @@ export const getCompletedListQuery = (data: ITableParams) =>
 export const getLogListQuery = (data: ITableParams) =>
   api.get('/admin-main/log/get-log-list', { params: data })
 
-export const getTaskQuery = () => api.get('/publication/get-task')
-
 export const setPublicationStatusQuery = (data: any) =>
   api.post('/admin/publication/set-publication-status', data)
 
