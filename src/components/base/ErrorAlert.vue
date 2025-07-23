@@ -1,19 +1,25 @@
 <template>
-  <transition name="fade" mode="out-in">
-    <VAlert v-if="visible" :type="type" class="error-alert" closable @click:close="close">
-      <div v-html="errors.errorsValue.msg"></div>
-    </VAlert>
-  </transition>
+  <div class="alert-container">
+    <transition-group name="fade" tag="div">
+      <VAlert
+        v-for="(message, index) in errors.errorsValue.messages"
+        :key="message.msg + index"
+        :type="message.type"
+        class="error-alert"
+        closable
+        @click:close="close(index)"
+      >
+        <div class="error-alert__text" :class="message.type" v-html="message.msg" />
+      </VAlert>
+    </transition-group>
+  </div>
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, watch } from 'vue'
+import { onBeforeUnmount, watch } from 'vue'
 import { useError } from '@/stores/Errors'
-// import { useSafeHtml } from '@/composables/useSafeHtml'
 
 const errors = useError()
-// const { safeHtml } = useSafeHtml(errors.errorsValue.msg)
-
 const props = defineProps({
   duration: {
     type: Number,
@@ -21,60 +27,78 @@ const props = defineProps({
   }
 })
 
-const visible = computed({
-  get() {
-    return errors.errorsValue.show
-  },
-  set(value) {
-    errors.errorsValue.show = value
-  }
-})
+const timers = new Map()
 
-const type = computed(() => errors.errorsValue.type)
-
-let timeoutId = null
-
-const close = () => {
-  visible.value = false
-  clearTimeout(timeoutId)
-}
-
-function startTimer() {
-  clearTimeout(timeoutId)
-  timeoutId = setTimeout(() => {
-    visible.value = false
-  }, props.duration)
+const close = (index) => {
+  clearTimeout(timers.get(index))
+  timers.delete(index)
+  errors.clearError(index)
 }
 
 watch(
-  () => errors.errorsValue.show,
-  (newVal) => {
-    if (newVal) {
-      visible.value = true
-      startTimer()
-    } else {
-      visible.value = false
-    }
+  () => errors.errorsValue.messages,
+  (newMessages) => {
+    newMessages.forEach((_, index) => {
+      if (!timers.has(index)) {
+        const timeout = setTimeout(() => close(index), props.duration)
+        timers.set(index, timeout)
+      }
+    })
   },
-  { immediate: true }
+  { immediate: true, deep: true }
 )
 
 onBeforeUnmount(() => {
-  clearTimeout(timeoutId)
+  timers.forEach(clearTimeout)
+  timers.clear()
 })
 </script>
 
-<style lang="scss" scoped>
-.error-alert {
+<style scoped lang="scss">
+.alert-container {
   position: fixed;
   top: 15px;
   right: 15px;
   z-index: 999999999;
-  padding: 10px;
-  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-  div {
-    font-size: 14px;
+.error-alert {
+  min-width: 361px;
+  max-width: 361px;
+  border-radius: 16px;
+  box-shadow: 0 0 14.6px 0 rgba(0, 0, 0, 0.15);
+}
+
+.error-alert__text {
+  font-size: 14px;
+  max-width: 274px;
+  color: #15171a;
+  line-height: 1.4;
+  position: relative;
+  margin-left: 19px;
+  min-height: 60px;
+
+  &:before {
+    content: '';
+    position: absolute;
+    left: -19px;
+    height: 100%;
+    width: 3px;
+    border-radius: 4px;
+    background: rgba(34, 93, 255, 1);
+  }
+
+  &.error:before {
+    background: rgba(255, 0, 0, 1);
+  }
+  &.success:before {
+    background: rgba(16, 154, 106, 1);
+  }
+  &.default:before {
+    background: rgba(34, 93, 255, 1);
   }
 }
 </style>

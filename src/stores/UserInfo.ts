@@ -48,7 +48,9 @@ export const useUserInfo = defineStore('userInfoStore', () => {
 
   const updateContact = async (value: any) => {
     try {
-      await updateContactQuery(value)
+      const { data } = await updateContactQuery(value)
+      const msg = data?.message ?? ''
+      errorStore.setErrors(msg, 'success')
     } catch (error: any) {
       const msg = error?.response?.data?.message ?? 'Error'
       errorStore.setErrors(msg)
@@ -75,7 +77,9 @@ export const useUserInfo = defineStore('userInfoStore', () => {
 
   const setWalletMain = async (id: number) => {
     try {
-      await setWalletMainQuery(id)
+      const { data } = await setWalletMainQuery(id)
+      const msg = data?.message ?? ''
+      errorStore.setErrors(msg, 'success')
     } catch (error: any) {
       const msg = error?.response?.data?.message ?? 'Error'
       errorStore.setErrors(msg)
@@ -84,7 +88,9 @@ export const useUserInfo = defineStore('userInfoStore', () => {
 
   const removeWallet = async (id: number) => {
     try {
-      await removeWalletQuery(id)
+      const { data } = await removeWalletQuery(id)
+      const msg = data?.message ?? ''
+      errorStore.setErrors(msg, 'success')
     } catch (error: any) {
       const msg = error?.response?.data?.message ?? 'Error'
       errorStore.setErrors(msg)
@@ -93,7 +99,9 @@ export const useUserInfo = defineStore('userInfoStore', () => {
 
   const updateName = async (name: string) => {
     try {
-      await updateNameQuery(name)
+      const { data } = await updateNameQuery(name)
+      const msg = data?.message ?? ''
+      errorStore.setErrors(msg, 'success')
     } catch (error: any) {
       const msg = error?.response?.data?.message ?? 'Error'
       errorStore.setErrors(msg)

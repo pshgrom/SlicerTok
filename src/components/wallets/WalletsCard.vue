@@ -40,6 +40,7 @@ const props = defineProps({
 
 const emit = defineEmits(['openModalWallet', 'setAsMain', 'removeWallet'])
 const openIndex = ref(null)
+
 const openDialog = () => {
   if (props.wallets.length <= 3) {
     emit('openModalWallet')

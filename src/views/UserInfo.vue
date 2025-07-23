@@ -164,6 +164,8 @@ const saveWallet = async (wallet: IWallet) => {
       ...data.data
     })
   }
+  const msg = data?.message ?? ''
+  errorStore.setErrors(msg, 'success')
 }
 
 const removeWallet = async (index: number, id: number, is_main: boolean) => {
