@@ -98,7 +98,6 @@ onBeforeUnmount(() => {
   line-height: 1.4;
   position: relative;
   margin-left: 19px;
-  min-height: 60px;
 
   &:before {
     content: '';
