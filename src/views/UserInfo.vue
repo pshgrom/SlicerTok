@@ -149,8 +149,19 @@ const resetPage = () => {
 }
 
 const setAsMain = async (id: number) => {
-  wallets.value.forEach((wallet) => (wallet.is_main = wallet.id === id))
+  const index = wallets.value.findIndex((wallet) => wallet.id === id)
+  if (index === -1) return
+  wallets.value.forEach((wallet) => (wallet.is_main = false))
+  const selected = wallets.value.splice(index, 1)[0]
+  selected.is_main = true
+  wallets.value.unshift(selected)
   await userInfo.setWalletMain(id)
+}
+
+const sortWallets = () => {
+  wallets.value.sort((a, b) => {
+    return b.is_main ? 1 : a.is_main ? -1 : 0
+  })
 }
 
 const saveWallet = async (wallet: IWallet) => {
@@ -233,6 +244,7 @@ const getWallets = async () => {
   const { data } = await userInfo.getWallets()
   if (data?.data?.length) {
     wallets.value = data?.data
+    sortWallets()
   }
 }
 
