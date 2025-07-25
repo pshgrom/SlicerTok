@@ -58,9 +58,21 @@
       </div>
     </template>
     <template #[`item.rules`]="{ item }">
-      <div class="pt-4 pb-4" v-html="showRules(item.rules)"></div>
+      <VCusomButton
+        v-if="item.rules.length"
+        :customClass="['light']"
+        @click="showReasonsReject(item.rules)"
+      >
+        Показать
+      </VCusomButton>
+      <span v-else> - </span>
     </template>
   </v-data-table>
+  <ReasonsRejectModal
+    v-if="isModalOpen"
+    v-model="isModalOpen"
+    :currentReasonsReject="currentReasonsReject"
+  />
 </template>
 
 <script setup lang="ts">
@@ -76,6 +88,8 @@ import {
   getColor,
   getIcon
 } from '@/utils/socials.ts'
+import ReasonsRejectModal from '@/components/modals/ReasonsRejectModal.vue'
+import VCusomButton from '@/components/base/VCusomButton.vue'
 
 const props = defineProps({
   headers: {
@@ -97,9 +111,13 @@ const props = defineProps({
 })
 
 const headersData = ref(props.headers)
+const isModalOpen = ref(false)
+const currentReasonsReject = ref([])
 
-const showRules = (rules: any) => {
-  return rules.map((el, index) => `${index + 1}. ${el.name_reverse}`).join('<br>') || '-'
+const showReasonsReject = (rules) => {
+  currentReasonsReject.value =
+    rules.map((el, index) => `<p>${index + 1}. ${el.description}</p>`).join('<br>') || '-'
+  isModalOpen.value = true
 }
 
 const computedHeaders = computed<ITableHeaders[]>({

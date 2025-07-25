@@ -1,3 +1,122 @@
+<script setup lang="ts">
+import { ref, onMounted, watch, nextTick, onBeforeUnmount } from 'vue'
+import { getChatQuery, sendMessageQuery, getMessagesQuery } from '@/api/chat.ts'
+import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
+import VCustomInput from '@/components/base/VCustomInput.vue'
+import SvgIcon from '@/components/base/SvgIcon.vue'
+import { useChatSocketStore } from '@/stores/chatSocket'
+
+defineProps({ showChat: Boolean })
+const emit = defineEmits(['update:showChat'])
+
+const chatStore = useChatSocketStore()
+const { isMobile } = useDeviceDetection()
+
+const roomId = ref<number | null>(null)
+const newMessage = ref('')
+const userMessages = ref<any[]>([])
+const chatBoxRef = ref<HTMLElement | null>(null)
+
+const scrollToBottom = () => {
+  nextTick(() => {
+    chatBoxRef.value?.scrollTo(0, chatBoxRef.value.scrollHeight)
+  })
+}
+
+const getTime = (time: string) => {
+  const date = new Date(time)
+  return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+}
+
+function sendMessage() {
+  if (!newMessage.value.trim() || !roomId.value) return
+  // chatStore.sendMessage(`chat.${roomId.value}`, 'new-message', {
+  //   text: newMessage.value,
+  //   sent_by: 'User'
+  // })
+  userMessages.value.push({
+    content: newMessage.value,
+    created_at: new Date().toISOString(),
+    is_your: true
+  })
+  sendMessageRest()
+}
+
+const getMessages = async () => {
+  try {
+    const { data } = await getMessagesQuery(roomId.value)
+    if (data.code === 200) {
+      userMessages.value = data.data.messages ?? []
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const sendMessageRest = async () => {
+  if (!newMessage.value.trim()) return
+  try {
+    const newData = {
+      chatRoomId: roomId.value,
+      message: newMessage.value
+    }
+    await sendMessageQuery(newData)
+    newMessage.value = ''
+    // await getMessages()
+    scrollToBottom()
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+const closeChat = (event: MouseEvent | KeyboardEvent) => {
+  if (event.type === 'click' || (event as KeyboardEvent).key === 'Escape') {
+    emit('update:showChat', false)
+  }
+}
+
+onMounted(async () => {
+  const wsUrl = 'ws://localhost:8080/app/mthueomipj7f2dhac0g1?protocol=7&client=js&version=4.4.0'
+
+  chatStore.connect(wsUrl)
+
+  const { data } = await getChatQuery()
+  if (data.code === 200) {
+    roomId.value = data.data.chat_room_id
+    userMessages.value = data.data.messages ?? []
+
+    const channel = `chat.${roomId.value}`
+    chatStore.subscribeChannel(channel)
+    await getMessages()
+    scrollToBottom()
+  }
+
+  document.addEventListener('keydown', closeChat)
+})
+
+watch(
+  () => chatStore.messages[chatStore.messages.length - 1],
+  (msg) => {
+    if (!msg || msg.channel !== `chat.${roomId.value}` || msg.event !== 'MessageSent') return
+
+    const parsed = typeof msg.data === 'string' ? JSON.parse(msg.data) : msg.data
+    console.warn('parsed', parsed)
+    if (parsed.senderId === 2) return
+
+    userMessages.value.push({
+      content: parsed.content,
+      created_at: parsed.timestamp,
+      is_your: false
+    })
+    scrollToBottom()
+  }
+)
+
+onBeforeUnmount(() => {
+  document.removeEventListener('keydown', closeChat)
+})
+</script>
+
 <template>
   <div v-click-outside="closeChat" class="chat" :class="{ chat_mobile: isMobile }">
     <div class="chat-box">
@@ -8,7 +127,7 @@
       <div v-if="userMessages.length" ref="chatBoxRef" class="chat-messages">
         <div
           v-for="msg in userMessages"
-          :key="msg.created_at"
+          :key="msg.id"
           class="chat-messages-item"
           :class="{ 'chat-messages-item_your': msg.is_your }"
         >
@@ -34,138 +153,6 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { onMounted, ref, nextTick, onBeforeUnmount, watch } from 'vue'
-import { getChatQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
-import VCustomInput from '@/components/base/VCustomInput.vue'
-import SvgIcon from '@/components/base/SvgIcon.vue'
-import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
-// import { useChatSocketStore } from '@/stores/chatSocket'
-
-defineProps({
-  showChat: {
-    type: Boolean,
-    default: false
-  }
-})
-const emit = defineEmits(['update:showChat'])
-
-type Message = {
-  id: number
-  sender: 'you' | 'support'
-  text: string
-}
-
-// const chatStore = useChatSocketStore()
-// const wsUrl = 'ws://localhost:8080/app/mthueomipj7f2dhac0g1?protocol=7&client=js&version=4.4.0'
-
-// Подключаемся (один раз — уже будет, но безопасно вызвать)
-// chatStore.connect(wsUrl)
-
-const roomId = ref<null | number>(null)
-const chatBoxRef = ref<HTMLElement | null>(null)
-const { isMobile } = useDeviceDetection()
-const userMessages = ref<Message[]>([])
-
-const newMessage = ref<string>('')
-
-const scrollToBottom = () => {
-  nextTick(() => {
-    if (chatBoxRef.value) {
-      chatBoxRef.value.scrollTop = chatBoxRef.value.scrollHeight
-    }
-  })
-}
-
-const getTime = (time: string) => {
-  const date = new Date(time)
-
-  const hours = date.getHours().toString().padStart(2, '0')
-  const minutes = date.getMinutes().toString().padStart(2, '0')
-
-  return `${hours}:${minutes}`
-}
-
-// function sendMessage() {
-//   chatStore.sendMessage(`chat.${roomId.value}`, 'new-message', {
-//     text: newMessage.value,
-//     sent_by: 'User'
-//   })
-//   newMessage.value = ''
-//   scrollToBottom()
-// }
-
-const sendMessage = async () => {
-  if (!newMessage.value.trim()) return
-  try {
-    const newData = {
-      chatRoomId: roomId.value,
-      message: newMessage.value
-    }
-    await sendMessageQuery(newData)
-    newMessage.value = ''
-    await getMessages()
-    scrollToBottom()
-  } catch (err) {
-    console.log(err)
-  }
-}
-
-const getChat = async () => {
-  try {
-    const { data } = await getChatQuery()
-    if (data.code === 200) {
-      roomId.value = data.data.chat_room_id
-      await getMessages()
-      scrollToBottom()
-    }
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-const closeChat = (event: KeyboardEvent | MouseEvent): void => {
-  if (event.type === 'click') {
-    emit('update:showChat', false)
-  }
-  if (event.key === 'Escape') {
-    emit('update:showChat', false)
-  }
-}
-
-const getMessages = async () => {
-  try {
-    const { data } = await getMessagesQuery(roomId.value)
-    if (data.code === 200) {
-      userMessages.value = data.data.messages ?? []
-    }
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-// watch(
-//   () => chatStore.messages,
-//   (messages) => {
-//     messages.forEach((msg) => {
-//       if (msg.channel === `chat.${roomId.value}` && msg.event === 'client-new-message') {
-//         console.log('User получил:', msg.data)
-//       }
-//     })
-//   }
-// )
-
-onMounted(() => {
-  getChat()
-  // chatStore.subscribeChannel(`chat.${roomId.value}`)
-  document.addEventListener('keydown', closeChat)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('keydown', closeChat)
-})
-</script>
 
 <style scoped lang="scss">
 .chat {

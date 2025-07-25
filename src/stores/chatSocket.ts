@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useError } from '@/stores/Errors.ts'
 
 type Message = {
   event: string
@@ -12,18 +13,28 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
   const connected = ref(false)
   const subscribedChannels = ref<Set<string>>(new Set())
   const messages = ref<Message[]>([])
+  const errorStore = useError()
 
-  // Соединение
+  const reconnectAttempts = ref(0)
+  const maxReconnectAttempts = 10
+  const isConnecting = ref(false)
+  const reconnectUrl = ref<string>('') // хранение URL для переподключения
+
   function connect(url: string) {
-    if (socket.value) return // уже подключено
+    if (isConnecting.value || reconnectAttempts.value >= maxReconnectAttempts) return
+
+    reconnectUrl.value = url
+    isConnecting.value = true
 
     socket.value = new WebSocket(url)
 
     socket.value.onopen = () => {
       connected.value = true
-      console.log('🟢 WebSocket connected')
+      isConnecting.value = false
+      reconnectAttempts.value = 0
+      errorStore.setErrors('Соединение установлено', 'success')
 
-      // Авто-подписка на все каналы, если уже есть
+      // повторная подписка
       subscribedChannels.value.forEach((channel) => {
         subscribeChannel(channel)
       })
@@ -33,7 +44,6 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
       try {
         const msg = JSON.parse(event.data) as Message
         messages.value.push(msg)
-        console.error('messages.value', messages.value)
       } catch (e) {
         console.error('Ошибка парсинга сообщения:', event.data)
       }
@@ -41,37 +51,47 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
 
     socket.value.onclose = () => {
       connected.value = false
-      console.log('🔴 WebSocket disconnected')
+      isConnecting.value = false
+      errorStore.setErrors('Соединение потеряно, переподключение...', 'error')
       socket.value = null
+      attemptReconnect()
     }
 
-    socket.value.onerror = (e) => {
-      console.error('⚠️ WebSocket error', e)
+    socket.value.onerror = () => {
+      errorStore.setErrors('Ошибка сети', 'error')
+      socket.value?.close()
     }
   }
 
-  // Подписка на канал
-  function subscribeChannel(channel: string) {
-    if (!connected.value) {
-      subscribedChannels.value.add(channel)
+  function attemptReconnect() {
+    if (reconnectAttempts.value >= maxReconnectAttempts) {
+      errorStore.setErrors(`Переподключение #${reconnectAttempts.value}`, 'error')
       return
     }
-    if (subscribedChannels.value.has(channel)) return
+
+    const delay = Math.min(1000 * (reconnectAttempts.value + 1), 5000)
+    reconnectAttempts.value++
+    setTimeout(() => {
+      if (reconnectUrl.value) {
+        connect(reconnectUrl.value)
+      }
+    }, delay)
+  }
+
+  function subscribeChannel(channel: string) {
+    subscribedChannels.value.add(channel)
+
+    if (!connected.value || !socket.value) return
 
     const subscribeMsg = {
       event: 'pusher:subscribe',
       data: { channel }
     }
-
-    socket.value?.send(JSON.stringify(subscribeMsg))
-    subscribedChannels.value.add(channel)
-    console.log('Подписались на канал', channel)
+    socket.value.send(JSON.stringify(subscribeMsg))
   }
 
-  // Отписка (опционально)
   function unsubscribeChannel(channel: string) {
-    if (!connected.value) return
-    if (!subscribedChannels.value.has(channel)) return
+    if (!connected.value || !subscribedChannels.value.has(channel)) return
 
     const unsubscribeMsg = {
       event: 'pusher:unsubscribe',
@@ -83,7 +103,6 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
     console.log('Отписались от канала', channel)
   }
 
-  // Отправить событие в канал
   function sendMessage(channel: string, eventName: string, data: any) {
     if (!connected.value || !socket.value) return
 

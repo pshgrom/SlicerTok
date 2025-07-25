@@ -13,6 +13,9 @@
       >
         <div class="chat-list-item__title">
           {{ room.name }}
+          <span v-if="unreadCounts[room.id] > 0" class="chat-list-item__badge">
+            {{ unreadCounts[room.id] }}
+          </span>
         </div>
       </div>
     </div>
@@ -21,21 +24,31 @@
         <div class="chat__title">
           <span>Чат</span>
         </div>
-        <div v-if="messages.length" ref="chatBoxRef" class="chat-messages">
-          <div
-            v-for="msg in messages"
-            :key="msg.created_at"
-            class="chat-messages-item"
-            :class="{ 'chat-messages-item_your': msg.is_your }"
-          >
-            <div class="chat-messages-item__role">
-              {{ msg.is_your ? 'Поддержка' : 'Юзер' }}
+        <div ref="chatBoxRef" class="chat-messages">
+          <template v-if="loadingMessages">
+            <div class="chat-spinner">
+              <v-progress-circular indeterminate color="primary" size="40" />
             </div>
-            <div class="chat-messages-item__msg">{{ msg.content }}</div>
-            <div class="chat-messages-item__time">{{ getTime(msg.created_at) }}</div>
-          </div>
+          </template>
+
+          <template v-else-if="messages.length">
+            <transition-group name="fade-slide">
+              <div
+                v-for="msg in messages"
+                :key="msg.id || msg.created_at + msg.content"
+                class="chat-messages-item"
+                :class="{ 'chat-messages-item_your': msg.is_your }"
+              >
+                <div class="chat-messages-item__role">
+                  {{ msg.is_your ? 'Поддержка' : 'Юзер' }}
+                </div>
+                <div class="chat-messages-item__msg">{{ msg.content }}</div>
+                <div class="chat-messages-item__time">{{ getTime(msg.created_at) }}</div>
+              </div>
+            </transition-group>
+          </template>
+          <h2 v-else>Пока нет сообщений</h2>
         </div>
-        <h2 v-else>Пока нет сообщений</h2>
       </div>
       <div class="chat__actions">
         <VCustomInput
@@ -53,79 +66,43 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, nextTick, watch } from 'vue'
 import { getChatsSupportQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
-import SvgIcon from '@/components/base/SvgIcon.vue'
+import { useChatSocketStore } from '@/stores/chatSocket'
 import VCustomInput from '@/components/base/VCustomInput.vue'
-// import { useChatSocketStore } from '@/stores/chatSocket.ts'
+import SvgIcon from '@/components/base/SvgIcon.vue'
+
+const chatStore = useChatSocketStore()
 
 type Room = { id: number; name: string }
-
 const rooms = ref<Room[]>([])
-
-// const chatStore = useChatSocketStore()
-// const { isMobile } = useDeviceDetection()
-const roomId = ref<null | number>(null)
-
-const wsUrl = 'ws://localhost:8080/app/mthueomipj7f2dhac0g1?protocol=7&client=js&version=4.4.0'
-
-// Подписываемся на несколько комнат (комнат может быть много)
-// const supportChannels = ['chat.1', 'chat.2', 'chat.3', 'chat.4']
-// supportChannels.forEach((channel) => chatStore.subscribeChannel(channel))
-
-// Смотрим новые сообщения только из своих комнат
-// watch(
-//   () => chatStore.messages,
-//   (messages) => {
-//     messages.forEach((msg) => {
-//       if (supportChannels.includes(msg.channel) && msg.event === 'client-new-message') {
-//         console.log('Support получил:', msg.channel, msg.data)
-//       }
-//     })
-//   }
-// )
-
-// Подключаемся (один раз)
-// chatStore.connect(wsUrl)
-
+const newMessageCount = ref(0)
+const roomId = ref<number | null>(null)
+const messages = ref<any[]>([])
+const newMessage = ref('')
 const chatBoxRef = ref<HTMLElement | null>(null)
-const newMessage = ref<string>('')
+const unreadCounts = ref<Record<number, number>>({})
+const loadingMessages = ref(true)
 
-const messages = ref([])
-
-const selectRoom = async (id: number) => {
-  roomId.value = id
-  await getMessages()
-  scrollToBottom()
+const scrollToBottom = () => {
+  nextTick(() => {
+    chatBoxRef.value?.scrollTo(0, chatBoxRef.value.scrollHeight)
+  })
 }
 
-// Отправка сообщения в одну из комнат
-// function sendMessage() {
-//   if (!newMessage.value.trim()) return
-//   chatStore.sendMessage(`chat.${roomId.value}`, 'new-message', {
-//     text: newMessage.value,
-//     sent_by: 'Support'
-//   })
-//   newMessage.value = ''
-//   scrollToBottom()
-// }
-const sendMessage = async () => {
-  if (!newMessage.value.trim()) return
-  try {
-    const newData = {
-      chatRoomId: roomId.value,
-      message: newMessage.value
-    }
-    await sendMessageQuery(newData)
-    newMessage.value = ''
-    await getMessages()
-    scrollToBottom()
-  } catch (err) {
-    console.log(err)
-  }
+const isAtBottom = () => {
+  if (!chatBoxRef.value) return false
+  const el = chatBoxRef.value
+  return el.scrollHeight - el.scrollTop <= el.clientHeight + 50 // небольшой порог
+}
+
+const getTime = (time: string) => {
+  const date = new Date(time)
+  return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
 }
 
 const getMessages = async () => {
+  loadingMessages.value = true
   try {
     const { data } = await getMessagesQuery(roomId.value)
     if (data.code === 200) {
@@ -133,52 +110,111 @@ const getMessages = async () => {
     }
   } catch (error) {
     console.log(error)
+  } finally {
+    loadingMessages.value = false
   }
 }
 
-const getTime = (time: string) => {
-  const date = new Date(time)
-
-  const hours = date.getHours().toString().padStart(2, '0')
-  const minutes = date.getMinutes().toString().padStart(2, '0')
-
-  return `${hours}:${minutes}`
-}
-
-const scrollToBottom = () => {
-  nextTick(() => {
-    if (chatBoxRef.value) {
-      chatBoxRef.value.scrollTop = chatBoxRef.value.scrollHeight
-    }
+function sendMessage() {
+  if (!newMessage.value.trim() || !roomId.value) return
+  // chatStore.sendMessage(`chat.${roomId.value}`, 'new-message', {
+  //   text: newMessage.value,
+  //   sent_by: 'Support'
+  // })
+  messages.value.push({
+    content: newMessage.value,
+    created_at: new Date().toISOString(),
+    is_your: true
   })
+  sendMessageRest()
 }
 
-const getChatsSupport = async () => {
+const sendMessageRest = async () => {
   try {
-    const { data } = await getChatsSupportQuery()
-    if (data.code === 200) {
-      rooms.value = data.data.chats.map((item, index) => {
-        return {
-          name: `Комната ${index + 1}`,
-          id: item.chat_room_id
-        }
-      })
-      roomId.value = rooms.value[0].id
-      await getMessages()
-      scrollToBottom()
+    const newData = {
+      chatRoomId: roomId.value,
+      message: newMessage.value
     }
-  } catch (error) {
-    console.log(error)
+    await sendMessageQuery(newData)
+    newMessage.value = ''
+    // await getMessages()
+    scrollToBottom()
+  } catch (err) {
+    console.log(err)
   }
 }
 
-onMounted(() => {
-  getChatsSupport()
+const selectRoom = async (id: number) => {
+  roomId.value = id
+  messages.value = []
+  loadingMessages.value = true
+  unreadCounts.value[id] = 0
+  const channel = `chat.${id}`
+  chatStore.subscribeChannel(channel)
+  await getMessages()
+  scrollToBottom()
+  loadingMessages.value = false
+}
+
+onMounted(async () => {
+  const savedUnread = localStorage.getItem('unreadCounts')
+  if (savedUnread) {
+    unreadCounts.value = JSON.parse(savedUnread)
+  }
+  const wsUrl = 'ws://localhost:8080/app/mthueomipj7f2dhac0g1?protocol=7&client=js&version=4.4.0'
+
+  chatStore.connect(wsUrl)
+
+  const { data } = await getChatsSupportQuery()
+  if (data.code === 200) {
+    rooms.value = data.data.chats.map((c, i) => ({ id: c.chat_room_id, name: `Комната ${i + 1}` }))
+
+    rooms.value.forEach((room) => {
+      const channel = `chat.${room.id}`
+      chatStore.subscribeChannel(channel)
+    })
+
+    if (rooms.value.length) {
+      await selectRoom(rooms.value[0].id)
+    }
+  }
 })
 
-// onUnmounted(() => {
-//   disconnect()
-// })
+watch(
+  unreadCounts,
+  (newCounts) => {
+    localStorage.setItem('unreadCounts', JSON.stringify(newCounts))
+  },
+  { deep: true }
+)
+
+watch(
+  () => chatStore.messages[chatStore.messages.length - 1],
+  (msg) => {
+    if (!msg || msg.event !== 'MessageSent') return
+
+    const roomIdFromMsg = Number(msg.channel?.split('.')[1])
+    if (!roomIdFromMsg) return
+
+    const parsed = typeof msg.data === 'string' ? JSON.parse(msg.data) : msg.data
+    if (parsed.senderId === 7) return
+
+    if (roomIdFromMsg !== roomId.value) {
+      unreadCounts.value[roomIdFromMsg] = (unreadCounts.value[roomIdFromMsg] || 0) + 1
+      return
+    }
+    messages.value.push({
+      content: parsed.content,
+      created_at: parsed.timestamp,
+      is_your: false
+    })
+    if (isAtBottom()) {
+      scrollToBottom()
+    } else {
+      newMessageCount.value++
+    }
+  }
+)
 </script>
 
 <style scoped lang="scss">
@@ -209,7 +245,6 @@ onMounted(() => {
 
     &__title {
       font-size: 18px;
-      font-weight: 500;
       color: rgba(17, 17, 17, 1);
       font-weight: 400;
       margin-bottom: 10px;
@@ -233,6 +268,24 @@ onMounted(() => {
       padding: 16px;
       transition: background-color 0.2s ease-in;
       margin-bottom: 2px;
+      position: relative;
+
+      &__badge {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(34, 93, 255, 1);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 400;
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
 
       &_active {
         background: rgba(242, 246, 254, 1);
@@ -367,5 +420,12 @@ onMounted(() => {
       }
     }
   }
+}
+
+.chat-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 450px;
 }
 </style>
