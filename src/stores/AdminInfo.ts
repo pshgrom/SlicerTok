@@ -35,14 +35,16 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     rules = {}
   }) => {
     try {
-      const data = {
+      const newData = {
         id,
         status,
         ...(status_comment ? { status_comment } : {}),
         number_views_moderation: +number_views_moderation,
         ...(status !== 'approved' && { rules })
       }
-      await setPublicationStatusQuery(data)
+      const { data } = await setPublicationStatusQuery(newData)
+      const msg = data?.message ?? ''
+      errorStore.setErrors(msg, 'success')
     } catch (error: any) {
       throw error
     }

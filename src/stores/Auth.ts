@@ -29,7 +29,6 @@ export const useAuth = defineStore('authStore', () => {
         role.value = data.role[0]
         if (role.value) localStorage.setItem('role', role.value.toString())
         return { token: token.value, role: role.value }
-        // return { token: token.value, role: ROLES.ADMIN_FINANCE }
       }
       errorStore.setErrors('Ошибка авторизации')
       return

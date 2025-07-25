@@ -80,6 +80,9 @@ const handleLogin = async () => {
           case ROLES.SUPPORT:
             await router.push({ name: 'Support' })
             break
+          default:
+            await router.push({ name: 'Login' })
+            break
         }
       }
     } catch (error: any) {

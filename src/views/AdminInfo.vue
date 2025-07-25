@@ -81,8 +81,10 @@ const changeState = async (item, selectedTasks) => {
 }
 
 const finishCheck = async (id: number) => {
-  const resp = await adminInfo.finishCheck(id)
-  if (resp?.data?.code === 200) {
+  const { data } = await adminInfo.finishCheck(id)
+  const msg = data?.message ?? ''
+  errorStore.setErrors(msg, 'success')
+  if (data?.code === 200) {
     getRequest()
   }
 }
