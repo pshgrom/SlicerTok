@@ -35,9 +35,8 @@
           <VCustomInput
             v-model="currentItem.number_views_moderation"
             label="Количество просмотров по факту"
-            :rules="[videoRules.quantityViews]"
+            :rules="[videoRules.quantityViews, videoRules.required]"
             class="mt-4"
-            hide-details
             @input="onInput"
           />
           <v-textarea
@@ -126,9 +125,12 @@ const resetForm = () => {
   currentItem.value = { ...initialValue.value }
 }
 
-const change = () => {
-  emit('changeState', currentItem.value, selectedTasks.value)
-  emit('update:modelValue', false)
+const change = async () => {
+  const isValid = await formRef?.value?.validate()
+  if (isValid.valid) {
+    emit('changeState', currentItem.value, selectedTasks.value)
+    emit('update:modelValue', false)
+  }
 }
 
 const onInput = (val) => {
