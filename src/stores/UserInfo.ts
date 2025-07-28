@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import type { INewPublication, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import {
   createPublicationQuery,
@@ -17,6 +17,7 @@ import { useError } from '@/stores/Errors'
 export const useUserInfo = defineStore('userInfoStore', () => {
   const isLoading = ref<boolean>(false)
   const showChat = ref<boolean>(false)
+  const unreadCount = ref(Number(localStorage.getItem('unreadCountUser') || 0))
   const queryParams = ref<ITableParams>({
     page: 1,
     perPage: 20,
@@ -145,6 +146,10 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     }
   }
 
+  watch(unreadCount, (val) => {
+    localStorage.setItem('unreadCountUser', String(val))
+  })
+
   return {
     isLoading,
     getPublicationsList,
@@ -159,6 +164,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     getWallets,
     setWalletMain,
     removeWallet,
-    showChat
+    showChat,
+    unreadCount
   }
 })

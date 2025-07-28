@@ -93,7 +93,7 @@ const scrollToBottom = () => {
 const isAtBottom = () => {
   if (!chatBoxRef.value) return false
   const el = chatBoxRef.value
-  return el.scrollHeight - el.scrollTop <= el.clientHeight + 50 // небольшой порог
+  return el.scrollHeight - el.scrollTop <= el.clientHeight + 50
 }
 
 const getTime = (time: string) => {
@@ -161,9 +161,8 @@ onMounted(async () => {
   if (savedUnread) {
     unreadCounts.value = JSON.parse(savedUnread)
   }
-  const wsUrl = 'ws://localhost:8080/app/mthueomipj7f2dhac0g1?protocol=7&client=js&version=4.4.0'
 
-  chatStore.connect(wsUrl)
+  chatStore.connect()
 
   const { data } = await getChatsSupportQuery()
   if (data.code === 200) {

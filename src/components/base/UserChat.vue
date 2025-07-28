@@ -1,3 +1,50 @@
+<template>
+  <div v-click-outside="closeChat" class="chat" :class="{ chat_mobile: isMobile }">
+    <div class="chat-box">
+      <div class="chat__title">
+        <span>Чат с поддержкой</span>
+        <v-btn icon="mdi-close" variant="text" @click="close" />
+      </div>
+      <div ref="chatBoxRef" class="chat-messages">
+        <template v-if="loadingMessages">
+          <div class="chat-spinner">
+            <v-progress-circular indeterminate color="primary" size="40" />
+          </div>
+        </template>
+
+        <template v-else-if="userMessages.length">
+          <transition-group name="fade-slide">
+            <div
+              v-for="msg in userMessages"
+              :key="msg.id || msg.created_at + msg.content"
+              class="chat-messages-item"
+              :class="{ 'chat-messages-item_your': msg.is_your }"
+            >
+              <div class="chat-messages-item__role">
+                {{ msg.is_your ? 'Вы' : 'Поддержка' }}
+              </div>
+              <div class="chat-messages-item__msg">{{ msg.content }}</div>
+              <div class="chat-messages-item__time">{{ getTime(msg.created_at) }}</div>
+            </div>
+          </transition-group>
+        </template>
+        <h2 v-else>Пока нет сообщений</h2>
+      </div>
+    </div>
+    <div class="chat__actions">
+      <VCustomInput
+        v-model="newMessage"
+        :hideDetails="true"
+        autofocus
+        label="Введите текст"
+        class="mr-1"
+        @keyup.enter="sendMessage"
+      />
+      <SvgIcon class="chat__actions-send" name="send" @click="sendMessage" />
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { ref, onMounted, watch, nextTick, onBeforeUnmount } from 'vue'
 import { getChatQuery, sendMessageQuery, getMessagesQuery } from '@/api/chat.ts'
@@ -5,9 +52,12 @@ import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import { useChatSocketStore } from '@/stores/chatSocket'
+import { useUserInfo } from '@/stores/UserInfo.ts'
 
 defineProps({ showChat: Boolean })
 const emit = defineEmits(['update:showChat'])
+
+const userInfoStore = useUserInfo()
 
 const chatStore = useChatSocketStore()
 const { isMobile } = useDeviceDetection()
@@ -16,6 +66,7 @@ const roomId = ref<number | null>(null)
 const newMessage = ref('')
 const userMessages = ref<any[]>([])
 const chatBoxRef = ref<HTMLElement | null>(null)
+const loadingMessages = ref(true)
 
 const scrollToBottom = () => {
   nextTick(() => {
@@ -43,6 +94,7 @@ function sendMessage() {
 }
 
 const getMessages = async () => {
+  loadingMessages.value = true
   try {
     const { data } = await getMessagesQuery(roomId.value)
     if (data.code === 200) {
@@ -50,6 +102,8 @@ const getMessages = async () => {
     }
   } catch (error) {
     console.log(error)
+  } finally {
+    loadingMessages.value = false
   }
 }
 
@@ -70,15 +124,18 @@ const sendMessageRest = async () => {
 }
 
 const closeChat = (event: MouseEvent | KeyboardEvent) => {
-  if (event.type === 'click' || (event as KeyboardEvent).key === 'Escape') {
+  // if (event.type === 'click' || (event as KeyboardEvent).key === 'Escape') {
+  if ((event as KeyboardEvent).key === 'Escape') {
     emit('update:showChat', false)
   }
 }
 
-onMounted(async () => {
-  const wsUrl = 'ws://localhost:8080/app/mthueomipj7f2dhac0g1?protocol=7&client=js&version=4.4.0'
+const close = () => {
+  emit('update:showChat', false)
+}
 
-  chatStore.connect(wsUrl)
+onMounted(async () => {
+  chatStore.connect()
 
   const { data } = await getChatQuery()
   if (data.code === 200) {
@@ -88,11 +145,23 @@ onMounted(async () => {
     const channel = `chat.${roomId.value}`
     chatStore.subscribeChannel(channel)
     await getMessages()
-    scrollToBottom()
   }
 
   document.addEventListener('keydown', closeChat)
 })
+
+watch(
+  () => userInfoStore.showChat,
+  (isOpen) => {
+    if (isOpen) {
+      nextTick(() => {
+        userInfoStore.unreadCount = 0
+        localStorage.setItem('unreadCountUser', '0')
+        scrollToBottom()
+      })
+    }
+  }
+)
 
 watch(
   () => chatStore.messages[chatStore.messages.length - 1],
@@ -100,7 +169,6 @@ watch(
     if (!msg || msg.channel !== `chat.${roomId.value}` || msg.event !== 'MessageSent') return
 
     const parsed = typeof msg.data === 'string' ? JSON.parse(msg.data) : msg.data
-    console.warn('parsed', parsed)
     if (parsed.senderId === 2) return
 
     userMessages.value.push({
@@ -109,6 +177,7 @@ watch(
       is_your: false
     })
     scrollToBottom()
+    userInfoStore.unreadCount++
   }
 )
 
@@ -116,43 +185,6 @@ onBeforeUnmount(() => {
   document.removeEventListener('keydown', closeChat)
 })
 </script>
-
-<template>
-  <div v-click-outside="closeChat" class="chat" :class="{ chat_mobile: isMobile }">
-    <div class="chat-box">
-      <div class="chat__title">
-        <span>Чат с поддержкой</span>
-        <v-btn icon="mdi-close" variant="text" @click="closeChat" />
-      </div>
-      <div v-if="userMessages.length" ref="chatBoxRef" class="chat-messages">
-        <div
-          v-for="msg in userMessages"
-          :key="msg.id"
-          class="chat-messages-item"
-          :class="{ 'chat-messages-item_your': msg.is_your }"
-        >
-          <div class="chat-messages-item__role">
-            {{ msg.is_your ? 'Вы' : 'Поддержка' }}
-          </div>
-          <div class="chat-messages-item__msg">{{ msg.content }}</div>
-          <div class="chat-messages-item__time">{{ getTime(msg.created_at) }}</div>
-        </div>
-      </div>
-      <h3 v-else class="chat-messages">Пока нет сообщений</h3>
-    </div>
-    <div class="chat__actions">
-      <VCustomInput
-        v-model="newMessage"
-        :hideDetails="true"
-        autofocus
-        label="Введите текст"
-        class="mr-1"
-        @keyup.enter="sendMessage"
-      />
-      <SvgIcon class="chat__actions-send" name="send" @click="sendMessage" />
-    </div>
-  </div>
-</template>
 
 <style scoped lang="scss">
 .chat {

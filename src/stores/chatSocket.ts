@@ -20,7 +20,8 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
   const isConnecting = ref(false)
   const reconnectUrl = ref<string>('') // хранение URL для переподключения
 
-  function connect(url: string) {
+  function connect() {
+    const url = 'ws://localhost:8080/app/mthueomipj7f2dhac0g1?protocol=7&client=js&version=4.4.0'
     if (isConnecting.value || reconnectAttempts.value >= maxReconnectAttempts) return
 
     reconnectUrl.value = url

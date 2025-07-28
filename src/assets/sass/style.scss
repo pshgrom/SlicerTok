@@ -48,7 +48,7 @@ img {
   }
 }
 
-.chat-open {
+.chat-user {
   position: fixed;
   bottom: 24px;
   right: 24px;
@@ -56,7 +56,27 @@ img {
   cursor: pointer;
   transition: opacity .15s ease-in;
 
-  &:hover {
-    opacity: .7;
+  .chat-open {
+    &:hover {
+      opacity: .7;
+    }
+  }
+}
+
+.chat-user {
+  &__badge {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(34, 93, 255, 1);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 400;
+    position: absolute;
+    top: -5px;
+    right: -5px;
   }
 }

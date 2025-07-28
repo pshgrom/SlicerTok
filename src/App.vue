@@ -10,20 +10,21 @@
         style="max-width: 1000px"
       >
         <HeaderMain v-if="showContent || showForSlicer" />
-        <div v-if="showMainChat || showForSlicer">
-          <SvgIcon
-            v-if="!isMobile"
-            name="chat"
-            class="chat-open"
-            @click="userInfoStore.showChat = !userInfoStore.showChat"
-          />
-          <transition name="fade" mode="out-in">
-            <UserChat v-if="userInfoStore.showChat" v-model:showChat="userInfoStore.showChat" />
-          </transition>
+        <div v-if="showMainChat || showForSlicer" class="chat-user">
+          <SvgIcon v-if="!isMobile" name="chat" class="chat-open" @click="toggleChat" />
+          <span
+            v-if="userInfoStore.unreadCount > 0 && !userInfoStore.showChat"
+            class="chat-user__badge"
+          >
+            {{ userInfoStore.unreadCount }}
+          </span>
         </div>
         <router-view />
       </v-container>
     </v-main>
+    <transition name="fade" mode="out-in">
+      <UserChat v-show="userInfoStore.showChat" v-model:showChat="userInfoStore.showChat" />
+    </transition>
   </v-app>
 </template>
 
@@ -62,6 +63,13 @@ const noChatPages = [
 
 const showContent = computed(() => !loginPages.includes(page.value as string))
 const showMainChat = computed(() => !noChatPages.includes(page.value as string))
+
+const toggleChat = () => {
+  userInfoStore.showChat = !userInfoStore.showChat
+  if (userInfoStore.showChat) {
+    userInfoStore.unreadCount = 0
+  }
+}
 
 const isAdmin = computed(() => authStore.role !== 'slicer')
 
