@@ -52,7 +52,7 @@ const { isMobile } = useDeviceDetection()
 
 const page = computed(() => router.currentRoute.value.name)
 
-const loginPages = ['Login', 'LoginAdmin', 'NotFound']
+const hideChatPages = ['Login', 'LoginAdmin', 'NotFound']
 const noChatPages = [
   'Login',
   'LoginAdmin',
@@ -60,11 +60,12 @@ const noChatPages = [
   'AdminMainLogs',
   'AdminMain',
   'Support',
-  'SupportChat'
+  'SupportChat',
+  'SupportUsers'
 ]
 
 const showContent = computed(() =>
-  page.value ? !loginPages.includes(page.value as string) : false
+  page.value ? !hideChatPages.includes(page.value as string) : false
 )
 const showMainChat = computed(() =>
   page.value ? !noChatPages.includes(page.value as string) : false

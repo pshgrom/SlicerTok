@@ -71,6 +71,7 @@ import { getChatsSupportQuery, getMessagesQuery, sendMessageQuery } from '@/api/
 import { useChatSocketStore } from '@/stores/chatSocket'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
+import { useRoute, useRouter } from 'vue-router'
 
 const chatStore = useChatSocketStore()
 
@@ -83,6 +84,8 @@ const newMessage = ref('')
 const chatBoxRef = ref<HTMLElement | null>(null)
 const unreadCounts = ref<Record<number, number>>({})
 const loadingMessages = ref(true)
+const route = useRoute()
+const router = useRouter()
 
 const scrollToBottom = () => {
   nextTick(() => {
@@ -145,7 +148,7 @@ const sendMessageRest = async () => {
 }
 
 const selectRoom = async (id: number) => {
-  roomId.value = id
+  roomId.value = +id
   messages.value = []
   loadingMessages.value = true
   unreadCounts.value[id] = 0
@@ -174,7 +177,13 @@ onMounted(async () => {
     })
 
     if (rooms.value.length) {
-      await selectRoom(rooms.value[0].id)
+      const id = route.query?.id
+      id ? await selectRoom(id) : await selectRoom(rooms.value[0].id)
+      if (route.query.id) {
+        await router.replace({
+          query: { ...route.query, id: undefined }
+        })
+      }
     }
   }
 })

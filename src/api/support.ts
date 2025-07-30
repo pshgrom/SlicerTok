@@ -6,3 +6,6 @@ export const getPublicationListQuery = (data: ITableParams) =>
 
 export const actionRequestQuery = (data: any) =>
   api.post('/admin-support/publication/final-status', data)
+
+export const getSlicerListQuery = (data: ITableParams) =>
+  api.get('/admin-support/slicer/get-slicer-list', { params: data })

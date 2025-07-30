@@ -99,6 +99,18 @@ export const supportHeaders = [
   { title: 'Действия', value: 'actions' }
 ]
 
+export const supportUsersHeaders = [
+  {
+    title: 'ID',
+    value: 'id'
+  },
+  { title: 'Имя Юзера', value: 'name' },
+  { title: 'Ключ', value: 'key' },
+  { title: 'Просмотры', value: 'total_views' },
+  { title: 'Верификация', value: 'is_verified' },
+  { title: 'Действия', value: 'actions' }
+]
+
 export const adminInfoCheckedHeaders = [
   {
     title: 'ID',
