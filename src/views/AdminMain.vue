@@ -5,6 +5,7 @@
     :is-loading="isLoading"
     :items="calcDataItems"
     :items-per-page="queryParams.perPage"
+    @action-request="actionRequest"
   ></TableAdminMain>
   <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
     <TablePagination
@@ -55,6 +56,19 @@ const changePage = (page: number) => {
     page: +page
   }
   getRequest()
+}
+
+const actionRequest = async (id: number, status: string) => {
+  const data = {
+    id,
+    status
+  }
+  try {
+    await adminMainStore.actionRequest(data)
+    getRequest()
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 const getRequest = () => {

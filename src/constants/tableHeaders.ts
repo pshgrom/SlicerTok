@@ -132,7 +132,8 @@ export const adminMain = [
   { title: 'Статус', value: 'status' },
   { title: 'Статус модераторов', value: 'status_moderation' },
   { title: 'Ссылка', value: 'url' },
-  { title: 'Статистика', value: 'video_stat_link' }
+  { title: 'Статистика', value: 'video_stat_link' },
+  { title: 'Действия', value: 'actions' }
 ]
 
 export const adminMainLogs = [

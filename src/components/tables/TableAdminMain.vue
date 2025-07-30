@@ -90,6 +90,17 @@
         <SvgIcon name="arrow-up-right" />
       </a>
     </template>
+    <template #[`item.actions`]="{ item }">
+      <div class="d-flex align-center">
+        <VCusomButton
+          class="mr-4"
+          :customClass="['light']"
+          @click="actionRequest(item.id, 'rejected')"
+        >
+          Отклонить заявку
+        </VCusomButton>
+      </div>
+    </template>
   </v-data-table>
 </template>
 
@@ -107,8 +118,9 @@ import {
   getIcon
 } from '@/utils/socials.ts'
 import { formatDate } from '@/utils/formatDate.ts'
+import VCusomButton from '@/components/base/VCusomButton.vue'
 
-defineEmits(['changeStatus', 'saveComment', 'finishCheck'])
+const emit = defineEmits(['changeStatus', 'saveComment', 'finishCheck', 'actionRequest'])
 
 const props = defineProps({
   headers: {
@@ -147,5 +159,9 @@ const formatLabel = (label: string) => {
     case 'group_b':
       return 'Админ группы B'
   }
+}
+
+const actionRequest = (id: number, status: string) => {
+  emit('actionRequest', id, status)
 }
 </script>

@@ -19,12 +19,14 @@
             {{ userInfoStore.unreadCount }}
           </span>
         </div>
+        <transition name="fade" mode="out-in">
+          <div v-if="showContent">
+            <UserChat v-show="userInfoStore.showChat" v-model:showChat="userInfoStore.showChat" />
+          </div>
+        </transition>
         <router-view />
       </v-container>
     </v-main>
-    <transition name="fade" mode="out-in">
-      <UserChat v-show="userInfoStore.showChat" v-model:showChat="userInfoStore.showChat" />
-    </transition>
   </v-app>
 </template>
 
@@ -61,8 +63,12 @@ const noChatPages = [
   'SupportChat'
 ]
 
-const showContent = computed(() => !loginPages.includes(page.value as string))
-const showMainChat = computed(() => !noChatPages.includes(page.value as string))
+const showContent = computed(() =>
+  page.value ? !loginPages.includes(page.value as string) : false
+)
+const showMainChat = computed(() =>
+  page.value ? !noChatPages.includes(page.value as string) : false
+)
 
 const toggleChat = () => {
   userInfoStore.showChat = !userInfoStore.showChat

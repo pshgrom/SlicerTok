@@ -1,7 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import type { ITableParams } from '@/interfaces/AppModel'
-import { getLogListQuery, getPublicationsListMainQuery } from '@/api/adminInfo'
+import {
+  actionRequestAdminQuery,
+  getLogListQuery,
+  getPublicationsListMainQuery
+} from '@/api/adminInfo'
 import { useError } from '@/stores/Errors'
 
 export const useAdminMain = defineStore('adminMainStore', () => {
@@ -69,12 +73,21 @@ export const useAdminMain = defineStore('adminMainStore', () => {
     }
   }
 
+  const actionRequest = async (data: any) => {
+    try {
+      await actionRequestAdminQuery(data)
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    }
+  }
+
   return {
     isLoading,
     getPublicationsListMain,
     items,
     queryParams,
     setQueryParams,
-    getLogList
+    getLogList,
+    actionRequest
   }
 })

@@ -52,14 +52,27 @@
         </v-form>
       </v-card-text>
       <v-card-actions>
-        <VCusomButton :customClass="['light', 'avg']" @click="closeDialog"> Отмена </VCusomButton>
-        <VCusomButton
-          :customClass="['dark', 'avg']"
-          :disabled="currentItem.status === 'todo' || !currentItem.status"
-          @click="change"
-        >
-          Сохранить
-        </VCusomButton>
+        <div>
+          <v-checkbox
+            v-model="additionalCheck"
+            label="Доп проверка"
+            density="compact"
+            hide-details
+            @change="toggleAdditionalCheck"
+          />
+        </div>
+        <div>
+          <VCusomButton :customClass="['light', 'avg']" @click="closeDialog" class="mr-2">
+            Отмена
+          </VCusomButton>
+          <VCusomButton
+            :customClass="['dark', 'avg']"
+            :disabled="currentItem.status === 'todo' || !currentItem.status"
+            @click="change"
+          >
+            Сохранить
+          </VCusomButton>
+        </div>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -85,6 +98,7 @@ const emit = defineEmits(['update:modelValue', 'update:currentItem', 'changeStat
 const initialValue = ref({})
 
 const selectAll = ref(false)
+const additionalCheck = ref(false)
 
 const selectedTasks = ref([])
 
@@ -139,6 +153,10 @@ const onInput = (val) => {
   currentItem.value.number_views_moderation = digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
 
+const toggleAdditionalCheck = () => {
+  console.log(123)
+}
+
 watch(
   () => currentItem.value,
   (val) => {
@@ -177,9 +195,10 @@ onMounted(() => {
   padding-top: 0 !important;
 }
 
-//:deep(.v-card-actions) {
-//  position: sticky;
-//  bottom: 0;
-//  background: #fff;
-//}
+:deep(.v-card-actions) {
+  //position: sticky;
+  //bottom: 0;
+  background: #fff;
+  justify-content: space-between;
+}
 </style>

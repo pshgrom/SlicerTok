@@ -51,17 +51,11 @@ export default defineConfig({
         multipass: true,
         plugins: [
           { name: 'removeViewBox', active: false },
-          { name: 'removeDimensions', active: true },
           { name: 'removeTitle', active: true },
-          { name: 'removeDesc', active: true },
-          { name: 'removeUselessDefs', active: true },
-          { name: 'cleanupIDs', active: true },
-          { name: 'mergePaths', active: true },
-          { name: 'convertShapeToPath', active: true }
+          { name: 'removeDesc', active: true }
         ]
       }
     }),
-
     ...(isProd ? prodPlugins : [])
   ],
 
@@ -76,48 +70,31 @@ export default defineConfig({
 
     rollupOptions: {
       output: {
-        inlineDynamicImports: false,
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('vue')) return 'vendor_vue'
-            if (id.includes('axios')) return 'vendor_network'
-            if (id.includes('lodash')) return 'vendor_lodash'
-            if (id.includes('vue-router')) return 'vendor_router'
-            if (id.includes('pinia')) return 'vendor_pinia'
-            if (id.includes('node_modules')) return 'vendor_misc'
             if (id.includes('vuetify')) {
               if (id.includes('lib/components')) return 'vendor_vuetify_components'
               if (id.includes('lib/labs')) return 'vendor_vuetify_labs'
               return 'vendor_vuetify_core'
             }
+            if (id.includes('vue')) return 'vendor_vue'
+            if (id.includes('axios')) return 'vendor_network'
+            if (id.includes('vue-router')) return 'vendor_router'
+            if (id.includes('pinia')) return 'vendor_pinia'
+            return 'vendor_misc'
           }
           if (id.includes('src/views/')) return 'views'
           if (id.includes('src/components/')) return 'components'
         },
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[ext]',
-        hoistTransitiveImports: false,
-        preserveModules: false,
-        generatedCode: {
-          preset: 'es2015',
-          arrowFunctions: true,
-          constBindings: true,
-          objectShorthand: true
-        }
+        assetFileNames: 'assets/[name]-[hash].[ext]'
       }
     }
   },
 
   optimizeDeps: {
-    include: [
-      'vue',
-      'vue-router',
-      'pinia',
-      'vue-the-mask',
-      'lodash-es',
-      'vuetify/lib/components/*'
-    ],
+    include: ['vue', 'vue-router', 'pinia', 'vue-the-mask'],
     exclude: []
   },
 
