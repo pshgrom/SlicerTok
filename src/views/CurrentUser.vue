@@ -9,7 +9,7 @@
         >Верифицировать
       </VCusomButton>
       <VCusomButton v-else class="mb-4" :customClass="['light']" @click="verifyUser(false)">
-        Аннулировать верицикацию
+        Аннулировать верификацию
       </VCusomButton>
       <div class="user-info__wrapper">
         <ProfileCard v-model:dialog="editDialog" :user="currentUser" :readonly="true" />
