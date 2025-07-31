@@ -6,7 +6,11 @@
           Кошельки
           <span class="wallets__length">{{ wallets.length }}</span>
         </div>
-        <VCusomButton :customClass="['light']" :disabled="wallets.length >= 3" @click="openDialog"
+        <VCusomButton
+          v-if="!readonly"
+          :customClass="['light']"
+          :disabled="wallets.length >= 3"
+          @click="openDialog"
           >Добавить
         </VCusomButton>
       </div>
@@ -35,6 +39,10 @@ const props = defineProps({
   wallets: {
     type: Array as PropType<IWallet[]>,
     default: () => []
+  },
+  readonly: {
+    type: Boolean,
+    default: false
   }
 })
 

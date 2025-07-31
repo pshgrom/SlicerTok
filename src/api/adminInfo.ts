@@ -23,4 +23,4 @@ export const finishCheckQuery = (id: number) =>
   api.post('/admin/publication/complete-moderation', { id })
 
 export const actionRequestAdminQuery = (data: any) =>
-  api.post('/admin-support/publication/final-status1', data)
+  api.post('/admin-main/publication/final-status', data)

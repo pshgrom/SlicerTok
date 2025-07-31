@@ -91,7 +91,7 @@
       </a>
     </template>
     <template #[`item.actions`]="{ item }">
-      <div class="d-flex align-center">
+      <div v-if="item.status !== 'rejected'" class="d-flex align-center">
         <VCusomButton
           class="mr-4"
           :customClass="['light']"

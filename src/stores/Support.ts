@@ -1,12 +1,18 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import type { ITableParams, IUserInfo, IAdminInfoData } from '@/interfaces/AppModel'
-import { actionRequestQuery, getPublicationListQuery } from '@/api/support'
+import {
+  actionRequestQuery,
+  getPublicationListQuery,
+  getSlicerQuery,
+  verifyUserQuery
+} from '@/api/support'
 import { useError } from '@/stores/Errors'
 // import type { ISupportSaveStatus } from '@/interfaces/ISupport'
 
 export const useSupport = defineStore('supportStore', () => {
   const isLoading = ref<boolean>(false)
+  const currentUser = ref({})
   const queryParams = ref<ITableParams>({
     page: 1,
     perPage: 10,
@@ -28,6 +34,32 @@ export const useSupport = defineStore('supportStore', () => {
       await actionRequestQuery(data)
     } catch (error: any) {
       errorStore.setErrors(error.response?.data?.message ?? '')
+    }
+  }
+
+  const getSlicer = async (id: number) => {
+    try {
+      isLoading.value = true
+      const { data } = await getSlicerQuery(id)
+      currentUser.value = data?.data ?? {}
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const verifyUser = async (newData) => {
+    try {
+      isLoading.value = true
+      const { data } = await verifyUserQuery(newData)
+      const msg = data?.message ?? ''
+      errorStore.setErrors(msg, 'success')
+      return true
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    } finally {
+      isLoading.value = false
     }
   }
 
@@ -62,6 +94,9 @@ export const useSupport = defineStore('supportStore', () => {
     items,
     preloadUserInfo,
     queryParams,
-    setQueryParams
+    setQueryParams,
+    getSlicer,
+    currentUser,
+    verifyUser
   }
 })

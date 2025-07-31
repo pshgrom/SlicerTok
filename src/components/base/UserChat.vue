@@ -21,7 +21,7 @@
               :class="{ 'chat-messages-item_your': msg.is_your }"
             >
               <div class="chat-messages-item__role">
-                {{ msg.is_your ? 'Вы' : 'Поддержка' }}
+                {{ msg.user.name }}
               </div>
               <div class="chat-messages-item__msg">{{ msg.content }}</div>
               <div class="chat-messages-item__time">{{ getTime(msg.created_at) }}</div>
@@ -230,7 +230,6 @@ onBeforeUnmount(() => {
     color: rgba(17, 17, 17, 1);
     font-weight: 500;
     font-size: 18px;
-    font-weight: 400;
   }
 
   &-messages {
@@ -267,7 +266,6 @@ onBeforeUnmount(() => {
         color: rgba(0, 0, 0, 1);
         font-weight: 500;
         font-size: 12px;
-        font-weight: 400;
         position: absolute;
         left: 0;
         top: -22px;

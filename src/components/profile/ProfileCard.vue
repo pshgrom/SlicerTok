@@ -6,7 +6,9 @@
           <!--          <ImageUploader v-model="imageFile" />-->
           <img src="@/static/img/avatar.png" alt="аватарка" />
         </div>
-        <VCusomButton :customClass="['light']" @click="showDialog(true)">Изменить </VCusomButton>
+        <VCusomButton v-if="!readonly" :customClass="['light']" @click="showDialog(true)"
+          >Изменить
+        </VCusomButton>
       </div>
       <div class="profile__content">
         <div class="profile__name">
@@ -40,6 +42,16 @@
               <span v-else>не указано</span>
             </div>
           </div>
+          <template v-if="readonly">
+            <div class="profile-info-item">
+              <div class="profile-info-item__value">
+                <div class="custom-table-views">
+                  <SvgIcon name="show" />
+                  <div>{{ formatNumber(user.total_views ?? 0) }}</div>
+                </div>
+              </div>
+            </div>
+          </template>
         </div>
         <div class="profile-info__wrap">
           <div class="profile-info-item">
@@ -54,9 +66,6 @@
             </div>
           </div>
           <div class="profile-info-item">
-            <div class="profile-info-item__icon">
-              <!--              <SvgIcon name="telegram" />-->
-            </div>
             <div class="profile-info-item__value">
               <template v-if="user.key">
                 {{ user.key }}
@@ -64,6 +73,13 @@
               <span v-else>не указано</span>
             </div>
           </div>
+          <template v-if="readonly">
+            <div class="profile-info-item">
+              <div class="profile-info-item__value">
+                {{ user.is_verified ? 'Верифицирован' : 'Не верифицирован' }}
+              </div>
+            </div>
+          </template>
         </div>
       </div>
     </div>
@@ -74,10 +90,15 @@ import VCusomButton from '@/components/base/VCusomButton.vue'
 import { type PropType } from 'vue'
 import type { IUser } from '@/interfaces/Slicer'
 import SvgIcon from '@/components/base/SvgIcon.vue'
+import { formatNumber } from '@/utils/formatNumbers.ts'
 // import ImageUploader from '@/components/base/ImageUploader.vue'
 
 defineProps({
   dialog: {
+    type: Boolean,
+    default: false
+  },
+  readonly: {
     type: Boolean,
     default: false
   },
@@ -139,7 +160,6 @@ const showDialog = (val: boolean) => {
     @media (max-width: 1024px) {
       border-radius: 0;
       border-top-right-radius: 16px;
-      border-top-right-radius: 16px;
     }
   }
 
@@ -163,7 +183,6 @@ const showDialog = (val: boolean) => {
   &__name {
     color: rgba(17, 17, 17, 1);
     font-size: 18px;
-    font-weight: 500;
     font-weight: 500;
     margin-bottom: 10px;
 

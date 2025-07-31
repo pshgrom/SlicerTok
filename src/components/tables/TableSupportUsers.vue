@@ -9,6 +9,7 @@
     height="80vh"
     fixed-header
     hide-default-footer
+    @click:row="onRowClick"
   >
     <template #loading>
       <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
@@ -27,13 +28,16 @@
           color: getColor(item.is_verified)
         }"
       >
+        <div class="custom-table-chip__icon">
+          <SvgIcon :name="getIcon(item.is_verified)" />
+        </div>
         <div class="custom-table-chip__status">
           {{ getTextStatus(item.is_verified) }}
         </div>
       </div>
     </template>
     <template #[`item.actions`]="{ item }">
-      <VCusomButton :customClass="['light']" @click="goToChat(item.id)">
+      <VCusomButton :customClass="['light']" @click.stop="goToChat(item.id)">
         Написать в чат
       </VCusomButton></template
     >
@@ -78,6 +82,10 @@ const computedHeaders = computed<ITableHeaders[]>({
   }
 })
 
+const onRowClick = (event, { item }) => {
+  router.push({ name: 'User', params: { id: item.id } })
+}
+
 const goToChat = (id: number | string) => {
   router.push({ name: 'SupportChat', query: { id } })
 }
@@ -98,6 +106,19 @@ const getTextStatus = (is_verified: boolean) => {
     case false:
       return 'Не верифицирован'
   }
+}
+
+const getIcon = (is_verified: boolean) => {
+  let icon = ''
+  switch (is_verified) {
+    case true:
+      icon = 'status-ok'
+      break
+    case false:
+      icon = 'status-bad'
+      break
+  }
+  return icon
 }
 
 const getColor = (is_verified: boolean) => {
