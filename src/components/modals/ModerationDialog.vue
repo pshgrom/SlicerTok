@@ -153,15 +153,14 @@ const onInput = (val) => {
 }
 
 watch(
-  () => currentItem.value,
-  (val) => {
-    if (val.rules?.length) {
-      selectedTasks.value = val.rules.map((rule) => rule.key)
+  () => currentItem.value?.rules,
+  (rules) => {
+    if (rules?.length) {
+      selectedTasks.value = rules.map((r) => r.key)
     } else {
       selectedTasks.value = []
     }
-  },
-  { deep: true }
+  }
 )
 
 watch(
