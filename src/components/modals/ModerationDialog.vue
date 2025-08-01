@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialogModel" class="custom-modal" max-width="500px" persistent>
+  <v-dialog v-model="dialogModel" class="custom-modal" max-width="600px" persistent>
     <v-card>
       <v-card-title>
         <span class="headline">Проверка заявки</span>
@@ -55,10 +55,9 @@
         <div>
           <v-checkbox
             v-model="additionalCheck"
-            label="Доп проверка"
+            label="Доп. проверка"
             density="compact"
             hide-details
-            @change="toggleAdditionalCheck"
           />
         </div>
         <div>
@@ -142,7 +141,7 @@ const resetForm = () => {
 const change = async () => {
   const isValid = await formRef?.value?.validate()
   if (isValid.valid) {
-    emit('changeState', currentItem.value, selectedTasks.value)
+    emit('changeState', currentItem.value, selectedTasks.value, additionalCheck.value)
     emit('update:modelValue', false)
   }
 }
@@ -151,10 +150,6 @@ const onInput = (val) => {
   const rawValue = typeof val === 'string' ? val : val?.target?.value || ''
   const digitsOnly = rawValue.replace(/\D/g, '')
   currentItem.value.number_views_moderation = digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-}
-
-const toggleAdditionalCheck = () => {
-  console.log(123)
 }
 
 watch(
@@ -199,6 +194,6 @@ onMounted(() => {
   //position: sticky;
   //bottom: 0;
   background: #fff;
-  justify-content: space-between;
+  justify-content: space-between !important;
 }
 </style>

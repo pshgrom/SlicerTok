@@ -7,6 +7,7 @@
     :itemsPerPage="queryParams.perPage"
     @finish-check="finishCheck"
     @change-state="changeState"
+    @saveMark="saveMark"
   ></TableAdminInfo>
   <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
     <TablePagination
@@ -63,20 +64,30 @@ const changePage = (page: number) => {
 
 const cleanNumber = (str: string) => str.replace(/\D/g, '')
 
-const changeState = async (item, selectedTasks) => {
+const changeState = async (item, selectedTasks, additionalCheck) => {
   const { id, status, status_comment, number_views_moderation } = item
   const data = {
     id,
     status,
     status_comment,
     number_views_moderation: cleanNumber(number_views_moderation),
-    rules: selectedTasks
+    rules: selectedTasks,
+    check_support: additionalCheck
   }
   try {
     await adminInfo.setPublicationStatus(data)
     getRequest()
   } catch (error: any) {
     errorStore.setErrors(error.response?.data?.message ?? '')
+  }
+}
+
+const saveMark = async (markData: any) => {
+  const { data } = await adminInfo.saveMark(markData)
+  const msg = data?.message ?? ''
+  errorStore.setErrors(msg, 'success')
+  if (data?.code === 200) {
+    getRequest()
   }
 }
 

@@ -22,5 +22,7 @@ export const setPublicationStatusQuery = (data: any) =>
 export const finishCheckQuery = (id: number) =>
   api.post('/admin/publication/complete-moderation', { id })
 
+export const saveMarkQuery = (data: any) => api.post('/admin/publication/set-mark', data)
+
 export const actionRequestAdminQuery = (data: any) =>
   api.post('/admin-main/publication/final-status', data)

@@ -5,6 +5,7 @@ import {
   finishCheckQuery,
   getCompletedListQuery,
   getPublicationListQuery,
+  saveMarkQuery,
   setPublicationStatusQuery
 } from '@/api/adminInfo'
 import { useError } from '@/stores/Errors'
@@ -32,7 +33,8 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     status = '',
     status_comment = '',
     number_views_moderation = '',
-    rules = {}
+    rules = {},
+    check_support = false
   }) => {
     try {
       const newData = {
@@ -40,7 +42,8 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
         status,
         ...(status_comment ? { status_comment } : {}),
         number_views_moderation: +number_views_moderation,
-        ...(status !== 'approved' && { rules })
+        ...(status !== 'approved' && { rules }),
+        check_support
       }
       const { data } = await setPublicationStatusQuery(newData)
       const msg = data?.message ?? ''
@@ -53,6 +56,14 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
   const finishCheck = async (id: number) => {
     try {
       return await finishCheckQuery(id)
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    }
+  }
+
+  const saveMark = async (markData: any) => {
+    try {
+      return await saveMarkQuery(markData)
     } catch (error: any) {
       errorStore.setErrors(error.response?.data?.message ?? '')
     }
@@ -115,6 +126,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     queryParams,
     setQueryParams,
     finishCheck,
-    getCompletedList
+    getCompletedList,
+    saveMark
   }
 })

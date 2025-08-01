@@ -23,7 +23,7 @@ export const walletRules = {
   required: (v: any) => !!v || 'Обязательное поле',
 
   isValidWallet: (v: string) => {
-    if (!v || typeof v !== 'string') return true // не дублируем required
+    if (!v || typeof v !== 'string') return true
 
     const trimmed = v.trim()
 

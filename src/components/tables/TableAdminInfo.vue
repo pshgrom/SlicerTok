@@ -66,17 +66,22 @@
       <p>{{ item.status_comment ? item.status_comment : '-' }}</p>
     </template>
     <template #[`item.actions`]="{ item }">
-      <div class="d-flex" style="min-width: 210px">
+      <div class="d-flex" style="min-width: 300px">
         <div class="custom-table__icon mr-2">
           <SvgIcon name="edit-row" @click="showDialog(item)" />
         </div>
         <VCusomButton
           class="custom-table__button"
-          size="small"
+          :customClass="['dark']"
           :disabled="item.status === 'todo' || !item.status"
-          color="primary"
           @click="finishCheck(item.id)"
           >Закончить проверку
+        </VCusomButton>
+        <VCusomButton
+          class="custom-table__button ml-2"
+          :customClass="['light']"
+          @click="openMarkModal(item.id)"
+          >Пометка
         </VCusomButton>
       </div>
     </template>
@@ -86,6 +91,7 @@
     v-model:currentItem="currentItem"
     @change-state="changeState"
   />
+  <AddMarkModal v-if="isModalOpen" v-model="isModalOpen" @save="saveMark" />
 </template>
 
 <script setup lang="ts">
@@ -103,8 +109,9 @@ import {
 } from '@/utils/socials.ts'
 import ModerationDialog from '@/components/modals/ModerationDialog.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
+import AddMarkModal from '@/components/modals/AddMarkModal.vue'
 
-const emit = defineEmits(['finishCheck', 'changeState'])
+const emit = defineEmits(['finishCheck', 'changeState', 'saveMark'])
 
 const props = defineProps({
   headers: {
@@ -128,6 +135,8 @@ const props = defineProps({
 const headersData = ref(props.headers)
 const dialog = ref(false)
 const currentItem = ref({})
+const isModalOpen = ref(false)
+const markId = ref<null | number>(null)
 
 const computedHeaders = computed<ITableHeaders[]>({
   get() {
@@ -150,6 +159,19 @@ const finishCheck = (id: number | string) => {
   emit('finishCheck', id)
 }
 
+const openMarkModal = (id: number | null) => {
+  isModalOpen.value = true
+  markId.value = id
+}
+
+const saveMark = async (mark: string) => {
+  const newData = {
+    id: markId.value,
+    text: mark
+  }
+  emit('saveMark', newData)
+}
+
 const showDialog = (item) => {
   currentItem.value = {
     ...item,
@@ -158,8 +180,8 @@ const showDialog = (item) => {
   dialog.value = true
 }
 
-const changeState = (item: any, selectedTasks: any) => {
-  emit('changeState', item, selectedTasks)
+const changeState = (item: any, selectedTasks: any, additionalCheck: boolean) => {
+  emit('changeState', item, selectedTasks, additionalCheck)
 }
 </script>
 
