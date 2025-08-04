@@ -104,7 +104,8 @@ const selectedTasks = ref([])
 const allStatuses = [
   { label: 'Новая', value: 'todo', disabled: true },
   { label: 'Одобрено', value: 'approved' },
-  { label: 'Отклонено', value: 'rejected' }
+  { label: 'Отклонено', value: 'rejected' },
+  { label: 'Доп. проверка', value: 'additional-check' }
 ]
 
 const formRef = ref(null)
