@@ -12,7 +12,13 @@
             :items="allStatuses"
             class="mt-4 mb-4"
             :label="'Статус'"
-          />
+          >
+            <template #item="{ item, props }">
+              <v-list-item v-bind="props" :style="getItemStyle(item)">
+                {{ item.text }}
+              </v-list-item>
+            </template>
+          </VCustomSelect>
           <div v-show="currentItem.status === 'rejected'">
             <v-checkbox
               v-model="selectAll"
@@ -61,7 +67,7 @@
           />
         </div>
         <div>
-          <VCusomButton :customClass="['light', 'avg']" @click="closeDialog" class="mr-2">
+          <VCusomButton :customClass="['light', 'avg']" class="mr-2" @click="closeDialog">
             Отмена
           </VCusomButton>
           <VCusomButton
@@ -133,6 +139,13 @@ const allTasks = computed(() => currentItem.value?.task?.rules ?? [])
 const closeDialog = () => {
   resetForm()
   emit('update:modelValue', false)
+}
+
+const getItemStyle = (item: any) => {
+  if (item.value === 'additional-check') {
+    return 'color: rgb(34, 93, 255)'
+  }
+  return ''
 }
 
 const resetForm = () => {

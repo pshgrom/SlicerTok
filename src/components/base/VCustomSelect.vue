@@ -17,7 +17,11 @@
       @update:model-value="updateStatus"
     >
       <template #item="{ props, item }">
-        <v-list-item v-bind="props" :disabled="item.raw.disabled" />
+        <slot name="item" :item="item" :props="{ ...props, disabled: item.raw.disabled }">
+          <v-list-item v-bind="props" :disabled="item.raw.disabled">
+            {{ item.raw.label }}
+          </v-list-item>
+        </slot>
       </template>
     </v-select>
   </div>
