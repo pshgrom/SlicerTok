@@ -91,13 +91,21 @@
       </a>
     </template>
     <template #[`item.actions`]="{ item }">
-      <div v-if="item.status !== 'rejected'" class="d-flex align-center">
+      <div class="d-flex align-center" :class="{ 'justify-end': item.status === 'rejected' }">
         <VCusomButton
-          class="mr-4"
+          v-if="item.status !== 'rejected'"
           :customClass="['light']"
           @click="actionRequest(item.id, 'rejected')"
         >
           Отклонить заявку
+        </VCusomButton>
+        <VCusomButton
+          v-if="item.status !== 'awaiting_payment'"
+          class="ml-4"
+          :customClass="['dark']"
+          @click="actionRequest(item.id, 'approved')"
+        >
+          Принять заявку
         </VCusomButton>
       </div>
     </template>

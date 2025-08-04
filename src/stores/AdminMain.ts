@@ -75,7 +75,7 @@ export const useAdminMain = defineStore('adminMainStore', () => {
 
   const actionRequest = async (data: any) => {
     try {
-      await actionRequestAdminQuery(data)
+      return await actionRequestAdminQuery(data)
     } catch (error: any) {
       errorStore.setErrors(error.response?.data?.message ?? '')
     }

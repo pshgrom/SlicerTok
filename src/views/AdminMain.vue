@@ -25,10 +25,12 @@ import { adminMain } from '@/constants/tableHeaders'
 import { useRouter } from 'vue-router'
 import { useAdminMain } from '@/stores/AdminMain'
 import TableAdminMain from '@/components/tables/TableAdminMain.vue'
+import { useError } from '@/stores/Errors.ts'
 
 const headers = ref<ITableHeaders[]>(adminMain)
 
 const adminMainStore = useAdminMain()
+const errorStore = useError()
 
 const isLoading = computed(() => adminMainStore.isLoading)
 const router = useRouter()
@@ -59,12 +61,14 @@ const changePage = (page: number) => {
 }
 
 const actionRequest = async (id: number, status: string) => {
-  const data = {
+  const newData = {
     id,
     status
   }
   try {
-    await adminMainStore.actionRequest(data)
+    const { data } = await adminMainStore.actionRequest(newData)
+    const msg = data?.message ?? ''
+    errorStore.setErrors(msg, 'success')
     getRequest()
   } catch (e) {
     console.log(e)
