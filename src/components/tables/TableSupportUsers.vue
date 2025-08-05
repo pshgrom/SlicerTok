@@ -36,6 +36,19 @@
         </div>
       </div>
     </template>
+    <template #[`item.requires_verification`]="{ item }">
+      <div
+        class="custom-table-chip"
+        :style="{
+          'background-color': getCheckBgColor(item.requires_verification),
+          color: getCheckColor(item.requires_verification)
+        }"
+      >
+        <div class="custom-table-chip__status">
+          {{ getTextCheck(item.requires_verification) }}
+        </div>
+      </div>
+    </template>
     <template #[`item.actions`]="{ item }">
       <VCusomButton :customClass="['light']" @click.stop="goToChat(item.id)">
         Написать в чат
@@ -99,12 +112,30 @@ const getStatusColor = (is_verified: boolean) => {
   }
 }
 
+const getCheckBgColor = (is_verified: boolean) => {
+  switch (is_verified) {
+    case true:
+      return 'rgba(255, 224, 224, 1)'
+    case false:
+      return 'rgba(187, 251, 228, 1)'
+  }
+}
+
 const getTextStatus = (is_verified: boolean) => {
   switch (is_verified) {
     case true:
       return 'Верифицирован'
     case false:
       return 'Не верифицирован'
+  }
+}
+
+const getTextCheck = (is_verified: boolean) => {
+  switch (is_verified) {
+    case true:
+      return 'Нужна'
+    case false:
+      return 'Не нужна'
   }
 }
 
@@ -127,6 +158,15 @@ const getColor = (is_verified: boolean) => {
       return 'rgba(16, 154, 106, 1)'
     case false:
       return 'rgba(255, 0, 0, 1)'
+  }
+}
+
+const getCheckColor = (is_verified: boolean) => {
+  switch (is_verified) {
+    case true:
+      return 'rgba(255, 0, 0, 1)'
+    case false:
+      return 'rgba(16, 154, 106, 1)'
   }
 }
 </script>

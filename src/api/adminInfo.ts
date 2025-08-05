@@ -22,6 +22,9 @@ export const setPublicationStatusQuery = (data: any) =>
 export const finishCheckQuery = (id: number) =>
   api.post('/admin/publication/complete-moderation', { id })
 
+export const requestVerificationQuery = (id: number) =>
+  api.post('admin/publication/set-require-verification', { id })
+
 export const saveMarkQuery = (data: any) => api.post('/admin/publication/set-mark', data)
 
 export const actionRequestAdminQuery = (data: any) =>

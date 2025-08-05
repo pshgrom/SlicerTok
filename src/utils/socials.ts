@@ -13,6 +13,8 @@ export const getTextStatus = (status: string): string => {
       return 'Новая'
     case 'moderation':
       return 'На модерации'
+    case 'na':
+      return 'Доп. проверка'
     case 'awaiting_payment':
       return 'Ожидание оплаты'
     case 'paid':
@@ -39,6 +41,8 @@ export const getStatusColor = (status: string): string => {
       return 'rgba(187, 251, 228, 1)'
     case 'rejected':
       return 'rgba(255, 224, 224, 1)'
+    case 'na':
+      return 'rgba(255, 241, 221, 1)'
     default:
       return ''
   }
@@ -71,6 +75,8 @@ export const getColor = (status: string): string => {
       return 'rgba(16, 154, 106, 1)'
     case 'rejected':
       return 'rgba(255, 0, 0, 1)'
+    case 'na':
+      return 'rgba(235, 142, 4, 1)'
     default:
       return ''
   }
@@ -93,6 +99,9 @@ export const getIcon = (status: string): string => {
       break
     case 'rejected':
       icon = 'status-bad'
+      break
+    case 'na':
+      icon = 'addCheck'
       break
   }
   return icon

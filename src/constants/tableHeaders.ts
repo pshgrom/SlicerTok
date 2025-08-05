@@ -109,6 +109,7 @@ export const supportUsersHeaders = [
   { title: 'Ключ', value: 'key' },
   { title: 'Просмотры', value: 'total_views' },
   { title: 'Верификация', value: 'is_verified' },
+  { title: 'Проверка', value: 'requires_verification' },
   { title: 'Действия', value: 'actions' }
 ]
 

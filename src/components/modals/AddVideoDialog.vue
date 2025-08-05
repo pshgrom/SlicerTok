@@ -16,6 +16,7 @@
               videoRules.noShare,
               videoRules.quantityLink
             ]"
+            autofocus
             class="mb-4"
           />
           <VCustomInput

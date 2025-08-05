@@ -6,6 +6,7 @@
     :items="calcDataItems"
     :itemsPerPage="queryParams.perPage"
     @finish-check="finishCheck"
+    @requestVerification="requestVerification"
     @change-state="changeState"
     @saveMark="saveMark"
   ></TableAdminInfo>
@@ -64,15 +65,14 @@ const changePage = (page: number) => {
 
 const cleanNumber = (str: string) => str.replace(/\D/g, '')
 
-const changeState = async (item, selectedTasks, additionalCheck) => {
+const changeState = async (item, selectedTasks) => {
   const { id, status, status_comment, number_views_moderation } = item
   const data = {
     id,
     status,
     status_comment,
     number_views_moderation: cleanNumber(number_views_moderation),
-    rules: selectedTasks,
-    check_support: additionalCheck
+    rules: selectedTasks
   }
   try {
     await adminInfo.setPublicationStatus(data)
@@ -93,6 +93,15 @@ const saveMark = async (markData: any) => {
 
 const finishCheck = async (id: number) => {
   const { data } = await adminInfo.finishCheck(id)
+  const msg = data?.message ?? ''
+  errorStore.setErrors(msg, 'success')
+  if (data?.code === 200) {
+    getRequest()
+  }
+}
+
+const requestVerification = async (id: number) => {
+  const { data } = await adminInfo.requestVerification(id)
   const msg = data?.message ?? ''
   errorStore.setErrors(msg, 'success')
   if (data?.code === 200) {

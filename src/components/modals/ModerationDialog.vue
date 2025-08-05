@@ -59,14 +59,6 @@
       </v-card-text>
       <v-card-actions>
         <div>
-          <v-checkbox
-            v-model="additionalCheck"
-            label="Доп. проверка"
-            density="compact"
-            hide-details
-          />
-        </div>
-        <div>
           <VCusomButton :customClass="['light', 'avg']" class="mr-2" @click="closeDialog">
             Отмена
           </VCusomButton>
@@ -103,7 +95,6 @@ const emit = defineEmits(['update:modelValue', 'update:currentItem', 'changeStat
 const initialValue = ref({})
 
 const selectAll = ref(false)
-const additionalCheck = ref(false)
 
 const selectedTasks = ref([])
 
@@ -111,7 +102,7 @@ const allStatuses = [
   { label: 'Новая', value: 'todo', disabled: true },
   { label: 'Одобрено', value: 'approved' },
   { label: 'Отклонено', value: 'rejected' },
-  { label: 'Доп. проверка', value: 'additional-check' }
+  { label: 'Доп. проверка', value: 'na' }
 ]
 
 const formRef = ref(null)
@@ -142,7 +133,7 @@ const closeDialog = () => {
 }
 
 const getItemStyle = (item: any) => {
-  if (item.value === 'additional-check') {
+  if (item.value === 'na') {
     return 'color: rgb(34, 93, 255)'
   }
   return ''
@@ -155,7 +146,7 @@ const resetForm = () => {
 const change = async () => {
   const isValid = await formRef?.value?.validate()
   if (isValid.valid) {
-    emit('changeState', currentItem.value, selectedTasks.value, additionalCheck.value)
+    emit('changeState', currentItem.value, selectedTasks.value)
     emit('update:modelValue', false)
   }
 }
@@ -207,6 +198,5 @@ onMounted(() => {
   //position: sticky;
   //bottom: 0;
   background: #fff;
-  justify-content: space-between !important;
 }
 </style>
