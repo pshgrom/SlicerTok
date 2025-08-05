@@ -65,6 +65,22 @@
     <template #[`item.status_comment`]="{ item }">
       <p>{{ item.status_comment ? item.status_comment : '-' }}</p>
     </template>
+    <!--    <template #[`item.is_verified`]="{ item }">-->
+    <!--      <div-->
+    <!--        class="custom-table-chip"-->
+    <!--        :style="{-->
+    <!--          'background-color': getVerifiedColor(item.is_verified),-->
+    <!--          color: getVerifiedColor(item.is_verified)-->
+    <!--        }"-->
+    <!--      >-->
+    <!--        <div class="custom-table-chip__icon">-->
+    <!--          <SvgIcon :name="getVerifiedIcon(item.is_verified)" />-->
+    <!--        </div>-->
+    <!--        <div class="custom-table-chip__status">-->
+    <!--          {{ getVerifiedStatus(item.is_verified) }}-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </template>-->
     <template #[`item.actions`]="{ item }">
       <div class="d-flex" style="min-width: 500px">
         <div class="custom-table__icon mr-2">
@@ -160,6 +176,37 @@ const showNumberViews = (item) => {
     item.number_views !== item.number_views_moderation &&
     item.number_views_moderation !== '0'
   )
+}
+
+const getVerifiedColor = (is_verified: boolean) => {
+  switch (is_verified) {
+    case true:
+      return 'rgba(187, 251, 228, 1)'
+    case false:
+      return 'rgba(255, 224, 224, 1)'
+  }
+}
+
+const getVerifiedStatus = (is_verified: boolean) => {
+  switch (is_verified) {
+    case true:
+      return 'Верифицирован'
+    case false:
+      return 'Не верифицирован'
+  }
+}
+
+const getVerifiedIcon = (is_verified: boolean) => {
+  let icon = ''
+  switch (is_verified) {
+    case true:
+      icon = 'status-ok'
+      break
+    case false:
+      icon = 'status-bad'
+      break
+  }
+  return icon
 }
 
 const finishCheck = (id: number | string, status: string) => {
