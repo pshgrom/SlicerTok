@@ -39,7 +39,6 @@
 <script setup lang="ts">
 import { useAuth } from '@/stores/Auth'
 import { useRouter } from 'vue-router'
-import SvgIcon from '@/components/base/SvgIcon.vue'
 import { ROLES } from '@/constants/roles.ts'
 import { computed, onMounted } from 'vue'
 import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'

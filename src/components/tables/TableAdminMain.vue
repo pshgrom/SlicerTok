@@ -115,8 +115,6 @@
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
-// import VCustomSelect from '@/components/base/VCustomSelect.vue'
-import SvgIcon from '@/components/base/SvgIcon.vue'
 import {
   getTextStatus,
   getStatusColor,

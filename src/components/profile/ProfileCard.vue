@@ -89,7 +89,6 @@
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import { type PropType } from 'vue'
 import type { IUser } from '@/interfaces/Slicer'
-import SvgIcon from '@/components/base/SvgIcon.vue'
 import { formatNumber } from '@/utils/formatNumbers.ts'
 // import ImageUploader from '@/components/base/ImageUploader.vue'
 

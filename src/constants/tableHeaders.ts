@@ -82,7 +82,7 @@ export const adminInfoHeaders = [
   { title: 'Статистика', value: 'video_stat_link' },
   { title: 'Просмотры', value: 'number_views' },
   { title: 'Статус', value: 'status' },
-  { title: 'Верификация', value: 'is_verified' },
+  // { title: 'Верификация', value: 'is_verified' },
   { title: 'Пометки', value: 'mark' },
   { title: 'Комментарии', value: 'status_comment' },
   { title: 'Действия', value: 'actions' }

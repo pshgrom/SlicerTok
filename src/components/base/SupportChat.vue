@@ -70,7 +70,6 @@ import { ref, onMounted, nextTick, watch } from 'vue'
 import { getChatsSupportQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
 import { useChatSocketStore } from '@/stores/chatSocket'
 import VCustomInput from '@/components/base/VCustomInput.vue'
-import SvgIcon from '@/components/base/SvgIcon.vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const chatStore = useChatSocketStore()

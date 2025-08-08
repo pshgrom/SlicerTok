@@ -42,7 +42,6 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { PropType } from 'vue'
 import type { IWallet } from '@/interfaces/Slicer'
 import { useError } from '@/stores/Errors'
-import SvgIcon from '@/components/base/SvgIcon.vue'
 
 const props = defineProps({
   wallet: {

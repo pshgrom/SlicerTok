@@ -34,7 +34,6 @@
 <script setup>
 import { ref, watch } from 'vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
-import SvgIcon from '@/components/base/SvgIcon.vue'
 import { VProgressCircular } from 'vuetify/components'
 
 const props = defineProps({

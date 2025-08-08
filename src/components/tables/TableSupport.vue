@@ -110,8 +110,6 @@
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
-// import type { ISupportSaveStatus } from '@/interfaces/ISupport'
-import SvgIcon from '@/components/base/SvgIcon.vue'
 import { formatNumber } from '@/utils/formatNumbers.ts'
 import {
   getNameSocialMedia,

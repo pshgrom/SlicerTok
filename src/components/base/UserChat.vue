@@ -50,7 +50,6 @@ import { ref, onMounted, watch, nextTick, onBeforeUnmount } from 'vue'
 import { getChatQuery, sendMessageQuery, getMessagesQuery } from '@/api/chat.ts'
 import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 import VCustomInput from '@/components/base/VCustomInput.vue'
-import SvgIcon from '@/components/base/SvgIcon.vue'
 import { useChatSocketStore } from '@/stores/chatSocket'
 import { useUserInfo } from '@/stores/UserInfo.ts'
 

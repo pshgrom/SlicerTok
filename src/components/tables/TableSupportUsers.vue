@@ -62,7 +62,6 @@ import { computed, type PropType, ref } from 'vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import { formatNumber } from '@/utils/formatNumbers.ts'
-import SvgIcon from '@/components/base/SvgIcon.vue'
 import { useRouter } from 'vue-router'
 
 const props = defineProps({
