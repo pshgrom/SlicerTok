@@ -24,16 +24,16 @@
         class="table-settings__table"
         :headers="headers"
         :isLoading="isLoading"
-        :items="calcDataItems"
+        :items="slicerItems"
       ></TableUserInfo>
-      <!--    <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">-->
-      <!--      <TablePagination-->
-      <!--        v-model:queryParams="queryParams"-->
-      <!--        :loading="isLoading"-->
-      <!--        :totalPages="totalPages"-->
-      <!--        @change-page="changePage"-->
-      <!--      />-->
-      <!--    </div>-->
+      <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
+        <TablePagination
+          v-model:queryParams="queryParams"
+          :loading="isLoading"
+          :totalPages="totalPages"
+          @change-page="changePage"
+        />
+      </div>
     </div>
   </v-container>
 </template>
@@ -41,61 +41,62 @@
 <script setup lang="ts">
 import TablePagination from '@/components/tables/TablePagination.vue'
 import { computed, ref, onMounted } from 'vue'
-import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
+import type { ITableHeaders, ITableParams } from '@/interfaces/AppModel'
 import WalletsCard from '@/components/wallets/WalletsCard.vue'
 import { userInfoHeaders } from '@/constants/tableHeaders'
-import { useUserInfo } from '@/stores/UserInfo'
 import TableUserInfo from '@/components/tables/TableUserInfo.vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useError } from '@/stores/Errors'
-import type { IUploadVideo, IUser, IWallet } from '@/interfaces/Slicer'
 import ProfileCard from '@/components/profile/ProfileCard.vue'
-import { useAuth } from '@/stores/Auth'
 import { useSupport } from '@/stores/Support.ts'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 
 const headers = ref<ITableHeaders[]>(userInfoHeaders)
-const authStore = useAuth()
 
-const wallets = ref<IWallet[]>([])
-
-const phoneStore = computed(() => authStore.phone)
-const calcDataItems = ref([])
 const currentUserStore = useSupport()
-const errorStore = useError()
 const editDialog = ref(false)
 // const imageFile = ref<File | null>(null)
 
 const isLoading = computed(() => currentUserStore.isLoading)
 const currentUser = computed(() => currentUserStore.currentUser)
+const wallets = computed(() => currentUserStore.wallets)
+const slicerItems = computed(() => currentUserStore.slicerItems)
 const route = useRoute()
 const router = useRouter()
 
-// const queryParams = computed<ITableParams>({
-//   get() {
-//     return userInfo.queryParams
-//   },
-//   set(val) {
-//     userInfo.setQueryParams(val)
-//   }
-// })
+const queryParams = computed<ITableParams>({
+  get() {
+    return currentUserStore.queryParamsSlicer
+  },
+  set(val) {
+    currentUserStore.setQueryParamsSlicer(val)
+  }
+})
 
-// const totalPages = computed(() =>
-//   queryParams.value?.total && queryParams.value?.perPage
-//     ? Math.ceil(queryParams.value.total / queryParams.value.perPage)
-//     : 0
-// )
+const totalPages = computed(() =>
+  queryParams.value?.total && queryParams.value?.perPage
+    ? Math.ceil(queryParams.value.total / queryParams.value.perPage)
+    : 0
+)
 
-// const changePage = (page: number) => {
-//   queryParams.value = {
-//     ...queryParams.value,
-//     page: +page
-//   }
-//   getRequest()
-// }
+const changePage = (page: number) => {
+  queryParams.value = {
+    ...queryParams.value,
+    page: +page
+  }
+  const id = Number(route.params.id)
+  getInfo(id)
+}
 
 const getSlicer = async (id: number) => {
   await currentUserStore.getSlicer(id)
+}
+
+const getWallets = async (id: number) => {
+  await currentUserStore.getWallets(id)
+}
+
+const getInfo = async (id: number) => {
+  await currentUserStore.getInfo(id)
 }
 
 const verifyUser = async (value: boolean) => {
@@ -111,8 +112,8 @@ const verifyUser = async (value: boolean) => {
 onMounted(() => {
   const id = Number(route.params.id)
   getSlicer(id)
-  // getInfo()
-  // getWallets()
+  getInfo(id)
+  getWallets(id)
 })
 </script>
 

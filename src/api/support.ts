@@ -15,3 +15,9 @@ export const getSlicerListQuery = (data: ITableParams) =>
 
 export const getSlicerQuery = (id: number) =>
   api.get('/admin-support/slicer/get-slicer', { params: { id } })
+
+export const getWalletsQuery = (id: number) =>
+  api.get('/admin-support/slicer/get-slicer-wallet-list', { params: { id } })
+
+export const getInfoQuery = (data: any) =>
+  api.get('/admin-support/slicer/get-slicer-publication-list', { params: data })

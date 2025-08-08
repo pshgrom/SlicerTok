@@ -22,6 +22,7 @@
           :wallet="wallet"
           :wallets="wallets"
           :index="index"
+          :readonly="readonly"
           @set-as-main="setAsMain"
           @remove-wallet="removeWallet"
         />

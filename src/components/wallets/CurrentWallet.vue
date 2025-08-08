@@ -6,7 +6,7 @@
         {{ formatWallet(wallet.address) }}
       </div>
     </div>
-    <div v-if="!onlyRead" class="wallet-menu">
+    <div v-if="!onlyRead && !readonly" class="wallet-menu">
       <div class="wallet-menu-icon" @click="openDialog">
         <SvgIcon name="menu" :class="{ active: openIndex === index }" />
       </div>
@@ -61,6 +61,10 @@ const props = defineProps({
     default: null
   },
   onlyRead: {
+    type: Boolean,
+    default: false
+  },
+  readonly: {
     type: Boolean,
     default: false
   }
