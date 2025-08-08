@@ -56,7 +56,7 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/user/:id',
+    path: '/slicer/:id',
     name: 'User',
     component: () => import('@/views/CurrentUser.vue'),
     meta: {
