@@ -109,11 +109,9 @@ const verifyUser = async (value: boolean) => {
   if (resp) await router.push({ name: 'SupportUsers' })
 }
 
-onMounted(() => {
+onMounted(async () => {
   const id = Number(route.params.id)
-  getSlicer(id)
-  getInfo(id)
-  getWallets(id)
+  await Promise.all([getSlicer(id), getInfo(id), getWallets(id)])
 })
 </script>
 
