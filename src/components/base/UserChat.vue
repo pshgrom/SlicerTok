@@ -21,7 +21,7 @@
               :class="{ 'chat-messages-item_your': msg.is_your }"
             >
               <div class="chat-messages-item__role">
-                {{ msg.user.name }}
+                {{ msg?.user?.name ?? '' }}
               </div>
               <div class="chat-messages-item__msg">{{ msg.content }}</div>
               <div class="chat-messages-item__time">{{ getTime(msg.created_at) }}</div>
@@ -80,10 +80,6 @@ const getTime = (time: string) => {
 
 function sendMessage() {
   if (!newMessage.value.trim() || !roomId.value) return
-  // chatStore.sendMessage(`chat.${roomId.value}`, 'new-message', {
-  //   text: newMessage.value,
-  //   sent_by: 'User'
-  // })
   userMessages.value.push({
     content: newMessage.value,
     created_at: new Date().toISOString(),
@@ -134,7 +130,7 @@ const close = () => {
 }
 
 onMounted(async () => {
-  // chatStore.connect()
+  chatStore.connect()
 
   const { data } = await getChatQuery()
   if (data.code === 200) {

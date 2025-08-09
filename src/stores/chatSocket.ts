@@ -21,7 +21,9 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
   const reconnectUrl = ref<string>('') // хранение URL для переподключения
 
   function connect() {
-    const url = 'ws://localhost:8080/app/mthueomipj7f2dhac0g1?protocol=7&client=js&version=4.4.0'
+    const { VITE_APP_WS_URL, VITE_APP_WS_PATH, VITE_APP_WS_QUERY } = import.meta.env ?? {}
+    const url = `${VITE_APP_WS_URL}${VITE_APP_WS_PATH}${VITE_APP_WS_QUERY}`
+    console.warn(url)
     if (isConnecting.value || reconnectAttempts.value >= maxReconnectAttempts) return
 
     reconnectUrl.value = url
@@ -33,7 +35,8 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
       connected.value = true
       isConnecting.value = false
       reconnectAttempts.value = 0
-      errorStore.setErrors('Соединение установлено', 'success')
+      // errorStore.setErrors('Соединение установлено', 'success')
+      console.log('Соединение установлено', 'success')
 
       // повторная подписка
       subscribedChannels.value.forEach((channel) => {
