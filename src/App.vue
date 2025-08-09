@@ -5,7 +5,7 @@
     <v-main class="main">
       <v-container
         class="custom-container"
-        :class="{ 'custom-container_none': isAdmin }"
+        :class="{ 'custom-container_none': isAdmin && !insideSlicer }"
         fluid
         style="max-width: 1000px"
       >
@@ -78,7 +78,14 @@ const toggleChat = () => {
   }
 }
 
-const isAdmin = computed(() => authStore.role !== 'slicer')
+const isAdmin = computed(() => {
+  return authStore.role !== 'slicer'
+})
+
+const insideSlicer = computed(() => {
+  console.log(11, page.value)
+  return page.value === 'User' || page.value === 'SupportChat'
+})
 
 const showForSlicer = computed(() => page.value === 'UserInfo')
 </script>

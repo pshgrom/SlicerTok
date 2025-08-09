@@ -12,7 +12,8 @@ export const infoRules = {
   phone: (v: string) =>
     /^\+?[0-9]{7,15}$/.test(v) || 'Введите корректный номер телефона (от 7 до 15 цифр)',
   telegram: (v: string) => /^@\w{3,}/.test(v) || 'Ник должен начинаться с @',
-  email: (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Некорректный email'
+  email: (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Некорректный email',
+  noCyrillic: (v: string) => !/[а-яА-ЯёЁ]/.test(v) || 'Кириллические символы запрещены'
 }
 
 export const requiredRules = {

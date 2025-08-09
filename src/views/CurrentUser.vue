@@ -1,41 +1,39 @@
 <template>
-  <v-container class="custom-container" fluid style="max-width: 1000px">
-    <div class="user-info">
-      <VCusomButton
-        v-if="!currentUser.is_verified"
-        class="mb-4"
-        :customClass="['light']"
-        @click="verifyUser(true)"
-        >Верифицировать
-      </VCusomButton>
-      <VCusomButton v-else class="mb-4" :customClass="['light']" @click="verifyUser(false)">
-        Аннулировать верификацию
-      </VCusomButton>
-      <div class="user-info__wrapper">
-        <ProfileCard v-model:dialog="editDialog" :user="currentUser" :readonly="true" />
-        <WalletsCard :wallets="wallets" :readonly="true" />
-      </div>
-      <div class="table-actions">
-        <div class="table-actions__left">
-          <div class="table-actions__label">Ваши видео</div>
-        </div>
-      </div>
-      <TableUserInfo
-        class="table-settings__table"
-        :headers="headers"
-        :isLoading="isLoading"
-        :items="slicerItems"
-      ></TableUserInfo>
-      <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
-        <TablePagination
-          v-model:queryParams="queryParams"
-          :loading="isLoading"
-          :totalPages="totalPages"
-          @change-page="changePage"
-        />
+  <div class="user-info">
+    <VCusomButton
+      v-if="!currentUser.is_verified"
+      class="mb-4"
+      :customClass="['light']"
+      @click="verifyUser(true)"
+      >Верифицировать
+    </VCusomButton>
+    <VCusomButton v-else class="mb-4" :customClass="['light']" @click="verifyUser(false)">
+      Аннулировать верификацию
+    </VCusomButton>
+    <div class="user-info__wrapper">
+      <ProfileCard v-model:dialog="editDialog" :user="currentUser" :readonly="true" />
+      <WalletsCard :wallets="wallets" :readonly="true" />
+    </div>
+    <div class="table-actions">
+      <div class="table-actions__left">
+        <div class="table-actions__label">Ваши видео</div>
       </div>
     </div>
-  </v-container>
+    <TableUserInfo
+      class="table-settings__table"
+      :headers="headers"
+      :isLoading="isLoading"
+      :items="slicerItems"
+    ></TableUserInfo>
+    <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
+      <TablePagination
+        v-model:queryParams="queryParams"
+        :loading="isLoading"
+        :totalPages="totalPages"
+        @change-page="changePage"
+      />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">

@@ -24,12 +24,12 @@
             v-model.trim="form.email"
             label="Почта"
             class="mb-5"
-            :rules="[infoRules.required, infoRules.email]"
+            :rules="[infoRules.required, infoRules.email, infoRules.noCyrillic]"
           />
           <VCustomInput
             v-model.trim="form.telegram"
             label="Никнейм в Telegram"
-            :rules="[infoRules.required, infoRules.telegram]"
+            :rules="[infoRules.telegram, infoRules.required, infoRules.noCyrillic]"
           />
         </v-form>
       </v-card-text>
