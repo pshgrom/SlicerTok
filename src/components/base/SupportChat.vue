@@ -234,10 +234,12 @@ watch(
 
   &-list {
     background: #fff;
-    width: 312px;
+    min-width: 312px;
     border-radius: 16px;
     margin-right: 12px;
     padding: 20px 4px;
+    max-height: 450px;
+    overflow-y: scroll;
 
     @media (max-width: 767px) {
       width: 100%;
@@ -305,9 +307,11 @@ watch(
   &-wrapper {
     display: flex;
     justify-content: center;
+    max-height: 83vh;
 
     @media (max-width: 767px) {
       flex-direction: column;
+      max-height: 100vh;
     }
   }
 
