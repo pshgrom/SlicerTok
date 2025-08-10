@@ -41,7 +41,6 @@
 <!--    </div>-->
 <!--  </div>-->
 <!--  <TableData-->
-<!--    class="table-settings__table"-->
 <!--    :headers="headers"-->
 <!--    :isLoading="isLoading"-->
 <!--    :items="calcDataWallet"-->

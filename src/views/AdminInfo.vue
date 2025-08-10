@@ -1,14 +1,13 @@
 <template>
   <TableAdminInfo
-    class="table-settings__table"
     :headers="headers"
     :isLoading="isLoading"
     :items="calcDataItems"
     :itemsPerPage="queryParams.perPage"
     @finish-check="finishCheck"
-    @requestVerification="requestVerification"
+    @request-verification="requestVerification"
     @change-state="changeState"
-    @saveMark="saveMark"
+    @save-mark="saveMark"
   ></TableAdminInfo>
   <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
     <TablePagination

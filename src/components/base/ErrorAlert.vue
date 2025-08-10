@@ -115,7 +115,7 @@ onBeforeUnmount(() => {
   &.success:before {
     background: rgba(16, 154, 106, 1);
   }
-  &.default:before {
+  &.info:before {
     background: rgba(34, 93, 255, 1);
   }
 }

@@ -10,7 +10,7 @@
         style="max-width: 1000px"
       >
         <HeaderMain v-if="showContent || showForSlicer" />
-        <div v-if="showMainChat || showForSlicer" class="chat-user">
+        <div v-if="showChat" class="chat-user">
           <SvgIcon v-if="!isMobile" name="chat" class="chat-open" @click="toggleChat" />
           <span
             v-if="userInfoStore.unreadCount > 0 && !userInfoStore.showChat"
@@ -19,14 +19,14 @@
             {{ userInfoStore.unreadCount }}
           </span>
         </div>
-        <transition name="fade" mode="out-in">
-          <div v-if="showContent">
-            <UserChat v-show="userInfoStore.showChat" v-model:showChat="userInfoStore.showChat" />
-          </div>
-        </transition>
         <router-view />
       </v-container>
     </v-main>
+    <transition name="fade" mode="out-in">
+      <div v-if="showChat">
+        <UserChat v-show="userInfoStore.showChat" v-model:showChat="userInfoStore.showChat" />
+      </div>
+    </transition>
   </v-app>
 </template>
 
@@ -53,23 +53,12 @@ const { isMobile } = useDeviceDetection()
 const page = computed(() => router.currentRoute.value.name)
 
 const hideChatPages = ['Login', 'LoginAdmin', 'NotFound']
-const noChatPages = [
-  'Login',
-  'LoginAdmin',
-  'NotFound',
-  'AdminMainLogs',
-  'AdminMain',
-  'Support',
-  'SupportChat',
-  'SupportUsers'
-]
 
 const showContent = computed(() =>
   page.value ? !hideChatPages.includes(page.value as string) : false
 )
-const showMainChat = computed(() =>
-  page.value ? !noChatPages.includes(page.value as string) : false
-)
+
+const showChat = computed(() => router.currentRoute.value?.meta?.showChat)
 
 const toggleChat = () => {
   userInfoStore.showChat = !userInfoStore.showChat

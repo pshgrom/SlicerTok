@@ -1,6 +1,5 @@
 <template>
   <TableAdminMain
-    class="table-settings__table"
     :headers="headers"
     :is-loading="isLoading"
     :items="calcDataItems"
