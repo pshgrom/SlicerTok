@@ -28,7 +28,6 @@
       </div>
     </div>
     <TableUserInfo
-      class="table-settings__table"
       :headers="headers"
       :isLoading="isLoading"
       :items="calcDataItems"

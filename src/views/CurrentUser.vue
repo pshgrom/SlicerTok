@@ -19,12 +19,7 @@
         <div class="table-actions__label">Ваши видео</div>
       </div>
     </div>
-    <TableUserInfo
-      class="table-settings__table"
-      :headers="headers"
-      :isLoading="isLoading"
-      :items="slicerItems"
-    ></TableUserInfo>
+    <TableUserInfo :headers="headers" :isLoading="isLoading" :items="slicerItems"></TableUserInfo>
     <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
       <TablePagination
         v-model:queryParams="queryParams"

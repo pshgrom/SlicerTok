@@ -53,7 +53,9 @@ const { isMobile } = useDeviceDetection()
 
 const logout = () => {
   authStore.logout()
-  router.push({ name: 'Login' })
+  authStore.role === ROLES.SLICER
+    ? router.push({ name: 'Login' })
+    : router.push({ name: 'LoginAdmin' })
 }
 
 const goHome = () => {
@@ -61,7 +63,6 @@ const goHome = () => {
     case ROLES.SLICER:
       router.push({ name: 'UserInfo' })
   }
-  // router.push()
 }
 
 const goToPage = (path: string) => {

@@ -102,7 +102,7 @@
         <VCusomButton
           class="custom-table__button ml-2"
           :customClass="['dark']"
-          :disabled="item.user_requires_verification"
+          :disabled="!!item.user_requires_verification"
           @click="requestVerification(item.id, item.user_requires_verification)"
           >Запросить верификацию
         </VCusomButton>

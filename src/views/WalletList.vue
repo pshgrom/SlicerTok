@@ -10,7 +10,6 @@
 <!--    </div>-->
 <!--  </div>-->
 <!--  <TableDataWalletList-->
-<!--    class="table-settings__table"-->
 <!--    :headers="headers"-->
 <!--    :isLoading="isLoading"-->
 <!--    :items="walletId ? calcItems : paginatedItems"-->

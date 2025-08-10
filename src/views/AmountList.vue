@@ -27,7 +27,6 @@
 <!--    </div>-->
 <!--  </div>-->
 <!--  <TableDataAmountList-->
-<!--    class="table-settings__table"-->
 <!--    :headers="headers"-->
 <!--    :isLoading="isLoading"-->
 <!--    :items="calcDataAmountList"-->

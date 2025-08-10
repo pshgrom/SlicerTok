@@ -12,8 +12,9 @@ import { ROLES, type RoleType } from '@/constants/roles'
 
 declare module 'vue-router' {
   interface RouteMeta {
-    requiresAuth: boolean
+    requiresAuth?: boolean
     roles?: RoleType[]
+    showChat?: boolean
   }
 }
 
@@ -25,17 +26,26 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/LoginView.vue')
+    component: () => import('@/views/LoginView.vue'),
+    meta: {
+      showChat: false
+    }
   },
   {
     path: '/login-admin',
     name: 'LoginAdmin',
-    component: () => import('@/views/LoginViewAdmin.vue')
+    component: () => import('@/views/LoginViewAdmin.vue'),
+    meta: {
+      showChat: false
+    }
   },
   {
     path: '/:catchAll(.*)',
     name: 'NotFound',
-    component: () => import('@/views/NotFound.vue')
+    component: () => import('@/views/NotFound.vue'),
+    meta: {
+      showChat: false
+    }
   },
   {
     path: '/admin-info',
@@ -43,7 +53,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/AdminInfo.vue'),
     meta: {
       requiresAuth: true,
-      roles: [ROLES.ADMIN]
+      roles: [ROLES.ADMIN],
+      showChat: true
     }
   },
   {
@@ -52,7 +63,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/SupportPage.vue'),
     meta: {
       requiresAuth: true,
-      roles: [ROLES.SUPPORT]
+      roles: [ROLES.SUPPORT],
+      showChat: false
     }
   },
   {
@@ -61,7 +73,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/CurrentUser.vue'),
     meta: {
       requiresAuth: true,
-      roles: [ROLES.SUPPORT]
+      roles: [ROLES.SUPPORT],
+      showChat: false
     }
   },
   {
@@ -70,7 +83,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/SupportUsers.vue'),
     meta: {
       requiresAuth: true,
-      roles: [ROLES.SUPPORT]
+      roles: [ROLES.SUPPORT],
+      showChat: false
     }
   },
   {
@@ -79,7 +93,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/SupportChatPage.vue'),
     meta: {
       requiresAuth: true,
-      roles: [ROLES.SUPPORT]
+      roles: [ROLES.SUPPORT],
+      showChat: false
     }
   },
   {
@@ -88,7 +103,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/AdminInfoChecked.vue'),
     meta: {
       requiresAuth: true,
-      roles: [ROLES.ADMIN]
+      roles: [ROLES.ADMIN],
+      showChat: true
     }
   },
   {
@@ -97,7 +113,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/AdminPaymentsFinance.vue'),
     meta: {
       requiresAuth: true,
-      roles: [ROLES.ADMIN_FINANCE]
+      roles: [ROLES.ADMIN_FINANCE],
+      showChat: true
     }
   },
   {
@@ -106,7 +123,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/AdminMain.vue'),
     meta: {
       requiresAuth: true,
-      roles: [ROLES.ADMIN_MAIN]
+      roles: [ROLES.ADMIN_MAIN],
+      showChat: false
     }
   },
   {
@@ -115,7 +133,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/AdminMainLogs.vue'),
     meta: {
       requiresAuth: true,
-      roles: [ROLES.ADMIN_MAIN]
+      roles: [ROLES.ADMIN_MAIN],
+      showChat: false
     }
   },
   {
@@ -124,7 +143,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/UserInfo.vue'),
     meta: {
       requiresAuth: true,
-      roles: [ROLES.SLICER]
+      roles: [ROLES.SLICER],
+      showChat: true
     }
   }
 ]

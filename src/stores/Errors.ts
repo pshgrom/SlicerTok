@@ -6,10 +6,10 @@ let messageId = 0
 export const useError = defineStore('errorStore', () => {
   const errorsValue = reactive({
     show: false,
-    messages: [] as { id: number; msg: string; type: 'error' | 'success' | 'default' }[]
+    messages: [] as { id: number; msg: string; type: 'error' | 'success' | 'info' }[]
   })
 
-  const setErrors = (msg: string, type: 'error' | 'success' | 'default' = 'error') => {
+  const setErrors = (msg: string, type: 'error' | 'success' | 'info' = 'error') => {
     errorsValue.messages.push({ id: messageId++, msg, type })
     errorsValue.show = true
   }
