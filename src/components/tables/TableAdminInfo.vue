@@ -1,5 +1,6 @@
 <template>
   <v-data-table
+    v-bind="$attrs"
     :headers="computedHeaders"
     :items="items"
     :loading="isLoading"

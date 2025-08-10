@@ -8,7 +8,8 @@
     "build": "vite build",
     "serve": "vite preview",
     "lint": "eslint --ext .ts,.vue src",
-    "lint:fix": "eslint --fix --ext .ts,.vue src"
+    "lint:fix": "eslint --fix --ext .ts,.vue src",
+    "analyze": "ANALYZE=true vite build"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -65,9 +66,10 @@
     "rules": {}
   },
   "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11"
+    "last 3 Chrome versions",
+    "last 3 Firefox versions",
+    "last 3 Safari major versions",
+    "last 2 Edge major versions",
+    "not dead"
   ]
 }

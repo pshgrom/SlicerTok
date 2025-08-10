@@ -293,6 +293,10 @@ watch(
         transform: translateY(-50%);
       }
 
+      &__title {
+        white-space: nowrap;
+      }
+
       &_active {
         background: rgba(242, 246, 254, 1);
         pointer-events: none;

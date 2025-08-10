@@ -7,6 +7,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import svgLoader from 'vite-svg-loader'
 
 const isProd = process.env.NODE_ENV === 'production'
+const isAnalyze = process.env.ANALYZE === 'true'
 
 const prodPlugins = [
   viteCompression({
@@ -24,13 +25,17 @@ const prodPlugins = [
     compressionOptions: { level: 11 }
   }),
 
-  visualizer({
-    filename: 'bundle-report.html',
-    template: 'treemap',
-    brotliSize: true,
-    gzipSize: true,
-    open: true
-  })
+  ...(isAnalyze
+    ? [
+        visualizer({
+          filename: 'bundle-report.html',
+          template: 'treemap',
+          brotliSize: true,
+          gzipSize: true,
+          open: true
+        })
+      ]
+    : [])
 ]
 
 export default defineConfig({
@@ -70,6 +75,7 @@ export default defineConfig({
 
     rollupOptions: {
       output: {
+        inlineDynamicImports: false,
         manualChunks(id) {
           if (id.includes('node_modules')) {
             if (id.includes('vuetify')) {
@@ -83,7 +89,9 @@ export default defineConfig({
             if (id.includes('pinia')) return 'vendor_pinia'
             return 'vendor_misc'
           }
-          if (id.includes('src/views/')) return 'views'
+          if (id.includes('src/views/')) {
+            return 'view_' + id.split('src/views/')[1].split('/')[0]
+          }
           if (id.includes('src/components/')) return 'components'
         },
         chunkFileNames: 'assets/[name]-[hash].js',
@@ -94,7 +102,7 @@ export default defineConfig({
   },
 
   optimizeDeps: {
-    include: ['vue', 'vue-router', 'pinia', 'vue-the-mask'],
+    include: ['vue', 'vue-router', 'pinia', 'vue-the-mask', 'axios', 'vuetify'],
     exclude: []
   },
 
@@ -105,6 +113,11 @@ export default defineConfig({
   },
 
   esbuild: {
-    drop: isProd ? ['console', 'debugger'] : []
+    drop: isProd ? ['console', 'debugger'] : [],
+    treeShaking: true,
+    legalComments: 'none',
+    minifyIdentifiers: true,
+    minifySyntax: true,
+    minifyWhitespace: true
   }
 })

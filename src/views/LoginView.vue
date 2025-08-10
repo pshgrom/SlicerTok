@@ -35,7 +35,7 @@
               <VCustomInput
                 :key="currentCountryCode"
                 v-model="phone"
-                v-mask="currentMask"
+                v-mask="currentMask || null"
                 label="Номер телефона"
                 autofocus
                 :placeholder="placeholderPhone"
@@ -133,10 +133,10 @@ const placeholderPhone = computed(() => {
 })
 
 const currentMask = computed(() => {
-  if (!currentCountryCode.value) return ''
+  if (!currentCountryCode.value) return null
   if (currentCountryCode.value === 1) return '(##) ###-##-##'
   if (currentCountryCode.value === 2) return '(###) ###-##-##'
-  return ''
+  return null
 })
 
 const phoneRules = computed(() => {
