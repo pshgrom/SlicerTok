@@ -47,9 +47,9 @@ const authStore = useAuth()
 const errorStore = useError()
 const router = useRouter()
 const formRef = ref(null)
-const login = ref('adminGroupA')
+const login = ref('')
 const phone = ref('')
-const password = ref('adminGroupA')
+const password = ref('')
 const currentCountry = ref(1)
 const loading = ref(false)
 const currentCountryCode = ref<string | null>(null)
@@ -125,7 +125,6 @@ watch(
   &__title {
     font-weight: 500;
     font-size: 18px;
-    font-weight: 400;
     letter-spacing: 0;
     color: rgba(0, 0, 0, 1);
     margin-bottom: 25px;

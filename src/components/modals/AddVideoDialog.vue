@@ -70,7 +70,8 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'submit'])
 
 const videoFields = ref<IUploadVideo>({
-  videoLink: 'https://www.instagram.com/reel/23DHlJ1NAIU6g/asdkasndjkasnfacmalcmlaksmc',
+  // https://www.instagram.com/reel/23DHlJ1NAIU6g/asdkasndjkasnfacmalcmlaksmc
+  videoLink: '',
   videoFile: null,
   number_views: ''
 })

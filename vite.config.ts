@@ -116,8 +116,6 @@ export default defineConfig({
     drop: isProd ? ['console', 'debugger'] : [],
     treeShaking: true,
     legalComments: 'none',
-    // minifyIdentifiers: true,
-    minifySyntax: true,
     minifyWhitespace: true
   }
 })
