@@ -24,6 +24,9 @@
         <SvgIcon name="arrow-up-right" />
       </a>
     </template>
+    <template #[`item.user_created_at`]="{ item }">
+      {{ formatDate(item.created_at) }}
+    </template>
     <template #[`item.video_stat_link`]="{ item }">
       <a :href="item.video_stat_link" target="_blank" class="custom-table-ref">
         <span> Смотреть </span>
@@ -119,6 +122,7 @@
 </template>
 
 <script setup lang="ts">
+import { formatDate } from '@/utils/formatDate.ts'
 import { computed, type PropType, ref } from 'vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import { formatNumber } from '@/utils/formatNumbers.ts'

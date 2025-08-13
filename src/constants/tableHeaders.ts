@@ -77,6 +77,10 @@ export const adminInfoHeaders = [
     title: 'ID',
     value: 'id'
   },
+  {
+    title: 'Дата загрузки',
+    value: 'user_created_at'
+  },
   { title: 'Ссылка', value: 'url' },
   { title: 'Ключ', value: 'key' },
   { title: 'Статистика', value: 'video_stat_link' },
