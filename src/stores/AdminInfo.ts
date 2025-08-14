@@ -79,8 +79,9 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
   const getPublicationsList = async (params: ITableParams) => {
     try {
       const data: ITableParams = {
-        page: params.page,
-        perPage: params.perPage ?? 50
+        ...params,
+        page: params.page ?? 1,
+        total: undefined
       }
       isLoading.value = true
       const resp = await getPublicationListQuery(data)

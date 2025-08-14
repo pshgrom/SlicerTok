@@ -39,6 +39,13 @@ export interface ITableParams {
   tab?: string | Location
 }
 
+export interface ITableParamsAdmin extends ITableParams {
+  sort_user_created_at?: string | Location
+  sort_created_at?: string | Location
+  user_created_at?: string | Location
+  created_at?: string | Location
+}
+
 export interface IAmountListItems {
   id: string | number
   wallet_id: string

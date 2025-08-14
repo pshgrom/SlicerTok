@@ -78,8 +78,14 @@ export const adminInfoHeaders = [
     value: 'id'
   },
   {
-    title: 'Дата загрузки',
-    value: 'user_created_at'
+    title: 'Дата регистрации нарезчика',
+    value: 'user_created_at',
+    sortable: true
+  },
+  {
+    title: 'Дата загрузки видео',
+    value: 'created_at',
+    sortable: true
   },
   { title: 'Ссылка', value: 'url' },
   { title: 'Ключ', value: 'key' },

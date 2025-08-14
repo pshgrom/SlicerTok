@@ -10,6 +10,8 @@
     height="80vh"
     fixed-header
     hide-default-footer
+    @update:sort-by="onSortChange"
+    @update:sort-desc="onSortChange"
   >
     <template #loading>
       <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
@@ -25,6 +27,9 @@
       </a>
     </template>
     <template #[`item.user_created_at`]="{ item }">
+      {{ formatDate(item.user_created_at) }}
+    </template>
+    <template #[`item.created_at`]="{ item }">
       {{ formatDate(item.created_at) }}
     </template>
     <template #[`item.video_stat_link`]="{ item }">
@@ -138,7 +143,13 @@ import ModerationDialog from '@/components/modals/ModerationDialog.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import AddMarkModal from '@/components/modals/AddMarkModal.vue'
 
-const emit = defineEmits(['finishCheck', 'changeState', 'saveMark', 'requestVerification'])
+const emit = defineEmits([
+  'finishCheck',
+  'changeState',
+  'saveMark',
+  'requestVerification',
+  'customSort'
+])
 
 const props = defineProps({
   headers: {
@@ -221,6 +232,20 @@ const finishCheck = (id: number | string, status: string) => {
 const requestVerification = (id: number | string, userRequiresVerification: boolean) => {
   if (userRequiresVerification) return
   emit('requestVerification', id)
+}
+
+const onSortChange = (newSort) => {
+  let data = ''
+  if (newSort.length) {
+    const { key, order } = newSort[0]
+    data = {
+      [`sort_${key}`]: order.toUpperCase()
+    }
+  } else {
+    data = ''
+  }
+
+  emit('customSort', data)
 }
 
 const openMarkModal = (id: number | null) => {
