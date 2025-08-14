@@ -4,7 +4,6 @@
     :close-on-content-click="false"
     transition="scale-transition"
     offset-y
-    width="500px"
     max-width="260px"
     min-width="auto"
   >
@@ -28,7 +27,6 @@
       </v-text-field>
     </template>
 
-    selectedDate = {{ selectedDate }}
     <v-date-picker
       v-model="selectedDate"
       color="primary"
@@ -39,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -55,36 +53,37 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const menu = ref(false)
-const selectedDate = ref<Date | null>(props.modelValue ? new Date(props.modelValue) : null)
+
+const selectedDate = ref(props.modelValue || '')
 
 const formattedDate = computed({
-  get: () => (selectedDate.value ? formatDate(selectedDate.value) : ''),
+  get: () => selectedDate.value,
   set: () => {}
 })
 
-const formatDate = (date: Date) => {
+const updateDate = (date: Date) => {
+  if (!date) return
   const year = date.getFullYear()
   const month = (date.getMonth() + 1).toString().padStart(2, '0')
   const day = date.getDate().toString().padStart(2, '0')
-  return `${year}-${month}-${day}`
-}
-const updateDate = (date: Date) => {
-  if (date) {
-    const year = date.getFullYear()
-    const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const day = date.getDate().toString().padStart(2, '0')
-    const formatted = `${year}-${month}-${day}`
+  const formatted = `${year}-${month}-${day}`
 
-    emit('update:modelValue', formatted)
-    selectedDate.value = date
-  }
+  selectedDate.value = formatted
+  emit('update:modelValue', formatted)
   menu.value = false
 }
 
 function clearDate() {
-  selectedDate.value = null
-  emit('update:modelValue', null)
+  selectedDate.value = ''
+  emit('update:modelValue', '')
 }
+
+watch(
+  () => props.modelValue,
+  (val) => {
+    selectedDate.value = val || ''
+  }
+)
 </script>
 
 <style scoped lang="scss">
@@ -103,5 +102,9 @@ function clearDate() {
 
 .v-date-picker {
   font-size: 0.85rem;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 </style>

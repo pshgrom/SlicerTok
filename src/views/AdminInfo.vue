@@ -10,6 +10,9 @@
       label="Поиск по дате загрузки видео"
       @update:model-value="onDateChangeVideo"
     />
+    <VCusomButton :customClass="['light']" class="ml-2" @click="resetFilters">
+      Сбросить все
+    </VCusomButton>
   </div>
   <TableAdminInfo
     :headers="headers"
@@ -42,6 +45,7 @@ import { useAdminInfo } from '@/stores/AdminInfo'
 import TableAdminInfo from '@/components/tables/TableAdminInfo.vue'
 import { useError } from '@/stores/Errors.ts'
 import DateFilter from '@/components/base/DateFilter.vue'
+import VCusomButton from '@/components/base/VCusomButton.vue'
 
 const headers = ref<ITableHeaders[]>(adminInfoHeaders)
 const errorStore = useError()
@@ -74,6 +78,15 @@ const onDateChangeSlicer = (val: string) => {
       user_created_at: undefined
     }
   }
+  getRequest()
+}
+
+const resetFilters = () => {
+  Object.keys(queryParams.value).forEach((key) => {
+    delete queryParams.value[key]
+  })
+  queryParams.value.page = 1
+  queryParams.value.perPage = 20
   getRequest()
 }
 
