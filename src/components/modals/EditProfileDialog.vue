@@ -6,6 +6,12 @@
         <v-btn icon="mdi-close" variant="text" @click="dialogModel = false" />
       </v-card-title>
       <v-card-text>
+        <div class="change-info">
+          <div class="change-info__icon">
+            <SvgIcon name="info" />
+          </div>
+          <div class="change-info__text">Вы можете менять информацию 1 раз в неделю.</div>
+        </div>
         <v-form ref="formRef">
           <VCustomInput
             v-model.trim="form.name"
@@ -98,4 +104,25 @@ const cancel = () => {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.change-info {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  background: rgba(242, 246, 254, 1);
+  border-radius: 12px;
+  padding: 0 12px;
+  margin-bottom: 25px;
+
+  &__text {
+    font-size: 12px;
+    margin-left: 10px;
+    letter-spacing: 0;
+    line-height: 0;
+  }
+}
+
+:deep(.v-card-text) {
+  padding-top: 0 !important;
+}
+</style>
