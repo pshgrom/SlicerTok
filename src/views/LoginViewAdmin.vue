@@ -5,7 +5,7 @@
     style="height: 100vh"
   >
     <v-card max-width="400" min-width="400" class="pa-6 login-admin">
-      <SvgIcon class="login-admin__logo" name="logo" :width="120" :height="31" />
+      <SvgIcon class="login-admin__logo" name="logo" />
       <h3 class="login-admin__title">Введите свои учетные данные</h3>
       <v-form ref="formRef" @submit.prevent="handleLogin">
         <VCustomInput

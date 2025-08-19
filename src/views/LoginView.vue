@@ -5,7 +5,7 @@
     style="height: 100vh"
   >
     <v-card class="pa-6 login-view" max-width="400" min-width="400">
-      <SvgIcon class="login-view__logo" name="logo" :width="120" :height="31" />
+      <SvgIcon class="login-view__logo" name="logo" />
       <h3 class="login-view__title">
         <template v-if="step === 1"> Вход по номеру телефона </template>
         <template v-else> Подтвердите код </template>
@@ -244,7 +244,6 @@ onMounted(() => {
   &__title {
     font-weight: 500;
     font-size: 18px;
-    font-weight: 400;
     letter-spacing: 0;
     margin-bottom: 10px;
     color: rgba(0, 0, 0, 1);

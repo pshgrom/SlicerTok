@@ -27,7 +27,7 @@
 
       &--is-active {
         .v-btn {
-          background: rgba(34, 93, 255, 1) !important;
+          background: rgba(169, 55, 244, 1) !important;
           color: rgba(255, 255, 255, 1) !important;
         }
       }
@@ -35,19 +35,19 @@
   }
 
   .v-btn {
-    color: #0070ba;
+    color: rgba(0, 0, 0, 0.87);
     font-weight: bold;
     border-radius: 50%;
     transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   .v-btn:hover {
-    background-color: #0070ba;
+    background-color: rgba(169, 55, 244, 1);
     color: white;
   }
 
   .v-btn--active {
-    background-color: #0070ba;
+    background-color: rgba(169, 55, 244, 1);
     color: white;
   }
 }

@@ -6,7 +6,6 @@ import {
   getInfoQuery,
   getPublicationListQuery,
   updateContactQuery,
-  updateNameQuery,
   addWalletQuery,
   getWalletsQuery,
   setWalletMainQuery,
@@ -100,17 +99,6 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     }
   }
 
-  const updateName = async (name: string) => {
-    try {
-      const { data } = await updateNameQuery(name)
-      const msg = data?.message ?? ''
-      errorStore.setErrors(msg, 'success')
-    } catch (error: any) {
-      const msg = error?.response?.data?.message ?? 'Error'
-      errorStore.setErrors(msg)
-    }
-  }
-
   const getInfo = async () => {
     try {
       const { data } = await getInfoQuery()
@@ -158,7 +146,6 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     setQueryParams,
     createPublication,
     updateContact,
-    updateName,
     getInfo,
     addWallet,
     getWallets,

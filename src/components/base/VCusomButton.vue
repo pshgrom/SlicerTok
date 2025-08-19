@@ -70,7 +70,7 @@ const customClasses = computed(() => props.customClass.join(' '))
     }
   }
   &.dark {
-    background: rgba(34, 93, 255, 1) !important;
+    background: rgba(169, 55, 244, 1) !important;
     color: rgba(255, 255, 255, 1) !important;
     &:hover {
       background: rgba(96, 135, 242, 1);

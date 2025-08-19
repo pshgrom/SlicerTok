@@ -12,8 +12,6 @@ export const addWalletQuery = (data: any) => api.post('/slicer/profile/wallet/ad
 
 export const getWalletsQuery = () => api.get('/slicer/profile/wallet/get-wallet-list')
 
-export const updateNameQuery = (name: string) => api.post('/slicer/profile/update-name', { name })
-
 export const setWalletMainQuery = (id: number) =>
   api.post('/slicer/profile/wallet/set-wallet-main', { wallet_id: id })
 

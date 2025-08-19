@@ -10,7 +10,9 @@
           <div class="change-info__icon">
             <SvgIcon name="info" />
           </div>
-          <div class="change-info__text">Вы можете менять информацию 1 раз в неделю.</div>
+          <div class="change-info__text">
+            Вы можете менять информацию 1 раз в неделю. Следующий раз {{ endDate }}
+          </div>
         </div>
         <v-form ref="formRef">
           <VCustomInput
@@ -61,6 +63,10 @@ const props = defineProps({
   dialog: {
     type: Boolean,
     default: false
+  },
+  endDate: {
+    type: String,
+    default: '0'
   },
   user: {
     type: Object as PropType<IUser>,
@@ -118,7 +124,7 @@ const cancel = () => {
     font-size: 12px;
     margin-left: 10px;
     letter-spacing: 0;
-    line-height: 0;
+    line-height: normal;
   }
 }
 

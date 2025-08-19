@@ -66,10 +66,10 @@ export const getColor = (status: string): string => {
   switch (status) {
     case 'create':
     case 'todo':
-      return 'rgba(34, 93, 255, 1)'
+      return 'rgba(169, 55, 244, 1)'
     case 'moderation':
     case 'awaiting_payment':
-      return 'rgba(34, 93, 255, 1)'
+      return 'rgba(169, 55, 244, 1)'
     case 'approved':
     case 'paid':
       return 'rgba(16, 154, 106, 1)'

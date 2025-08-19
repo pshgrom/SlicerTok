@@ -12,6 +12,7 @@
       <EditProfileDialog
         v-if="editDialog"
         v-model:dialog="editDialog"
+        :endDate="endDate"
         :user="user"
         @update="updateUser"
       />
@@ -85,6 +86,8 @@ const user = ref<IUser>({
   telegram: ''
 })
 
+const endDate = ref('0')
+
 const userInfo = useUserInfo()
 const errorStore = useError()
 const editDialog = ref(false)
@@ -105,7 +108,6 @@ const closeDialog = () => {
 const updateUser = async (newData) => {
   user.value = { ...newData }
   await userInfo.updateContact(newData)
-  await userInfo.updateName(newData.name)
 }
 
 const openModalWallet = () => {
@@ -231,6 +233,7 @@ const getRequest = () => {
 
 const getInfo = async () => {
   const resp = await userInfo.getInfo()
+  endDate.value = resp.data?.inf_updated_at ?? '0'
   const { contacts, name: userName, key } = resp.data?.profile ?? {}
   user.value = {
     ...contacts,
