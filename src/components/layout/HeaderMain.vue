@@ -67,8 +67,21 @@ const logout = () => {
 
 const goHome = () => {
   switch (authStore.role) {
+    case ROLES.ADMIN:
+      router.push({ name: 'AdminInfo' })
+      break
+    case ROLES.ADMIN_FINANCE:
+      router.push({ name: 'AdminPaymentsFinance' })
+      break
     case ROLES.SLICER:
       router.push({ name: 'UserInfo' })
+      break
+    case ROLES.ADMIN_MAIN:
+      router.push({ name: 'AdminMain' })
+      break
+    case ROLES.SUPPORT:
+      router.push({ name: 'Support' })
+      break
   }
 }
 
