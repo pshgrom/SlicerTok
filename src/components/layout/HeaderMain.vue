@@ -7,7 +7,10 @@
     </div>
     <div class="header__right">
       <ul class="menu">
-        <li v-if="role === ROLES.SLICER"><span>Правила</span></li>
+        <template v-if="role === ROLES.SLICER">
+          <li><span>Правила</span></li>
+          <li @click="isModalOpen = true"><span>2FA</span></li>
+        </template>
         <li
           v-if="role === ROLES.SLICER && isMobile"
           @click="userInfoStore.showChat = !userInfoStore.showChat"
@@ -35,19 +38,23 @@
       </div>
     </div>
   </header>
+  <TwoFactorAuth v-if="isModalOpen" v-model="isModalOpen" />
 </template>
+
 <script setup lang="ts">
 import { useAuth } from '@/stores/Auth'
 import { useRouter } from 'vue-router'
 import { ROLES } from '@/constants/roles.ts'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 import { useUserInfo } from '@/stores/UserInfo.ts'
+import TwoFactorAuth from '@/components/modals/TwoFactorAuth.vue'
 
 const authStore = useAuth()
 const router = useRouter()
 const userInfoStore = useUserInfo()
 
+const isModalOpen = ref(false)
 const role = computed(() => authStore.role)
 const { isMobile } = useDeviceDetection()
 

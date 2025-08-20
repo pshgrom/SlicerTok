@@ -12,6 +12,9 @@ export const addWalletQuery = (data: any) => api.post('/slicer/profile/wallet/ad
 
 export const getWalletsQuery = () => api.get('/slicer/profile/wallet/get-wallet-list')
 
+export const enableTwoFactorQuery = () => api.get('/user/enable-two-factor')
+export const disabledTwoFactorQuery = () => api.get('/user/disable-two-factor')
+
 export const setWalletMainQuery = (id: number) =>
   api.post('/slicer/profile/wallet/set-wallet-main', { wallet_id: id })
 

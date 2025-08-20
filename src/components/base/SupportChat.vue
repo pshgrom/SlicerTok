@@ -161,7 +161,7 @@ onMounted(async () => {
     unreadCounts.value = JSON.parse(savedUnread)
   }
 
-  chatStore.connect()
+  // chatStore.connect()
 
   const { data } = await getChatsSupportQuery()
   if (data.code === 200) {

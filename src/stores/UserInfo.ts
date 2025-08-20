@@ -9,13 +9,16 @@ import {
   addWalletQuery,
   getWalletsQuery,
   setWalletMainQuery,
-  removeWalletQuery
+  removeWalletQuery,
+  enableTwoFactorQuery,
+  disabledTwoFactorQuery
 } from '@/api/userInfo'
 import { useError } from '@/stores/Errors'
 
 export const useUserInfo = defineStore('userInfoStore', () => {
   const isLoading = ref<boolean>(false)
   const showChat = ref<boolean>(false)
+  const qrCode = ref('')
   const unreadCount = ref(Number(localStorage.getItem('unreadCountUser') || 0))
   const queryParams = ref<ITableParams>({
     page: 1,
@@ -71,6 +74,27 @@ export const useUserInfo = defineStore('userInfoStore', () => {
   const getWallets = async () => {
     try {
       return await getWalletsQuery()
+    } catch (error: any) {
+      const msg = error?.response?.data?.message ?? 'Error'
+      errorStore.setErrors(msg)
+    }
+  }
+
+  const enableTwoFactor = async () => {
+    try {
+      const { data } = await enableTwoFactorQuery()
+      qrCode.value = data?.qr_code_url ?? ''
+    } catch (error: any) {
+      const msg = error?.response?.data?.message ?? 'Error'
+      errorStore.setErrors(msg)
+    }
+  }
+
+  const disabledTwoFactor = async () => {
+    try {
+      const { data } = await disabledTwoFactorQuery()
+      const msg = data.message ?? ''
+      errorStore.setErrors(msg, 'success')
     } catch (error: any) {
       const msg = error?.response?.data?.message ?? 'Error'
       errorStore.setErrors(msg)
@@ -152,6 +176,9 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     setWalletMain,
     removeWallet,
     showChat,
-    unreadCount
+    unreadCount,
+    enableTwoFactor,
+    disabledTwoFactor,
+    qrCode
   }
 })
