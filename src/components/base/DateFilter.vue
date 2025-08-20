@@ -15,6 +15,7 @@
         placeholder="YYYY-MM-DD"
         readonly
         density="compact"
+        color="rgb(169, 55, 244)"
         variant="outlined"
         hide-details
         class="date-filter__input"
@@ -29,7 +30,7 @@
 
     <v-date-picker
       v-model="selectedDate"
-      color="primary"
+      color="rgb(169, 55, 244)"
       hide-header
       @update:model-value="updateDate"
     />

@@ -100,7 +100,7 @@ const updateStatus = (e: string | number) => {
 :deep(.v-field--focused .v-field__outline__notch::before),
 :deep(.v-field--focused .v-field__outline__notch::after),
 :deep(.v-field--focused .v-field__outline__end) {
-  border-color: rgba(96, 135, 242, 1) !important;
+  border-color: rgb(169, 55, 244) !important;
   --v-field-border-width: 1px !important;
 }
 </style>

@@ -174,7 +174,7 @@ const submitVideo = async () => {
 
   button {
     position: relative;
-    left: -60px;
+    left: -47px;
 
     @media (max-width: 767px) {
       left: -4px !important;

@@ -32,7 +32,7 @@ const props = defineProps({
   },
   color: {
     type: String,
-    default: 'rgba(96, 135, 242, 1)'
+    default: 'rgb(169, 55, 244)'
   },
   baseColor: {
     type: String,
@@ -109,7 +109,7 @@ const customClasses = computed(() => props.customClass.join(' '))
 :deep(.v-field--focused .v-field__outline__notch::before),
 :deep(.v-field--focused .v-field__outline__notch::after),
 :deep(.v-field--focused .v-field__outline__end) {
-  border-color: rgba(96, 135, 242, 1) !important;
+  border-color: rgb(169, 55, 244) !important;
   --v-field-border-width: 1px !important;
 }
 </style>
