@@ -113,9 +113,6 @@ export default defineConfig({
   },
 
   esbuild: {
-    drop: isProd ? ['console', 'debugger'] : [],
-    treeShaking: true,
-    legalComments: 'none',
-    minifyWhitespace: true
+    drop: isProd ? ['console', 'debugger'] : []
   }
 })
