@@ -42,13 +42,14 @@
 </template>
 
 <script setup lang="ts">
-import { useAuth } from '@/stores/Auth'
-import { useRouter } from 'vue-router'
-import { ROLES } from '@/constants/roles.ts'
 import { computed, onMounted, ref } from 'vue'
-import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
-import { useUserInfo } from '@/stores/UserInfo.ts'
+import { useRouter } from 'vue-router'
+
 import TwoFactorAuth from '@/components/modals/TwoFactorAuth.vue'
+import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
+import { ROLES } from '@/constants/roles.ts'
+import { useAuth } from '@/stores/Auth'
+import { useUserInfo } from '@/stores/UserInfo.ts'
 
 const authStore = useAuth()
 const router = useRouter()

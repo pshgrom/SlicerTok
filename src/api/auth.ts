@@ -1,5 +1,6 @@
-import api from './axios'
 import type { IAuth, IAuthByPhone, IAuthConfirmation } from '@/interfaces/Auth'
+
+import api from './axios'
 
 export const loginUser = ({ login, password }: IAuth) =>
   api.post('/user/auth', null, {

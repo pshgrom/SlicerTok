@@ -11,7 +11,7 @@
     hide-default-footer
   >
     <template #loading>
-      <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
+      <v-progress-circular indeterminate color="#0070ba" />
     </template>
     <template #[`item.url`]="{ item }">
       <a :href="item.url" target="_blank" class="custom-table-ref">
@@ -89,14 +89,14 @@
       <div class="d-flex align-center">
         <VCusomButton
           class="mr-4"
-          :customClass="['light']"
+          :custom-class="['light']"
           @click="actionRequest(item.id, 'rejected')"
         >
           Отклонить заявку
         </VCusomButton>
         <VCusomButton
           class="mr-4"
-          :customClass="['dark']"
+          :custom-class="['dark']"
           @click="actionRequest(item.id, 'approved')"
         >
           Принять заявку
@@ -109,17 +109,18 @@
 
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
+
+import VCusomButton from '@/components/base/VCusomButton.vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import { formatNumber } from '@/utils/formatNumbers.ts'
 import {
+  getColor,
+  getIcon,
+  getIconSocial,
   getNameSocialMedia,
   getStatusColor,
-  getTextStatus,
-  getIconSocial,
-  getColor,
-  getIcon
+  getTextStatus
 } from '@/utils/socials.ts'
-import VCusomButton from '@/components/base/VCusomButton.vue'
 // import ShowRulesModal from '@/components/modals/ShowRulesModal.vue'
 
 const props = defineProps({

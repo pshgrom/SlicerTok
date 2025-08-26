@@ -24,7 +24,7 @@
     </v-main>
     <transition name="fade" mode="out-in">
       <div v-if="showChat">
-        <UserChat v-show="userInfoStore.showChat" v-model:showChat="userInfoStore.showChat" />
+        <UserChat v-show="userInfoStore.showChat" v-model:show-chat="userInfoStore.showChat" />
       </div>
     </transition>
   </v-app>
@@ -33,15 +33,16 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
+
 import ErrorAlert from '@/components/base/ErrorAlert.vue'
-import HeaderMain from '@/components/layout/HeaderMain.vue'
-import { useAuth } from '@/stores/Auth.ts'
-import UserChat from '@/components/base/UserChat.vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
-import { useUserInfo } from '@/stores/UserInfo.ts'
+import UserChat from '@/components/base/UserChat.vue'
 import GlobalLoader from '@/components/GlobalLoader.vue'
-import { useLoader } from '@/stores/GlobalLoader.ts'
+import HeaderMain from '@/components/layout/HeaderMain.vue'
 import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
+import { useAuth } from '@/stores/Auth.ts'
+import { useLoader } from '@/stores/GlobalLoader.ts'
+import { useUserInfo } from '@/stores/UserInfo.ts'
 
 const loader = useLoader()
 

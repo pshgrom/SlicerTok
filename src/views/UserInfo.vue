@@ -12,7 +12,7 @@
       <EditProfileDialog
         v-if="editDialog"
         v-model:dialog="editDialog"
-        :endDate="endDate"
+        :end-date="endDate"
         :user="user"
         @update="updateUser"
       />
@@ -23,22 +23,22 @@
         <div class="table-actions__label">Ваши видео</div>
       </div>
       <div class="table-actions__right">
-        <VCusomButton :customClass="['dark']" @click="openPaymentDialog">
+        <VCusomButton :custom-class="['dark']" @click="openPaymentDialog">
           Подать заявку
         </VCusomButton>
       </div>
     </div>
     <TableUserInfo
       :headers="headers"
-      :isLoading="isLoading"
+      :is-loading="isLoading"
       :items="calcDataItems"
-      :itemsPerPage="queryParams.perPage"
-    ></TableUserInfo>
+      :items-per-page="queryParams.perPage"
+    />
     <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
       <TablePagination
-        v-model:queryParams="queryParams"
+        v-model:query-params="queryParams"
         :loading="isLoading"
-        :totalPages="totalPages"
+        :total-pages="totalPages"
         @change-page="changePage"
       />
     </div>
@@ -53,22 +53,23 @@
 </template>
 
 <script setup lang="ts">
-import TablePagination from '@/components/tables/TablePagination.vue'
-import { computed, ref, onMounted } from 'vue'
-import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
-import { userInfoHeaders } from '@/constants/tableHeaders'
-import { useUserInfo } from '@/stores/UserInfo'
-import TableUserInfo from '@/components/tables/TableUserInfo.vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useError } from '@/stores/Errors'
-import EditProfileDialog from '@/components/modals/EditProfileDialog.vue'
-import AddVideoDialog from '@/components/modals/AddVideoDialog.vue'
-import WalletModal from '@/components/modals/WalletModal.vue'
-import type { IUploadVideo, IUser, IWallet } from '@/interfaces/Slicer'
-import ProfileCard from '@/components/profile/ProfileCard.vue'
-import WalletsCard from '@/components/wallets/WalletsCard.vue'
+
 import VCusomButton from '@/components/base/VCusomButton.vue'
+import AddVideoDialog from '@/components/modals/AddVideoDialog.vue'
+import EditProfileDialog from '@/components/modals/EditProfileDialog.vue'
+import WalletModal from '@/components/modals/WalletModal.vue'
+import ProfileCard from '@/components/profile/ProfileCard.vue'
+import TablePagination from '@/components/tables/TablePagination.vue'
+import TableUserInfo from '@/components/tables/TableUserInfo.vue'
+import WalletsCard from '@/components/wallets/WalletsCard.vue'
+import { userInfoHeaders } from '@/constants/tableHeaders'
+import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
+import type { IUploadVideo, IUser, IWallet } from '@/interfaces/Slicer'
 import { useAuth } from '@/stores/Auth'
+import { useError } from '@/stores/Errors'
+import { useUserInfo } from '@/stores/UserInfo'
 
 const headers = ref<ITableHeaders[]>(userInfoHeaders)
 const authStore = useAuth()

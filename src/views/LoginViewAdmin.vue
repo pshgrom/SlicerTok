@@ -22,7 +22,7 @@
           class="mb-3"
         />
         <div class="login-admin__actions">
-          <VCusomButton type="submit" :customClass="['dark', 'avg']" :loading="loading">
+          <VCusomButton type="submit" :custom-class="['dark', 'avg']" :loading="loading">
             Войти
           </VCusomButton>
         </div>
@@ -34,14 +34,15 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuth } from '@/stores/Auth'
-import { type IAuth } from '@/interfaces/Auth'
-import VCustomInput from '@/components/base/VCustomInput.vue'
-import { useError } from '@/stores/Errors'
-import { ROLES } from '@/constants/roles'
-import { requiredRules } from '@/utils/validators'
-import VCusomButton from '@/components/base/VCusomButton.vue'
+
 import SvgIcon from '@/components/base/SvgIcon.vue'
+import VCusomButton from '@/components/base/VCusomButton.vue'
+import VCustomInput from '@/components/base/VCustomInput.vue'
+import { ROLES } from '@/constants/roles'
+import { type IAuth } from '@/interfaces/Auth'
+import { useAuth } from '@/stores/Auth'
+import { useError } from '@/stores/Errors'
+import { requiredRules } from '@/utils/validators'
 
 const authStore = useAuth()
 const errorStore = useError()

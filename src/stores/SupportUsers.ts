@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { ITableParams, IUserInfo, IAdminInfoData } from '@/interfaces/AppModel'
+
 import { actionRequestQuery, getSlicerListQuery } from '@/api/support'
+import type { IAdminInfoData, ITableParams, IUserInfo } from '@/interfaces/AppModel'
 import { useError } from '@/stores/Errors'
 
 export const useSupportUsers = defineStore('supportUsersStore', () => {

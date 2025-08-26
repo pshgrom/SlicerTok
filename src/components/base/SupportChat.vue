@@ -66,11 +66,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick, watch } from 'vue'
-import { getChatsSupportQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
-import { useChatSocketStore } from '@/stores/chatSocket'
-import VCustomInput from '@/components/base/VCustomInput.vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
+import { getChatsSupportQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
+import VCustomInput from '@/components/base/VCustomInput.vue'
+import { useChatSocketStore } from '@/stores/chatSocket'
 
 const chatStore = useChatSocketStore()
 

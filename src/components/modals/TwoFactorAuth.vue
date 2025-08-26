@@ -9,7 +9,7 @@
         <VCustomToggle
           v-model="isEnableGoogle2fa"
           :density="'compact'"
-          :hideDetails="true"
+          :hide-details="true"
           label="Включение двухфакторной аутентификации"
           color="rgba(169, 55, 244, 1)"
           @change="onChange"
@@ -53,8 +53,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <VCusomButton :customClass="['light', 'avg']" @click="closeModal"> Отмена </VCusomButton>
-        <VCusomButton :customClass="['dark', 'avg']" @click="submit"> Сохранить </VCusomButton>
+        <VCusomButton :custom-class="['light', 'avg']" @click="closeModal"> Отмена </VCusomButton>
+        <VCusomButton :custom-class="['dark', 'avg']" @click="submit"> Сохранить </VCusomButton>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -62,12 +62,13 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import VCusomButton from '@/components/base/VCusomButton.vue'
-import VCustomToggle from '@/components/base/VCustomToggle.vue'
 import VueQrcode from 'vue-qrcode'
+
+import VCusomButton from '@/components/base/VCusomButton.vue'
+import VCustomInput from '@/components/base/VCustomInput.vue'
+import VCustomToggle from '@/components/base/VCustomToggle.vue'
 import { useUserInfo } from '@/stores/UserInfo.ts'
 import { requiredRules } from '@/utils/validators.ts'
-import VCustomInput from '@/components/base/VCustomInput.vue'
 
 const props = defineProps({
   modelValue: {

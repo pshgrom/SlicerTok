@@ -5,7 +5,7 @@
     :items="calcDataItems"
     :items-per-page="queryParams.perPage"
     @action-request="actionRequest"
-  ></TableAdminMain>
+  />
   <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
     <TablePagination
       v-model:query-params="queryParams"
@@ -17,13 +17,14 @@
 </template>
 
 <script setup lang="ts">
-import TablePagination from '@/components/tables/TablePagination.vue'
-import { computed, ref, onMounted } from 'vue'
-import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
-import { adminMain } from '@/constants/tableHeaders'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAdminMain } from '@/stores/AdminMain'
+
 import TableAdminMain from '@/components/tables/TableAdminMain.vue'
+import TablePagination from '@/components/tables/TablePagination.vue'
+import { adminMain } from '@/constants/tableHeaders'
+import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
+import { useAdminMain } from '@/stores/AdminMain'
 import { useError } from '@/stores/Errors.ts'
 
 const headers = ref<ITableHeaders[]>(adminMain)

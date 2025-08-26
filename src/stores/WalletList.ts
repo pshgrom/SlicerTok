@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+
 import { getDataWalletList } from '@/api/walletList'
-import { IWalletListItems } from '@/interfaces/AppModel'
+import type { IWalletListItems } from '@/interfaces/AppModel'
 
 export const useWalletList = defineStore('walletListStore', () => {
   const isLoading = ref<boolean>(false)

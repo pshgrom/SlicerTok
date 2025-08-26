@@ -11,7 +11,7 @@
     hide-default-footer
   >
     <template #loading>
-      <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
+      <v-progress-circular indeterminate color="#0070ba" />
     </template>
     <template #[`item.datetime`]="{ item }">
       <div>{{ formatDate(item.datetime) }}</div>
@@ -21,6 +21,7 @@
 
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
+
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 
 defineEmits(['changeStatus', 'saveComment', 'finishCheck'])

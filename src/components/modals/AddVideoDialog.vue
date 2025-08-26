@@ -32,12 +32,12 @@
         </v-form>
         <div class="custom-modal-wallet">
           <span class="custom-modal__label">Вы получите деньги на кошелек:</span>
-          <CurrentWallet :key="wallet.id" :wallet="wallet" :index="0" :onlyRead="true" />
+          <CurrentWallet :key="wallet.id" :wallet="wallet" :index="0" :only-read="true" />
         </div>
       </v-card-text>
       <v-card-actions>
-        <VCusomButton :customClass="['light', 'avg']" @click="closeDialog"> Отмена </VCusomButton>
-        <VCusomButton :customClass="['dark', 'avg']" :loading="loading" @click="submitVideo">
+        <VCusomButton :custom-class="['light', 'avg']" @click="closeDialog"> Отмена </VCusomButton>
+        <VCusomButton :custom-class="['dark', 'avg']" :loading="loading" @click="submitVideo">
           Отправить заявку
         </VCusomButton>
       </v-card-actions>
@@ -46,14 +46,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, type PropType } from 'vue'
+import { computed, type PropType, ref } from 'vue'
+
+import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import VideoUploader from '@/components/modals/VideoUploader.vue'
-import { useError } from '@/stores/Errors'
-import type { IUploadVideo, IWallet } from '@/interfaces/Slicer'
-import { videoRules } from '@/utils/validators'
-import VCusomButton from '@/components/base/VCusomButton.vue'
 import CurrentWallet from '@/components/wallets/CurrentWallet.vue'
+import type { IUploadVideo, IWallet } from '@/interfaces/Slicer'
+import { useError } from '@/stores/Errors'
+import { videoRules } from '@/utils/validators'
 
 const props = defineProps({
   modelValue: Boolean,
@@ -94,7 +95,7 @@ const closeDialog = () => {
 }
 
 const submitVideo = async () => {
-  const { valid } = await formRef.value?.validate()
+  const { valid } = (await formRef.value?.validate()) ?? {}
   if (!videoFields.value.videoFile) {
     errorStore.setErrors('Загрузите видео')
   }

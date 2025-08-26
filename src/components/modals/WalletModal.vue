@@ -19,18 +19,19 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <VCusomButton :customClass="['light', 'avg']" @click="closeModal"> Отмена </VCusomButton>
-        <VCusomButton :customClass="['dark', 'avg']" @click="submit"> Сохранить </VCusomButton>
+        <VCusomButton :custom-class="['light', 'avg']" @click="closeModal"> Отмена </VCusomButton>
+        <VCusomButton :custom-class="['dark', 'avg']" @click="submit"> Сохранить </VCusomButton>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
+
+import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import { requiredRules, walletRules } from '@/utils/validators.ts'
-import VCusomButton from '@/components/base/VCusomButton.vue'
 
 const props = defineProps({
   modelValue: {

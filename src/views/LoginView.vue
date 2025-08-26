@@ -68,12 +68,12 @@
           <VCusomButton
             v-if="step === 2"
             class="mr-1"
-            :customClass="['light', 'avg']"
+            :custom-class="['light', 'avg']"
             @click="reset"
           >
             Назад
           </VCusomButton>
-          <VCusomButton type="submit" :customClass="['dark', 'avg']" :loading="loading">
+          <VCusomButton type="submit" :custom-class="['dark', 'avg']" :loading="loading">
             {{ step === 1 ? 'Отправить код' : 'Подтвердить' }}
           </VCusomButton>
         </div>
@@ -85,13 +85,14 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuth } from '@/stores/Auth'
-import type { IAuthByPhone, IAuthConfirmation } from '@/interfaces/Auth'
-import VCustomInput from '@/components/base/VCustomInput.vue'
-import { useError } from '@/stores/Errors'
-import VCustomSelect from '@/components/base/VCustomSelect.vue'
+
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
+import VCustomInput from '@/components/base/VCustomInput.vue'
+import VCustomSelect from '@/components/base/VCustomSelect.vue'
+import type { IAuthByPhone, IAuthConfirmation } from '@/interfaces/Auth'
+import { useAuth } from '@/stores/Auth'
+import { useError } from '@/stores/Errors'
 import { requiredRules } from '@/utils/validators.ts'
 
 const authStore = useAuth()
@@ -176,7 +177,7 @@ const cleanNumber = (str: string) => {
 }
 
 const handleLoginByPhone = async () => {
-  const { valid } = await formRef.value?.validate()
+  const { valid } = (await formRef.value?.validate()) ?? {}
   if (valid) {
     if (step.value === 1) {
       try {
@@ -209,7 +210,7 @@ const handleLoginByPhone = async () => {
         const { data } = await authStore.loginConfirmation(dataQuery)
         const msg = data?.message ?? ''
         errorStore.setErrors(msg, 'success')
-        const { token: tokenValue, role } = data?.data
+        const { token: tokenValue, role } = data?.data ?? {}
         if (tokenValue && role?.length) {
           localStorage.setItem('authToken', tokenValue)
           token.value = tokenValue

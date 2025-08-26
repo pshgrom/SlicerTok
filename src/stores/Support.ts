@@ -1,14 +1,15 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { ITableParams, IUserInfo, IAdminInfoData } from '@/interfaces/AppModel'
+
 import {
   actionRequestQuery,
+  getInfoQuery,
   getPublicationListQuery,
   getSlicerQuery,
   getWalletsQuery,
-  verifyUserQuery,
-  getInfoQuery
+  verifyUserQuery
 } from '@/api/support'
+import type { IAdminInfoData, ITableParams, IUserInfo } from '@/interfaces/AppModel'
 import type { IWallet } from '@/interfaces/Slicer.ts'
 import { useError } from '@/stores/Errors'
 // import type { ISupportSaveStatus } from '@/interfaces/ISupport'

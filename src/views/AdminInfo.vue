@@ -10,42 +10,43 @@
       label="Поиск по дате загрузки видео"
       @update:model-value="onDateChangeVideo"
     />
-    <VCusomButton :customClass="['light']" class="ml-2" @click="resetFilters">
+    <VCusomButton :custom-class="['light']" class="ml-2" @click="resetFilters">
       Сбросить все
     </VCusomButton>
   </div>
   <TableAdminInfo
     :headers="headers"
-    :isLoading="isLoading"
+    :is-loading="isLoading"
     :items="calcDataItems"
-    :itemsPerPage="queryParams.perPage"
+    :items-per-page="queryParams.perPage"
     @finish-check="finishCheck"
     @request-verification="requestVerification"
     @change-state="changeState"
     @save-mark="saveMark"
     @custom-sort="customSort"
-  ></TableAdminInfo>
+  />
   <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
     <TablePagination
-      v-model:queryParams="queryParams"
+      v-model:query-params="queryParams"
       :loading="isLoading"
-      :totalPages="totalPages"
+      :total-pages="totalPages"
       @change-page="changePage"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import TablePagination from '@/components/tables/TablePagination.vue'
-import { computed, ref, onMounted } from 'vue'
-import type { ITableHeaders, ITableParamsAdmin, IUserInfoData } from '@/interfaces/AppModel'
-import { adminInfoHeaders } from '@/constants/tableHeaders'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAdminInfo } from '@/stores/AdminInfo'
-import TableAdminInfo from '@/components/tables/TableAdminInfo.vue'
-import { useError } from '@/stores/Errors.ts'
+
 import DateFilter from '@/components/base/DateFilter.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
+import TableAdminInfo from '@/components/tables/TableAdminInfo.vue'
+import TablePagination from '@/components/tables/TablePagination.vue'
+import { adminInfoHeaders } from '@/constants/tableHeaders'
+import type { ITableHeaders, ITableParamsAdmin, IUserInfoData } from '@/interfaces/AppModel'
+import { useAdminInfo } from '@/stores/AdminInfo'
+import { useError } from '@/stores/Errors.ts'
 
 const headers = ref<ITableHeaders[]>(adminInfoHeaders)
 const errorStore = useError()

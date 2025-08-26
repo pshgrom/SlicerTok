@@ -6,12 +6,13 @@
     density="comfortable"
     :total-visible="6"
     rounded="circle"
-  ></v-pagination>
+  />
 </template>
 
 <script setup lang="ts">
-import type { ITableParams } from '@/interfaces/AppModel'
 import { computed, type PropType } from 'vue'
+
+import type { ITableParams } from '@/interfaces/AppModel'
 
 const props = defineProps({
   queryParams: {

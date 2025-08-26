@@ -59,11 +59,11 @@
       </v-card-text>
       <v-card-actions>
         <div>
-          <VCusomButton :customClass="['light', 'avg']" class="mr-2" @click="closeDialog">
+          <VCusomButton :custom-class="['light', 'avg']" class="mr-2" @click="closeDialog">
             Отмена
           </VCusomButton>
           <VCusomButton
-            :customClass="['dark', 'avg']"
+            :custom-class="['dark', 'avg']"
             :disabled="currentItem.status === 'todo' || !currentItem.status"
             @click="change"
           >
@@ -76,10 +76,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+
 import VCusomButton from '@/components/base/VCusomButton.vue'
-import VCustomSelect from '@/components/base/VCustomSelect.vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
+import VCustomSelect from '@/components/base/VCustomSelect.vue'
 import { videoRules } from '@/utils/validators.ts'
 
 const props = defineProps({

@@ -18,11 +18,11 @@
       @update:model-value="handleChange"
     >
       <template v-if="$slots.label" #label>
-        <slot name="label" />
+        <slot name="label"></slot>
       </template>
 
       <template v-if="$slots.append" #append>
-        <slot name="append" />
+        <slot name="append"></slot>
       </template>
     </v-switch>
 

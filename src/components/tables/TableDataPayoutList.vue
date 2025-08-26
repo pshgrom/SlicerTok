@@ -3,13 +3,13 @@
     :headers="computedHeaders"
     :items="items"
     :loading="isLoading"
-    :itemsPerPage="itemsPerPage"
+    :items-per-page="itemsPerPage"
     class="custom-table"
     hover
     hide-default-footer
   >
     <template #loading>
-      <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
+      <v-progress-circular indeterminate color="#0070ba" />
     </template>
     <template #[`item.wallet`]="{ item }">
       {{ item.wallet.address }}
@@ -51,6 +51,7 @@
 
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
+
 import type { IPayoutListItems, ITableHeaders } from '@/interfaces/AppModel'
 
 const props = defineProps({

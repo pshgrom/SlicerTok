@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+
 import { getDataAmountList, getReceivedStatistic } from '@/api/amountList'
-import { IAmountListItems, IAmountListParams } from '@/interfaces/AppModel'
+import type { IAmountListItems, IAmountListParams } from '@/interfaces/AppModel'
 
 export const useAmountList = defineStore('amountListStore', () => {
   const isLoading = ref<boolean>(false)

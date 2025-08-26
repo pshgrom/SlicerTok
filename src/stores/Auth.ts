@@ -1,14 +1,15 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+
 import {
-  loginUser,
+  getCountryCodesQuery,
   loginByPhoneQuery,
   loginConfirmationQuery,
-  getCountryCodesQuery
+  loginUser
 } from '@/api/auth'
+import { ROLES } from '@/constants/roles'
 import type { IAuth, IAuthByPhone, IAuthConfirmation, LoginResult } from '@/interfaces/Auth'
 import { useError } from '@/stores/Errors'
-import { ROLES } from '@/constants/roles'
 
 export const useAuth = defineStore('authStore', () => {
   const token = ref<string | null>(localStorage.getItem('authToken') || null)

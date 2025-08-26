@@ -1,19 +1,20 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
-import type { INewPublication, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
+
 import {
+  addWalletQuery,
   createPublicationQuery,
+  disabledTwoFactorQuery,
+  enableTwoFactorQuery,
   getInfoQuery,
   getPublicationListQuery,
-  updateContactQuery,
-  addWalletQuery,
   getWalletsQuery,
-  setWalletMainQuery,
   removeWalletQuery,
-  enableTwoFactorQuery,
-  disabledTwoFactorQuery,
+  setWalletMainQuery,
+  updateContactQuery,
   verifyTwoFactorQuery
 } from '@/api/userInfo'
+import type { INewPublication, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import { useError } from '@/stores/Errors'
 
 export const useUserInfo = defineStore('userInfoStore', () => {

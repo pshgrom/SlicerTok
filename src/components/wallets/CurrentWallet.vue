@@ -38,8 +38,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { PropType } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+
 import type { IWallet } from '@/interfaces/Slicer'
 import { useError } from '@/stores/Errors'
 

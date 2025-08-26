@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { ITableParams } from '@/interfaces/AppModel'
+
 import {
   actionRequestAdminQuery,
   getLogListQuery,
   getPublicationsListMainQuery
 } from '@/api/adminInfo'
+import type { ITableParams } from '@/interfaces/AppModel'
 import { useError } from '@/stores/Errors'
 
 export const useAdminMain = defineStore('adminMainStore', () => {

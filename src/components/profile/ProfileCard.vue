@@ -6,7 +6,7 @@
           <!--          <ImageUploader v-model="imageFile" />-->
           <img src="@/static/img/avatar.png" alt="аватарка" />
         </div>
-        <VCusomButton v-if="!readonly" :customClass="['light']" @click="showDialog(true)"
+        <VCusomButton v-if="!readonly" :custom-class="['light']" @click="showDialog(true)"
           >Изменить
         </VCusomButton>
       </div>
@@ -86,8 +86,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import VCusomButton from '@/components/base/VCusomButton.vue'
 import { type PropType } from 'vue'
+
+import VCusomButton from '@/components/base/VCusomButton.vue'
 import type { IUser } from '@/interfaces/Slicer'
 import { formatNumber } from '@/utils/formatNumbers.ts'
 // import ImageUploader from '@/components/base/ImageUploader.vue'

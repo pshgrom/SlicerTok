@@ -8,7 +8,7 @@
         </div>
         <VCusomButton
           v-if="!readonly"
-          :customClass="['light']"
+          :custom-class="['light']"
           :disabled="wallets.length >= 3"
           @click="openDialog"
           >Добавить
@@ -18,7 +18,7 @@
         <CurrentWallet
           v-for="(wallet, index) in wallets"
           :key="wallet.id"
-          v-model:openIndex="openIndex"
+          v-model:open-index="openIndex"
           :wallet="wallet"
           :wallets="wallets"
           :index="index"
@@ -31,9 +31,10 @@
   </div>
 </template>
 <script setup lang="ts">
+import { type PropType, ref } from 'vue'
+
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import CurrentWallet from '@/components/wallets/CurrentWallet.vue'
-import { type PropType, ref } from 'vue'
 import { type IWallet } from '@/interfaces/Slicer'
 
 const props = defineProps({

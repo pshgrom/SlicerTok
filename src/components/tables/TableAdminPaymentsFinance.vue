@@ -11,7 +11,7 @@
     hide-default-footer
   >
     <template #loading>
-      <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
+      <v-progress-circular indeterminate color="#0070ba" />
     </template>
     <template #[`item.url`]="{ item }">
       <a class="custom-table__link" :href="item.url" target="_blank">
@@ -28,6 +28,7 @@
 
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
+
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 // import VCustomSelect from '@/components/base/VCustomSelect.vue'
 

@@ -44,20 +44,21 @@
 
       <v-card-actions>
         <v-spacer />
-        <VCusomButton :customClass="['light', 'avg']" @click="cancel"> Отмена </VCusomButton>
-        <VCusomButton :customClass="['dark', 'avg']" @click="save"> Сохранить </VCusomButton>
+        <VCusomButton :custom-class="['light', 'avg']" @click="cancel"> Отмена </VCusomButton>
+        <VCusomButton :custom-class="['dark', 'avg']" @click="save"> Сохранить </VCusomButton>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
 import type { PropType } from 'vue'
+import { computed, ref, watch } from 'vue'
+
+import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import type { IUser } from '@/interfaces/Slicer'
 import { infoRules } from '@/utils/validators'
-import VCusomButton from '@/components/base/VCusomButton.vue'
 
 const props = defineProps({
   dialog: {

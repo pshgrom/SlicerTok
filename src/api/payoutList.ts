@@ -1,6 +1,7 @@
-import api from './axios'
 import type { ITableParams } from '@/interfaces/AppModel'
 import type { IPayout } from '@/interfaces/IPayout'
+
+import api from './axios'
 
 export const createPayment = (data: IPayout) => api.post('/admin/payout/set-payout-item', data)
 

@@ -8,7 +8,7 @@
       <v-card-text> <div v-html="currentReasonsReject"></div></v-card-text>
       <v-card-actions>
         <v-spacer />
-        <VCusomButton :customClass="['light', 'avg']" @click="closeModal"> Ok </VCusomButton>
+        <VCusomButton :custom-class="['light', 'avg']" @click="closeModal"> Ok </VCusomButton>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -16,6 +16,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+
 import VCusomButton from '@/components/base/VCusomButton.vue'
 
 const props = defineProps({

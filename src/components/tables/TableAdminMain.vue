@@ -11,7 +11,7 @@
     hide-default-footer
   >
     <template #loading>
-      <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
+      <v-progress-circular indeterminate color="#0070ba" />
     </template>
     <template #[`item.status_moderation`]="{ item }">
       <v-row no-gutters class="flex-nowrap" style="overflow-x: auto; white-space: nowrap">
@@ -94,7 +94,7 @@
       <div class="d-flex align-center" :class="{ 'justify-end': item.status === 'rejected' }">
         <VCusomButton
           v-if="item.status !== 'rejected'"
-          :customClass="['light']"
+          :custom-class="['light']"
           @click="actionRequest(item.id, 'rejected')"
         >
           Отклонить заявку
@@ -102,7 +102,7 @@
         <VCusomButton
           v-if="item.status !== 'awaiting_payment'"
           class="ml-4"
-          :customClass="['dark']"
+          :custom-class="['dark']"
           @click="actionRequest(item.id, 'approved')"
         >
           Принять заявку
@@ -114,17 +114,18 @@
 
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
+
+import VCusomButton from '@/components/base/VCusomButton.vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
+import { formatDate } from '@/utils/formatDate.ts'
 import {
-  getTextStatus,
-  getStatusColor,
+  getColor,
+  getIcon,
   getIconSocial,
   getNameSocialMedia,
-  getColor,
-  getIcon
+  getStatusColor,
+  getTextStatus
 } from '@/utils/socials.ts'
-import { formatDate } from '@/utils/formatDate.ts'
-import VCusomButton from '@/components/base/VCusomButton.vue'
 
 const emit = defineEmits(['changeStatus', 'saveComment', 'finishCheck', 'actionRequest'])
 

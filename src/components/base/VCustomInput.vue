@@ -13,8 +13,7 @@
     :color="color"
     :base-color="baseColor"
     clearable
-  >
-  </v-text-field>
+  />
   <!--  @update:modelValue="updateValue"-->
 </template>
 

@@ -34,7 +34,7 @@
     <div class="chat__actions">
       <VCustomInput
         v-model="newMessage"
-        :hideDetails="true"
+        :hide-details="true"
         autofocus
         label="Введите текст"
         class="mr-1"
@@ -46,10 +46,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, nextTick, onBeforeUnmount } from 'vue'
-import { getChatQuery, sendMessageQuery, getMessagesQuery } from '@/api/chat.ts'
-import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+
+import { getChatQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
 import VCustomInput from '@/components/base/VCustomInput.vue'
+import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 import { useChatSocketStore } from '@/stores/chatSocket'
 import { useUserInfo } from '@/stores/UserInfo.ts'
 

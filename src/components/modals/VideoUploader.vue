@@ -19,7 +19,7 @@
     <template v-else-if="!videoUrl">
       <div class="upload-video__label">{{ label }}</div>
       <div class="upload-video__text">Загрузите короткое видео с доказательством статистики</div>
-      <VCusomButton :customClass="['light']" @click="triggerFileSelect">
+      <VCusomButton :custom-class="['light']" @click="triggerFileSelect">
         Загрузить видео
       </VCusomButton>
     </template>
@@ -33,8 +33,9 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import VCusomButton from '@/components/base/VCusomButton.vue'
 import { VProgressCircular } from 'vuetify/components'
+
+import VCusomButton from '@/components/base/VCusomButton.vue'
 
 const props = defineProps({
   modelValue: File,

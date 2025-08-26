@@ -9,14 +9,14 @@
     :model-value="internalFile"
     class="mb-4 d-none"
     @update:model-value="handleFileChange"
-  ></v-file-input>
+  />
   <v-btn class="wavy-button" disabled @click="triggerFileSelect">
     <v-icon size="28" class="me-2">mdi-camera</v-icon>
     <span>Загрузить фото</span>
   </v-btn>
 
   <div v-if="previewUrl" class="mt-2">
-    <v-img :src="previewUrl" max-width="300" class="rounded elevation-3" cover></v-img>
+    <v-img :src="previewUrl" max-width="300" class="rounded elevation-3" cover />
     <v-btn color="error" class="mt-2" @click="clearImage">
       <v-icon left>mdi-delete</v-icon> Удалить
     </v-btn>
@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onBeforeUnmount } from 'vue'
+import { onBeforeUnmount, ref, watch } from 'vue'
 
 const props = defineProps<{
   modelValue: File | null

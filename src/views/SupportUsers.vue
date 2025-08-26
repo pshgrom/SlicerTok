@@ -2,28 +2,29 @@
   <TableSupportUsers
     class="custom-table"
     :headers="headers"
-    :isLoading="isLoading"
+    :is-loading="isLoading"
     :items="calcDataItems"
-    :itemsPerPage="queryParams.perPage"
+    :items-per-page="queryParams.perPage"
     @action-request="actionRequest"
-  ></TableSupportUsers>
+  />
   <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
     <TablePagination
-      v-model:queryParams="queryParams"
+      v-model:query-params="queryParams"
       :loading="isLoading"
-      :totalPages="totalPages"
+      :total-pages="totalPages"
       @change-page="changePage"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import TablePagination from '@/components/tables/TablePagination.vue'
-import { computed, ref, onMounted } from 'vue'
-import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
-import { supportUsersHeaders } from '@/constants/tableHeaders'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+
+import TablePagination from '@/components/tables/TablePagination.vue'
 import TableSupportUsers from '@/components/tables/TableSupportUsers.vue'
+import { supportUsersHeaders } from '@/constants/tableHeaders'
+import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import { useSupportUsers } from '@/stores/SupportUsers.ts'
 
 const headers = ref<ITableHeaders[]>(supportUsersHeaders)

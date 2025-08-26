@@ -9,7 +9,7 @@
     hide-default-footer
   >
     <template #loading>
-      <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
+      <v-progress-circular indeterminate color="#0070ba" />
     </template>
     <template #[`item.url`]="{ item }">
       <a v-if="item.url" :href="item.url" target="_blank" class="custom-table-ref">
@@ -73,16 +73,17 @@
 
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
+
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
-import {
-  getNameSocialMedia,
-  getTextStatus,
-  getStatusColor,
-  getIconSocial,
-  getColor,
-  getIcon
-} from '@/utils/socials.ts'
 import { formatNumber } from '@/utils/formatNumbers.ts'
+import {
+  getColor,
+  getIcon,
+  getIconSocial,
+  getNameSocialMedia,
+  getStatusColor,
+  getTextStatus
+} from '@/utils/socials.ts'
 
 const props = defineProps({
   headers: {

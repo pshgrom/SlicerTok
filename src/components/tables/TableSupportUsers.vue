@@ -12,7 +12,7 @@
     @click:row="onRowClick"
   >
     <template #loading>
-      <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
+      <v-progress-circular indeterminate color="#0070ba" />
     </template>
     <template #[`item.total_views`]="{ item }">
       <div class="custom-table-views">
@@ -50,7 +50,7 @@
       </div>
     </template>
     <template #[`item.actions`]="{ item }">
-      <VCusomButton :customClass="['light']" @click.stop="goToChat(item.id)">
+      <VCusomButton :custom-class="['light']" @click.stop="goToChat(item.id)">
         Написать в чат
       </VCusomButton></template
     >
@@ -59,10 +59,11 @@
 
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
-import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
-import VCusomButton from '@/components/base/VCusomButton.vue'
-import { formatNumber } from '@/utils/formatNumbers.ts'
 import { useRouter } from 'vue-router'
+
+import VCusomButton from '@/components/base/VCusomButton.vue'
+import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
+import { formatNumber } from '@/utils/formatNumbers.ts'
 
 const props = defineProps({
   headers: {

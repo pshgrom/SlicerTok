@@ -1,14 +1,15 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { ITableParams, IUserInfo, IAdminInfoData } from '@/interfaces/AppModel'
+
 import {
   finishCheckQuery,
   getCompletedListQuery,
   getPublicationListQuery,
+  requestVerificationQuery,
   saveMarkQuery,
-  setPublicationStatusQuery,
-  requestVerificationQuery
+  setPublicationStatusQuery
 } from '@/api/adminInfo'
+import type { IAdminInfoData, ITableParams, IUserInfo } from '@/interfaces/AppModel'
 import { useError } from '@/stores/Errors'
 
 export const useAdminInfo = defineStore('adminInfoStore', () => {

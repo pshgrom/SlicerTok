@@ -12,7 +12,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { defineAsyncComponent, computed } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
 const props = defineProps({
   name: {
     type: String,

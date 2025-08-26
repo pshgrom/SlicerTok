@@ -1,5 +1,6 @@
-import api from './axios'
 import type { INewPublication, ITableParams } from '@/interfaces/AppModel'
+
+import api from './axios'
 
 export const createPublicationQuery = (data: INewPublication) =>
   api.post('/slicer/publication/create-publication', data, {

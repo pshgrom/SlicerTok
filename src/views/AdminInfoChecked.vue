@@ -1,28 +1,29 @@
 <template>
   <TableAdminInfoChecked
     :headers="headers"
-    :isLoading="isLoading"
+    :is-loading="isLoading"
     :items="calcDataItems"
-    :itemsPerPage="queryParams.perPage"
-  ></TableAdminInfoChecked>
+    :items-per-page="queryParams.perPage"
+  />
   <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
     <TablePagination
-      v-model:queryParams="queryParams"
+      v-model:query-params="queryParams"
       :loading="isLoading"
-      :totalPages="totalPages"
+      :total-pages="totalPages"
       @change-page="changePage"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import TablePagination from '@/components/tables/TablePagination.vue'
-import { computed, ref, onMounted } from 'vue'
-import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
-import { adminInfoCheckedHeaders } from '@/constants/tableHeaders'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAdminInfo } from '@/stores/AdminInfo'
+
 import TableAdminInfoChecked from '@/components/tables/TableAdminInfoChecked.vue'
+import TablePagination from '@/components/tables/TablePagination.vue'
+import { adminInfoCheckedHeaders } from '@/constants/tableHeaders'
+import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
+import { useAdminInfo } from '@/stores/AdminInfo'
 
 const headers = ref<ITableHeaders[]>(adminInfoCheckedHeaders)
 

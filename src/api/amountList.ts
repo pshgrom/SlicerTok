@@ -1,5 +1,6 @@
-import api from './axios'
 import type { ITableParams } from '@/interfaces/AppModel'
+
+import api from './axios'
 
 export const getDataAmountList = (data: ITableParams) =>
   api.get('/admin/received-amount-list', { params: data })

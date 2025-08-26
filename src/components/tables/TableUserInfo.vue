@@ -9,7 +9,7 @@
     hide-default-footer
   >
     <template #loading>
-      <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
+      <v-progress-circular indeterminate color="#0070ba" />
     </template>
     <template #[`item.url`]="{ item }">
       <a v-if="item.url" :href="item.url" target="_blank" class="custom-table-ref">
@@ -60,7 +60,7 @@
     <template #[`item.rules`]="{ item }">
       <VCusomButton
         v-if="item.rules.length"
-        :customClass="['light']"
+        :custom-class="['light']"
         @click="showReasonsReject(item.rules)"
       >
         Показать
@@ -71,24 +71,25 @@
   <ReasonsRejectModal
     v-if="isModalOpen"
     v-model="isModalOpen"
-    :currentReasonsReject="currentReasonsReject"
+    :current-reasons-reject="currentReasonsReject"
   />
 </template>
 
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
+
+import VCusomButton from '@/components/base/VCusomButton.vue'
+import ReasonsRejectModal from '@/components/modals/ReasonsRejectModal.vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import { formatNumber } from '@/utils/formatNumbers'
 import {
-  getNameSocialMedia,
-  getTextStatus,
-  getStatusColor,
-  getIconSocial,
   getColor,
-  getIcon
+  getIcon,
+  getIconSocial,
+  getNameSocialMedia,
+  getStatusColor,
+  getTextStatus
 } from '@/utils/socials.ts'
-import ReasonsRejectModal from '@/components/modals/ReasonsRejectModal.vue'
-import VCusomButton from '@/components/base/VCusomButton.vue'
 
 const props = defineProps({
   headers: {

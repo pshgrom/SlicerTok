@@ -1,12 +1,13 @@
 import {
   createRouter,
   createWebHistory,
-  type RouteRecordRaw,
+  type NavigationGuardNext,
   type RouteLocationNormalized,
-  type NavigationGuardNext
+  type RouteRecordRaw
 } from 'vue-router'
-import { useLoader } from '@/stores/GlobalLoader.ts'
+
 import { ROLES, type RoleType } from '@/constants/roles'
+import { useLoader } from '@/stores/GlobalLoader.ts'
 
 // Расширяем типы meta
 declare module 'vue-router' {

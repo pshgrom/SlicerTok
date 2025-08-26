@@ -9,14 +9,15 @@
         closable
         @click:close="close(message.id)"
       >
-        <div class="error-alert__text" :class="message.type" v-html="message.msg" />
+        <div class="error-alert__text" :class="message.type" v-html="message.msg"></div>
       </VAlert>
     </transition-group>
   </div>
 </template>
 
 <script setup>
-import { watch, onBeforeUnmount } from 'vue'
+import { onBeforeUnmount, watch } from 'vue'
+
 import { useError } from '@/stores/Errors'
 
 const props = defineProps({

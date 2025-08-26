@@ -14,7 +14,7 @@
     @update:sort-desc="onSortChange"
   >
     <template #loading>
-      <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>
+      <v-progress-circular indeterminate color="#0070ba" />
     </template>
 
     <template #[`item.url`]="{ item }">
@@ -97,20 +97,20 @@
         </div>
         <VCusomButton
           class="custom-table__button"
-          :customClass="['dark']"
+          :custom-class="['dark']"
           :disabled="item.status === 'todo' || !item.status"
           @click="finishCheck(item.id, item.status)"
           >Закончить проверку
         </VCusomButton>
         <VCusomButton
           class="custom-table__button ml-2"
-          :customClass="['light']"
+          :custom-class="['light']"
           @click="openMarkModal(item.id)"
           >Пометка
         </VCusomButton>
         <VCusomButton
           class="custom-table__button ml-2"
-          :customClass="['dark']"
+          :custom-class="['dark']"
           :disabled="!!item.user_requires_verification"
           @click="requestVerification(item.id, item.user_requires_verification)"
           >Запросить верификацию
@@ -120,28 +120,29 @@
   </v-data-table>
   <ModerationDialog
     v-model="dialog"
-    v-model:currentItem="currentItem"
+    v-model:current-item="currentItem"
     @change-state="changeState"
   />
   <AddMarkModal v-if="isModalOpen" v-model="isModalOpen" @save="saveMark" />
 </template>
 
 <script setup lang="ts">
-import { formatDate } from '@/utils/formatDate.ts'
 import { computed, type PropType, ref } from 'vue'
-import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
-import { formatNumber } from '@/utils/formatNumbers.ts'
-import {
-  getNameSocialMedia,
-  getIconSocial,
-  getStatusColor,
-  getColor,
-  getIcon,
-  getTextStatus
-} from '@/utils/socials.ts'
-import ModerationDialog from '@/components/modals/ModerationDialog.vue'
+
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import AddMarkModal from '@/components/modals/AddMarkModal.vue'
+import ModerationDialog from '@/components/modals/ModerationDialog.vue'
+import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
+import { formatDate } from '@/utils/formatDate.ts'
+import { formatNumber } from '@/utils/formatNumbers.ts'
+import {
+  getColor,
+  getIcon,
+  getIconSocial,
+  getNameSocialMedia,
+  getStatusColor,
+  getTextStatus
+} from '@/utils/socials.ts'
 
 const emit = defineEmits([
   'finishCheck',

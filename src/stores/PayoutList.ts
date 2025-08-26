@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+
 import { getDataPayout } from '@/api/payoutList'
-import { IPayoutListItems, ITableParams } from '@/interfaces/AppModel'
+import type { IPayoutListItems, ITableParams } from '@/interfaces/AppModel'
 
 export const usePayoutList = defineStore('payoutListStore', () => {
   const isLoading = ref<boolean>(false)

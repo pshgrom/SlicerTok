@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { ITableParams } from '@/interfaces/AppModel'
+
 import { getPublicationListPaymentQuery } from '@/api/adminInfo'
+import type { ITableParams } from '@/interfaces/AppModel'
 import { useError } from '@/stores/Errors'
 
 export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', () => {

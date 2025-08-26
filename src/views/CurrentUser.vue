@@ -3,11 +3,11 @@
     <VCusomButton
       v-if="!currentUser.is_verified"
       class="mb-4"
-      :customClass="['light']"
+      :custom-class="['light']"
       @click="verifyUser(true)"
       >Верифицировать
     </VCusomButton>
-    <VCusomButton v-else class="mb-4" :customClass="['light']" @click="verifyUser(false)">
+    <VCusomButton v-else class="mb-4" :custom-class="['light']" @click="verifyUser(false)">
       Аннулировать верификацию
     </VCusomButton>
     <div class="user-info__wrapper">
@@ -19,12 +19,12 @@
         <div class="table-actions__label">Ваши видео</div>
       </div>
     </div>
-    <TableUserInfo :headers="headers" :isLoading="isLoading" :items="slicerItems"></TableUserInfo>
+    <TableUserInfo :headers="headers" :is-loading="isLoading" :items="slicerItems" />
     <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
       <TablePagination
-        v-model:queryParams="queryParams"
+        v-model:query-params="queryParams"
         :loading="isLoading"
-        :totalPages="totalPages"
+        :total-pages="totalPages"
         @change-page="changePage"
       />
     </div>
@@ -32,16 +32,17 @@
 </template>
 
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+
+import VCusomButton from '@/components/base/VCusomButton.vue'
+import ProfileCard from '@/components/profile/ProfileCard.vue'
 import TablePagination from '@/components/tables/TablePagination.vue'
-import { computed, ref, onMounted } from 'vue'
-import type { ITableHeaders, ITableParams } from '@/interfaces/AppModel'
+import TableUserInfo from '@/components/tables/TableUserInfo.vue'
 import WalletsCard from '@/components/wallets/WalletsCard.vue'
 import { userInfoHeaders } from '@/constants/tableHeaders'
-import TableUserInfo from '@/components/tables/TableUserInfo.vue'
-import { useRouter, useRoute } from 'vue-router'
-import ProfileCard from '@/components/profile/ProfileCard.vue'
+import type { ITableHeaders, ITableParams } from '@/interfaces/AppModel'
 import { useSupport } from '@/stores/Support.ts'
-import VCusomButton from '@/components/base/VCusomButton.vue'
 
 const headers = ref<ITableHeaders[]>(userInfoHeaders)
 
