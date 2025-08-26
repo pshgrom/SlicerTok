@@ -78,11 +78,7 @@ export default defineConfig({
         inlineDynamicImports: false,
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('vuetify')) {
-              if (id.includes('lib/components')) return 'vendor_vuetify_components'
-              if (id.includes('lib/labs')) return 'vendor_vuetify_labs'
-              return 'vendor_vuetify_core'
-            }
+            if (id.includes('vuetify')) return 'vendor_vuetify'
             if (id.includes('vue')) return 'vendor_vue'
             if (id.includes('axios')) return 'vendor_network'
             if (id.includes('vue-router')) return 'vendor_router'
