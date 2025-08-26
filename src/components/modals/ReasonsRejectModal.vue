@@ -25,8 +25,8 @@ const props = defineProps({
     default: false
   },
   currentReasonsReject: {
-    type: Array,
-    default: () => []
+    type: [Array, String],
+    default: ''
   }
 })
 const emit = defineEmits(['update:modelValue'])
