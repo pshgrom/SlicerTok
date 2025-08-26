@@ -6,18 +6,16 @@
         <v-btn icon="mdi-close" variant="text" @click="dialog = false" />
       </v-card-title>
       <v-card-text>
-        <v-form ref="formRef">
-          <VCustomToggle
-            v-model="enable2Fa"
-            :density="'compact'"
-            :hideDetails="true"
-            label="Включение двухфакторной аутентификации"
-            color="rgba(169, 55, 244, 1)"
-            @change="onChange"
-          />
-        </v-form>
+        <VCustomToggle
+          v-model="isEnableGoogle2fa"
+          :density="'compact'"
+          :hideDetails="true"
+          label="Включение двухфакторной аутентификации"
+          color="rgba(169, 55, 244, 1)"
+          @change="onChange"
+        />
         <transition name="fade" mode="out-in">
-          <div v-if="enable2Fa">
+          <div v-if="isEnableGoogle2fa && qrCode">
             <div class="instruction">
               <div class="instruction__title">Инструкция:</div>
               <ul class="instruction-list">
@@ -38,8 +36,18 @@
               <div class="get-code__code">
                 <VueQrcode :value="qrCode" type="image/png" :width="225" />
               </div>
-              <div class="get-code__text">или</div>
+              <div class="get-code__text">
+                или используйте этот ключ <span> {{ secretKey }} </span>
+              </div>
             </div>
+            <v-form ref="formRef">
+              <VCustomInput
+                v-model="code"
+                label="Введите код из приложения"
+                required
+                :rules="[requiredRules.required]"
+              />
+            </v-form>
           </div>
         </transition>
       </v-card-text>
@@ -58,6 +66,8 @@ import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomToggle from '@/components/base/VCustomToggle.vue'
 import VueQrcode from 'vue-qrcode'
 import { useUserInfo } from '@/stores/UserInfo.ts'
+import { requiredRules } from '@/utils/validators.ts'
+import VCustomInput from '@/components/base/VCustomInput.vue'
 
 const props = defineProps({
   modelValue: {
@@ -65,13 +75,14 @@ const props = defineProps({
     default: false
   }
 })
-const emit = defineEmits(['update:modelValue', 'save'])
+const emit = defineEmits(['update:modelValue', 'submit'])
 
 const formRef = ref(null)
-const enable2Fa = ref(false)
+const code = ref('')
 const userInfo = useUserInfo()
 
 const qrCode = computed(() => userInfo.qrCode)
+const secretKey = computed(() => userInfo.secretKey)
 
 const dialog = computed({
   get() {
@@ -79,6 +90,15 @@ const dialog = computed({
   },
   set(val) {
     emit('update:modelValue', val)
+  }
+})
+
+const isEnableGoogle2fa = computed({
+  get() {
+    return userInfo.isEnableGoogle2fa
+  },
+  set(val) {
+    userInfo.isEnableGoogle2fa = val
   }
 })
 
@@ -93,7 +113,7 @@ const onChange = async (e: boolean) => {
 const submit = async () => {
   const isValid = await formRef?.value?.validate()
   if (isValid.valid) {
-    //logic
+    emit('submit', code.value)
     dialog.value = false
   }
 }
@@ -148,6 +168,12 @@ const submit = async () => {
     text-align: center;
     position: relative;
     top: -13px;
+    margin-bottom: 5px;
+
+    span {
+      display: block;
+      font-weight: 700;
+    }
   }
 }
 </style>

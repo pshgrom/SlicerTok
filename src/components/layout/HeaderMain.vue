@@ -38,7 +38,7 @@
       </div>
     </div>
   </header>
-  <TwoFactorAuth v-if="isModalOpen" v-model="isModalOpen" />
+  <TwoFactorAuth v-if="isModalOpen" v-model="isModalOpen" @submit="checkCode" />
 </template>
 
 <script setup lang="ts">
@@ -87,6 +87,10 @@ const goHome = () => {
 
 const goToPage = (path: string) => {
   router.push({ path })
+}
+
+const checkCode = (code: string) => {
+  userInfoStore.checkCode(code)
 }
 
 onMounted(async () => {

@@ -49,7 +49,16 @@
               v-model="code"
               label="Код подтверждения"
               placeholder="123456"
+              class="mb-4"
               autofocus
+              :rules="[validateCode]"
+              required
+            />
+            <VCustomInput
+              v-if="isEnableGoogle2fa"
+              v-model="googleCodeAuth"
+              label="Гугл код"
+              placeholder="123456"
               :rules="[validateCode]"
               required
             />
@@ -91,7 +100,9 @@ const router = useRouter()
 const step = ref(1)
 const formRef = ref(null)
 const code = ref('')
+const googleCodeAuth = ref('')
 const loading = ref(false)
+const isEnableGoogle2fa = ref(false)
 
 const countryCodes = computed(() => authStore.countryCodes ?? [])
 const currentCountryCode = computed({
@@ -176,6 +187,7 @@ const handleLoginByPhone = async () => {
         loading.value = true
         const { data } = await authStore.loginByPhone(dataQuery)
         const msg = data?.message ?? ''
+        isEnableGoogle2fa.value = !!data?.data?.is_enable_google2fa
         errorStore.setErrors(msg, 'success')
         if (data.status === 'Success') {
           step.value = 2
@@ -190,7 +202,8 @@ const handleLoginByPhone = async () => {
         const dataQuery: IAuthConfirmation = {
           country_calling_codes_id: +currentCountryCode.value,
           phone: cleanNumber(phone.value),
-          key: code.value
+          key: code.value,
+          google2fa_key: isEnableGoogle2fa.value ? +googleCodeAuth.value : undefined
         }
         loading.value = true
         const { data } = await authStore.loginConfirmation(dataQuery)

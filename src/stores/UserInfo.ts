@@ -11,7 +11,8 @@ import {
   setWalletMainQuery,
   removeWalletQuery,
   enableTwoFactorQuery,
-  disabledTwoFactorQuery
+  disabledTwoFactorQuery,
+  verifyTwoFactorQuery
 } from '@/api/userInfo'
 import { useError } from '@/stores/Errors'
 
@@ -19,6 +20,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
   const isLoading = ref<boolean>(false)
   const showChat = ref<boolean>(false)
   const qrCode = ref('')
+  const secretKey = ref('')
   const unreadCount = ref(Number(localStorage.getItem('unreadCountUser') || 0))
   const queryParams = ref<ITableParams>({
     page: 1,
@@ -27,6 +29,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
   })
   const errorStore = useError()
   const userInfoData = ref<IUserInfoData[]>([])
+  const isEnableGoogle2fa = ref(false)
 
   const setQueryParams = (val: ITableParams) => {
     queryParams.value = {
@@ -62,6 +65,22 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     }
   }
 
+  const checkCode = async (code: string) => {
+    try {
+      const { data } = await verifyTwoFactorQuery(+code)
+      const isValidCode = data.valid
+      if (isValidCode) {
+        errorStore.setErrors('Верный код', 'success')
+        await getInfo()
+      } else {
+        errorStore.setErrors('Неверный код', 'error')
+      }
+    } catch (error: any) {
+      const msg = error?.response?.data?.message ?? 'Error'
+      errorStore.setErrors(msg)
+    }
+  }
+
   const addWallet = async (data: any) => {
     try {
       return await addWalletQuery(data)
@@ -84,6 +103,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     try {
       const { data } = await enableTwoFactorQuery()
       qrCode.value = data?.qr_code_url ?? ''
+      secretKey.value = data?.secret ?? ''
     } catch (error: any) {
       const msg = error?.response?.data?.message ?? 'Error'
       errorStore.setErrors(msg)
@@ -126,6 +146,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
   const getInfo = async () => {
     try {
       const { data } = await getInfoQuery()
+      isEnableGoogle2fa.value = !!data.data?.is_enable_google2fa
       return data
     } catch (error: any) {
       const msg = error?.response?.data?.message ?? 'Error'
@@ -179,6 +200,9 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     unreadCount,
     enableTwoFactor,
     disabledTwoFactor,
-    qrCode
+    qrCode,
+    secretKey,
+    checkCode,
+    isEnableGoogle2fa
   }
 })

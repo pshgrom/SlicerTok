@@ -10,6 +10,7 @@ export interface IAuthByPhone {
 
 export interface IAuthConfirmation extends IAuthByPhone {
   key: string
+  google2fa_key?: number
 }
 
 export interface LoginResult {

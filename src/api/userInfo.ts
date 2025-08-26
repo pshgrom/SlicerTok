@@ -16,7 +16,8 @@ export const enableTwoFactorQuery = () => api.get('/user/enable-two-factor')
 
 export const disabledTwoFactorQuery = () => api.get('/user/disable-two-factor')
 
-export const verifyTwoFactorQuery = (data: any) => api.post('/user/verify-two-factor', data)
+export const verifyTwoFactorQuery = (data: any) =>
+  api.post('/user/verify-two-factor', { google2fa_key: data })
 
 export const setWalletMainQuery = (id: number) =>
   api.post('/slicer/profile/wallet/set-wallet-main', { wallet_id: id })
