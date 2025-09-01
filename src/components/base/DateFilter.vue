@@ -62,6 +62,8 @@ const formattedDate = computed({
   set: () => {}
 })
 
+console.log(12)
+
 const updateDate = (date: Date) => {
   if (!date) return
   const year = date.getFullYear()
