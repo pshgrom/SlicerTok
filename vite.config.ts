@@ -64,7 +64,12 @@ export default defineConfig({
     }),
     ...(isProd ? prodPlugins : [])
   ],
-
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+    strictPort: true,
+    allowedHosts: ['slicertok-frontend', 'localhost']
+  },
   build: {
     target: 'esnext',
     sourcemap: false,
