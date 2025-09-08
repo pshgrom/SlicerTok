@@ -1,6 +1,7 @@
 <template>
   <v-data-table
     v-bind="$attrs"
+    ref="tableRef"
     :headers="computedHeaders"
     :items="items"
     :loading="isLoading"
@@ -10,6 +11,7 @@
     height="80vh"
     fixed-header
     hide-default-footer
+    :row-props="rowProps"
     @update:sort-by="onSortChange"
     @update:sort-desc="onSortChange"
   >
@@ -127,7 +129,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, type PropType, ref } from 'vue'
+import { computed, nextTick, type PropType, ref, watch } from 'vue'
 
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import AddMarkModal from '@/components/modals/AddMarkModal.vue'
@@ -149,7 +151,8 @@ const emit = defineEmits([
   'changeState',
   'saveMark',
   'requestVerification',
-  'customSort'
+  'customSort',
+  'rowClick'
 ])
 
 const props = defineProps({
@@ -168,6 +171,10 @@ const props = defineProps({
   itemsPerPage: {
     type: [Number, String],
     default: 10
+  },
+  selectedIndex: {
+    type: Number,
+    default: null
   }
 })
 
@@ -176,6 +183,7 @@ const dialog = ref(false)
 const currentItem = ref({})
 const isModalOpen = ref(false)
 const markId = ref<null | number>(null)
+const tableRef = ref(null)
 
 const computedHeaders = computed<ITableHeaders[]>({
   get() {
@@ -186,6 +194,12 @@ const computedHeaders = computed<ITableHeaders[]>({
   }
 })
 
+const rowProps = (item) => ({
+  id: `row-${item.index}`,
+  class: ['cursor-pointer', item.index === props.selectedIndex ? 'bg-blue-lighten-4' : ''],
+  onClick: () => emit('rowClick', item)
+})
+
 const showNumberViews = (item) => {
   return (
     item.number_views_moderation &&
@@ -194,36 +208,20 @@ const showNumberViews = (item) => {
   )
 }
 
-// const getVerifiedColor = (is_verified: boolean) => {
-//   switch (is_verified) {
-//     case true:
-//       return 'rgba(187, 251, 228, 1)'
-//     case false:
-//       return 'rgba(255, 224, 224, 1)'
-//   }
-// }
-//
-// const getVerifiedStatus = (is_verified: boolean) => {
-//   switch (is_verified) {
-//     case true:
-//       return 'Верифицирован'
-//     case false:
-//       return 'Не верифицирован'
-//   }
-// }
-//
-// const getVerifiedIcon = (is_verified: boolean) => {
-//   let icon = ''
-//   switch (is_verified) {
-//     case true:
-//       icon = 'status-ok'
-//       break
-//     case false:
-//       icon = 'status-bad'
-//       break
-//   }
-//   return icon
-// }
+watch(
+  () => props.selectedIndex,
+  async (newIndex) => {
+    if (newIndex < 0) return
+    await nextTick()
+    const rowEl = tableRef.value?.$el.querySelector(`#row-${newIndex}`)
+    if (rowEl) {
+      rowEl.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      })
+    }
+  }
+)
 
 const finishCheck = (id: number | string, status: string) => {
   if (status === 'todo' || !status) return

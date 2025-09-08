@@ -11,7 +11,8 @@
             <SvgIcon name="info" />
           </div>
           <div class="change-info__text">
-            Вы можете менять информацию 1 раз в неделю. Следующий раз {{ endDate }}
+            Вы можете менять информацию 1 раз в неделю.
+            <span v-if="endDate">Следующий раз {{ endDate }}</span>
           </div>
         </div>
         <v-form ref="formRef">
@@ -67,7 +68,7 @@ const props = defineProps({
   },
   endDate: {
     type: String,
-    default: '0'
+    default: null
   },
   user: {
     type: Object as PropType<IUser>,

@@ -31,7 +31,13 @@
                 :items="countryCodes"
                 style="width: 120px"
                 class="mr-2"
-              />
+              >
+                <template #item="{ item, props }">
+                  <v-list-item v-bind="props">
+                    {{ item.text }}
+                  </v-list-item>
+                </template>
+              </VCustomSelect>
               <VCustomInput
                 :key="currentCountryCode"
                 v-model="phone"

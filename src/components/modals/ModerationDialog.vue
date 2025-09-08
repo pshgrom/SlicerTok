@@ -25,12 +25,14 @@
               label="Выбрать все"
               density="compact"
               hide-details
+              color="rgb(169, 55, 244)"
               @change="toggleSelectAll"
             />
             <v-divider />
             <div v-for="option in allTasks" :key="option.key">
               <v-checkbox
                 v-model="selectedTasks"
+                color="rgb(169, 55, 244)"
                 :label="option.name_reverse"
                 :value="option.key"
                 density="compact"
@@ -42,16 +44,29 @@
             v-model="currentItem.number_views_moderation"
             label="Количество просмотров по факту"
             :rules="[videoRules.quantityViews, videoRules.required]"
-            class="mt-4"
+            class="mt-4 mb-4"
             @input="onInput"
           />
+          <VCustomSelect
+            v-model="currentItem.coefficient_id"
+            label="Коэффициенты"
+            class="mb-4"
+            :items="coeffs"
+          >
+            <template #item="{ item, props }">
+              <v-list-item v-bind="props">
+                {{ item.text }}
+              </v-list-item>
+            </template>
+          </VCustomSelect>
           <v-textarea
-            v-model="currentItem.status_comment"
+            v-model.trim="currentItem.status_comment"
             variant="underlined"
             class="mb-4"
             label="Комментарий..."
             auto-grow
             rows="1"
+            color="rgb(169, 55, 244)"
             dense
             hide-details
           />
@@ -81,6 +96,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import VCustomSelect from '@/components/base/VCustomSelect.vue'
+import { useAdminInfo } from '@/stores/AdminInfo.ts'
 import { videoRules } from '@/utils/validators.ts'
 
 const props = defineProps({
@@ -94,6 +110,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'update:currentItem', 'changeState'])
 
 const initialValue = ref({})
+const adminInfo = useAdminInfo()
 
 const selectAll = ref(false)
 
@@ -127,6 +144,7 @@ const currentItem = computed({
 })
 
 const allTasks = computed(() => currentItem.value?.task?.rules ?? [])
+const coeffs = computed(() => adminInfo.coeffs ?? [])
 
 const closeDialog = () => {
   resetForm()
@@ -135,7 +153,7 @@ const closeDialog = () => {
 
 const getItemStyle = (item: any) => {
   if (item.value === 'na') {
-    return 'color: rgb(34, 93, 255)'
+    return 'color: rgb(169, 55, 244)'
   }
   return ''
 }

@@ -87,7 +87,7 @@ const user = ref<IUser>({
   telegram: ''
 })
 
-const endDate = ref('0')
+const endDate = ref(null)
 
 const userInfo = useUserInfo()
 const errorStore = useError()
@@ -234,7 +234,7 @@ const getRequest = () => {
 
 const getInfo = async () => {
   const resp = await userInfo.getInfo()
-  endDate.value = resp.data?.inf_updated_at ?? '0'
+  endDate.value = resp.data?.inf_updated_at
   const { contacts, name: userName, key } = resp.data?.profile ?? {}
   user.value = {
     ...contacts,

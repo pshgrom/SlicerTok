@@ -19,11 +19,13 @@
     :is-loading="isLoading"
     :items="calcDataItems"
     :items-per-page="queryParams.perPage"
+    :selected-index="selectedIndex"
     @finish-check="finishCheck"
     @request-verification="requestVerification"
     @change-state="changeState"
     @save-mark="saveMark"
     @custom-sort="customSort"
+    @row-click="onRowClick"
   />
   <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
     <TablePagination
@@ -33,13 +35,23 @@
       @change-page="changePage"
     />
   </div>
+  <transition name="scale-fade">
+    <SidePanel
+      v-if="selected"
+      :selected="selected"
+      :is-first="selectedIndex === 0"
+      :is-last="selectedIndex === calcDataItems.length - 1"
+      @prev="prevRow"
+      @next="nextRow"
+    />
+  </transition>
 </template>
-
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import DateFilter from '@/components/base/DateFilter.vue'
+import SidePanel from '@/components/base/SidePanel.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import TableAdminInfo from '@/components/tables/TableAdminInfo.vue'
 import TablePagination from '@/components/tables/TablePagination.vue'
@@ -52,7 +64,8 @@ const headers = ref<ITableHeaders[]>(adminInfoHeaders)
 const errorStore = useError()
 
 const adminInfo = useAdminInfo()
-
+const selected = ref(null)
+const selectedIndex = ref(-1)
 const isLoading = computed(() => adminInfo.isLoading)
 const router = useRouter()
 const calcDataItems = computed<IUserInfoData[]>(() => adminInfo.adminInfoData)
@@ -65,6 +78,26 @@ const queryParams = computed<ITableParamsAdmin>({
     adminInfo.setQueryParams(val)
   }
 })
+
+const onRowClick = (item) => {
+  selected.value = item?.item ?? {}
+  selectedIndex.value = item.index
+}
+
+const prevRow = () => {
+  if (selectedIndex.value > 0) {
+    selectedIndex.value--
+    selected.value = calcDataItems.value[selectedIndex.value]
+  }
+}
+
+const nextRow = () => {
+  if (selectedIndex.value < calcDataItems.value.length - 1) {
+    selectedIndex.value++
+    selected.value = calcDataItems.value[selectedIndex.value]
+  }
+  console.log('selected.value', selected.value)
+}
 
 const onDateChangeSlicer = (val: string) => {
   if (val) {
@@ -124,13 +157,14 @@ const changePage = (page: number) => {
 const cleanNumber = (str: string) => str.replace(/\D/g, '')
 
 const changeState = async (item, selectedTasks) => {
-  const { id, status, status_comment, number_views_moderation } = item
+  const { id, status, status_comment, number_views_moderation, coefficient_id } = item
   const data = {
     id,
     status,
     status_comment,
     number_views_moderation: cleanNumber(number_views_moderation),
-    rules: selectedTasks
+    rules: selectedTasks,
+    coefficient_id
   }
   try {
     await adminInfo.setPublicationStatus(data)
@@ -196,11 +230,29 @@ const getRequest = () => {
   adminInfo.getPublicationsList(queryParams.value)
 }
 
+const handleKeydown = (e) => {
+  if (!calcDataItems.value.length) return
+  if (e.key === 'ArrowUp') {
+    e.preventDefault()
+    prevRow()
+  }
+  if (e.key === 'ArrowDown') {
+    e.preventDefault()
+    nextRow()
+  }
+}
+
 onMounted(() => {
   queryParams.value = {
     ...router.currentRoute.value.query
   }
   getRequest()
+  adminInfo.getCoefficient()
+  window.addEventListener('keydown', handleKeydown)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown)
 })
 </script>
 

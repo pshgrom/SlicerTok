@@ -131,7 +131,7 @@ const close = () => {
 }
 
 onMounted(async () => {
-  chatStore.connect()
+  // chatStore.connect()
 
   const { data } = await getChatQuery()
   if (data.code === 200) {

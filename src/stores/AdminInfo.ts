@@ -3,6 +3,7 @@ import { ref } from 'vue'
 
 import {
   finishCheckQuery,
+  getCoefficientQuery,
   getCompletedListQuery,
   getPublicationListQuery,
   requestVerificationQuery,
@@ -19,6 +20,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     perPage: 10,
     total: 0
   })
+  const coeffs = ref([])
   const adminInfoData = ref<IAdminInfoData[]>([])
   const preloadUserInfo = ref<IUserInfo | null>(null)
   const errorStore = useError()
@@ -35,7 +37,8 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     status = '',
     status_comment = '',
     number_views_moderation = '',
-    rules = {}
+    rules = {},
+    coefficient_id = ''
   }) => {
     try {
       const newData = {
@@ -43,7 +46,8 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
         status,
         ...(status_comment ? { status_comment } : {}),
         number_views_moderation: +number_views_moderation,
-        ...(status !== 'approved' && { rules })
+        ...(status !== 'approved' && { rules }),
+        coefficient_id
       }
       const { data } = await setPublicationStatusQuery(newData)
       const msg = data?.message ?? ''
@@ -56,6 +60,22 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
   const finishCheck = async (id: number) => {
     try {
       return await finishCheckQuery(id)
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    }
+  }
+
+  const getCoefficient = async () => {
+    try {
+      const { data } = await getCoefficientQuery()
+      coeffs.value = data?.data ?? []
+      coeffs.value = coeffs.value?.map((item) => {
+        const { id, rate } = item
+        return {
+          label: `Установить коэффициент ${rate}`,
+          value: id
+        }
+      })
     } catch (error: any) {
       errorStore.setErrors(error.response?.data?.message ?? '')
     }
@@ -137,6 +157,8 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     finishCheck,
     getCompletedList,
     saveMark,
-    requestVerification
+    requestVerification,
+    getCoefficient,
+    coeffs
   }
 })
