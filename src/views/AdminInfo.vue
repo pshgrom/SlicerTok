@@ -96,7 +96,6 @@ const nextRow = () => {
     selectedIndex.value++
     selected.value = calcDataItems.value[selectedIndex.value]
   }
-  console.log('selected.value', selected.value)
 }
 
 const onDateChangeSlicer = (val: string) => {

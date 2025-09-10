@@ -87,6 +87,9 @@
     </template>
     <template #[`item.actions`]="{ item }">
       <div class="d-flex align-center">
+        <div class="mr-2 cursor-pointer">
+          <SvgIcon name="edit-row" @click="showDialog(item)" />
+        </div>
         <VCusomButton
           class="mr-4"
           :custom-class="['light']"
@@ -94,16 +97,13 @@
         >
           Отклонить заявку
         </VCusomButton>
-        <VCusomButton
-          class="mr-4"
-          :custom-class="['dark']"
-          @click="actionRequest(item.id, 'approved')"
-        >
+        <VCusomButton :custom-class="['dark']" @click="actionRequest(item.id, 'approved')">
           Принять заявку
         </VCusomButton>
       </div>
     </template>
   </v-data-table>
+  <DifferencesDialog v-model="dialog" v-model:current-item="currentItem" />
   <!--  <ShowRulesModal v-if="showRules" v-model="showRules" :currentRules="currentRules" />-->
 </template>
 
@@ -111,6 +111,7 @@
 import { computed, type PropType, ref } from 'vue'
 
 import VCusomButton from '@/components/base/VCusomButton.vue'
+import DifferencesDialog from '@/components/modals/DifferencesDialog.vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import { formatNumber } from '@/utils/formatNumbers.ts'
 import {
@@ -143,7 +144,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['actionRequest'])
-
+const currentItem = ref({})
+const dialog = ref(false)
 const headersData = ref(props.headers)
 
 // const showRules = ref(false)
@@ -169,6 +171,14 @@ const showViolations = (rules: any) => {
 
 const actionRequest = (id: number, status: string) => {
   emit('actionRequest', id, status)
+}
+
+const showDialog = (item) => {
+  currentItem.value = {
+    ...item
+  }
+  console.warn(currentItem.value)
+  dialog.value = true
 }
 
 const formatLabel = (label: string) => {
