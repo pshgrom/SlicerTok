@@ -92,7 +92,7 @@ const emit = defineEmits(['update:modelValue', 'update:currentItem'])
 
 const selectedTasks = ref([])
 const finalCoeff = ref(null)
-const finalViews = ref('')
+const finalViews = ref(0)
 
 const formRef = ref(null)
 const adminInfo = useAdminInfo()
