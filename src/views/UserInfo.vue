@@ -172,14 +172,19 @@ const saveWallet = async (wallet: IWallet) => {
     address: wallet.address,
     type: 'tron'
   }
-  const { data } = await userInfo.addWallet(newWallet)
-  if (data?.data) {
-    wallets.value.push({
-      ...data.data
-    })
+  try {
+    const { data } = await userInfo.addWallet(newWallet)
+    if (data?.data) {
+      wallets.value.push({
+        ...data.data
+      })
+    }
+    const msg = data?.message ?? ''
+    errorStore.setErrors(msg, 'success')
+    isModalOpen.value = false
+  } catch (error) {
+    errorStore.setErrors(error)
   }
-  const msg = data?.message ?? ''
-  errorStore.setErrors(msg, 'success')
 }
 
 const removeWallet = async (index: number, id: number, is_main: boolean) => {

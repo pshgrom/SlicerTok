@@ -86,8 +86,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     try {
       return await addWalletQuery(data)
     } catch (error: any) {
-      const msg = error?.response?.data?.message ?? 'Error'
-      errorStore.setErrors(msg)
+      throw error?.response?.data?.message ?? ''
     }
   }
 

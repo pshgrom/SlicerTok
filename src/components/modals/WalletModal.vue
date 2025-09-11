@@ -65,7 +65,6 @@ const submit = async () => {
   const isValid = await formRef?.value?.validate()
   if (isValid.valid) {
     emit('save', { ...wallet })
-    dialog.value = false
   }
 }
 </script>

@@ -89,7 +89,8 @@ const getBgColor = () => {
         return 'rgba(179, 246, 255, 1)'
     }
   } else if (props.onlyRead) {
-    return 'rgb(242, 246, 254)'
+    // return 'rgb(242, 246, 254)'
+    return 'rgba(179, 246, 255, 1)'
   }
 }
 
@@ -317,8 +318,8 @@ onBeforeUnmount(() => {
     width: 299px;
     height: 110px;
     margin: 0;
-    background: transparent;
     border: 1px solid rgb(211, 219, 237) !important;
+    background-image: url('@/static/img/pattern.png');
 
     @media (max-width: 1024px) {
       width: 237px;
