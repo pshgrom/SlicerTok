@@ -12,6 +12,7 @@
       :disabled="disabled"
       :menu-icon="readonly ? null : 'mdi-menu-down'"
       :density="density"
+      :rules="rules"
       hide-details
       :readonly="readonly"
       @update:model-value="updateStatus"
@@ -36,6 +37,10 @@ const props = defineProps({
     default: ''
   },
   items: {
+    type: Array,
+    default: () => []
+  },
+  rules: {
     type: Array,
     default: () => []
   },

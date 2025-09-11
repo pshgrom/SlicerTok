@@ -2,7 +2,7 @@
   <v-dialog v-model="dialogModel" class="custom-modal" max-width="500px" persistent>
     <v-card>
       <v-card-title>
-        <span class="headline">Проверка заявки</span>
+        <span class="headline">Проверка спорных моментов</span>
         <v-btn icon="mdi-close" variant="text" @click="dialogModel = false" />
       </v-card-title>
       <v-card-text>
@@ -36,14 +36,20 @@
           </v-row>
 
           <div class="info-admin__title text-center">Итоговые значения</div>
-          <VCustomSelect v-model="finalView" label="Просмотры" class="mb-4" :items="dataViews">
-            <template #item="{ item, props }">
-              <v-list-item v-bind="props">
-                {{ item.text }}
-              </v-list-item>
-            </template>
-          </VCustomSelect>
-          <VCustomSelect v-model="finalCoeff" label="Коэффициенты" class="mb-4" :items="dataCoeffs">
+          <VCustomInput
+            v-model="finalViews"
+            label="Количество просмотров по факту"
+            :rules="[videoRules.quantityViews, videoRules.required]"
+            class="mt-4 mb-2"
+            @input="onInput"
+          />
+          <VCustomSelect
+            v-model="finalCoeff"
+            :rules="[videoRules.required]"
+            label="Коэффициенты"
+            class="mb-4"
+            :items="coeffs"
+          >
             <template #item="{ item, props }">
               <v-list-item v-bind="props">
                 {{ item.text }}
@@ -57,13 +63,7 @@
           <VCusomButton :custom-class="['light', 'avg']" class="mr-2" @click="closeDialog">
             Отмена
           </VCusomButton>
-          <VCusomButton
-            :custom-class="['dark', 'avg']"
-            :disabled="currentItem.status === 'todo' || !currentItem.status"
-            @click="change"
-          >
-            Сохранить
-          </VCusomButton>
+          <VCusomButton :custom-class="['dark', 'avg']" @click="change"> Сохранить </VCusomButton>
         </div>
       </v-card-actions>
     </v-card>
@@ -74,8 +74,11 @@
 import { computed, ref } from 'vue'
 
 import VCusomButton from '@/components/base/VCusomButton.vue'
+import VCustomInput from '@/components/base/VCustomInput.vue'
 import VCustomSelect from '@/components/base/VCustomSelect.vue'
+import { useAdminInfo } from '@/stores/AdminInfo.ts'
 import { formatNumber } from '@/utils/formatNumbers.ts'
+import { videoRules } from '@/utils/validators.ts'
 
 const props = defineProps({
   modelValue: Boolean,
@@ -89,10 +92,12 @@ const emit = defineEmits(['update:modelValue', 'update:currentItem'])
 
 const selectedTasks = ref([])
 const finalCoeff = ref(null)
-const finalView = ref(null)
+const finalViews = ref('')
 
 const formRef = ref(null)
+const adminInfo = useAdminInfo()
 
+const coeffs = computed(() => adminInfo.coeffs ?? [])
 const dialogModel = computed({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val)
@@ -101,26 +106,6 @@ const dialogModel = computed({
 const currentItem = computed({
   get: () => props.currentItem,
   set: (val) => emit('update:currentItem', val)
-})
-
-const dataCoeffs = computed(() => {
-  return Object.keys(currentItem.value?.status_moderation).map((item) => {
-    const { id, rate } = currentItem.value.status_moderation[item].coefficient
-    return {
-      label: `Установить коэффициент ${rate}`,
-      value: id
-    }
-  })
-})
-
-const dataViews = computed(() => {
-  return Object.keys(currentItem.value?.status_moderation).map((item) => {
-    const { number_views_moderation } = currentItem.value.status_moderation[item]
-    return {
-      label: formatNumber(number_views_moderation),
-      value: Date.now() + +number_views_moderation
-    }
-  })
 })
 
 const formatLabel = (label: string) => {
@@ -132,15 +117,22 @@ const formatLabel = (label: string) => {
   }
 }
 
+const onInput = (val) => {
+  const rawValue = typeof val === 'string' ? val : val?.target?.value || ''
+  const digitsOnly = rawValue.replace(/\D/g, '')
+  finalViews.value = digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+}
+
 const closeDialog = () => {
   emit('update:modelValue', false)
 }
 
 const change = async () => {
   const isValid = await formRef?.value?.validate()
+  console.warn('isValid', isValid)
   if (isValid.valid) {
-    emit('changeState', currentItem.value, selectedTasks.value)
-    emit('update:modelValue', false)
+    // emit('changeState', currentItem.value, selectedTasks.value)
+    // emit('update:modelValue', false)
   }
 }
 </script>

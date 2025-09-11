@@ -1,6 +1,5 @@
 <template>
   <TableSupport
-    class="custom-table"
     :headers="headers"
     :is-loading="isLoading"
     :items="calcDataItems"
@@ -25,6 +24,7 @@ import TablePagination from '@/components/tables/TablePagination.vue'
 import TableSupport from '@/components/tables/TableSupport.vue'
 import { supportHeaders } from '@/constants/tableHeaders'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
+import { useAdminInfo } from '@/stores/AdminInfo.ts'
 import { useSupport } from '@/stores/Support'
 // import type { ISupportSaveStatus } from '@/interfaces/ISupport'
 
@@ -34,9 +34,9 @@ const supportStore = useSupport()
 
 const isLoading = computed(() => supportStore.isLoading)
 const router = useRouter()
+const adminInfo = useAdminInfo()
 
 const calcDataItems = computed<IUserInfoData[]>(() => supportStore.items)
-
 const queryParams = computed<ITableParams>({
   get() {
     return supportStore.queryParams
@@ -87,5 +87,6 @@ onMounted(() => {
     perPage
   }
   getRequest()
+  adminInfo.getCoefficient()
 })
 </script>
