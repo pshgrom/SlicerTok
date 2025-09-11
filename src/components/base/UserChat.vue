@@ -28,7 +28,7 @@
             </div>
           </transition-group>
         </template>
-        <h2 v-else>Пока нет сообщений</h2>
+        <h3 v-else class="chat-messages__empty">Пока нет сообщений</h3>
       </div>
     </div>
     <div class="chat__actions">
@@ -236,6 +236,10 @@ onBeforeUnmount(() => {
     display: flex;
     flex-direction: column;
 
+    &__empty {
+      font-size: 16px;
+    }
+
     &-item {
       max-width: 350px;
       width: 100%;
@@ -275,7 +279,7 @@ onBeforeUnmount(() => {
       }
 
       &_your {
-        background: rgba(34, 93, 255, 1);
+        background: rgb(169, 55, 244);
         align-self: flex-end;
         border-top-right-radius: 4px;
         border-top-left-radius: 16px;
