@@ -1,21 +1,18 @@
 <template>
   <div class="not-found">
-    <div class="content">
-      <h1>404</h1>
-      <p>Страница не найдена</p>
-      <button @click="goBack">Вернуться обратно</button>
+    <div class="not-found__content">
+      <SvgIcon name="404" />
+      <h3 class="not-found__title">Страница не найдена</h3>
+      <p class="not-found__text">
+        К сожалению, неправильно выбран адрес, <br />
+        или такой страницы на сайте больше не существует.
+      </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-
-const goBack = () => {
-  router.go(-1)
-}
+import SvgIcon from '@/components/base/SvgIcon.vue'
 </script>
 
 <style scoped lang="scss">
@@ -25,39 +22,26 @@ const goBack = () => {
   align-items: center;
   min-height: 100vh;
 
-  .content {
+  &__content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  &__title {
+    margin-top: 30px;
+    font-weight: 500;
+    font-size: 18px;
+    color: rgba(22, 22, 22, 1);
+    margin-bottom: 10px;
+  }
+
+  &__text {
     text-align: center;
-    background: white;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-
-    h1 {
-      font-size: 6rem;
-      margin-bottom: 0.5rem;
-      color: #0070ba;
-    }
-
-    p {
-      font-size: 1.25rem;
-      color: #333;
-      margin-bottom: 1.5rem;
-    }
-
-    button {
-      background-color: #0070ba;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      font-size: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-
-      &:hover {
-        background-color: #1d3557;
-      }
-    }
+    font-size: 14px;
+    line-height: 140%;
+    color: rgba(22, 22, 22, 1);
   }
 }
 </style>

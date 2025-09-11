@@ -47,12 +47,7 @@
             class="mt-4 mb-4"
             @input="onInput"
           />
-          <VCustomSelect
-            v-model="currentItem.coefficient_id"
-            label="Коэффициенты"
-            class="mb-4"
-            :items="coeffs"
-          >
+          <VCustomSelect v-model="setCoeff" label="Коэффициенты" class="mb-4" :items="coeffs">
             <template #item="{ item, props }">
               <v-list-item v-bind="props">
                 {{ item.text }}
@@ -161,6 +156,23 @@ const getItemStyle = (item: any) => {
 const resetForm = () => {
   currentItem.value = { ...initialValue.value }
 }
+
+const setCoeff = computed({
+  get: () => {
+    return currentItem.value?.coefficient?.id || null
+  },
+  set: (value) => {
+    if (currentItem.value && value) {
+      const selectedCoeff = coeffs.value.find((coeff) => coeff.value === value)
+      if (selectedCoeff) {
+        currentItem.value.coefficient = {
+          ...selectedCoeff,
+          id: selectedCoeff.value
+        }
+      }
+    }
+  }
+})
 
 const change = async () => {
   const isValid = await formRef?.value?.validate()

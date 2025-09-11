@@ -6,7 +6,7 @@
       </div>
     </div>
     <div class="header__right">
-      <ul class="menu">
+      <ul v-if="!hideMenu" class="menu">
         <template v-if="role === ROLES.SLICER">
           <li><span>Правила</span></li>
           <li @click="isModalOpen = true"><span>2FA</span></li>
@@ -58,6 +58,9 @@ const userInfoStore = useUserInfo()
 const isModalOpen = ref(false)
 const role = computed(() => authStore.role)
 const { isMobile } = useDeviceDetection()
+const page = computed(() => router.currentRoute.value.name)
+
+const hideMenu = computed(() => page.value === 'NotFound')
 
 const logout = () => {
   authStore.logout()
