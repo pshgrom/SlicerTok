@@ -2,7 +2,7 @@ export interface IUploadVideo {
   videoLink: string
   videoFile: null | File | string
   number_views: number | string
-  isBonusVideo: boolean
+  isBonus: boolean
 }
 
 export interface IUser {

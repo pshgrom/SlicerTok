@@ -119,10 +119,11 @@ const cleanNumber = (str: string) => {
   return str.replace(/\D/g, '')
 }
 
-const submitVideo = async ({ videoFile, videoLink, number_views }: IUploadVideo) => {
+const submitVideo = async ({ videoFile, videoLink, number_views, isBonus }: IUploadVideo) => {
   const formData = new FormData()
   formData.append('link', videoLink)
   formData.append('video_stat', videoFile)
+  formData.append('is_bonus', isBonus)
   formData.append('number_views', cleanNumber(number_views))
   try {
     loading.value = true

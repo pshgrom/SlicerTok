@@ -165,7 +165,7 @@ watch(
     if (!msg || msg.channel !== `chat.${roomId.value}` || msg.event !== 'MessageSent') return
 
     const parsed = typeof msg.data === 'string' ? JSON.parse(msg.data) : msg.data
-    if (parsed.senderId === 2) return
+    if (parsed.senderId === 6) return
 
     userMessages.value.push({
       content: parsed.content,

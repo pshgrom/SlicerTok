@@ -30,7 +30,7 @@
           <div class="mb-4"></div>
           <VideoUploader v-model="videoFields.videoFile" />
           <v-checkbox
-            v-model="videoFields.isBonusVideo"
+            v-model="videoFields.isBonus"
             label="Бонусное видео"
             color="rgb(169, 55, 244)"
           />
@@ -80,12 +80,11 @@ const videoFields = ref<IUploadVideo>({
   videoLink: '',
   videoFile: null,
   number_views: '',
-  isBonusVideo: false
+  isBonus: false
 })
 const errorStore = useError()
 
 const formRef = ref(null)
-const isBonusVideo = ref(false)
 
 const onInput = (val) => {
   const digitsOnly = val.target.value.replace(/\D/g, '')

@@ -202,7 +202,7 @@ watch(
     if (!roomIdFromMsg) return
 
     const parsed = typeof msg.data === 'string' ? JSON.parse(msg.data) : msg.data
-    if (parsed.senderId === 7) return
+    if (parsed.senderId === 5) return
 
     if (roomIdFromMsg !== roomId.value) {
       unreadCounts.value[roomIdFromMsg] = (unreadCounts.value[roomIdFromMsg] || 0) + 1
