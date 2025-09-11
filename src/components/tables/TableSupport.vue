@@ -103,7 +103,11 @@
       </div>
     </template>
   </v-data-table>
-  <DifferencesDialog v-model="dialog" v-model:current-item="currentItem" />
+  <DifferencesDialog
+    v-model="dialog"
+    v-model:current-item="currentItem"
+    @change-final-values="changeFinalValues"
+  />
   <!--  <ShowRulesModal v-if="showRules" v-model="showRules" :currentRules="currentRules" />-->
 </template>
 
@@ -143,7 +147,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['actionRequest'])
+const emit = defineEmits(['actionRequest', 'changeFinalValues'])
 const currentItem = ref({})
 const dialog = ref(false)
 const headersData = ref(props.headers)
@@ -171,6 +175,10 @@ const showViolations = (rules: any) => {
 
 const actionRequest = (id: number, status: string) => {
   emit('actionRequest', id, status)
+}
+
+const changeFinalValues = (data: any) => {
+  emit('changeFinalValues', data)
 }
 
 const showDialog = (item) => {

@@ -5,6 +5,7 @@
     :items="calcDataItems"
     :items-per-page="queryParams.perPage"
     @action-request="actionRequest"
+    @change-final-values="changeFinalValues"
   />
   <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
     <TablePagination
@@ -78,6 +79,10 @@ const actionRequest = async (id: number, status: string) => {
   }
   await supportStore.actionRequest(data)
   getRequest()
+}
+
+const changeFinalValues = async (data: any) => {
+  await supportStore.changeFinalValues(data)
 }
 
 onMounted(() => {

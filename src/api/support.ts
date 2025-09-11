@@ -8,6 +8,9 @@ export const getPublicationListQuery = (data: ITableParams) =>
 export const actionRequestQuery = (data: any) =>
   api.post('/admin-support/publication/final-status', data)
 
+export const changeFinalValuesQuery = (data: any) =>
+  api.post('/admin-support/publication/final-status-test', data)
+
 export const verifyUserQuery = (data: any) =>
   api.post('admin-support/slicer/slicer-verified', { ...data })
 

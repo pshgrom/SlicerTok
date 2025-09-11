@@ -37,13 +37,22 @@
 
           <div class="info-admin__title text-center">Итоговые значения</div>
           <VCustomInput
+            v-if="!sameViews"
             v-model="finalViews"
             label="Количество просмотров по факту"
             :rules="[videoRules.quantityViews, videoRules.required]"
             class="mt-4 mb-2"
             @input="onInput"
           />
+          <VCustomInput
+            v-else
+            v-model="sameViewsValue"
+            label="Количество просмотров по факту"
+            class="mt-4 mb-2"
+            :disabled="sameViews"
+          />
           <VCustomSelect
+            v-if="!sameCoeffs"
             v-model="finalCoeff"
             :rules="[videoRules.required]"
             label="Коэффициенты"
@@ -56,6 +65,14 @@
               </v-list-item>
             </template>
           </VCustomSelect>
+          <VCustomSelect
+            v-else
+            v-model="sameCoeffValue"
+            :disabled="sameCoeffs"
+            label="Коэффициенты"
+            class="mb-4"
+            :items="coeffs"
+          />
         </v-form>
       </v-card-text>
       <v-card-actions>
@@ -63,7 +80,13 @@
           <VCusomButton :custom-class="['light', 'avg']" class="mr-2" @click="closeDialog">
             Отмена
           </VCusomButton>
-          <VCusomButton :custom-class="['dark', 'avg']" @click="change"> Сохранить </VCusomButton>
+          <VCusomButton
+            v-if="!sameViews || !sameCoeffs"
+            :custom-class="['dark', 'avg']"
+            @click="change"
+          >
+            Сохранить
+          </VCusomButton>
         </div>
       </v-card-actions>
     </v-card>
@@ -88,16 +111,40 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['update:modelValue', 'update:currentItem'])
+const emit = defineEmits(['update:modelValue', 'update:currentItem', 'changeFinalValues'])
 
 const selectedTasks = ref([])
 const finalCoeff = ref(null)
-const finalViews = ref(0)
+const finalViews = ref('')
+
+const sameViewsValue = ref<null | number | string>(null)
+const sameCoeffValue = ref<null | number>(null)
 
 const formRef = ref(null)
 const adminInfo = useAdminInfo()
 
 const coeffs = computed(() => adminInfo.coeffs ?? [])
+
+const sameViews = computed(() => {
+  const values = Object.keys(currentItem.value.status_moderation).map(
+    (item) => currentItem.value.status_moderation[item].number_views_moderation
+    // (item) => 5
+  )
+  const firstValue = values[0]
+  sameViewsValue.value = firstValue
+  return values.every((value) => value === firstValue)
+})
+
+const sameCoeffs = computed(() => {
+  const values = Object.keys(currentItem.value.status_moderation).map(
+    (item) => currentItem.value.status_moderation[item].coefficient?.rate
+    // (item) => 1
+  )
+  const firstValue = values[0]
+  sameCoeffValue.value = firstValue
+  return values.every((value) => value === firstValue)
+})
+
 const dialogModel = computed({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val)
@@ -131,7 +178,11 @@ const change = async () => {
   const isValid = await formRef?.value?.validate()
   console.warn('isValid', isValid)
   if (isValid.valid) {
-    // emit('changeState', currentItem.value, selectedTasks.value)
+    const data = {
+      finalCoeff: finalCoeff.value,
+      finalViews: finalViews.value
+    }
+    emit('changeFinalValues', data)
     // emit('update:modelValue', false)
   }
 }

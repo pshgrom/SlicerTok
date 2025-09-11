@@ -3,6 +3,7 @@ import { ref } from 'vue'
 
 import {
   actionRequestQuery,
+  changeFinalValuesQuery,
   getInfoQuery,
   getPublicationListQuery,
   getSlicerQuery,
@@ -50,6 +51,14 @@ export const useSupport = defineStore('supportStore', () => {
   const actionRequest = async (data: any) => {
     try {
       await actionRequestQuery(data)
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    }
+  }
+
+  const changeFinalValues = async (data: any) => {
+    try {
+      await changeFinalValuesQuery(data)
     } catch (error: any) {
       errorStore.setErrors(error.response?.data?.message ?? '')
     }
@@ -158,6 +167,7 @@ export const useSupport = defineStore('supportStore', () => {
     getInfo,
     slicerItems,
     queryParamsSlicer,
-    setQueryParamsSlicer
+    setQueryParamsSlicer,
+    changeFinalValues
   }
 })
