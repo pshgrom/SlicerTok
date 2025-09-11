@@ -29,6 +29,11 @@
           />
           <div class="mb-4"></div>
           <VideoUploader v-model="videoFields.videoFile" />
+          <v-checkbox
+            v-model="videoFields.isBonusVideo"
+            label="Бонусное видео"
+            color="rgb(169, 55, 244)"
+          />
         </v-form>
         <div class="custom-modal-wallet">
           <span class="custom-modal__label">Вы получите деньги на кошелек:</span>
@@ -74,11 +79,13 @@ const videoFields = ref<IUploadVideo>({
   // https://www.instagram.com/reel/23DHlJ1NAIU6g/asdkasndjkasnfacmalcmlaksmc
   videoLink: '',
   videoFile: null,
-  number_views: ''
+  number_views: '',
+  isBonusVideo: false
 })
 const errorStore = useError()
 
 const formRef = ref(null)
+const isBonusVideo = ref(false)
 
 const onInput = (val) => {
   const digitsOnly = val.target.value.replace(/\D/g, '')

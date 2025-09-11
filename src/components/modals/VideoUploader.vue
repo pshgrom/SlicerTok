@@ -88,9 +88,7 @@ const triggerFileSelect = () => {
   fileInput?.value?.click()
 }
 
-const handleFileChange = (file) => {
-  // Валидация или доп. логика если нужно
-}
+const handleFileChange = (file) => {}
 </script>
 
 <style lang="scss" scoped>
