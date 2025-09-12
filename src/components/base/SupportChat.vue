@@ -66,12 +66,13 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { getChatsSupportQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import { useChatSocketStore } from '@/stores/chatSocket'
+import { useSupport } from '@/stores/Support.ts'
 
 const chatStore = useChatSocketStore()
 
@@ -86,6 +87,7 @@ const unreadCounts = ref<Record<number, number>>({})
 const loadingMessages = ref(true)
 const route = useRoute()
 const router = useRouter()
+const supportStore = useSupport()
 
 const scrollToBottom = () => {
   nextTick(() => {
@@ -103,6 +105,8 @@ const getTime = (time: string) => {
   const date = new Date(time)
   return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
 }
+
+const userId = computed(() => supportStore.supportInfo?.id)
 
 const getMessages = async () => {
   loadingMessages.value = true
@@ -157,6 +161,7 @@ const selectRoom = async (id: number) => {
 }
 
 onMounted(async () => {
+  await supportStore.getSupportInfo()
   const savedUnread = localStorage.getItem('unreadCounts')
   if (savedUnread) {
     unreadCounts.value = JSON.parse(savedUnread)
@@ -202,7 +207,7 @@ watch(
     if (!roomIdFromMsg) return
 
     const parsed = typeof msg.data === 'string' ? JSON.parse(msg.data) : msg.data
-    if (parsed.senderId === 5) return
+    if (parsed.senderId === userId.value) return
 
     if (roomIdFromMsg !== roomId.value) {
       unreadCounts.value[roomIdFromMsg] = (unreadCounts.value[roomIdFromMsg] || 0) + 1

@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import DateFilter from '@/components/base/DateFilter.vue'
@@ -229,17 +229,17 @@ const getRequest = () => {
   adminInfo.getPublicationsList(queryParams.value)
 }
 
-const handleKeydown = (e) => {
-  if (!calcDataItems.value.length) return
-  if (e.key === 'ArrowUp') {
-    e.preventDefault()
-    prevRow()
-  }
-  if (e.key === 'ArrowDown') {
-    e.preventDefault()
-    nextRow()
-  }
-}
+// const handleKeydown = (e) => {
+//   if (!calcDataItems.value.length) return
+//   if (e.key === 'ArrowUp') {
+//     e.preventDefault()
+//     prevRow()
+//   }
+//   if (e.key === 'ArrowDown') {
+//     e.preventDefault()
+//     nextRow()
+//   }
+// }
 
 onMounted(() => {
   queryParams.value = {
@@ -247,12 +247,13 @@ onMounted(() => {
   }
   getRequest()
   adminInfo.getCoefficient()
-  window.addEventListener('keydown', handleKeydown)
+  adminInfo.getAdminInfo()
+  // window.addEventListener('keydown', handleKeydown)
 })
 
-onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleKeydown)
-})
+// onBeforeUnmount(() => {
+//   window.removeEventListener('keydown', handleKeydown)
+// })
 </script>
 
 <style scoped lang="scss">

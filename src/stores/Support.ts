@@ -7,6 +7,7 @@ import {
   getInfoQuery,
   getPublicationListQuery,
   getSlicerQuery,
+  getSupportInfoQuery,
   getWalletsQuery,
   verifyUserQuery
 } from '@/api/support'
@@ -29,6 +30,7 @@ export const useSupport = defineStore('supportStore', () => {
     perPage: 10,
     total: 0
   })
+  const supportInfo = ref(null)
   const items = ref<IAdminInfoData[]>([])
   const slicerItems = ref([])
   const preloadUserInfo = ref<IUserInfo | null>(null)
@@ -45,6 +47,16 @@ export const useSupport = defineStore('supportStore', () => {
     queryParamsSlicer.value = {
       ...queryParamsSlicer.value,
       ...val
+    }
+  }
+
+  const getSupportInfo = async () => {
+    try {
+      const { data } = await getSupportInfoQuery()
+      supportInfo.value = data?.data ?? {}
+      console.error('supportInfo.value', supportInfo.value)
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
     }
   }
 
@@ -168,6 +180,8 @@ export const useSupport = defineStore('supportStore', () => {
     slicerItems,
     queryParamsSlicer,
     setQueryParamsSlicer,
-    changeFinalValues
+    changeFinalValues,
+    getSupportInfo,
+    supportInfo
   }
 })

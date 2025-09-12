@@ -51,6 +51,9 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { getChatQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
+import { ROLES } from '@/constants/roles.ts'
+import { useAdminInfo } from '@/stores/AdminInfo.ts'
+import { useAuth } from '@/stores/Auth.ts'
 import { useChatSocketStore } from '@/stores/chatSocket'
 import { useUserInfo } from '@/stores/UserInfo.ts'
 
@@ -58,6 +61,7 @@ defineProps({ showChat: Boolean })
 const emit = defineEmits(['update:showChat'])
 
 const userInfoStore = useUserInfo()
+const adminStore = useAdminInfo()
 
 const chatStore = useChatSocketStore()
 const { isMobile } = useDeviceDetection()
@@ -65,6 +69,7 @@ const { isMobile } = useDeviceDetection()
 const roomId = ref<number | null>(null)
 const newMessage = ref('')
 const userMessages = ref<any[]>([])
+const authStore = useAuth()
 const chatBoxRef = ref<HTMLElement | null>(null)
 const loadingMessages = ref(true)
 
@@ -73,8 +78,16 @@ const scrollToBottom = () => {
     chatBoxRef.value?.scrollTo(0, chatBoxRef.value.scrollHeight)
   })
 }
+const userId = computed(() => {
+  if (role.value) {
+    return role.value === ROLES.SLICER
+      ? userInfoStore.userInfo?.id
+      : adminStore.adminProfileData?.id
+  }
+  return null
+})
 
-const userId = computed(() => userInfoStore.userInfo?.id)
+const role = computed(() => authStore.role)
 
 const getTime = (time: string) => {
   const date = new Date(time)

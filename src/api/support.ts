@@ -14,6 +14,8 @@ export const changeFinalValuesQuery = (data: any) =>
 export const verifyUserQuery = (data: any) =>
   api.post('admin-support/slicer/slicer-verified', { ...data })
 
+export const getSupportInfoQuery = () => api.get('/admin-support/profile/get-info')
+
 export const getSlicerListQuery = (data: ITableParams) =>
   api.get('/admin-support/slicer/get-slicer-list', { params: data })
 

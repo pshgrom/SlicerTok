@@ -17,8 +17,9 @@ export const getCompletedListQuery = (data: ITableParams) =>
 export const getLogListQuery = (data: ITableParams) =>
   api.get('/admin-main/log/get-log-list', { params: data })
 
-export const getCoefficientQuery = () =>
-  api.get('/coefficient/get-coefficient')
+export const getAdminInfoQuery = () => api.get('/admin/profile/get-info')
+
+export const getCoefficientQuery = () => api.get('/coefficient/get-coefficient')
 
 export const setPublicationStatusQuery = (data: any) =>
   api.post('/admin/publication/set-publication-status', data)

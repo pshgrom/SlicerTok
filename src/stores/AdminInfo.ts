@@ -3,6 +3,7 @@ import { ref } from 'vue'
 
 import {
   finishCheckQuery,
+  getAdminInfoQuery,
   getCoefficientQuery,
   getCompletedListQuery,
   getPublicationListQuery,
@@ -23,6 +24,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
   const coeffs = ref([])
   const adminInfoData = ref<IAdminInfoData[]>([])
   const preloadUserInfo = ref<IUserInfo | null>(null)
+  const adminProfileData = ref(null)
   const errorStore = useError()
 
   const setQueryParams = (val: ITableParams) => {
@@ -84,6 +86,16 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
   const requestVerification = async (id: number) => {
     try {
       return await requestVerificationQuery(id)
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    }
+  }
+
+  const getAdminInfo = async () => {
+    try {
+      const { data } = await getAdminInfoQuery()
+      adminProfileData.value = data?.data ?? {}
+      console.error(adminProfileData.value)
     } catch (error: any) {
       errorStore.setErrors(error.response?.data?.message ?? '')
     }
@@ -159,6 +171,8 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     saveMark,
     requestVerification,
     getCoefficient,
-    coeffs
+    coeffs,
+    getAdminInfo,
+    adminProfileData
   }
 })
