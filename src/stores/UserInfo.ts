@@ -29,6 +29,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     total: 0
   })
   const errorStore = useError()
+  const userInfo = ref(null)
   const userInfoData = ref<IUserInfoData[]>([])
   const isEnableGoogle2fa = ref(false)
 
@@ -146,6 +147,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
   const getInfo = async () => {
     try {
       const { data } = await getInfoQuery()
+      userInfo.value = data?.data ?? {}
       isEnableGoogle2fa.value = !!data.data?.is_enable_google2fa
       return data
     } catch (error: any) {
@@ -187,6 +189,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     isLoading,
     getPublicationsList,
     userInfoData,
+    userInfo,
     queryParams,
     setQueryParams,
     createPublication,

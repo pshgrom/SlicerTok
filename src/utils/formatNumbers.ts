@@ -10,3 +10,7 @@ export function formatNumber(num: number): string {
   }
   return num.toString()
 }
+
+export const cleanPhoneNumber = (str: string) => {
+  return str.replace(/\D/g, '')
+}

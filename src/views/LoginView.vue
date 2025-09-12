@@ -6,24 +6,18 @@
   >
     <v-card class="pa-6 login-view" max-width="400" min-width="400">
       <SvgIcon class="login-view__logo" name="logo" />
+
       <h3 class="login-view__title">
-        <template v-if="step === 1"> Вход по номеру телефона </template>
-        <template v-else> Подтвердите код </template>
+        {{ stepTitle }}
       </h3>
+
       <p class="login-view__description">
-        <template v-if="step === 1">
-          Введите свой номер телефона, который привязан <br />
-          к Telegram и мы вышлем вам код для входа.
-        </template>
-        <template v-else>
-          Мы выслали вам код на указанный вами номер: <br />
-          {{ phone }}
-        </template>
+        {{ stepDescription }}
       </p>
 
-      <v-form ref="formRef" @submit.prevent="handleLoginByPhone">
+      <v-form ref="formRef" @submit.prevent="handleSubmit">
         <div class="login-view__content">
-          <template v-if="step === 1">
+          <template v-if="isPhoneStep">
             <div class="d-flex">
               <VCustomSelect
                 v-model="currentCountryCode"
@@ -41,15 +35,16 @@
               <VCustomInput
                 :key="currentCountryCode"
                 v-model="phone"
-                v-mask="currentMask || null"
+                v-mask="currentMask"
                 label="Номер телефона"
                 autofocus
                 :placeholder="placeholderPhone"
-                :rules="[...phoneRules, requiredRules.required]"
+                :rules="phoneRulesWithRequired"
                 required
               />
             </div>
           </template>
+
           <template v-else>
             <VCustomInput
               v-model="code"
@@ -57,30 +52,31 @@
               placeholder="123456"
               class="mb-4"
               autofocus
-              :rules="[validateCode]"
+              :rules="[codeValidationRule]"
               required
             />
             <VCustomInput
-              v-if="isEnableGoogle2fa"
+              v-if="isGoogle2faEnabled"
               v-model="googleCodeAuth"
               label="Гугл код"
               placeholder="123456"
-              :rules="[validateCode]"
+              :rules="[codeValidationRule]"
               required
             />
           </template>
         </div>
+
         <div class="login-view__actions">
           <VCusomButton
-            v-if="step === 2"
+            v-if="!isPhoneStep"
             class="mr-1"
             :custom-class="['light', 'avg']"
-            @click="reset"
+            @click="handleBack"
           >
             Назад
           </VCusomButton>
-          <VCusomButton type="submit" :custom-class="['dark', 'avg']" :loading="loading">
-            {{ step === 1 ? 'Отправить код' : 'Подтвердить' }}
+          <VCusomButton type="submit" :custom-class="['dark', 'avg']" :loading="isLoading">
+            {{ submitButtonText }}
           </VCusomButton>
         </div>
       </v-form>
@@ -99,146 +95,168 @@ import VCustomSelect from '@/components/base/VCustomSelect.vue'
 import type { IAuthByPhone, IAuthConfirmation } from '@/interfaces/Auth'
 import { useAuth } from '@/stores/Auth'
 import { useError } from '@/stores/Errors'
+import { cleanPhoneNumber } from '@/utils/formatNumbers'
 import { requiredRules } from '@/utils/validators.ts'
+
+const PHONE_STEP = 1
+const CODE_STEP = 2
+const CODE_LENGTH = 6
+
+const step = ref(PHONE_STEP)
+const formRef = ref<HTMLFormElement | null>(null)
+const code = ref('')
+const googleCodeAuth = ref('')
+const isLoading = ref(false)
+const isGoogle2faEnabled = ref(false)
 
 const authStore = useAuth()
 const errorStore = useError()
 const router = useRouter()
-const step = ref(1)
-const formRef = ref(null)
-const code = ref('')
-const googleCodeAuth = ref('')
-const loading = ref(false)
-const isEnableGoogle2fa = ref(false)
 
 const countryCodes = computed(() => authStore.countryCodes ?? [])
 const currentCountryCode = computed({
-  get() {
-    return authStore.currentCountryCode ?? 1
-  },
-  set(val) {
-    authStore.currentCountryCode = val
-  }
-})
-
-const token = computed({
-  get() {
-    return authStore.token
-  },
-  set(val) {
-    authStore.token = val
+  get: () => authStore.currentCountryCode ?? 1,
+  set: (value) => {
+    authStore.currentCountryCode = value
   }
 })
 
 const phone = computed({
-  get() {
-    return authStore.phone
-  },
-  set(val) {
-    authStore.setPhone(val)
-  }
+  get: () => authStore.phone,
+  set: (value) => authStore.setPhone(value)
 })
 
-const placeholderPhone = computed(() => {
-  switch (currentCountryCode.value) {
-    case 1:
-      return '(__) ___-__-__'
-    case 2:
-      return '(___) ___-__-__'
-    default:
-      return ''
+const isPhoneStep = computed(() => step.value === PHONE_STEP)
+
+const stepTitle = computed(() =>
+  isPhoneStep.value ? 'Вход по номеру телефона' : 'Подтвердите код'
+)
+
+const stepDescription = computed(() => {
+  if (isPhoneStep.value) {
+    return 'Введите свой номер телефона, который привязан к Telegram и мы вышлем вам код для входа.'
   }
+  return `Мы выслали вам код на указанный вами номер: ${phone.value}`
+})
+
+const submitButtonText = computed(() => (isPhoneStep.value ? 'Отправить код' : 'Подтвердить'))
+
+const placeholderPhone = computed(() => {
+  const masks = {
+    1: '(__) ___-__-__',
+    2: '(___) ___-__-__'
+  }
+  return masks[currentCountryCode.value] || ''
 })
 
 const currentMask = computed(() => {
-  if (!currentCountryCode.value) return null
-  if (currentCountryCode.value === 1) return '(##) ###-##-##'
-  if (currentCountryCode.value === 2) return '(###) ###-##-##'
-  return null
+  const masks = {
+    1: '(##) ###-##-##',
+    2: '(###) ###-##-##'
+  }
+  return masks[currentCountryCode.value] || null
 })
 
 const phoneRules = computed(() => {
-  if (!currentCountryCode.value) return []
-  const code = currentCountryCode.value
-  const onlyDigits = phone.value.replace(/\D/g, '')
-  if (code === 1) {
-    return [() => onlyDigits.length === 9 || 'Введите 9 цифр для РБ']
-  } else if (code === 2) {
-    return [() => onlyDigits.length === 10 || 'Введите 10 цифр для РФ']
+  const digitLengthRules = {
+    1: 9,
+    2: 10
   }
-  return []
+
+  const requiredLength = digitLengthRules[currentCountryCode.value]
+  if (!requiredLength) return []
+
+  const onlyDigits = phone.value.replace(/\D/g, '')
+  return [() => onlyDigits.length === requiredLength || `Введите ${requiredLength} цифр`]
 })
 
-const validateCode = (value: string) => {
-  return value.length === 6 || 'Код должен быть из 6 цифр'
+const phoneRulesWithRequired = computed(() => [...phoneRules.value, requiredRules.required])
+
+const codeValidationRule = (value: string) => {
+  return value.length === CODE_LENGTH || 'Код должен быть из 6 цифр'
 }
 
-const reset = () => {
-  step.value = 1
+// Methods
+const handleBack = () => {
+  step.value = PHONE_STEP
   code.value = ''
+  googleCodeAuth.value = ''
 }
 
-const cleanNumber = (str: string) => {
-  return str.replace(/\D/g, '')
-}
-
-const handleLoginByPhone = async () => {
-  const { valid } = (await formRef.value?.validate()) ?? {}
-  if (valid) {
-    if (step.value === 1) {
-      try {
-        const dataQuery: IAuthByPhone = {
-          country_calling_codes_id: +currentCountryCode.value,
-          phone: cleanNumber(phone.value)
-        }
-        loading.value = true
-        const { data } = await authStore.loginByPhone(dataQuery)
-        const msg = data?.message ?? ''
-        isEnableGoogle2fa.value = !!data?.data?.is_enable_google2fa
-        errorStore.setErrors(msg, 'success')
-        if (data.status === 'Success') {
-          step.value = 2
-        }
-      } catch (error: any) {
-        errorStore.setErrors(error)
-      } finally {
-        loading.value = false
-      }
-    } else {
-      try {
-        const dataQuery: IAuthConfirmation = {
-          country_calling_codes_id: +currentCountryCode.value,
-          phone: cleanNumber(phone.value),
-          key: code.value,
-          google2fa_key: isEnableGoogle2fa.value ? +googleCodeAuth.value : undefined
-        }
-        loading.value = true
-        const { data } = await authStore.loginConfirmation(dataQuery)
-        const msg = data?.message ?? ''
-        errorStore.setErrors(msg, 'success')
-        const { token: tokenValue, role } = data?.data ?? {}
-        if (tokenValue && role?.length) {
-          localStorage.setItem('authToken', tokenValue)
-          token.value = tokenValue
-          authStore.role = role[0]
-          if (authStore.role) localStorage.setItem('role', authStore.role.toString())
-          await router.push({ name: 'UserInfo' })
-        }
-      } catch (error: any) {
-        errorStore.setErrors(error)
-      } finally {
-        loading.value = false
-      }
+const handlePhoneSubmit = async () => {
+  try {
+    const dataQuery: IAuthByPhone = {
+      country_calling_codes_id: Number(currentCountryCode.value),
+      phone: cleanPhoneNumber(phone.value)
     }
+
+    isLoading.value = true
+    const { data } = await authStore.loginByPhone(dataQuery)
+
+    isGoogle2faEnabled.value = Boolean(data?.data?.is_enable_google2fa)
+    errorStore.setErrors(data?.message, 'success')
+
+    if (data.status === 'Success') {
+      step.value = CODE_STEP
+    }
+  } catch (error: any) {
+    errorStore.setErrors(error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleCodeSubmit = async () => {
+  try {
+    const dataQuery: IAuthConfirmation = {
+      country_calling_codes_id: Number(currentCountryCode.value),
+      phone: cleanPhoneNumber(phone.value),
+      key: code.value,
+      google2fa_key: isGoogle2faEnabled.value ? Number(googleCodeAuth.value) : undefined
+    }
+
+    isLoading.value = true
+    const { data } = await authStore.loginConfirmation(dataQuery)
+
+    errorStore.setErrors(data?.message, 'success')
+
+    const { token: tokenValue, role } = data?.data ?? {}
+    if (tokenValue && role?.length) {
+      await handleSuccessfulLogin(tokenValue, role[0])
+    }
+  } catch (error: any) {
+    errorStore.setErrors(error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleSuccessfulLogin = async (tokenValue: string, userRole: number) => {
+  localStorage.setItem('authToken', tokenValue)
+  authStore.token = tokenValue
+  authStore.role = userRole
+  localStorage.setItem('role', userRole.toString())
+
+  await router.push({ name: 'UserInfo' })
+}
+
+const handleSubmit = async () => {
+  if (!formRef.value) return
+
+  const { valid } = await formRef.value.validate()
+  if (!valid) return
+
+  if (isPhoneStep.value) {
+    await handlePhoneSubmit()
+  } else {
+    await handleCodeSubmit()
   }
 }
 
 watch(
   () => currentCountryCode.value,
-  (newVal) => {
-    if (newVal) {
-      phone.value = ''
-    }
+  () => {
+    phone.value = ''
   },
   { immediate: true }
 )
@@ -258,9 +276,11 @@ onMounted(() => {
 .login-view {
   box-shadow: none !important;
   border-radius: 12px;
+
   &__logo {
     margin-bottom: 40px;
   }
+
   &__title {
     font-weight: 500;
     font-size: 18px;

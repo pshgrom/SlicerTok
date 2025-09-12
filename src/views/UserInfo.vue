@@ -1,10 +1,9 @@
 <template>
   <div class="user-info">
     <div class="user-info__wrapper">
-      <!--        v-model:imageFile="imageFile"-->
       <ProfileCard v-model:dialog="editDialog" :user="user" />
       <WalletsCard
-        :wallets="wallets"
+        :wallets="sortedWallets"
         @set-as-main="setAsMain"
         @remove-wallet="removeWallet"
         @open-modal-wallet="openModalWallet"
@@ -17,45 +16,51 @@
         @update="updateUser"
       />
     </div>
+
     <WalletModal v-if="isModalOpen" v-model="isModalOpen" @save="saveWallet" />
+
     <div class="table-actions">
       <div class="table-actions__left">
         <div class="table-actions__label">Ваши видео</div>
       </div>
       <div class="table-actions__right">
-        <VCusomButton :custom-class="['dark']" @click="openPaymentDialog">
+        <VCusomButton :custom-class="['dark']" @click="handlePaymentRequest">
           Подать заявку
         </VCusomButton>
       </div>
     </div>
+
     <TableUserInfo
       :headers="headers"
       :is-loading="isLoading"
-      :items="calcDataItems"
+      :items="userInfoData"
       :items-per-page="queryParams.perPage"
     />
-    <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
+
+    <div v-if="showPagination" class="sticky-pagination custom-pagination">
       <TablePagination
         v-model:query-params="queryParams"
         :loading="isLoading"
         :total-pages="totalPages"
-        @change-page="changePage"
+        @change-page="handlePageChange"
       />
     </div>
+
     <AddVideoDialog
       v-if="dialogVideo"
       v-model="dialogVideo"
-      :wallet="currentWallet"
-      :loading="loading"
-      @submit="submitVideo"
+      :wallet="mainWallet"
+      :loading="isSubmittingVideo"
+      @submit="handleVideoSubmit"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
+// Components
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import AddVideoDialog from '@/components/modals/AddVideoDialog.vue'
 import EditProfileDialog from '@/components/modals/EditProfileDialog.vue'
@@ -72,200 +77,230 @@ import { useError } from '@/stores/Errors'
 import { useUserInfo } from '@/stores/UserInfo'
 
 const headers = ref<ITableHeaders[]>(userInfoHeaders)
-const authStore = useAuth()
 
+const authStore = useAuth()
+const userInfoStore = useUserInfo()
+const errorStore = useError()
+const router = useRouter()
+
+// Refs
 const wallets = ref<IWallet[]>([])
 const isModalOpen = ref(false)
-const loading = ref(false)
+const isSubmittingVideo = ref(false)
+const editDialog = ref(false)
+const dialogVideo = ref(false)
+const endDate = ref<string | null>(null)
 
-const phoneStore = computed(() => authStore.phone)
-
+// User data
 const user = ref<IUser>({
   name: '',
-  phone: phoneStore.value ? phoneStore.value : '',
+  phone: authStore.phone || '',
   email: '',
   telegram: ''
 })
 
-const endDate = ref(null)
+// Computed properties
+const phoneStore = computed(() => authStore.phone)
+const isLoading = computed(() => userInfoStore.isLoading)
+const userInfoData = computed<IUserInfoData[]>(() => userInfoStore.userInfoData)
 
-const userInfo = useUserInfo()
-const errorStore = useError()
-const editDialog = ref(false)
-// const imageFile = ref<File | null>(null)
+const mainWallet = computed(() => wallets.value.find((wallet) => wallet.is_main))
 
-const isLoading = computed(() => userInfo.isLoading)
-const router = useRouter()
-const dialogVideo = ref(false)
+const sortedWallets = computed(() => {
+  return [...wallets.value].sort((a, b) => (b.is_main ? 1 : a.is_main ? -1 : 0))
+})
 
-const calcDataItems = computed<IUserInfoData[]>(() => userInfo.userInfoData)
+const queryParams = computed<ITableParams>({
+  get() {
+    return userInfoStore.queryParams
+  },
+  set(val) {
+    userInfoStore.setQueryParams(val)
+  }
+})
 
-const currentWallet = computed(() => wallets.value.find((wallet) => wallet.is_main))
+const totalPages = computed(() => {
+  const { total, perPage } = queryParams.value
+  return total && perPage ? Math.ceil(total / perPage) : 0
+})
 
-const closeDialog = () => {
-  dialogVideo.value = false
+const showPagination = computed(() => totalPages.value > 0)
+
+// Methods
+const cleanNumber = (str: string): string => {
+  return str.replace(/\D/g, '')
 }
 
-const updateUser = async (newData) => {
+const updateUser = async (newData: IUser) => {
   user.value = { ...newData }
-  await userInfo.updateContact(newData)
+  await userInfoStore.updateContact(newData)
 }
 
 const openModalWallet = () => {
   isModalOpen.value = true
 }
 
-const cleanNumber = (str: string) => {
-  return str.replace(/\D/g, '')
+const closeVideoDialog = () => {
+  dialogVideo.value = false
 }
 
-const submitVideo = async ({ videoFile, videoLink, number_views, isBonus }: IUploadVideo) => {
+const handleVideoSubmit = async (videoData: IUploadVideo) => {
+  const { videoFile, videoLink, number_views, isBonus } = videoData
   const formData = new FormData()
+
   formData.append('link', videoLink)
   formData.append('video_stat', videoFile)
-  formData.append('is_bonus', isBonus)
+  formData.append('is_bonus', isBonus.toString())
   formData.append('number_views', cleanNumber(number_views))
+
   try {
-    loading.value = true
-    resetPage()
-    await userInfo.createPublication(formData)
-  } catch (e: any) {
-    errorStore.setErrors(e)
+    isSubmittingVideo.value = true
+    resetToFirstPage()
+    await userInfoStore.createPublication(formData)
+  } catch (error: any) {
+    errorStore.setErrors(error)
   } finally {
-    closeDialog()
-    loading.value = false
+    closeVideoDialog()
+    isSubmittingVideo.value = false
   }
 }
 
-const resetPage = () => {
-  queryParams.value = {
+const resetToFirstPage = () => {
+  const newParams = {
     ...queryParams.value,
     page: 1
   }
-  const { page, perPage } = queryParams.value
+
+  queryParams.value = newParams
+  updateRouteQuery(newParams)
+}
+
+const updateRouteQuery = (params: ITableParams) => {
   router.push({
     query: {
-      page,
-      perPage
+      page: params.page,
+      perPage: params.perPage
     }
   })
 }
 
-const setAsMain = async (id: number) => {
-  const index = wallets.value.findIndex((wallet) => wallet.id === id)
-  if (index === -1) return
-  wallets.value.forEach((wallet) => (wallet.is_main = false))
-  const selected = wallets.value.splice(index, 1)[0]
-  selected.is_main = true
-  wallets.value.unshift(selected)
-  await userInfo.setWalletMain(id)
-}
+const setAsMain = async (walletId: number) => {
+  const walletIndex = wallets.value.findIndex((wallet) => wallet.id === walletId)
+  if (walletIndex === -1) return
 
-const sortWallets = () => {
-  wallets.value.sort((a, b) => {
-    return b.is_main ? 1 : a.is_main ? -1 : 0
-  })
+  // Update local state
+  wallets.value = wallets.value.map((wallet) => ({
+    ...wallet,
+    is_main: wallet.id === walletId
+  }))
+
+  // Update server
+  await userInfoStore.setWalletMain(walletId)
 }
 
 const saveWallet = async (wallet: IWallet) => {
   const newWallet = {
     address: wallet.address,
-    type: 'tron'
+    type: 'tron' as const
   }
+
   try {
-    const { data } = await userInfo.addWallet(newWallet)
+    const { data } = await userInfoStore.addWallet(newWallet)
+
     if (data?.data) {
-      wallets.value.push({
-        ...data.data
-      })
+      wallets.value.push(data.data)
     }
-    const msg = data?.message ?? ''
-    errorStore.setErrors(msg, 'success')
+
+    const message = data?.message ?? 'Кошелек успешно добавлен'
+    errorStore.setErrors(message, 'success')
     isModalOpen.value = false
-  } catch (error) {
+  } catch (error: any) {
     errorStore.setErrors(error)
   }
 }
 
-const removeWallet = async (index: number, id: number, is_main: boolean) => {
-  if (wallets.value.length <= 1 || is_main) return
+const removeWallet = async (index: number, walletId: number, isMain: boolean) => {
+  if (wallets.value.length <= 1 || isMain) return
+
   wallets.value.splice(index, 1)
-  await userInfo.removeWallet(id)
+  await userInfoStore.removeWallet(walletId)
 }
 
-const queryParams = computed<ITableParams>({
-  get() {
-    return userInfo.queryParams
-  },
-  set(val) {
-    userInfo.setQueryParams(val)
-  }
-})
-
-const totalPages = computed(() =>
-  queryParams.value?.total && queryParams.value?.perPage
-    ? Math.ceil(queryParams.value.total / queryParams.value.perPage)
-    : 0
-)
-
-const openPaymentDialog = () => {
+const handlePaymentRequest = () => {
   const { phone, telegram } = user.value
-  if (!phone || !telegram || !wallets.value.length) {
+
+  if (!phone || !telegram || wallets.value.length === 0) {
     errorStore.setErrors(
-      'Пожалуйста, заполните поля: <br> Имя <br> Телефон <br> Telegram <br> и добавьте хотя бы один кошелёк.'
+      'Пожалуйста, заполните все обязательные поля: Имя, Телефон, Telegram и добавьте кошелек'
     )
     return
   }
+
   dialogVideo.value = true
 }
 
-const changePage = (page: number) => {
+const handlePageChange = (page: number) => {
   queryParams.value = {
     ...queryParams.value,
     page: +page
   }
-  getRequest()
+  fetchPublications()
 }
 
-const getRequest = () => {
+const fetchPublications = () => {
   const { page, perPage } = queryParams.value
-  router.push({
-    query: {
-      page: page ?? 1,
-      perPage
+  updateRouteQuery({ page, perPage })
+  userInfoStore.getPublicationsList(queryParams.value)
+}
+
+const fetchUserInfo = async () => {
+  try {
+    const response = await userInfoStore.getInfo()
+    const { contacts, name: userName, key } = response.data?.profile ?? {}
+    endDate.value = response.data?.inf_updated_at
+
+    user.value = {
+      ...contacts,
+      name: userName,
+      key
     }
-  })
-  userInfo.getPublicationsList(queryParams.value)
-}
-
-const getInfo = async () => {
-  const resp = await userInfo.getInfo()
-  endDate.value = resp.data?.inf_updated_at
-  const { contacts, name: userName, key } = resp.data?.profile ?? {}
-  user.value = {
-    ...contacts,
-    name: userName,
-    key
+  } catch (error) {
+    console.error('Ошибка загрузки информации пользователя:', error)
   }
 }
 
-const getWallets = async () => {
-  const { data } = await userInfo.getWallets()
-  if (data?.data?.length) {
-    wallets.value = data?.data
-    sortWallets()
+const fetchWallets = async () => {
+  try {
+    const response = await userInfoStore.getWallets()
+    if (response.data?.data?.length) {
+      wallets.value = response.data.data
+    }
+  } catch (error) {
+    console.error('Ошибка загрузки кошельков:', error)
   }
 }
 
-onMounted(() => {
-  const { page = 1, perPage = 20 } = router.currentRoute.value.query
-  queryParams.value = {
-    page,
-    perPage
+watch(
+  () => router.currentRoute.value.query,
+  (newQuery) => {
+    const { page = 1, perPage = 20 } = newQuery
+    queryParams.value = {
+      ...queryParams.value,
+      page: Number(page),
+      perPage: Number(perPage)
+    }
+    fetchPublications()
+  },
+  { immediate: true }
+)
+
+onMounted(async () => {
+  try {
+    await Promise.all([fetchUserInfo(), fetchWallets()])
+  } catch (error) {
+    console.error('Ошибка при загрузке данных:', error)
+    errorStore.setErrors('Не удалось загрузить данные пользователя')
   }
-  getRequest()
-  getInfo()
-  getWallets()
 })
 </script>
 
@@ -275,6 +310,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     margin-bottom: 14px;
+    gap: 16px;
 
     @media (max-width: 767px) {
       flex-direction: column;

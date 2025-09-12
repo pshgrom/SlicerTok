@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import { getChatQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
 import VCustomInput from '@/components/base/VCustomInput.vue'
@@ -73,6 +73,8 @@ const scrollToBottom = () => {
     chatBoxRef.value?.scrollTo(0, chatBoxRef.value.scrollHeight)
   })
 }
+
+const userId = computed(() => userInfoStore.userInfo?.id)
 
 const getTime = (time: string) => {
   const date = new Date(time)
@@ -165,7 +167,7 @@ watch(
     if (!msg || msg.channel !== `chat.${roomId.value}` || msg.event !== 'MessageSent') return
 
     const parsed = typeof msg.data === 'string' ? JSON.parse(msg.data) : msg.data
-    if (parsed.senderId === 6) return
+    if (parsed.senderId === userId.value) return
 
     userMessages.value.push({
       content: parsed.content,
