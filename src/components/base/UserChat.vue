@@ -179,10 +179,11 @@ const getMessages = async (): Promise<void> => {
     const { data } = await getMessagesQuery(roomId.value)
     if (data.code === 200) {
       processedMessageIds.clear()
+      const uid = Number(userId.value) // фиксируем ID заранее
 
       const newMessages = (data.data.messages ?? []).map((msg: any) => ({
         ...msg,
-        is_your: msg.senderId === userId.value
+        is_your: Number(msg.user_id) === uid
       }))
 
       messages.value = [...newMessages]
