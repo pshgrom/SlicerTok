@@ -7,22 +7,26 @@
     <v-card max-width="400" min-width="400" class="pa-6 login-admin">
       <SvgIcon class="login-admin__logo" name="logo" />
       <h3 class="login-admin__title">Введите свои учетные данные</h3>
+
       <v-form ref="formRef" @submit.prevent="handleLogin">
         <VCustomInput
-          v-model.trim="login"
-          label="Имя"
+          v-model.trim="credentials.login"
+          label="Имя пользователя"
           autofocus
           :rules="[requiredRules.required]"
           class="mb-3"
         />
+
         <VCustomInput
-          v-model.trim="password"
+          v-model.trim="credentials.password"
           label="Пароль"
+          type="password"
           :rules="[requiredRules.required]"
           class="mb-3"
         />
+
         <div class="login-admin__actions">
-          <VCusomButton type="submit" :custom-class="['dark', 'avg']" :loading="loading">
+          <VCusomButton type="submit" :custom-class="['dark', 'avg']" :loading="isLoading">
             Войти
           </VCusomButton>
         </div>
@@ -32,78 +36,87 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import { ROLES } from '@/constants/roles'
-import { type IAuth } from '@/interfaces/Auth'
+import { ADMIN_ROUTE_MAP } from '@/constants/routes'
+import type { IAuth } from '@/interfaces/Auth'
 import { useAuth } from '@/stores/Auth'
 import { useError } from '@/stores/Errors'
+import { handleApiError } from '@/utils/errorHandler'
 import { requiredRules } from '@/utils/validators'
+
+interface LoginCredentials {
+  login: string
+  password: string
+}
+
+const formRef = ref<HTMLFormElement | null>(null)
+const isLoading = ref(false)
+
+const credentials = reactive<LoginCredentials>({
+  login: '',
+  password: ''
+})
 
 const authStore = useAuth()
 const errorStore = useError()
 const router = useRouter()
-const formRef = ref(null)
-const login = ref('')
-const phone = ref('')
-const password = ref('')
-const currentCountry = ref(1)
-const loading = ref(false)
-const currentCountryCode = ref<string | null>(null)
 
-const countryCodes = computed(() => authStore.countryCodes ?? [])
+// const isFormValid = computed(() => credentials.login.trim() && credentials.password.trim())
 
-const handleLogin = async () => {
-  const isValid = await formRef?.value?.validate()
-  if (isValid.valid) {
-    try {
-      const data: IAuth = {
-        login: login.value,
-        password: password.value
-      }
-      loading.value = true
-      const { token, role } = await authStore.login(data)
-      if (token && role) {
-        switch (role) {
-          case ROLES.ADMIN:
-            await router.push({ name: 'AdminInfo' })
-            break
-          case ROLES.ADMIN_FINANCE:
-            await router.push({ name: 'AdminPaymentsFinance' })
-            break
-          case ROLES.ADMIN_MAIN:
-            await router.push({ name: 'AdminMain' })
-            break
-          case ROLES.SUPPORT:
-            await router.push({ name: 'Support' })
-            break
-          default:
-            await router.push({ name: 'Login' })
-            break
-        }
-      }
-    } catch (error: any) {
-      errorStore.setErrors(error)
-    } finally {
-      loading.value = false
-    }
+const getRouteForRole = (role: number): string => {
+  const routeMap: Record<number, string> = {
+    [ROLES.ADMIN]: ADMIN_ROUTE_MAP.ADMIN,
+    [ROLES.ADMIN_FINANCE]: ADMIN_ROUTE_MAP.FINANCE,
+    [ROLES.ADMIN_MAIN]: ADMIN_ROUTE_MAP.MAIN,
+    [ROLES.SUPPORT]: ADMIN_ROUTE_MAP.SUPPORT
   }
+
+  return routeMap[role] || ADMIN_ROUTE_MAP.DEFAULT
 }
 
-watch(
-  () => currentCountry.value,
-  (newVal) => {
-    if (newVal) {
-      currentCountryCode.value = countryCodes.value?.find((v) => v.value === newVal)?.label ?? ''
-      phone.value = ''
+const handleSuccessfulLogin = async (token: string, role: number) => {
+  const routeName = getRouteForRole(role)
+
+  if (routeName === ADMIN_ROUTE_MAP.DEFAULT) {
+    errorStore.setErrors('Неизвестная роль пользователя')
+    return
+  }
+
+  await router.push({ name: routeName })
+}
+
+const handleLogin = async (): Promise<void> => {
+  if (!formRef.value) return
+
+  const { valid } = await formRef.value.validate()
+  if (!valid) return
+
+  try {
+    isLoading.value = true
+
+    const authData: IAuth = {
+      login: credentials.login.trim(),
+      password: credentials.password.trim()
     }
-  },
-  { immediate: true }
-)
+
+    const { token, role } = await authStore.login(authData)
+
+    if (token && role) {
+      await handleSuccessfulLogin(token, role)
+    }
+  } catch (error: unknown) {
+    const errorMessage = handleApiError(error)
+    errorStore.setErrors(errorMessage)
+  } finally {
+    isLoading.value = false
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -116,13 +129,16 @@ watch(
 .login-admin {
   box-shadow: none !important;
   border-radius: 12px;
+
   &__actions {
     display: flex;
     justify-content: flex-end;
   }
+
   &__logo {
     margin-bottom: 25px;
   }
+
   &__title {
     font-weight: 500;
     font-size: 18px;
