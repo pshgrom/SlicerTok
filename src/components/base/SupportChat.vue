@@ -19,37 +19,37 @@
         </div>
       </div>
     </div>
+
     <div class="chat">
       <div class="chat-box">
         <div class="chat__title">
           <span>Чат</span>
         </div>
-        <div ref="chatBoxRef" class="chat-messages">
-          <template v-if="loadingMessages">
-            <div class="chat-spinner">
-              <v-progress-circular indeterminate color="primary" size="40" />
-            </div>
-          </template>
 
-          <template v-else-if="messages.length">
-            <transition-group name="fade-slide">
-              <div
-                v-for="msg in messages"
-                :key="msg.id || msg.created_at + msg.content"
-                class="chat-messages-item"
-                :class="{ 'chat-messages-item_your': msg.is_your }"
-              >
-                <div class="chat-messages-item__role">
-                  {{ msg?.user?.name ?? '' }}
-                </div>
-                <div class="chat-messages-item__msg">{{ msg.content }}</div>
-                <div class="chat-messages-item__time">{{ getTime(msg.created_at) }}</div>
+        <div ref="chatBoxRef" class="chat-messages">
+          <div v-if="loadingMessages" class="chat-spinner">
+            <v-progress-circular indeterminate color="primary" size="40" />
+          </div>
+
+          <transition-group v-else-if="messages.length" name="fade-slide">
+            <div
+              v-for="msg in messages"
+              :key="msg.id"
+              class="chat-messages-item"
+              :class="{ 'chat-messages-item_your': msg.is_your }"
+            >
+              <div class="chat-messages-item__role">
+                {{ msg?.user?.name ?? '' }}
               </div>
-            </transition-group>
-          </template>
+              <div class="chat-messages-item__msg">{{ msg.content }}</div>
+              <div class="chat-messages-item__time">{{ getTime(msg.created_at) }}</div>
+            </div>
+          </transition-group>
+
           <h3 v-else class="chat-messages__empty">Пока нет сообщений</h3>
         </div>
       </div>
+
       <div class="chat__actions">
         <VCustomInput
           v-model="newMessage"
@@ -75,121 +75,139 @@ import { useChatSocketStore } from '@/stores/chatSocket'
 import { useSupport } from '@/stores/Support.ts'
 
 const chatStore = useChatSocketStore()
+const supportStore = useSupport()
+const route = useRoute()
+const router = useRouter()
 
 type Room = { id: number; name: string }
+type ChatMessage = {
+  id: string
+  content: string
+  created_at: string
+  is_your: boolean
+  user?: { id: number; name: string }
+}
+
 const rooms = ref<Room[]>([])
-const newMessageCount = ref(0)
 const roomId = ref<number | null>(null)
-const messages = ref<any[]>([])
+const messages = ref<ChatMessage[]>([])
+const messageIds = new Set<string>() // контроль дубликатов
 const newMessage = ref('')
+const newMessageCount = ref(0)
 const chatBoxRef = ref<HTMLElement | null>(null)
 const unreadCounts = ref<Record<number, number>>({})
 const loadingMessages = ref(true)
-const route = useRoute()
-const router = useRouter()
-const supportStore = useSupport()
 
-const scrollToBottom = () => {
-  nextTick(() => {
-    chatBoxRef.value?.scrollTo(0, chatBoxRef.value.scrollHeight)
-  })
-}
+const userId = computed(() => supportStore.supportInfo?.id)
+
+const scrollToBottom = () =>
+  nextTick(() => chatBoxRef.value?.scrollTo(0, chatBoxRef.value.scrollHeight))
 
 const isAtBottom = () => {
-  if (!chatBoxRef.value) return false
   const el = chatBoxRef.value
+  if (!el) return false
   return el.scrollHeight - el.scrollTop <= el.clientHeight + 50
 }
 
 const getTime = (time: string) => {
   const date = new Date(time)
-  return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+  return `${date.getHours().toString().padStart(2, '0')}:${date
+    .getMinutes()
+    .toString()
+    .padStart(2, '0')}`
 }
 
-const userId = computed(() => supportStore.supportInfo?.id)
+/** безопасный пуш сообщений */
+function addMessage(msg: ChatMessage) {
+  if (!msg.id) {
+    msg.id = msg.created_at + msg.content // fallback ID
+  }
+  if (messageIds.has(msg.id)) return
+  messageIds.add(msg.id)
+  messages.value.push(msg)
+}
 
+/** Загрузка сообщений */
 const getMessages = async () => {
+  if (!roomId.value) return
   loadingMessages.value = true
   try {
     const { data } = await getMessagesQuery(roomId.value)
     if (data.code === 200) {
-      messages.value = data.data.messages ?? []
+      messages.value = []
+      messageIds.clear()
+      for (const m of data.data.messages ?? []) {
+        addMessage({ ...m, is_your: m.user?.id === userId.value })
+      }
     }
   } catch (error) {
-    console.log(error)
+    console.error(error)
   } finally {
     loadingMessages.value = false
+    scrollToBottom()
   }
 }
 
-function sendMessage() {
+/** Отправка сообщения */
+async function sendMessage() {
   if (!newMessage.value.trim() || !roomId.value) return
-  messages.value.push({
+
+  const msg: ChatMessage = {
+    id: Date.now().toString(),
     content: newMessage.value,
     created_at: new Date().toISOString(),
-    is_your: true
-  })
-  sendMessageRest()
-}
+    is_your: true,
+    user: { id: userId.value, name: 'Вы' }
+  }
+  addMessage(msg)
+  scrollToBottom()
 
-const sendMessageRest = async () => {
-  if (!newMessage.value.trim()) return
   try {
-    const newData = {
-      chatRoomId: roomId.value,
-      message: newMessage.value
-    }
-    await sendMessageQuery(newData)
-    newMessage.value = ''
-    // await getMessages()
-    scrollToBottom()
+    await sendMessageQuery({ chatRoomId: roomId.value, message: newMessage.value })
   } catch (err) {
-    console.log(err)
+    console.error(err)
+  } finally {
+    newMessage.value = ''
   }
 }
 
+/** Выбор комнаты */
 const selectRoom = async (id: number) => {
-  roomId.value = +id
-  messages.value = []
-  loadingMessages.value = true
+  roomId.value = id
   unreadCounts.value[id] = 0
-  const channel = `chat.${id}`
-  chatStore.subscribeChannel(channel)
+  chatStore.subscribeChannel(`chat.${id}`)
   await getMessages()
-  scrollToBottom()
-  loadingMessages.value = false
 }
 
 onMounted(async () => {
   await supportStore.getSupportInfo()
+
+  // восстановить непрочитанные
   const savedUnread = localStorage.getItem('unreadCounts')
-  if (savedUnread) {
-    unreadCounts.value = JSON.parse(savedUnread)
-  }
+  if (savedUnread) unreadCounts.value = JSON.parse(savedUnread)
 
   chatStore.connect()
 
   const { data } = await getChatsSupportQuery()
   if (data.code === 200) {
-    rooms.value = data.data.chats.map((c, i) => ({ id: c.chat_room_id, name: `Комната ${i + 1}` }))
+    rooms.value = data.data.chats.map((c, i) => ({
+      id: c.chat_room_id,
+      name: `Комната ${i + 1}`
+    }))
 
-    rooms.value.forEach((room) => {
-      const channel = `chat.${room.id}`
-      chatStore.subscribeChannel(channel)
-    })
+    rooms.value.forEach((room) => chatStore.subscribeChannel(`chat.${room.id}`))
 
     if (rooms.value.length) {
       const id = route.query?.id
-      id ? await selectRoom(id) : await selectRoom(rooms.value[0].id)
+      id ? await selectRoom(+id) : await selectRoom(rooms.value[0].id)
       if (route.query.id) {
-        await router.replace({
-          query: { ...route.query, id: undefined }
-        })
+        await router.replace({ query: { ...route.query, id: undefined } })
       }
     }
   }
 })
 
+/** Сохраняем непрочитанные в localStorage */
 watch(
   unreadCounts,
   (newCounts) => {
@@ -198,6 +216,7 @@ watch(
   { deep: true }
 )
 
+/** Новые сообщения через сокет */
 watch(
   () => chatStore.messages[chatStore.messages.length - 1],
   (msg) => {
@@ -209,19 +228,20 @@ watch(
     const parsed = typeof msg.data === 'string' ? JSON.parse(msg.data) : msg.data
     if (parsed.senderId === userId.value) return
 
-    if (roomIdFromMsg !== roomId.value) {
-      unreadCounts.value[roomIdFromMsg] = (unreadCounts.value[roomIdFromMsg] || 0) + 1
-      return
-    }
-    messages.value.push({
+    const newMsg: ChatMessage = {
+      id: parsed.id ?? parsed.timestamp + parsed.content,
       content: parsed.content,
       created_at: parsed.timestamp,
-      is_your: false
-    })
-    if (isAtBottom()) {
-      scrollToBottom()
+      is_your: false,
+      user: { id: parsed.senderId, name: parsed.senderName ?? 'Пользователь' }
+    }
+
+    if (roomIdFromMsg !== roomId.value) {
+      unreadCounts.value[roomIdFromMsg] = (unreadCounts.value[roomIdFromMsg] || 0) + 1
     } else {
-      newMessageCount.value++
+      addMessage(newMsg)
+      if (isAtBottom()) scrollToBottom()
+      else newMessageCount.value++
     }
   }
 )
