@@ -12,11 +12,11 @@
           </div>
         </template>
 
-        <template v-else-if="userMessages.length">
+        <template v-else-if="filteredMessages.length">
           <transition-group name="fade-slide">
             <div
-              v-for="msg in userMessages"
-              :key="msg.id || msg.created_at + msg.content"
+              v-for="msg in filteredMessages"
+              :key="getMessageKey(msg)"
               class="chat-messages-item"
               :class="{ 'chat-messages-item_your': msg.is_your }"
             >
@@ -57,27 +57,34 @@ import { useAuth } from '@/stores/Auth.ts'
 import { useChatSocketStore } from '@/stores/chatSocket'
 import { useUserInfo } from '@/stores/UserInfo.ts'
 
+interface ChatMessage {
+  id?: number
+  content: string
+  created_at: string
+  is_your: boolean
+  user?: {
+    name: string
+  }
+  _uuid?: string
+}
+
 defineProps({ showChat: Boolean })
 const emit = defineEmits(['update:showChat'])
 
 const userInfoStore = useUserInfo()
 const adminStore = useAdminInfo()
-
 const chatStore = useChatSocketStore()
 const { isMobile } = useDeviceDetection()
+const authStore = useAuth()
 
 const roomId = ref<number | null>(null)
 const newMessage = ref('')
-const userMessages = ref<any[]>([])
-const authStore = useAuth()
+const messages = ref<ChatMessage[]>([])
 const chatBoxRef = ref<HTMLElement | null>(null)
 const loadingMessages = ref(true)
+const isSending = ref(false)
+const processedMessageIds = new Set<number | string>() // Трекер обработанных сообщений
 
-const scrollToBottom = () => {
-  nextTick(() => {
-    chatBoxRef.value?.scrollTo(0, chatBoxRef.value.scrollHeight)
-  })
-}
 const userId = computed(() => {
   if (role.value) {
     return role.value === ROLES.SLICER
@@ -89,77 +96,165 @@ const userId = computed(() => {
 
 const role = computed(() => authStore.role)
 
-const getTime = (time: string) => {
+const filteredMessages = computed(() => {
+  const uniqueMessages: ChatMessage[] = []
+  const seenKeys = new Set<string>()
+
+  for (const message of messages.value) {
+    const key = getMessageKey(message)
+    if (!seenKeys.has(key)) {
+      seenKeys.add(key)
+      uniqueMessages.push(message)
+    }
+  }
+
+  return uniqueMessages
+})
+
+const getTime = (time: string): string => {
   const date = new Date(time)
   return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
 }
 
-function sendMessage() {
-  if (!newMessage.value.trim() || !roomId.value) return
-  userMessages.value.push({
-    content: newMessage.value,
-    created_at: new Date().toISOString(),
-    is_your: true
-  })
-  sendMessageRest()
+const getMessageKey = (msg: ChatMessage): string => {
+  if (msg.id) return `id_${msg.id}`
+  return `time_${msg.created_at}_content_${msg.content.slice(0, 20)}_your_${msg.is_your}`
 }
 
-const getMessages = async () => {
-  loadingMessages.value = true
-  try {
-    const { data } = await getMessagesQuery(roomId.value)
-    if (data.code === 200) {
-      userMessages.value = data.data.messages ?? []
+const scrollToBottom = (): void => {
+  nextTick(() => {
+    if (chatBoxRef.value) {
+      chatBoxRef.value.scrollTo({
+        top: chatBoxRef.value.scrollHeight,
+        behavior: 'smooth'
+      })
     }
-  } catch (error) {
-    console.log(error)
+  })
+}
+
+const sendMessage = async (): Promise<void> => {
+  if (!newMessage.value.trim() || !roomId.value || isSending.value) return
+
+  isSending.value = true
+
+  try {
+    const tempMessage: ChatMessage = {
+      content: newMessage.value,
+      created_at: new Date().toISOString(),
+      is_your: true,
+      _uuid: `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    }
+
+    messages.value.push(tempMessage)
+    scrollToBottom()
+
+    await sendMessageRest()
   } finally {
-    loadingMessages.value = false
+    isSending.value = false
   }
 }
 
-const sendMessageRest = async () => {
-  if (!newMessage.value.trim()) return
+const sendMessageRest = async (): Promise<void> => {
+  if (!newMessage.value.trim() || !roomId.value) return
+
   try {
     const newData = {
       chatRoomId: roomId.value,
       message: newMessage.value
     }
+
     await sendMessageQuery(newData)
     newMessage.value = ''
-    // await getMessages()
-    scrollToBottom()
   } catch (err) {
-    console.log(err)
+    console.error('Ошибка отправки сообщения:', err)
+    messages.value = messages.value.filter((msg) => !msg._uuid?.includes('temp_'))
   }
 }
 
-const closeChat = (event: MouseEvent | KeyboardEvent) => {
-  // if (event.type === 'click' || (event as KeyboardEvent).key === 'Escape') {
-  if ((event as KeyboardEvent).key === 'Escape') {
+const getMessages = async (): Promise<void> => {
+  if (!roomId.value) return
+
+  loadingMessages.value = true
+  try {
+    const { data } = await getMessagesQuery(roomId.value)
+    if (data.code === 200) {
+      processedMessageIds.clear()
+
+      const newMessages = (data.data.messages ?? []).map((msg: any) => ({
+        ...msg,
+        is_your: msg.senderId === userId.value
+      }))
+
+      messages.value = [...newMessages]
+      scrollToBottom()
+    }
+  } catch (error) {
+    console.error('Ошибка загрузки сообщений:', error)
+  } finally {
+    loadingMessages.value = false
+  }
+}
+
+const initializeChat = async (): Promise<void> => {
+  try {
+    const { data } = await getChatQuery()
+    if (data.code === 200) {
+      roomId.value = data.data.chat_room_id
+
+      // Загрузка истории сообщений
+      await getMessages()
+
+      // Подписка на канал только если roomId валиден
+      if (roomId.value) {
+        const channel = `chat.${roomId.value}`
+        chatStore.subscribeChannel(channel)
+      }
+    }
+  } catch (error) {
+    console.error('Ошибка инициализации чата:', error)
+  }
+}
+
+const handleIncomingMessage = (msg: any): void => {
+  if (!msg || msg.channel !== `chat.${roomId.value}` || msg.event !== 'MessageSent') return
+
+  const parsed = typeof msg.data === 'string' ? JSON.parse(msg.data) : msg.data
+
+  // Проверяем, не наше ли это сообщение (чтобы избежать дублирования)
+  if (parsed.senderId === userId.value) return
+
+  // Проверяем, не обрабатывали ли мы уже это сообщение
+  const messageKey = `socket_${parsed.id || parsed.timestamp}_${parsed.content}`
+  if (processedMessageIds.has(messageKey)) return
+
+  processedMessageIds.add(messageKey)
+
+  const newMessage: ChatMessage = {
+    content: parsed.content,
+    created_at: parsed.timestamp,
+    is_your: false,
+    id: parsed.id,
+    user: parsed.user
+  }
+
+  messages.value.push(newMessage)
+  scrollToBottom()
+
+  // Увеличиваем счетчик непрочитанных только если чат закрыт
+  if (!userInfoStore.showChat) {
+    userInfoStore.unreadCount++
+  }
+}
+
+const closeChat = (event: KeyboardEvent): void => {
+  if (event.key === 'Escape') {
     emit('update:showChat', false)
   }
 }
 
-const close = () => {
+const close = (): void => {
   emit('update:showChat', false)
 }
-
-onMounted(async () => {
-  chatStore.connect()
-
-  const { data } = await getChatQuery()
-  if (data.code === 200) {
-    roomId.value = data.data.chat_room_id
-    userMessages.value = data.data.messages ?? []
-
-    const channel = `chat.${roomId.value}`
-    chatStore.subscribeChannel(channel)
-    await getMessages()
-  }
-
-  document.addEventListener('keydown', closeChat)
-})
 
 watch(
   () => userInfoStore.showChat,
@@ -175,25 +270,28 @@ watch(
 )
 
 watch(
-  () => chatStore.messages[chatStore.messages.length - 1],
-  (msg) => {
-    if (!msg || msg.channel !== `chat.${roomId.value}` || msg.event !== 'MessageSent') return
-
-    const parsed = typeof msg.data === 'string' ? JSON.parse(msg.data) : msg.data
-    if (parsed.senderId === userId.value) return
-
-    userMessages.value.push({
-      content: parsed.content,
-      created_at: parsed.timestamp,
-      is_your: false
-    })
-    scrollToBottom()
-    userInfoStore.unreadCount++
-  }
+  () => chatStore.messages,
+  (newMessages) => {
+    const lastMessage = newMessages[newMessages.length - 1]
+    if (lastMessage) {
+      handleIncomingMessage(lastMessage)
+    }
+  },
+  { deep: true }
 )
+
+onMounted(async () => {
+  chatStore.connect()
+  await initializeChat()
+  document.addEventListener('keydown', closeChat)
+})
 
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', closeChat)
+  if (roomId.value) {
+    const channel = `chat.${roomId.value}`
+    chatStore.unsubscribeChannel(channel)
+  }
 })
 </script>
 
