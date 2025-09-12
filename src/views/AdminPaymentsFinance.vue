@@ -76,5 +76,6 @@ onMounted(() => {
     perPage
   }
   getRequest()
+  adminPaymentsFinanceStore.getAdminFinanceInfo()
 })
 </script>

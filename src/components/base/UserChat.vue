@@ -53,6 +53,7 @@ import VCustomInput from '@/components/base/VCustomInput.vue'
 import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 import { ROLES } from '@/constants/roles.ts'
 import { useAdminInfo } from '@/stores/AdminInfo.ts'
+import { useAdminPaymentsFinance } from '@/stores/AdminPaymentsFinance.ts'
 import { useAuth } from '@/stores/Auth.ts'
 import { useChatSocketStore } from '@/stores/chatSocket'
 import { useUserInfo } from '@/stores/UserInfo.ts'
@@ -73,6 +74,7 @@ const emit = defineEmits(['update:showChat'])
 
 const userInfoStore = useUserInfo()
 const adminStore = useAdminInfo()
+const adminFinanceStore = useAdminPaymentsFinance()
 const chatStore = useChatSocketStore()
 const { isMobile } = useDeviceDetection()
 const authStore = useAuth()
@@ -86,12 +88,16 @@ const isSending = ref(false)
 const processedMessageIds = new Set<number | string>() // Трекер обработанных сообщений
 
 const userId = computed(() => {
-  if (role.value) {
-    return role.value === ROLES.SLICER
-      ? userInfoStore.userInfo?.id
-      : adminStore.adminProfileData?.id
+  if (!role.value) return null
+
+  switch (role.value) {
+    case ROLES.SLICER:
+      return userInfoStore.userInfo?.id
+    case ROLES.ADMIN_FINANCE:
+      return adminFinanceStore.adminFinanceInfo?.id
+    default:
+      return adminStore.adminProfileData?.id
   }
-  return null
 })
 
 const role = computed(() => authStore.role)

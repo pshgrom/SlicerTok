@@ -19,6 +19,8 @@ export const getLogListQuery = (data: ITableParams) =>
 
 export const getAdminInfoQuery = () => api.get('/admin/profile/get-info')
 
+export const getAdminFinanceInfoQuery = () => api.get('/admin-finance/profile/get-info')
+
 export const getCoefficientQuery = () => api.get('/coefficient/get-coefficient')
 
 export const setPublicationStatusQuery = (data: any) =>

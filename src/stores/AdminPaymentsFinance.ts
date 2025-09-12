@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-import { getPublicationListPaymentQuery } from '@/api/adminInfo'
+import { getAdminFinanceInfoQuery, getPublicationListPaymentQuery } from '@/api/adminInfo'
 import type { ITableParams } from '@/interfaces/AppModel'
 import { useError } from '@/stores/Errors'
 
@@ -14,11 +14,21 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
   })
   const items = ref([])
   const errorStore = useError()
+  const adminFinanceInfo = ref(null)
 
   const setQueryParams = (val: ITableParams) => {
     queryParams.value = {
       ...queryParams.value,
       ...val
+    }
+  }
+
+  const getAdminFinanceInfo = async () => {
+    try {
+      const { data } = await getAdminFinanceInfoQuery()
+      adminFinanceInfo.value = data?.data ?? {}
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
     }
   }
 
@@ -51,6 +61,8 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
     getPublicationsListPayment,
     items,
     queryParams,
-    setQueryParams
+    setQueryParams,
+    getAdminFinanceInfo,
+    adminFinanceInfo
   }
 })
