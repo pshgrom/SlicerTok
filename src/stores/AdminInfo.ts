@@ -95,7 +95,6 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     try {
       const { data } = await getAdminInfoQuery()
       adminProfileData.value = data?.data ?? {}
-      console.error(adminProfileData.value)
     } catch (error: any) {
       errorStore.setErrors(error.response?.data?.message ?? '')
     }

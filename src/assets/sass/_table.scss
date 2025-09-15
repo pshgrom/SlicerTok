@@ -9,6 +9,11 @@
     }
   }
 
+  th.v-data-table__th {
+    background: rgba(242, 246, 254, 1) !important;
+    //border-right: 1px solid rgba(229, 236, 253, 1) !important;
+  }
+
   .custom-table__link {
     cursor: pointer;
     transition: opacity 0.15s ease-in;
