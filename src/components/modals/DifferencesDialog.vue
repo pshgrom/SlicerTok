@@ -20,6 +20,24 @@
               <v-card class="info-admin" variant="outlined" rounded style="border: none !important">
                 <div class="info-admin__title">{{ formatLabel(groupName) }}</div>
                 <div class="info-admin-comment">
+                  <div class="info-admin-comment__label mb-2">Статусы:</div>
+                  <div
+                    v-if="group.status"
+                    class="custom-table-chip"
+                    :style="{
+                      'background-color': getStatusColor(group.status),
+                      color: getColor(group.status)
+                    }"
+                  >
+                    <div class="custom-table-chip__icon">
+                      <SvgIcon :name="getIcon(group.status)" />
+                    </div>
+                    <div class="custom-table-chip__status">
+                      {{ getTextStatus(group.status) }}
+                    </div>
+                  </div>
+                </div>
+                <div class="info-admin-comment">
                   <div class="info-admin-comment__label">Просмотры:</div>
                   <div class="info-admin-comment__value">
                     {{ formatNumber(group.number_views_moderation) || '-' }}
@@ -35,7 +53,20 @@
             </v-col>
           </v-row>
 
-          <div class="info-admin__title text-center">Итоговые значения</div>
+          <div v-if="showActions" class="info-admin__title text-center">Итоговые значения</div>
+          <VCustomSelect
+            v-if="!sameStatuses"
+            v-model="currentStatus"
+            :items="allStatuses"
+            class="mt-4 mb-6"
+            :label="'Статус'"
+          >
+            <template #item="{ item, props }">
+              <v-list-item v-bind="props">
+                {{ item.text }}
+              </v-list-item>
+            </template>
+          </VCustomSelect>
           <VCustomInput
             v-if="!sameViews"
             v-model="finalViews"
@@ -43,13 +74,6 @@
             :rules="[videoRules.quantityViews, videoRules.required]"
             class="mt-4 mb-2"
             @input="onInput"
-          />
-          <VCustomInput
-            v-else
-            v-model="sameViewsValue"
-            label="Количество просмотров по факту"
-            class="mt-4 mb-2"
-            :disabled="sameViews"
           />
           <VCustomSelect
             v-if="!sameCoeffs"
@@ -65,14 +89,6 @@
               </v-list-item>
             </template>
           </VCustomSelect>
-          <VCustomSelect
-            v-else
-            v-model="sameCoeffValue"
-            :disabled="sameCoeffs"
-            label="Коэффициенты"
-            class="mb-4"
-            :items="coeffs"
-          />
         </v-form>
       </v-card-text>
       <v-card-actions>
@@ -80,11 +96,7 @@
           <VCusomButton :custom-class="['light', 'avg']" class="mr-2" @click="closeDialog">
             Отмена
           </VCusomButton>
-          <VCusomButton
-            v-if="!sameViews || !sameCoeffs"
-            :custom-class="['dark', 'avg']"
-            @click="change"
-          >
+          <VCusomButton v-if="showActions" :custom-class="['dark', 'avg']" @click="change">
             Сохранить
           </VCusomButton>
         </div>
@@ -101,6 +113,7 @@ import VCustomInput from '@/components/base/VCustomInput.vue'
 import VCustomSelect from '@/components/base/VCustomSelect.vue'
 import { useAdminInfo } from '@/stores/AdminInfo.ts'
 import { formatNumber } from '@/utils/formatNumbers.ts'
+import { getColor, getIcon, getStatusColor, getTextStatus } from '@/utils/socials.ts'
 import { videoRules } from '@/utils/validators.ts'
 
 const props = defineProps({
@@ -113,17 +126,30 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'update:currentItem', 'changeFinalValues'])
 
-const selectedTasks = ref([])
 const finalCoeff = ref(null)
 const finalViews = ref('')
 
-const sameViewsValue = ref<null | number | string>(null)
-const sameCoeffValue = ref<null | number>(null)
+const allStatuses = [
+  { label: 'Одобрено', value: 'approved' },
+  { label: 'Отклонено', value: 'rejected' }
+]
+
+const currentStatus = ref('')
 
 const formRef = ref(null)
 const adminInfo = useAdminInfo()
 
 const coeffs = computed(() => adminInfo.coeffs ?? [])
+const showActions = computed(() => !sameViews.value || !sameCoeffs.value || !sameStatuses.value)
+
+const sameStatuses = computed(() => {
+  const values = Object.keys(currentItem.value.status_moderation).map(
+    (item) => currentItem.value.status_moderation[item].status
+    // (item) => 5
+  )
+  const firstValue = values[0]
+  return values.every((value) => value === firstValue)
+})
 
 const sameViews = computed(() => {
   const values = Object.keys(currentItem.value.status_moderation).map(
@@ -131,7 +157,6 @@ const sameViews = computed(() => {
     // (item) => 5
   )
   const firstValue = values[0]
-  sameViewsValue.value = firstValue
   return values.every((value) => value === firstValue)
 })
 
@@ -141,7 +166,6 @@ const sameCoeffs = computed(() => {
     // (item) => 1
   )
   const firstValue = values[0]
-  sameCoeffValue.value = firstValue
   return values.every((value) => value === firstValue)
 })
 
@@ -174,16 +198,18 @@ const closeDialog = () => {
   emit('update:modelValue', false)
 }
 
+const cleanNumber = (str: string) => str.replace(/\D/g, '')
+
 const change = async () => {
   const isValid = await formRef?.value?.validate()
-  console.warn('isValid', isValid)
   if (isValid.valid) {
     const data = {
-      finalCoeff: finalCoeff.value,
-      finalViews: finalViews.value
+      id: props.currentItem.id,
+      status: !sameStatuses.value ? currentStatus.value : undefined,
+      coefficient_id: !sameCoeffs.value ? finalCoeff.value : undefined,
+      number_views_moderation: !sameViews.value ? cleanNumber(finalViews.value) : undefined
     }
     emit('changeFinalValues', data)
-    // emit('update:modelValue', false)
   }
 }
 </script>

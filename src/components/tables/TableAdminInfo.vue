@@ -76,6 +76,9 @@
     <template #[`item.status_comment`]="{ item }">
       <p>{{ item.status_comment ? item.status_comment : '-' }}</p>
     </template>
+    <template #[`item.is_bonus`]="{ item }">
+      <SvgIcon v-if="item.is_bonus" :name="'check'" />
+    </template>
     <!--    <template #[`item.is_verified`]="{ item }">-->
     <!--      <div-->
     <!--        class="custom-table-chip"-->

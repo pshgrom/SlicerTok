@@ -1,18 +1,26 @@
 <template>
-  <div class="table-actions table-actions_main">
-    <DateFilter
-      v-model="queryParams.user_created_at"
-      label="Поиск по дате регистрации нарезчика"
-      @update:model-value="onDateChangeSlicer"
-    />
-    <DateFilter
-      v-model="queryParams.created_at"
-      label="Поиск по дате загрузки видео"
-      @update:model-value="onDateChangeVideo"
-    />
-    <VCusomButton :custom-class="['light']" class="ml-2" @click="resetFilters">
-      Сбросить все
-    </VCusomButton>
+  <div class="table-actions table-actions_admin">
+    <div class="table-actions__left">
+      <div class="table-actions__label">Заявки</div>
+      <div>
+        <TabsSwitcher :tabs="tabsContent" initial-tab="tab1" @tab-click="goToPage" />
+      </div>
+    </div>
+    <div class="table-actions__right">
+      <DateFilter
+        v-model="queryParams.user_created_at"
+        label="Поиск по дате регистрации нарезчика"
+        @update:model-value="onDateChangeSlicer"
+      />
+      <DateFilter
+        v-model="queryParams.created_at"
+        label="Поиск по дате загрузки видео"
+        @update:model-value="onDateChangeVideo"
+      />
+      <VCusomButton :custom-class="['light']" class="ml-2" @click="resetFilters">
+        Сбросить все
+      </VCusomButton>
+    </div>
   </div>
   <TableAdminInfo
     :headers="headers"
@@ -52,6 +60,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import DateFilter from '@/components/base/DateFilter.vue'
+import TabsSwitcher from '@/components/base/TabsSwitcher.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import TableAdminInfo from '@/components/tables/TableAdminInfo.vue'
 import TablePagination from '@/components/tables/TablePagination.vue'
@@ -63,6 +72,10 @@ import { useError } from '@/stores/Errors.ts'
 const headers = ref<ITableHeaders[]>(adminInfoHeaders)
 const errorStore = useError()
 
+const tabsContent = [
+  { id: 'tab1', title: 'На модерации', count: 0, redirect: '/admin-info' },
+  { id: 'tab2', title: 'Проверенные', count: 0, redirect: '/admin-info-checked' }
+]
 const adminInfo = useAdminInfo()
 // const selected = ref(null)
 const selectedIndex = ref(-1)
@@ -78,6 +91,10 @@ const queryParams = computed<ITableParamsAdmin>({
     adminInfo.setQueryParams(val)
   }
 })
+
+const goToPage = (path: string) => {
+  router.push(path.redirect)
+}
 
 const onRowClick = (item) => {
   //   selected.value = item?.item ?? {}

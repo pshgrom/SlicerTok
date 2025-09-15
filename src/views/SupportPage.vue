@@ -1,5 +1,6 @@
 <template>
   <TableSupport
+    v-model="dialog"
     :headers="headers"
     :is-loading="isLoading"
     :items="calcDataItems"
@@ -26,10 +27,13 @@ import TableSupport from '@/components/tables/TableSupport.vue'
 import { supportHeaders } from '@/constants/tableHeaders'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import { useAdminInfo } from '@/stores/AdminInfo.ts'
+import { useError } from '@/stores/Errors.ts'
 import { useSupport } from '@/stores/Support'
 // import type { ISupportSaveStatus } from '@/interfaces/ISupport'
 
 const headers = ref<ITableHeaders[]>(supportHeaders)
+const errorStore = useError()
+const dialog = ref(false)
 
 const supportStore = useSupport()
 
@@ -72,17 +76,21 @@ const getRequest = () => {
   supportStore.getPublicationsList(queryParams.value)
 }
 
-const actionRequest = async (id: number, status: string) => {
-  const data = {
-    id,
-    status
-  }
-  await supportStore.actionRequest(data)
+const actionRequest = async (id: number) => {
+  await supportStore.actionRequest(id)
   getRequest()
 }
 
-const changeFinalValues = async (data: any) => {
-  await supportStore.changeFinalValues(data)
+const changeFinalValues = async (dataRes: any) => {
+  try {
+    const { data } = await supportStore.changeFinalValues(dataRes)
+    const msg = data?.message ?? ''
+    errorStore.setErrors(msg, 'success')
+    getRequest()
+    dialog.value = false
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 onMounted(() => {

@@ -77,6 +77,15 @@ export const adminInfoHeaders = [
     title: 'ID',
     value: 'id'
   },
+  { title: 'Ссылка', value: 'url' },
+  { title: 'Ключ', value: 'key' },
+  { title: 'Статистика', value: 'video_stat_link' },
+  { title: 'Просмотры', value: 'number_views' },
+  { title: 'Статус', value: 'status' },
+  { title: 'Бонус', value: 'is_bonus' },
+  // { title: 'Верификация', value: 'is_verified' },
+  { title: 'Пометки', value: 'mark' },
+  { title: 'Комментарии', value: 'status_comment' },
   {
     title: 'Дата регистрации нарезчика',
     value: 'user_created_at',
@@ -87,14 +96,6 @@ export const adminInfoHeaders = [
     value: 'created_at',
     sortable: true
   },
-  { title: 'Ссылка', value: 'url' },
-  { title: 'Ключ', value: 'key' },
-  { title: 'Статистика', value: 'video_stat_link' },
-  { title: 'Просмотры', value: 'number_views' },
-  { title: 'Статус', value: 'status' },
-  // { title: 'Верификация', value: 'is_verified' },
-  { title: 'Пометки', value: 'mark' },
-  { title: 'Комментарии', value: 'status_comment' },
   { title: 'Действия', value: 'actions' }
 ]
 

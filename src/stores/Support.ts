@@ -60,9 +60,9 @@ export const useSupport = defineStore('supportStore', () => {
     }
   }
 
-  const actionRequest = async (data: any) => {
+  const actionRequest = async (id: number) => {
     try {
-      await actionRequestQuery(data)
+      await actionRequestQuery(id)
     } catch (error: any) {
       errorStore.setErrors(error.response?.data?.message ?? '')
     }
@@ -70,7 +70,7 @@ export const useSupport = defineStore('supportStore', () => {
 
   const changeFinalValues = async (data: any) => {
     try {
-      await changeFinalValuesQuery(data)
+      return await changeFinalValuesQuery(data)
     } catch (error: any) {
       errorStore.setErrors(error.response?.data?.message ?? '')
     }

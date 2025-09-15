@@ -1,4 +1,12 @@
 <template>
+  <div class="table-actions table-actions_admin">
+    <div class="table-actions__left">
+      <div class="table-actions__label">Заявки</div>
+      <div>
+        <TabsSwitcher :tabs="tabsContent" initial-tab="tab2" @tab-click="goToPage" />
+      </div>
+    </div>
+  </div>
   <TableAdminInfoChecked
     :headers="headers"
     :is-loading="isLoading"
@@ -19,6 +27,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import TabsSwitcher from '@/components/base/TabsSwitcher.vue'
 import TableAdminInfoChecked from '@/components/tables/TableAdminInfoChecked.vue'
 import TablePagination from '@/components/tables/TablePagination.vue'
 import { adminInfoCheckedHeaders } from '@/constants/tableHeaders'
@@ -31,6 +40,10 @@ const adminInfo = useAdminInfo()
 
 const isLoading = computed(() => adminInfo.isLoading)
 const router = useRouter()
+const tabsContent = [
+  { id: 'tab1', title: 'На модерации', count: 0, redirect: '/admin-info' },
+  { id: 'tab2', title: 'Проверенные', count: 0, redirect: '/admin-info-checked' }
+]
 
 const calcDataItems = computed<IUserInfoData[]>(() => adminInfo.adminInfoData)
 
@@ -55,6 +68,10 @@ const changePage = (page: number) => {
     page: +page
   }
   getRequest()
+}
+
+const goToPage = (path: string) => {
+  router.push(path.redirect)
 }
 
 const getRequest = () => {

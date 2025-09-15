@@ -92,19 +92,17 @@
         </div>
         <VCusomButton
           class="mr-4"
+          :disabled="!item.is_problem_solved"
           :custom-class="['light']"
-          @click="actionRequest(item.id, 'rejected')"
+          @click="actionRequest(item.is_problem_solved, item.id)"
         >
-          Отклонить заявку
-        </VCusomButton>
-        <VCusomButton :custom-class="['dark']" @click="actionRequest(item.id, 'approved')">
-          Принять заявку
+          Разрешить спор
         </VCusomButton>
       </div>
     </template>
   </v-data-table>
   <DifferencesDialog
-    v-model="dialog"
+    v-model="dialogModel"
     v-model:current-item="currentItem"
     @change-final-values="changeFinalValues"
   />
@@ -133,6 +131,7 @@ const props = defineProps({
     type: Array as PropType<ITableHeaders[]>,
     default: () => []
   },
+  modelValue: Boolean,
   items: {
     type: Array as PropType<IUserInfoData[]>,
     default: () => []
@@ -147,13 +146,17 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['actionRequest', 'changeFinalValues'])
+const emit = defineEmits(['actionRequest', 'changeFinalValues', 'update:modelValue'])
 const currentItem = ref({})
-const dialog = ref(false)
 const headersData = ref(props.headers)
 
 // const showRules = ref(false)
 // const currentRules = ref([])
+
+const dialogModel = computed({
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val)
+})
 
 const computedHeaders = computed<ITableHeaders[]>({
   get() {
@@ -173,8 +176,8 @@ const showViolations = (rules: any) => {
   return rules.map((el, index) => `${index + 1}. ${el.name_reverse}`).join('<br>') || '-'
 }
 
-const actionRequest = (id: number, status: string) => {
-  emit('actionRequest', id, status)
+const actionRequest = (is_problem_solved: boolean, id: number) => {
+  if (is_problem_solved) emit('actionRequest', id)
 }
 
 const changeFinalValues = (data: any) => {
@@ -185,8 +188,7 @@ const showDialog = (item) => {
   currentItem.value = {
     ...item
   }
-  console.warn(currentItem.value)
-  dialog.value = true
+  dialogModel.value = true
 }
 
 const formatLabel = (label: string) => {

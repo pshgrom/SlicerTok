@@ -226,8 +226,15 @@ onMounted(() => {
 }
 
 :deep(.v-card-actions) {
-  //position: sticky;
-  //bottom: 0;
+  position: sticky;
+  bottom: 0;
   background: #fff;
+}
+
+:deep(.v-card-title) {
+  position: sticky;
+  top: 0;
+  background: #fff !important;
+  z-index: 1;
 }
 </style>

@@ -5,11 +5,11 @@ import api from './axios'
 export const getPublicationListQuery = (data: ITableParams) =>
   api.get('/admin-support/publication/get-publication-list', { params: data })
 
-export const actionRequestQuery = (data: any) =>
-  api.post('/admin-support/publication/final-status', data)
+export const actionRequestQuery = (id: number) =>
+  api.post('/admin-support/publication/complete-moderation', { id })
 
 export const changeFinalValuesQuery = (data: any) =>
-  api.post('/admin-support/publication/final-status-test', data)
+  api.post('/admin-support/publication/set-publication-status', data)
 
 export const verifyUserQuery = (data: any) =>
   api.post('admin-support/slicer/slicer-verified', { ...data })

@@ -5,7 +5,7 @@
     transition="scale-transition"
     offset-y
     max-width="260px"
-    min-width="auto"
+    min-width="260px"
   >
     <template #activator="{ props }">
       <v-text-field
@@ -90,6 +90,7 @@ watch(
 <style scoped lang="scss">
 .date-filter__input {
   max-width: 280px;
+  min-width: 280px;
   font-size: 16px;
 
   :deep(.v-field__input) {
