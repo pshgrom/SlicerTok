@@ -134,6 +134,7 @@ const cleanNumber = (str: string): string => {
 const updateUser = async (newData: IUser) => {
   user.value = { ...newData }
   await userInfoStore.updateContact(newData)
+  await fetchUserInfo()
 }
 
 const openModalWallet = () => {

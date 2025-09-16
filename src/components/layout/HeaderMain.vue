@@ -131,21 +131,21 @@ onMounted(async () => {
   .menu {
     display: flex;
     align-items: center;
-    margin-right: 30px;
+    margin-right: 40px;
 
     li {
       color: rgba(17, 17, 17, 1);
       font-size: 14px;
-      font-weight: 400;
+      font-weight: 500;
       cursor: pointer;
-      transition: opacity 0.15s ease-in;
+      transition: color 0.15s ease-in;
 
       & + li {
-        margin-left: 15px;
+        margin-left: 20px;
       }
 
       &:hover {
-        opacity: 0.7;
+        color: rgba(169, 55, 244, 1);
       }
     }
   }

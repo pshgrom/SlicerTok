@@ -172,7 +172,6 @@ const submitVideo = async () => {
 
 :deep(.v-card-actions) {
   justify-content: center !important;
-  padding-top: 85px !important;
 
   @media (max-width: 767px) {
     padding-top: 25px !important;
