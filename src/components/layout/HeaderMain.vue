@@ -26,9 +26,9 @@
           <li @click="goToPage('/admin-main-logs')"><span>Логи</span></li>
         </template>
         <template v-else-if="role === ROLES.SUPPORT">
-          <li @click="goToPage('/support')"><span>Информация</span></li>
+          <li @click="goToPage('/support')"><span>Заявки</span></li>
           <li @click="goToPage('/support-users')"><span>Пользователи</span></li>
-          <li @click="goToPage('/support-chat')"><span>Поддержка</span></li>
+          <li @click="goToPage('/support-chat')"><span>Чат</span></li>
         </template>
       </ul>
       <div class="header__logout">

@@ -52,8 +52,8 @@
     <template #[`item.actions`]="{ item }">
       <VCusomButton :custom-class="['light']" @click.stop="goToChat(item.id)">
         Написать в чат
-      </VCusomButton></template
-    >
+      </VCusomButton>
+    </template>
   </v-data-table>
 </template>
 

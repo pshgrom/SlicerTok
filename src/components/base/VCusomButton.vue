@@ -47,6 +47,11 @@ const customClasses = computed(() => props.customClass.join(' '))
   letter-spacing: 0;
   transition: all 0.15s ease-in;
 
+  :deep(.svg-icon) {
+    margin-right: 8px;
+    margin-left: 4px;
+  }
+
   &.light {
     color: rgba(17, 17, 17, 1) !important;
     border: 1px solid rgba(224, 224, 224, 1);

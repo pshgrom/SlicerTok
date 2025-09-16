@@ -6,14 +6,32 @@
           <!--          <ImageUploader v-model="imageFile" />-->
           <img src="@/static/img/avatar.png" alt="аватарка" />
         </div>
+        <div v-if="readonly" class="profile__actions">
+          <VCusomButton
+            v-if="!user.is_verified"
+            :custom-class="['light']"
+            @click="verifyUser(true)"
+          >
+            <SvgIcon name="check-second" /> Верифицировать
+          </VCusomButton>
+          <VCusomButton v-else :custom-class="['light']" @click="verifyUser(false)">
+            <SvgIcon name="cross" /> Снять верификацию
+          </VCusomButton>
+          <VCusomButton :custom-class="['dark']" style="margin-left: 4px" @click="goToChat()">
+            <SvgIcon name="msg" /> Чат
+          </VCusomButton>
+        </div>
         <VCusomButton v-if="!readonly" :custom-class="['light']" @click="showDialog(true)"
           >Изменить
         </VCusomButton>
       </div>
       <div class="profile__content">
-        <div class="profile__name">
+        <div class="profile__name" :class="{ profile__name_readonly: readonly }">
           <template v-if="user.name">
             {{ user.name }}
+            <div v-if="readonly" class="profile__verify">
+              <SvgIcon :name="user.is_verified ? 'verify' : 'noverify'" />
+            </div>
           </template>
           <span v-else>Ваше имя</span>
         </div>
@@ -42,18 +60,32 @@
               <span v-else>не указано</span>
             </div>
           </div>
-          <template v-if="readonly">
-            <div class="profile-info-item">
-              <div class="profile-info-item__value">
-                <div class="custom-table-views">
-                  <SvgIcon name="show" />
-                  <div>{{ formatNumber(user.total_views ?? 0) }}</div>
-                </div>
-              </div>
-            </div>
-          </template>
         </div>
         <div class="profile-info__wrap">
+          <div v-if="readonly" class="profile-info-item">
+            <div class="profile-info-item__icon">
+              <SvgIcon name="show" />
+            </div>
+            <div class="profile-info-item__value">
+              <div>{{ formatNumber(user.total_views ?? 0) }}</div>
+            </div>
+          </div>
+          <div class="profile-info-item">
+            <div class="profile-info-item__icon">
+              <SvgIcon name="key" />
+            </div>
+            <div class="profile-info-item__value">
+              {{ user.key }}
+            </div>
+          </div>
+        </div>
+        <div class="profile-info__wrap">
+          <div v-if="readonly" class="profile-info-item">
+            <div class="profile-info-item__icon">
+              <SvgIcon name="calendar" />
+            </div>
+            <div class="profile-info-item__value">01.09.2025</div>
+          </div>
           <div class="profile-info-item">
             <div class="profile-info-item__icon">
               <SvgIcon name="telegram" />
@@ -65,21 +97,6 @@
               <span v-else>не указано</span>
             </div>
           </div>
-          <div class="profile-info-item">
-            <div class="profile-info-item__value">
-              <template v-if="user.key">
-                {{ user.key }}
-              </template>
-              <span v-else>не указано</span>
-            </div>
-          </div>
-          <template v-if="readonly">
-            <div class="profile-info-item">
-              <div class="profile-info-item__value">
-                {{ user.is_verified ? 'Верифицирован' : 'Не верифицирован' }}
-              </div>
-            </div>
-          </template>
         </div>
       </div>
     </div>
@@ -87,7 +104,9 @@
 </template>
 <script setup lang="ts">
 import { type PropType } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
+import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import type { IUser } from '@/interfaces/Slicer'
 import { formatNumber } from '@/utils/formatNumbers.ts'
@@ -107,10 +126,21 @@ defineProps({
     default: () => ({})
   }
 })
-const emit = defineEmits(['update:dialog'])
+const emit = defineEmits(['update:dialog', 'verifyUser'])
+const router = useRouter()
+const route = useRoute()
 
 const showDialog = (val: boolean) => {
   emit('update:dialog', val)
+}
+
+const verifyUser = (val: boolean) => {
+  emit('verifyUser', val)
+}
+
+const goToChat = () => {
+  const id = route.params.id
+  router.push({ name: 'SupportChat', query: { id } })
 }
 </script>
 
@@ -169,6 +199,11 @@ const showDialog = (val: boolean) => {
     margin-bottom: 17px;
   }
 
+  &__actions {
+    position: relative;
+    top: 5px;
+  }
+
   &__avatar {
     max-width: 99px;
     margin-top: -61px;
@@ -180,6 +215,10 @@ const showDialog = (val: boolean) => {
     }
   }
 
+  &__verify {
+    margin-left: 5px;
+  }
+
   &__name {
     color: rgba(17, 17, 17, 1);
     font-size: 18px;
@@ -188,6 +227,10 @@ const showDialog = (val: boolean) => {
 
     span {
       color: rgba(143, 150, 165, 1);
+    }
+
+    &_readonly {
+      display: inline-flex;
     }
   }
 
@@ -205,7 +248,7 @@ const showDialog = (val: boolean) => {
       border-radius: 8px;
       display: inline-flex;
       align-items: center;
-      margin: 4px;
+      margin: 2px;
       height: 32px;
       padding: 0 8px;
 

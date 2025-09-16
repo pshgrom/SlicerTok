@@ -1,17 +1,13 @@
 <template>
   <div class="user-info">
-    <VCusomButton
-      v-if="!currentUser.is_verified"
-      class="mb-4"
-      :custom-class="['light']"
-      @click="verifyUser(true)"
-      >Верифицировать
-    </VCusomButton>
-    <VCusomButton v-else class="mb-4" :custom-class="['light']" @click="verifyUser(false)">
-      Аннулировать верификацию
-    </VCusomButton>
+    <Breadcrumbs :items="breadcrumbs" divider="/" />
     <div class="user-info__wrapper">
-      <ProfileCard v-model:dialog="editDialog" :user="currentUser" :readonly="true" />
+      <ProfileCard
+        v-model:dialog="editDialog"
+        :user="currentUser"
+        :readonly="true"
+        @verify-user="verifyUser"
+      />
       <WalletsCard :wallets="wallets" :readonly="true" />
     </div>
     <div class="table-actions">
@@ -35,16 +31,27 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import VCusomButton from '@/components/base/VCusomButton.vue'
+import Breadcrumbs from '@/components/base/Breadcrumbs.vue'
 import ProfileCard from '@/components/profile/ProfileCard.vue'
 import TablePagination from '@/components/tables/TablePagination.vue'
 import TableUserInfo from '@/components/tables/TableUserInfo.vue'
 import WalletsCard from '@/components/wallets/WalletsCard.vue'
 import { userInfoHeaders } from '@/constants/tableHeaders'
 import type { ITableHeaders, ITableParams } from '@/interfaces/AppModel'
+import type { BreadcrumbItem } from '@/interfaces/Breadcrumb.ts'
 import { useSupport } from '@/stores/Support.ts'
 
 const headers = ref<ITableHeaders[]>(userInfoHeaders)
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
+  {
+    text: 'Пользователи',
+    href: '/support-users',
+    icon: 'mdi-arrow-left'
+  },
+  {
+    text: currentUser.value.name ?? 'Юзер'
+  }
+])
 
 const currentUserStore = useSupport()
 const editDialog = ref(false)
