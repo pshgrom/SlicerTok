@@ -55,6 +55,12 @@
         </v-col>
       </v-row>
     </template>
+    <template #[`item.number_views`]="{ item }">
+      <div v-if="item.number_views" class="custom-table-views">
+        <SvgIcon name="show" />
+        <div>{{ formatNumber(item.number_views) }}</div>
+      </div>
+    </template>
     <template #[`item.url`]="{ item }">
       <a v-if="item.url" :href="item.url" target="_blank" class="custom-table-ref">
         <SvgIcon v-if="item.url" class="custom-table-ref__social" :name="getIconSocial(item.url)" />
@@ -118,6 +124,7 @@ import { computed, type PropType, ref } from 'vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import { formatDate } from '@/utils/formatDate.ts'
+import { formatNumber } from '@/utils/formatNumbers.ts'
 import {
   getColor,
   getIcon,

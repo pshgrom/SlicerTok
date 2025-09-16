@@ -17,12 +17,8 @@
         >
           <span>Поддержка</span>
         </li>
-        <!--        <template v-else-if="role === ROLES.ADMIN">-->
-        <!--          <li @click="goToPage('/admin-info')"><span>Информация</span></li>-->
-        <!--          <li @click="goToPage('/admin-info-checked')"><span>Проверенные</span></li>-->
-        <!--        </template>-->
         <template v-else-if="role === ROLES.ADMIN_MAIN">
-          <li @click="goToPage('/admin-main')"><span>Информация</span></li>
+          <li @click="goToPage('/admin-main')"><span>Заявки</span></li>
           <li @click="goToPage('/admin-main-logs')"><span>Логи</span></li>
         </template>
         <template v-else-if="role === ROLES.SUPPORT">
