@@ -1,4 +1,9 @@
 <template>
+  <div class="table-actions table-actions_admin">
+    <div class="table-actions__left">
+      <div class="table-actions__label">Заявки</div>
+    </div>
+  </div>
   <TableSupport
     v-model="dialog"
     :headers="headers"

@@ -6,27 +6,7 @@
       </div>
     </div>
     <div class="header__right">
-      <ul v-if="!hideMenu" class="menu">
-        <template v-if="role === ROLES.SLICER">
-          <li><span>Правила</span></li>
-          <li @click="isModalOpen = true"><span>2FA</span></li>
-        </template>
-        <li
-          v-if="role === ROLES.SLICER && isMobile"
-          @click="userInfoStore.showChat = !userInfoStore.showChat"
-        >
-          <span>Поддержка</span>
-        </li>
-        <template v-else-if="role === ROLES.ADMIN_MAIN">
-          <li @click="goToPage('/admin-main')"><span>Заявки</span></li>
-          <li @click="goToPage('/admin-main-logs')"><span>Логи</span></li>
-        </template>
-        <template v-else-if="role === ROLES.SUPPORT">
-          <li @click="goToPage('/support')"><span>Заявки</span></li>
-          <li @click="goToPage('/support-users')"><span>Пользователи</span></li>
-          <li @click="goToPage('/support-chat')"><span>Чат</span></li>
-        </template>
-      </ul>
+      <AppMenu v-if="!hideMenu" @update-open-modal="updateOpenModal" />
       <div class="header__logout">
         <v-btn icon size="small" @click="logout">
           <v-icon>mdi-logout</v-icon>
@@ -41,8 +21,8 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import AppMenu from '@/components/menu/AppMenu.vue'
 import TwoFactorAuth from '@/components/modals/TwoFactorAuth.vue'
-import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 import { ROLES } from '@/constants/roles.ts'
 import { useAuth } from '@/stores/Auth'
 import { useUserInfo } from '@/stores/UserInfo.ts'
@@ -53,10 +33,13 @@ const userInfoStore = useUserInfo()
 
 const isModalOpen = ref(false)
 const role = computed(() => authStore.role)
-const { isMobile } = useDeviceDetection()
 const page = computed(() => router.currentRoute.value.name)
 
 const hideMenu = computed(() => page.value === 'NotFound')
+
+const updateOpenModal = (value: boolean) => {
+  isModalOpen.value = value
+}
 
 const logout = () => {
   authStore.logout()
@@ -66,7 +49,7 @@ const logout = () => {
 }
 
 const goHome = () => {
-  switch (authStore.role) {
+  switch (role.value) {
     case ROLES.ADMIN:
       router.push({ name: 'AdminInfo' })
       break
@@ -83,10 +66,6 @@ const goHome = () => {
       router.push({ name: 'Support' })
       break
   }
-}
-
-const goToPage = (path: string) => {
-  router.push({ path })
 }
 
 const checkCode = (code: string) => {
@@ -122,28 +101,6 @@ onMounted(async () => {
   &__right {
     display: flex;
     align-items: center;
-  }
-
-  .menu {
-    display: flex;
-    align-items: center;
-    margin-right: 40px;
-
-    li {
-      color: rgba(17, 17, 17, 1);
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: color 0.15s ease-in;
-
-      & + li {
-        margin-left: 20px;
-      }
-
-      &:hover {
-        color: rgba(169, 55, 244, 1);
-      }
-    }
   }
 }
 </style>
