@@ -190,9 +190,9 @@ onMounted(async () => {
 
   const { data } = await getChatsSupportQuery()
   if (data.code === 200) {
-    rooms.value = data.data.chats.map((c, i) => ({
-      id: c.chat_room_id,
-      name: `Комната ${i + 1}`
+    rooms.value = data.data.chats.map((chat) => ({
+      id: chat.chat_room_id,
+      name: chat.chat_room_name
     }))
 
     rooms.value.forEach((room) => chatStore.subscribeChannel(`chat.${room.id}`))
