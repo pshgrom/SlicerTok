@@ -23,7 +23,7 @@
     <div class="chat">
       <div class="chat-box">
         <div class="chat__title">
-          <span>Чат</span>
+          <span>{{ currentRoom?.name || 'Чат' }}</span>
         </div>
 
         <div ref="chatBoxRef" class="chat-messages">
@@ -99,6 +99,8 @@ const unreadCounts = ref<Record<number, number>>({})
 const loadingMessages = ref(true)
 
 const userId = computed(() => supportStore.supportInfo?.id)
+
+const currentRoom = computed(() => rooms.value.find((r) => r.id === roomId.value) || null)
 
 const scrollToBottom = () =>
   nextTick(() => chatBoxRef.value?.scrollTo(0, chatBoxRef.value.scrollHeight))
@@ -179,8 +181,6 @@ const selectRoom = async (id: number) => {
   unreadCounts.value[id] = 0
   chatStore.subscribeChannel(`chat.${id}`)
   await getMessages()
-
-  console.warn(id)
 
   await router.push({ name: 'SupportChat', params: { id } })
 }
@@ -282,6 +282,7 @@ watch(
     padding: 20px 4px;
     max-height: 450px;
     overflow-y: scroll;
+    padding-top: 0;
 
     @media (max-width: 767px) {
       width: 100%;
@@ -294,12 +295,18 @@ watch(
     &__title {
       font-size: 18px;
       color: rgba(17, 17, 17, 1);
-      font-weight: 400;
-      margin-bottom: 10px;
+      font-weight: 500;
     }
 
     &__top {
       padding: 0 20px;
+      position: sticky;
+      top: 0;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      z-index: 1;
+      background: #fff;
 
       @media (max-width: 767px) {
         display: none;
@@ -396,8 +403,8 @@ watch(
     align-items: center;
     padding: 0 20px;
     color: rgba(17, 17, 17, 1);
-    font-weight: 500;
-    font-size: 18px;
+    font-weight: 400;
+    font-size: 14px;
   }
 
   &-messages {

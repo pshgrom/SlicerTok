@@ -17,7 +17,11 @@
           <VCusomButton v-else :custom-class="['light']" @click="verifyUser(false)">
             <SvgIcon name="cross" /> Снять верификацию
           </VCusomButton>
-          <VCusomButton :custom-class="['dark']" style="margin-left: 4px" @click="goToChat()">
+          <VCusomButton
+            :custom-class="['dark']"
+            style="margin-left: 4px"
+            @click="goToChat(user.id)"
+          >
             <SvgIcon name="msg" /> Чат
           </VCusomButton>
         </div>
@@ -104,11 +108,12 @@
 </template>
 <script setup lang="ts">
 import { type PropType } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import type { IUser } from '@/interfaces/Slicer'
+import { useSupportUsers } from '@/stores/SupportUsers.ts'
 import { formatNumber } from '@/utils/formatNumbers.ts'
 // import ImageUploader from '@/components/base/ImageUploader.vue'
 
@@ -128,7 +133,7 @@ defineProps({
 })
 const emit = defineEmits(['update:dialog', 'verifyUser'])
 const router = useRouter()
-const route = useRoute()
+const supportUsersStore = useSupportUsers()
 
 const showDialog = (val: boolean) => {
   emit('update:dialog', val)
@@ -138,9 +143,10 @@ const verifyUser = (val: boolean) => {
   emit('verifyUser', val)
 }
 
-const goToChat = () => {
-  const id = route.params.id
-  router.push({ name: 'SupportChat', query: { id } })
+const goToChat = async (id: string | number) => {
+  const resp = await supportUsersStore.getChatByUser(id)
+  const { chat_room_id } = resp
+  if (chat_room_id) await router.push({ name: 'SupportChat', params: { id: chat_room_id } })
 }
 </script>
 
