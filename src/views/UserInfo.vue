@@ -151,7 +151,7 @@ const handleVideoSubmit = async (videoData: IUploadVideo) => {
 
   formData.append('link', videoLink)
   formData.append('video_stat', videoFile)
-  formData.append('is_bonus', isBonus)
+  formData.append('is_bonus', Boolean(isBonus))
   formData.append('number_views', cleanNumber(number_views))
 
   try {

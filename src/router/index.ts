@@ -70,7 +70,7 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true, roles: [ROLES.SUPPORT], showChat: false }
   },
   {
-    path: '/support-chat',
+    path: '/support-chat/:id?',
     name: 'SupportChat',
     component: () => import('@/views/SupportChatPage.vue'),
     meta: { requiresAuth: true, roles: [ROLES.SUPPORT], showChat: false }

@@ -83,6 +83,8 @@ const props = defineProps({
     default: 10
   }
 })
+const emit = defineEmits(['goToChat'])
+
 const router = useRouter()
 const headersData = ref(props.headers)
 
@@ -100,7 +102,7 @@ const onRowClick = (event, { item }) => {
 }
 
 const goToChat = (id: number | string) => {
-  router.push({ name: 'SupportChat', query: { id } })
+  emit('goToChat', id)
 }
 
 const getStatusColor = (is_verified: boolean) => {

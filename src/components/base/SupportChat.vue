@@ -160,7 +160,7 @@ async function sendMessage() {
     user: { id: userId.value, name: 'Вы' }
   }
   addMessage(msg)
-  scrollToBottom()
+  await scrollToBottom()
 
   try {
     await sendMessageQuery({ chatRoomId: roomId.value, message: newMessage.value })

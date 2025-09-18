@@ -11,6 +11,7 @@
     :items="calcDataItems"
     :items-per-page="queryParams.perPage"
     @action-request="actionRequest"
+    @go-to-chat="goToChat"
   />
   <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
     <TablePagination
@@ -62,6 +63,12 @@ const changePage = (page: number) => {
     page: +page
   }
   getRequest()
+}
+
+const goToChat = async (id: string | number) => {
+  const resp = await supportUsersStore.getChatByUser(id)
+  const { chat_room_id } = resp
+  if (chat_room_id) await router.push({ name: 'SupportChat', params: { id } })
 }
 
 const getRequest = () => {

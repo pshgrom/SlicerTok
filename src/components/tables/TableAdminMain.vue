@@ -55,6 +55,9 @@
         </v-col>
       </v-row>
     </template>
+    <template #[`item.is_bonus`]="{ item }">
+      <SvgIcon v-if="item.is_bonus" :name="'check'" />
+    </template>
     <template #[`item.number_views`]="{ item }">
       <div v-if="item.number_views" class="custom-table-views">
         <SvgIcon name="show" />

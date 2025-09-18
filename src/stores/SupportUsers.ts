@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
+import { getChatByUserQuery } from '@/api/chat.ts'
 import { actionRequestQuery, getSlicerListQuery } from '@/api/support'
 import type { IAdminInfoData, ITableParams, IUserInfo } from '@/interfaces/AppModel'
 import { useError } from '@/stores/Errors'
@@ -26,6 +27,15 @@ export const useSupportUsers = defineStore('supportUsersStore', () => {
   const actionRequest = async (data: any) => {
     try {
       await actionRequestQuery(data)
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    }
+  }
+
+  const getChatByUser = async (userId: string | number) => {
+    try {
+      const { data } = await getChatByUserQuery(userId)
+      return data?.data ?? {}
     } catch (error: any) {
       errorStore.setErrors(error.response?.data?.message ?? '')
     }
@@ -62,6 +72,7 @@ export const useSupportUsers = defineStore('supportUsersStore', () => {
     items,
     preloadUserInfo,
     queryParams,
-    setQueryParams
+    setQueryParams,
+    getChatByUser
   }
 })
