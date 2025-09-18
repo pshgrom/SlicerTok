@@ -68,7 +68,7 @@ const changePage = (page: number) => {
 const goToChat = async (id: string | number) => {
   const resp = await supportUsersStore.getChatByUser(id)
   const { chat_room_id } = resp
-  if (chat_room_id) await router.push({ name: 'SupportChat', params: { id } })
+  if (chat_room_id) await router.push({ name: 'SupportChat', params: { id: chat_room_id } })
 }
 
 const getRequest = () => {

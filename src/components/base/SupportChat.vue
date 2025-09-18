@@ -173,10 +173,16 @@ async function sendMessage() {
 
 /** Выбор комнаты */
 const selectRoom = async (id: number) => {
+  if (roomId.value === id) return // защита от повторного выбора
+
   roomId.value = id
   unreadCounts.value[id] = 0
   chatStore.subscribeChannel(`chat.${id}`)
   await getMessages()
+
+  console.warn(id)
+
+  await router.push({ name: 'SupportChat', params: { id } })
 }
 
 onMounted(async () => {
@@ -184,7 +190,9 @@ onMounted(async () => {
 
   // восстановить непрочитанные
   const savedUnread = localStorage.getItem('unreadCounts')
-  if (savedUnread) unreadCounts.value = JSON.parse(savedUnread)
+  if (savedUnread) {
+    unreadCounts.value = JSON.parse(savedUnread)
+  }
 
   chatStore.connect()
 
@@ -198,14 +206,22 @@ onMounted(async () => {
     rooms.value.forEach((room) => chatStore.subscribeChannel(`chat.${room.id}`))
 
     if (rooms.value.length) {
-      const id = route.query?.id
-      id ? await selectRoom(+id) : await selectRoom(rooms.value[0].id)
-      if (route.query.id) {
-        await router.replace({ query: { ...route.query, id: undefined } })
-      }
+      const targetId = Number(route.params.id) || rooms.value[0].id
+      await selectRoom(targetId)
     }
   }
 })
+
+watch(
+  () => route.params.id,
+  async (newId) => {
+    if (!newId && rooms.value.length) {
+      await selectRoom(rooms.value[0].id)
+    } else if (newId) {
+      await selectRoom(Number(newId))
+    }
+  }
+)
 
 /** Сохраняем непрочитанные в localStorage */
 watch(
