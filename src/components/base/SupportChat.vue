@@ -31,9 +31,9 @@
             <v-progress-circular indeterminate color="primary" size="40" />
           </div>
 
-          <transition-group v-else-if="messages.length" name="fade-slide">
+          <transition-group v-else-if="currentMessages.length" name="fade-slide">
             <div
-              v-for="msg in messages"
+              v-for="msg in currentMessages"
               :key="msg.id"
               class="chat-messages-item"
               :class="{ 'chat-messages-item_your': msg.is_your }"
@@ -88,10 +88,10 @@ type ChatMessage = {
   user?: { id: number; name: string }
 }
 
+const messageIds = ref<Record<number, Set<string>>>({})
 const rooms = ref<Room[]>([])
 const roomId = ref<number | null>(null)
-const messages = ref<ChatMessage[]>([])
-const messageIds = new Set<string>() // контроль дубликатов
+const messages = ref<Record<number, ChatMessage[]>>({})
 const newMessage = ref('')
 const newMessageCount = ref(0)
 const chatBoxRef = ref<HTMLElement | null>(null)
@@ -119,27 +119,58 @@ const getTime = (time: string) => {
     .padStart(2, '0')}`
 }
 
-/** безопасный пуш сообщений */
-function addMessage(msg: ChatMessage) {
-  if (!msg.id) {
-    msg.id = msg.created_at + msg.content // fallback ID
+/** Получаем Set id-шников для комнаты */
+function getMessageSet(roomId: number) {
+  if (!messageIds.value[roomId]) {
+    messageIds.value[roomId] = new Set()
   }
-  if (messageIds.has(msg.id)) return
-  messageIds.add(msg.id)
-  messages.value.push(msg)
+  return messageIds.value[roomId]
 }
 
-/** Загрузка сообщений */
-const getMessages = async () => {
+/** Получаем массив сообщений для комнаты */
+function getRoomMessages(roomId: number) {
+  if (!messages.value[roomId]) {
+    messages.value[roomId] = []
+  }
+  return messages.value[roomId]
+}
+
+/** Computed для текущей комнаты */
+const currentMessages = computed(() => {
+  console.warn('roomId.value', roomId.value)
+  if (!roomId.value) return []
+  return messages.value[roomId.value] || []
+})
+
+/** Добавление нового сообщения */
+function addMessage(msg: ChatMessage) {
+  if (!roomId.value) return
+  const ids = getMessageSet(roomId.value)
+  const roomMsgs = getRoomMessages(roomId.value)
+
+  // генерим временный id если его нет
+  if (!msg.id) {
+    msg.id = `${msg.created_at}_${msg.content}`
+  }
+
+  if (ids.has(msg.id)) return
+
+  ids.add(msg.id)
+  roomMsgs.push(msg)
+}
+
+/** Загрузка сообщений из API */
+async function getMessages() {
   if (!roomId.value) return
   loadingMessages.value = true
   try {
     const { data } = await getMessagesQuery(roomId.value)
     if (data.code === 200) {
-      messages.value = []
-      messageIds.clear()
       for (const m of data.data.messages ?? []) {
-        addMessage({ ...m, is_your: m.user?.id === userId.value })
+        addMessage({
+          ...m,
+          is_your: m.user?.id === userId.value
+        })
       }
     }
   } catch (error) {
@@ -233,6 +264,7 @@ watch(
 )
 
 /** Новые сообщения через сокет */
+/** Новые сообщения через сокет */
 watch(
   () => chatStore.messages[chatStore.messages.length - 1],
   (msg) => {
@@ -252,10 +284,18 @@ watch(
       user: { id: parsed.senderId, name: parsed.senderName ?? 'Пользователь' }
     }
 
+    // --- теперь не завязано на активную комнату ---
+    const ids = getMessageSet(roomIdFromMsg)
+    const roomMsgs = getRoomMessages(roomIdFromMsg)
+
+    if (!ids.has(newMsg.id)) {
+      ids.add(newMsg.id)
+      roomMsgs.push(newMsg)
+    }
+
     if (roomIdFromMsg !== roomId.value) {
       unreadCounts.value[roomIdFromMsg] = (unreadCounts.value[roomIdFromMsg] || 0) + 1
     } else {
-      addMessage(newMsg)
       if (isAtBottom()) scrollToBottom()
       else newMessageCount.value++
     }
@@ -280,7 +320,7 @@ watch(
     border-radius: 16px;
     margin-right: 12px;
     padding: 20px 4px;
-    max-height: 450px;
+    max-height: 602px;
     overflow-y: scroll;
     padding-top: 0;
 
