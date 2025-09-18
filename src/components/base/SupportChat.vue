@@ -26,12 +26,12 @@
           <span>{{ currentRoom?.name || 'Чат' }}</span>
         </div>
 
-        <div ref="chatBoxRef" class="chat-messages">
+        <div ref="chatBoxRef" class="chat-messages" @scroll="onScroll">
           <div v-if="loadingMessages" class="chat-spinner">
             <v-progress-circular indeterminate color="primary" size="40" />
           </div>
 
-          <transition-group v-else-if="currentMessages.length" name="fade-slide">
+          <transition-group v-else-if="currentMessages.length" name="fade-slide" tag="div">
             <div
               v-for="msg in currentMessages"
               :key="msg.id"
@@ -60,6 +60,14 @@
           @keyup.enter="sendMessage"
         />
         <SvgIcon class="chat__actions-send" name="send" @click="sendMessage" />
+
+        <div
+          v-if="newMessageCount > 0"
+          class="new-message-indicator"
+          @click="scrollToBottomAnimated"
+        >
+          {{ newMessageCount }} новых сообщений
+        </div>
       </div>
     </div>
   </div>
@@ -97,69 +105,76 @@ const newMessageCount = ref(0)
 const chatBoxRef = ref<HTMLElement | null>(null)
 const unreadCounts = ref<Record<number, number>>({})
 const loadingMessages = ref(true)
+const userScrolledUp = ref(false)
 
 const userId = computed(() => supportStore.supportInfo?.id)
-
 const currentRoom = computed(() => rooms.value.find((r) => r.id === roomId.value) || null)
-
-const scrollToBottom = () =>
-  nextTick(() => chatBoxRef.value?.scrollTo(0, chatBoxRef.value.scrollHeight))
-
-const isAtBottom = () => {
-  const el = chatBoxRef.value
-  if (!el) return false
-  return el.scrollHeight - el.scrollTop <= el.clientHeight + 50
-}
+const currentMessages = computed(() => (roomId.value ? messages.value[roomId.value] || [] : []))
 
 const getTime = (time: string) => {
   const date = new Date(time)
-  return `${date.getHours().toString().padStart(2, '0')}:${date
-    .getMinutes()
-    .toString()
-    .padStart(2, '0')}`
+  return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
 }
 
-/** Получаем Set id-шников для комнаты */
-function getMessageSet(roomId: number) {
-  if (!messageIds.value[roomId]) {
-    messageIds.value[roomId] = new Set()
-  }
-  return messageIds.value[roomId]
+const getMessageSet = (rId: number) => {
+  if (!messageIds.value[rId]) messageIds.value[rId] = new Set()
+  return messageIds.value[rId]
 }
 
-/** Получаем массив сообщений для комнаты */
-function getRoomMessages(roomId: number) {
-  if (!messages.value[roomId]) {
-    messages.value[roomId] = []
-  }
-  return messages.value[roomId]
+const getRoomMessages = (rId: number) => {
+  if (!messages.value[rId]) messages.value[rId] = []
+  return messages.value[rId]
 }
 
-/** Computed для текущей комнаты */
-const currentMessages = computed(() => {
-  console.warn('roomId.value', roomId.value)
-  if (!roomId.value) return []
-  return messages.value[roomId.value] || []
-})
+function addMessage(msg: ChatMessage, targetRoomId: number) {
+  const ids = getMessageSet(targetRoomId)
+  const roomMsgs = getRoomMessages(targetRoomId)
 
-/** Добавление нового сообщения */
-function addMessage(msg: ChatMessage) {
-  if (!roomId.value) return
-  const ids = getMessageSet(roomId.value)
-  const roomMsgs = getRoomMessages(roomId.value)
-
-  // генерим временный id если его нет
-  if (!msg.id) {
-    msg.id = `${msg.created_at}_${msg.content}`
-  }
-
+  if (!msg.id) msg.id = Date.now() + Math.random()
   if (ids.has(msg.id)) return
 
   ids.add(msg.id)
   roomMsgs.push(msg)
 }
 
-/** Загрузка сообщений из API */
+function isAtBottom() {
+  const el = chatBoxRef.value
+  if (!el) return false
+  return el.scrollHeight - el.scrollTop <= el.clientHeight + 50
+}
+
+function scrollToBottomAnimated() {
+  const el = chatBoxRef.value
+  if (!el) return
+
+  const target = el.scrollHeight
+  const duration = 200
+  const start = el.scrollTop
+  const startTime = performance.now()
+
+  function animate(time: number) {
+    const elapsed = time - startTime
+    const progress = Math.min(elapsed / duration, 1)
+    el.scrollTop = start + (target - start) * progress
+    if (progress < 1) requestAnimationFrame(animate)
+    else {
+      newMessageCount.value = 0
+      userScrolledUp.value = false
+    }
+  }
+
+  requestAnimationFrame(animate)
+}
+
+const scrollToBottom = () =>
+  nextTick(() => chatBoxRef.value?.scrollTo(0, chatBoxRef.value.scrollHeight))
+
+function onScroll() {
+  const el = chatBoxRef.value
+  if (!el) return
+  userScrolledUp.value = el.scrollHeight - el.scrollTop > el.clientHeight + 50
+}
+
 async function getMessages() {
   if (!roomId.value) return
   loadingMessages.value = true
@@ -167,10 +182,7 @@ async function getMessages() {
     const { data } = await getMessagesQuery(roomId.value)
     if (data.code === 200) {
       for (const m of data.data.messages ?? []) {
-        addMessage({
-          ...m,
-          is_your: m.user?.id === userId.value
-        })
+        addMessage({ ...m, is_your: m.user?.id === userId.value }, roomId.value)
       }
     }
   } catch (error) {
@@ -181,19 +193,20 @@ async function getMessages() {
   }
 }
 
-/** Отправка сообщения */
 async function sendMessage() {
   if (!newMessage.value.trim() || !roomId.value) return
 
   const msg: ChatMessage = {
-    id: Date.now().toString(),
+    id: Date.now() + Math.random(),
     content: newMessage.value,
     created_at: new Date().toISOString(),
     is_your: true,
     user: { id: userId.value, name: 'Вы' }
   }
-  addMessage(msg)
-  await scrollToBottom()
+
+  addMessage(msg, roomId.value)
+  if (!userScrolledUp.value) scrollToBottomAnimated()
+  else newMessageCount.value++
 
   try {
     await sendMessageQuery({ chatRoomId: roomId.value, message: newMessage.value })
@@ -204,36 +217,29 @@ async function sendMessage() {
   }
 }
 
-/** Выбор комнаты */
 const selectRoom = async (id: number) => {
-  if (roomId.value === id) return // защита от повторного выбора
-
+  if (roomId.value === id) return
   roomId.value = id
   unreadCounts.value[id] = 0
   chatStore.subscribeChannel(`chat.${id}`)
   await getMessages()
-
+  newMessageCount.value = 0
+  userScrolledUp.value = false
   await router.push({ name: 'SupportChat', params: { id } })
 }
 
 onMounted(async () => {
   await supportStore.getSupportInfo()
-
-  // восстановить непрочитанные
   const savedUnread = localStorage.getItem('unreadCounts')
-  if (savedUnread) {
-    unreadCounts.value = JSON.parse(savedUnread)
-  }
+  if (savedUnread) unreadCounts.value = JSON.parse(savedUnread)
 
   chatStore.connect()
-
   const { data } = await getChatsSupportQuery()
   if (data.code === 200) {
     rooms.value = data.data.chats.map((chat) => ({
       id: chat.chat_room_id,
       name: chat.chat_room_name
     }))
-
     rooms.value.forEach((room) => chatStore.subscribeChannel(`chat.${room.id}`))
 
     if (rooms.value.length) {
@@ -246,25 +252,17 @@ onMounted(async () => {
 watch(
   () => route.params.id,
   async (newId) => {
-    if (!newId && rooms.value.length) {
-      await selectRoom(rooms.value[0].id)
-    } else if (newId) {
-      await selectRoom(Number(newId))
-    }
+    if (!newId && rooms.value.length) await selectRoom(rooms.value[0].id)
+    else if (newId) await selectRoom(Number(newId))
   }
 )
 
-/** Сохраняем непрочитанные в localStorage */
 watch(
   unreadCounts,
-  (newCounts) => {
-    localStorage.setItem('unreadCounts', JSON.stringify(newCounts))
-  },
+  (newCounts) => localStorage.setItem('unreadCounts', JSON.stringify(newCounts)),
   { deep: true }
 )
 
-/** Новые сообщения через сокет */
-/** Новые сообщения через сокет */
 watch(
   () => chatStore.messages[chatStore.messages.length - 1],
   (msg) => {
@@ -277,26 +275,19 @@ watch(
     if (parsed.senderId === userId.value) return
 
     const newMsg: ChatMessage = {
-      id: parsed.id ?? parsed.timestamp + parsed.content,
+      id: parsed.id ?? Date.now() + Math.random(),
       content: parsed.content,
       created_at: parsed.timestamp,
       is_your: false,
       user: { id: parsed.senderId, name: parsed.senderName ?? 'Пользователь' }
     }
 
-    // --- теперь не завязано на активную комнату ---
-    const ids = getMessageSet(roomIdFromMsg)
-    const roomMsgs = getRoomMessages(roomIdFromMsg)
-
-    if (!ids.has(newMsg.id)) {
-      ids.add(newMsg.id)
-      roomMsgs.push(newMsg)
-    }
+    addMessage(newMsg, roomIdFromMsg)
 
     if (roomIdFromMsg !== roomId.value) {
       unreadCounts.value[roomIdFromMsg] = (unreadCounts.value[roomIdFromMsg] || 0) + 1
     } else {
-      if (isAtBottom()) scrollToBottom()
+      if (!userScrolledUp.value) scrollToBottomAnimated()
       else newMessageCount.value++
     }
   }
@@ -304,6 +295,17 @@ watch(
 </script>
 
 <style scoped lang="scss">
+.chat-wrapper {
+  display: flex;
+  justify-content: center;
+  max-height: 83vh;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    max-height: 100vh;
+  }
+}
+
 .chat {
   background: #fff;
   box-shadow: none;
@@ -397,33 +399,11 @@ watch(
     }
   }
 
-  &-wrapper {
-    display: flex;
-    justify-content: center;
-    max-height: 83vh;
-
-    @media (max-width: 767px) {
-      flex-direction: column;
-      max-height: 100vh;
-    }
-  }
-
-  h2 {
-    padding: 20px;
-  }
-
-  &_mobile {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 90vh;
-  }
-
   &__actions {
     display: flex;
     align-items: center;
     padding: 20px;
+    position: relative;
 
     &-send {
       cursor: pointer;
@@ -530,5 +510,42 @@ watch(
   align-items: center;
   justify-content: center;
   height: 450px;
+}
+
+.new-message-indicator {
+  position: absolute;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgb(169, 55, 244);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* анимация сообщений */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.3s ease;
+}
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+.fade-slide-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fade-slide-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
 }
 </style>
