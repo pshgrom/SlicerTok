@@ -74,7 +74,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
       coeffs.value = coeffs.value?.map((item) => {
         const { id, rate } = item
         return {
-          label: `Установить коэффициент ${rate}`,
+          label: rate,
           value: id
         }
       })

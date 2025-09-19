@@ -54,7 +54,6 @@ export const useSupport = defineStore('supportStore', () => {
     try {
       const { data } = await getSupportInfoQuery()
       supportInfo.value = data?.data ?? {}
-      console.error('supportInfo.value', supportInfo.value)
     } catch (error: any) {
       errorStore.setErrors(error.response?.data?.message ?? '')
     }

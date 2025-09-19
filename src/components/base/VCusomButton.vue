@@ -105,5 +105,16 @@ const customClasses = computed(() => props.customClass.join(' '))
       opacity: 0 !important;
     }
   }
+  &.with-icon {
+    padding: 0 12px !important;
+  }
+  &.only-icon {
+    max-width: 40px;
+    min-width: 40px;
+
+    :deep(.svg-icon) {
+      margin: 0;
+    }
+  }
 }
 </style>

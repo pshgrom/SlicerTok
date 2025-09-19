@@ -88,7 +88,7 @@
             <div class="profile-info-item__icon">
               <SvgIcon name="calendar" />
             </div>
-            <div class="profile-info-item__value">01.09.2025</div>
+            <div class="profile-info-item__value">{{ formatDate(user.created_at) }}</div>
           </div>
           <div class="profile-info-item">
             <div class="profile-info-item__icon">
@@ -114,6 +114,7 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import type { IUser } from '@/interfaces/Slicer'
 import { useSupportUsers } from '@/stores/SupportUsers.ts'
+import { formatDate } from '@/utils/formatDate.ts'
 import { formatNumber } from '@/utils/formatNumbers.ts'
 // import ImageUploader from '@/components/base/ImageUploader.vue'
 

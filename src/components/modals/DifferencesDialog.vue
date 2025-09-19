@@ -2,25 +2,67 @@
   <v-dialog v-model="dialogModel" class="custom-modal" max-width="500px" persistent>
     <v-card>
       <v-card-title>
-        <span class="headline">Проверка спорных моментов</span>
+        <span class="headline">ID: {{ currentItem.id }}</span>
         <v-btn icon="mdi-close" variant="text" @click="dialogModel = false" />
       </v-card-title>
       <v-card-text>
+        <div v-if="currentItem.is_bonus" class="bonus-video">
+          <div class="bonus-video__img">
+            <SvgIcon name="gift" />
+          </div>
+          <div class="bonus-video__text">Бонусное видео</div>
+        </div>
+        <v-card class="user-card" flat>
+          <v-row class="user-card__row" align="center" no-gutters>
+            <v-avatar class="user-card__avatar" size="50">
+              <img src="@/static/img/avatar.png" alt="аватарка" />
+            </v-avatar>
+            <v-col class="user-card__info">
+              <div class="user-card__name">{{ userName }}</div>
+
+              <div class="user-card__status">
+                <div class="user-card__stat user-card__stat--success">
+                  <SvgIcon name="video-approved" />
+                  <span>{{ videoApprover }}</span>
+                </div>
+
+                <div class="user-card__stat user-card__stat--time">
+                  <SvgIcon name="time" />
+                  <span>{{ videoModeration }}</span>
+                </div>
+
+                <div class="user-card__stat user-card__stat--error">
+                  <SvgIcon name="video-declined" />
+                  <span>{{ videoRejected }}</span>
+                </div>
+              </div>
+            </v-col>
+            <v-col class="user-card__actions" cols="auto">
+              <VCusomButton :custom-class="['light', 'avg', 'with-icon']" @click="goToChat">
+                <SvgIcon name="message-circle" />
+                Чат
+              </VCusomButton>
+              <VCusomButton :custom-class="['light', 'avg', 'only-icon']" @click="goToUser">
+                <SvgIcon name="arrow-right" />
+              </VCusomButton>
+            </v-col>
+          </v-row>
+        </v-card>
         <v-form ref="formRef">
-          <v-row
-            no-gutters
-            class="flex-nowrap"
-            style="overflow-x: auto; white-space: nowrap; justify-content: space-around"
-          >
+          <v-row no-gutters class="custom-modal__row flex-nowrap">
             <v-col
               v-for="(group, groupName) in currentItem.status_moderation"
               :key="groupName"
-              cols="auto"
+              style="margin: 0 2px"
             >
-              <v-card class="info-admin" variant="outlined" rounded style="border: none !important">
+              <v-card
+                class="info-admin info-admin_dialog"
+                variant="outlined"
+                rounded
+                style="border: none !important"
+              >
                 <div class="info-admin__title">{{ formatLabel(groupName) }}</div>
                 <div class="info-admin-comment">
-                  <div class="info-admin-comment__label mb-2">Статусы:</div>
                   <div
                     v-if="group.status"
                     class="custom-table-chip"
@@ -53,12 +95,14 @@
             </v-col>
           </v-row>
 
-          <div v-if="showActions" class="info-admin__title text-center">Итоговые значения</div>
+          <div v-if="showActions" class="info-admin__title info-admin__title_offset">
+            Итоговые значения
+          </div>
           <VCustomSelect
             v-if="!sameStatuses"
             v-model="currentStatus"
             :items="allStatuses"
-            class="mt-4 mb-6"
+            class="mb-6"
             :label="'Статус'"
           >
             <template #item="{ item, props }">
@@ -72,7 +116,7 @@
             v-model="finalViews"
             label="Количество просмотров по факту"
             :rules="[videoRules.quantityViews, videoRules.required]"
-            class="mt-4 mb-2"
+            class="mb-1"
             @input="onInput"
           />
           <VCustomSelect
@@ -107,11 +151,14 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import VCustomSelect from '@/components/base/VCustomSelect.vue'
 import { useAdminInfo } from '@/stores/AdminInfo.ts'
+import { useSupportUsers } from '@/stores/SupportUsers.ts'
 import { formatNumber } from '@/utils/formatNumbers.ts'
 import { getColor, getIcon, getStatusColor, getTextStatus } from '@/utils/socials.ts'
 import { videoRules } from '@/utils/validators.ts'
@@ -128,6 +175,7 @@ const emit = defineEmits(['update:modelValue', 'update:currentItem', 'changeFina
 
 const finalCoeff = ref(null)
 const finalViews = ref('')
+const supportUsersStore = useSupportUsers()
 
 const allStatuses = [
   { label: 'Одобрено', value: 'approved' },
@@ -138,6 +186,7 @@ const currentStatus = ref('')
 
 const formRef = ref(null)
 const adminInfo = useAdminInfo()
+const router = useRouter()
 
 const coeffs = computed(() => adminInfo.coeffs ?? [])
 const showActions = computed(() => !sameViews.value || !sameCoeffs.value || !sameStatuses.value)
@@ -174,10 +223,35 @@ const dialogModel = computed({
   set: (val) => emit('update:modelValue', val)
 })
 
+const videoApprover = computed(
+  () => props.currentItem.slicer?.user_approved_publications_count ?? 0
+)
+
+const videoModeration = computed(
+  () => props.currentItem.slicer?.user_moderation_publications_count ?? 0
+)
+
+const userName = computed(() => props.currentItem.slicer?.name ?? '-')
+const userId = computed(() => props.currentItem.slicer?.id)
+
+const videoRejected = computed(
+  () => props.currentItem.slicer?.user_rejected_publications_count ?? 0
+)
+
 const currentItem = computed({
   get: () => props.currentItem,
   set: (val) => emit('update:currentItem', val)
 })
+
+const goToChat = async () => {
+  const resp = await supportUsersStore.getChatByUser(userId.value)
+  const { chat_room_id } = resp
+  if (chat_room_id) await router.push({ name: 'SupportChat', params: { id: chat_room_id } })
+}
+
+const goToUser = async () => {
+  await router.push({ name: 'User', params: { id: userId.value } })
+}
 
 const formatLabel = (label: string) => {
   switch (label) {
@@ -214,9 +288,11 @@ const change = async () => {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 :deep(.v-card-text) {
   padding-top: 0 !important;
+  padding-left: 16px !important;
+  padding-right: 16px !important;
 }
 
 :deep(.v-card-actions) {
@@ -224,8 +300,16 @@ const change = async () => {
   //bottom: 0;
   background: #fff;
 }
-</style>
-<style lang="scss" scoped>
+
+.custom-modal {
+  &__row {
+    margin-bottom: 32px;
+    overflow-x: auto;
+    white-space: nowrap;
+    justify-content: space-around;
+  }
+}
+
 .info-admin {
   padding: 12px 12px 12px 0;
 
@@ -238,6 +322,11 @@ const change = async () => {
     font-size: 14px;
     color: rgba(17, 17, 17, 1);
     margin-bottom: 12px;
+    letter-spacing: 0;
+
+    &_offset {
+      margin-bottom: 25px;
+    }
   }
 
   &-comment {
@@ -247,6 +336,8 @@ const change = async () => {
       color: rgba(143, 150, 165, 1);
       font-size: 12px;
       font-weight: 500;
+      letter-spacing: 0;
+      margin-bottom: 5px;
     }
     &__value {
       color: rgba(0, 0, 0, 1);
@@ -254,5 +345,106 @@ const change = async () => {
       line-height: 140%;
     }
   }
+
+  &_dialog {
+    background: rgba(242, 246, 254, 1);
+    padding: 16px;
+  }
+}
+
+.bonus-video {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(242, 246, 254, 1);
+  border-radius: 16px;
+  margin-bottom: 4px;
+
+  &__img {
+    margin-right: 10px;
+  }
+
+  &__text {
+    color: rgba(169, 55, 244, 1);
+    font-size: 12px;
+    letter-spacing: 0;
+    position: relative;
+    top: 1px;
+  }
+}
+
+:deep(.v-card-actions) {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+}
+
+:deep(.v-card-title) {
+  position: sticky;
+  top: 0;
+  background: #fff !important;
+  z-index: 1;
+}
+
+.user-card {
+  background-color: #f5f9ff;
+  padding: 16px;
+  height: 82px;
+  margin-bottom: 4px;
+}
+
+.user-card__row {
+  display: flex;
+  align-items: center;
+}
+
+.user-card__avatar {
+  margin-right: 15px;
+}
+
+.user-card__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.user-card__name {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: rgba(17, 17, 17, 1);
+  letter-spacing: 0;
+}
+
+.user-card__status {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-card__stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: #666;
+}
+
+.user-card__stat--success {
+  color: #2e7d32;
+}
+
+.user-card__stat--time {
+  color: #888;
+}
+
+.user-card__stat--error {
+  color: #888;
+}
+
+.user-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 </style>

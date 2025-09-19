@@ -10,7 +10,7 @@
           <VCustomSelect
             v-model="currentItem.status"
             :items="allStatuses"
-            class="mt-4 mb-4"
+            class="mt-2 mb-4"
             :label="'Статус'"
           >
             <template #item="{ item, props }">
@@ -19,7 +19,7 @@
               </v-list-item>
             </template>
           </VCustomSelect>
-          <div v-show="currentItem.status === 'rejected'">
+          <div v-show="currentItem.status === 'rejected'" class="mb-4">
             <v-checkbox
               v-model="selectAll"
               label="Выбрать все"
@@ -44,10 +44,16 @@
             v-model="currentItem.number_views_moderation"
             label="Количество просмотров по факту"
             :rules="[videoRules.quantityViews, videoRules.required]"
-            class="mt-4 mb-4"
+            class="mb-1"
             @input="onInput"
           />
-          <VCustomSelect v-model="setCoeff" label="Коэффициенты" class="mb-4" :items="coeffs">
+          <VCustomSelect
+            v-model="setCoeff"
+            :rules="[videoRules.required]"
+            label="Коэффициенты"
+            class="mb-2"
+            :items="coeffs"
+          >
             <template #item="{ item, props }">
               <v-list-item v-bind="props">
                 {{ item.text }}
