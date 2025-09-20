@@ -79,46 +79,30 @@
     <template #[`item.is_bonus`]="{ item }">
       <SvgIcon v-if="item.is_bonus" :name="'check'" />
     </template>
-    <!--    <template #[`item.is_verified`]="{ item }">-->
-    <!--      <div-->
-    <!--        class="custom-table-chip"-->
-    <!--        :style="{-->
-    <!--          'background-color': getVerifiedColor(item.is_verified),-->
-    <!--          color: getVerifiedColor(item.is_verified)-->
-    <!--        }"-->
-    <!--      >-->
-    <!--        <div class="custom-table-chip__icon">-->
-    <!--          <SvgIcon :name="getVerifiedIcon(item.is_verified)" />-->
-    <!--        </div>-->
-    <!--        <div class="custom-table-chip__status">-->
-    <!--          {{ getVerifiedStatus(item.is_verified) }}-->
-    <!--        </div>-->
-    <!--      </div>-->
-    <!--    </template>-->
     <template #[`item.actions`]="{ item }">
       <div class="d-flex" style="min-width: 500px">
-        <div class="custom-table__icon mr-2">
-          <SvgIcon name="edit-row" @click="showDialog(item)" />
-        </div>
-        <VCusomButton
-          class="custom-table__button"
-          :custom-class="['dark']"
-          :disabled="item.status === 'todo' || !item.status"
-          @click="finishCheck(item.id, item.status)"
-          >Закончить проверку
+        <VCusomButton :custom-class="['light', 'avg', 'only-icon']" @click="showDialog(item)">
+          <SvgIcon name="edit-row" />
         </VCusomButton>
         <VCusomButton
           class="custom-table__button ml-2"
-          :custom-class="['light']"
+          :custom-class="['light', 'avg']"
           @click="openMarkModal(item.id)"
           >Пометка
         </VCusomButton>
         <VCusomButton
           class="custom-table__button ml-2"
-          :custom-class="['dark']"
+          :custom-class="['dark', 'avg']"
           :disabled="!!item.user_requires_verification"
           @click="requestVerification(item.id, item.user_requires_verification)"
           >Запросить верификацию
+        </VCusomButton>
+        <VCusomButton
+          class="custom-table__button ml-2"
+          :custom-class="['dark', 'avg']"
+          :disabled="item.status === 'todo' || !item.status"
+          @click="finishCheck(item.id, item.status)"
+          >Закончить проверку
         </VCusomButton>
       </div>
     </template>
@@ -134,6 +118,7 @@
 <script setup lang="ts">
 import { computed, nextTick, type PropType, ref, watch } from 'vue'
 
+import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import AddMarkModal from '@/components/modals/AddMarkModal.vue'
 import ModerationDialog from '@/components/modals/ModerationDialog.vue'
@@ -275,31 +260,3 @@ const changeState = (item: any, selectedTasks: any) => {
   emit('changeState', item, selectedTasks)
 }
 </script>
-
-<style lang="scss" scoped>
-.custom-table__button {
-  display: none;
-}
-.custom-table__icon {
-  display: none;
-  cursor: pointer;
-
-  &:hover {
-    :deep(svg) {
-      & > path {
-        fill: rgba(229, 236, 253, 1);
-        stroke: rgba(0, 212, 254, 1);
-      }
-    }
-  }
-}
-
-:deep(.v-data-table__tr) {
-  &:hover {
-    .custom-table__icon,
-    .custom-table__button {
-      display: block;
-    }
-  }
-}
-</style>
