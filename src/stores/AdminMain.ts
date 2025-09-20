@@ -3,8 +3,11 @@ import { ref } from 'vue'
 
 import {
   actionRequestAdminQuery,
+  addNewCoeffQuery,
+  getCoeffsListQuery,
   getLogListQuery,
-  getPublicationsListMainQuery
+  getPublicationsListMainQuery,
+  removeCoeffQuery
 } from '@/api/adminInfo'
 import type { ITableParams } from '@/interfaces/AppModel'
 import { useError } from '@/stores/Errors'
@@ -17,6 +20,7 @@ export const useAdminMain = defineStore('adminMainStore', () => {
     total: 0
   })
   const items = ref([])
+  const coeffs = ref([])
   const errorStore = useError()
 
   const setQueryParams = (val: ITableParams) => {
@@ -74,9 +78,37 @@ export const useAdminMain = defineStore('adminMainStore', () => {
     }
   }
 
+  const getCoeffsList = async () => {
+    try {
+      isLoading.value = true
+      const resp = await getCoeffsListQuery()
+      coeffs.value = resp?.data?.data ?? []
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const removeCoeff = async (id: number) => {
+    try {
+      return await removeCoeffQuery(id)
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    }
+  }
+
   const actionRequest = async (data: any) => {
     try {
       return await actionRequestAdminQuery(data)
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    }
+  }
+
+  const addNewCoeff = async (newCoeff: string) => {
+    try {
+      return await addNewCoeffQuery(newCoeff)
     } catch (error: any) {
       errorStore.setErrors(error.response?.data?.message ?? '')
     }
@@ -89,6 +121,10 @@ export const useAdminMain = defineStore('adminMainStore', () => {
     queryParams,
     setQueryParams,
     getLogList,
-    actionRequest
+    actionRequest,
+    getCoeffsList,
+    coeffs,
+    removeCoeff,
+    addNewCoeff
   }
 })

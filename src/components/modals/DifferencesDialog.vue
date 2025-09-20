@@ -88,7 +88,7 @@
                 <div class="info-admin-comment">
                   <div class="info-admin-comment__label">Коэффициент:</div>
                   <div class="info-admin-comment__value">
-                    {{ group.coefficient.rate || '-' }}
+                    {{ group.coefficient?.rate || '-' }}
                   </div>
                 </div>
               </v-card>

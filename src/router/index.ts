@@ -94,6 +94,12 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true, roles: [ROLES.ADMIN_MAIN], showChat: false }
   },
   {
+    path: '/coefficients',
+    name: 'AdminCoeff',
+    component: () => import('@/views/AdminCoeff.vue'),
+    meta: { requiresAuth: true, roles: [ROLES.ADMIN_MAIN], showChat: false }
+  },
+  {
     path: '/admin-main-logs',
     name: 'AdminMainLogs',
     component: () => import('@/views/AdminMainLogs.vue'),

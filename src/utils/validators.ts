@@ -20,6 +20,13 @@ export const requiredRules = {
   required: (v: any) => !!v || 'Обязательное поле'
 }
 
+export const coeffsRules = {
+  required: (v: any) => !!v || 'Обязательное поле',
+  min: (v: any) => parseFloat(v) >= 0 || 'Минимум 0',
+  format: (v: any) => /^\d+\.\d+$/.test(v) || 'Введите число в формате X.Y',
+  max: (v: any) => parseFloat(v) <= 10 || 'Максимум 10'
+}
+
 export const walletRules = {
   required: (v: any) => !!v || 'Обязательное поле',
 

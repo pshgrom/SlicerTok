@@ -164,6 +164,11 @@ export const adminMain = [
   { title: 'Действия', value: 'actions' }
 ]
 
+export const adminCoeffs = [
+  { title: 'Значение', value: 'rate' },
+  { title: '', value: 'actions' }
+]
+
 export const adminMainLogs = [
   {
     title: 'ID',

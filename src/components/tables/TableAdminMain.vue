@@ -137,7 +137,7 @@ import {
   getTextStatus
 } from '@/utils/socials.ts'
 
-const emit = defineEmits(['changeStatus', 'saveComment', 'finishCheck', 'actionRequest'])
+const emit = defineEmits(['actionRequest'])
 
 const props = defineProps({
   headers: {

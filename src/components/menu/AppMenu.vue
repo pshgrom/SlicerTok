@@ -39,6 +39,7 @@ const menuItems: Record<string, any[]> = {
   ],
   [ROLES.ADMIN_MAIN]: [
     { label: 'Заявки', to: '/admin-main' },
+    { label: 'Коэффициенты', to: '/coefficients' },
     { label: 'Логи', to: '/admin-main-logs' }
   ],
   [ROLES.SUPPORT]: [

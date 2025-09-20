@@ -13,15 +13,16 @@
     <template #loading>
       <v-progress-circular indeterminate color="#0070ba" />
     </template>
-    <template #[`item.url`]="{ item }">
-      <a class="custom-table__link" :href="item.url" target="_blank">
-        {{ formatUrl(item.url) }}
-      </a>
-    </template>
-    <template #[`item.video_stat_link`]="{ item }">
-      <a class="custom-table__link" :href="item.video_stat_link" target="_blank">
-        {{ formatUrl(item.video_stat_link) }}
-      </a>
+    <template #[`item.actions`]="{ item }">
+      <div class="d-flex align-center justify-end">
+        <VCusomButton
+          :custom-class="['light', 'avg', 'only-icon']"
+          :disabled="items.length <= 1"
+          @click="removeCoeff(item.id)"
+        >
+          <SvgIcon name="remove" />
+        </VCusomButton>
+      </div>
     </template>
   </v-data-table>
 </template>
@@ -29,8 +30,11 @@
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
 
+import SvgIcon from '@/components/base/SvgIcon.vue'
+import VCusomButton from '@/components/base/VCusomButton.vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
-// import VCustomSelect from '@/components/base/VCustomSelect.vue'
+
+const emit = defineEmits(['removeCoeff'])
 
 const props = defineProps({
   headers: {
@@ -62,33 +66,7 @@ const computedHeaders = computed<ITableHeaders[]>({
   }
 })
 
-const formatUrl = (url: string) => {
-  if (!url) return ''
-  const firstPart = url.slice(0, 30)
-  const lastPart = url.slice(url.length - 3)
-  return `${firstPart}...${lastPart}`
+const removeCoeff = (id: number) => {
+  emit('removeCoeff', id)
 }
 </script>
-
-<style lang="scss">
-.cell-link {
-  text-decoration: underline;
-  transition: opacity 0.15s ease-in;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.7;
-  }
-}
-
-.custom-table__link {
-  cursor: pointer;
-  transition: opacity 0.15s ease-in;
-  border-bottom: 1px solid transparent;
-
-  &:hover {
-    opacity: 0.7;
-    border-color: #000;
-  }
-}
-</style>

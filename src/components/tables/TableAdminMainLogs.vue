@@ -24,8 +24,6 @@ import { computed, type PropType, ref } from 'vue'
 
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 
-defineEmits(['changeStatus', 'saveComment', 'finishCheck'])
-
 const props = defineProps({
   headers: {
     type: Array as PropType<ITableHeaders[]>,
@@ -67,5 +65,3 @@ const formatDate = (dateStr: string) => {
   })
 }
 </script>
-
-<style lang="scss"></style>

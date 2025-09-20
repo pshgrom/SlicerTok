@@ -11,6 +11,8 @@ export const getPublicationListPaymentQuery = (data: ITableParams) =>
 export const getPublicationsListMainQuery = (data: ITableParams) =>
   api.get('/admin-main/publication/get-publication-list', { params: data })
 
+export const getCoeffsListQuery = () => api.get('/admin-main/coefficient/get-coefficient-list')
+
 export const getCompletedListQuery = (data: ITableParams) =>
   api.get('/admin/publication/get-publication-moderation-completed-list', { params: data })
 
@@ -36,3 +38,9 @@ export const saveMarkQuery = (data: any) => api.post('/admin/publication/set-mar
 
 export const actionRequestAdminQuery = (data: any) =>
   api.post('/admin-main/publication/final-status', data)
+
+export const removeCoeffQuery = (id: number) =>
+  api.post('/admin-main/coefficient/delete-coefficient', { id })
+
+export const addNewCoeffQuery = (value: string) =>
+  api.post('/admin-main/coefficient/create-coefficient', { rate: value })
