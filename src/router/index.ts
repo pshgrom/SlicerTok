@@ -8,8 +8,6 @@ import {
 
 import { ROLES, type RoleType } from '@/constants/roles'
 import { useLoader } from '@/stores/GlobalLoader.ts'
-import LoginView from '@/views/LoginView.vue'
-import LoginViewAdmin from '@/views/LoginViewAdmin.vue'
 
 // Расширяем типы meta
 declare module 'vue-router' {
@@ -28,15 +26,15 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'Login',
-    // component: () => import('@/views/LoginView.vue'), // lazy-load
-    component: LoginView,
+    component: () => import('@/views/LoginView.vue'), // lazy-load
+    // component: LoginView,
     meta: { showChat: false }
   },
   {
     path: '/login-admin',
     name: 'LoginAdmin',
-    // component: () => import('@/views/LoginViewAdmin.vue'), // lazy-load
-    component: () => LoginViewAdmin, // lazy-load
+    component: () => import('@/views/LoginViewAdmin.vue'), // lazy-load
+    // component: () => LoginViewAdmin, // lazy-load
     meta: { showChat: false }
   },
   {
