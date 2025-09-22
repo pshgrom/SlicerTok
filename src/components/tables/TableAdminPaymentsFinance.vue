@@ -6,7 +6,7 @@
     :items-per-page="itemsPerPage"
     class="custom-table"
     hover
-    height="80vh"
+    height="70vh"
     fixed-header
     hide-default-footer
   >
