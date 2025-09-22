@@ -117,6 +117,7 @@ const handleLogin = async (): Promise<void> => {
     isLoading.value = false
   }
 }
+console.log('admin auth')
 </script>
 
 <style scoped lang="scss">
