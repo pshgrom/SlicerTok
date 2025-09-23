@@ -33,6 +33,7 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
     socket.value = new WebSocket(url)
 
     socket.value.onopen = () => {
+      console.log('open connection')
       connected.value = true
       isConnecting.value = false
       reconnectAttempts.value = 0
