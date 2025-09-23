@@ -47,15 +47,18 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
     }
 
     socket.value.onmessage = (event) => {
+      console.log('WS RAW:', event.data)
       try {
         const msg = JSON.parse(event.data) as Message
+        console.log('WS PARSED:', msg)
         messages.value.push(msg)
       } catch (e) {
         console.error('Ошибка парсинга сообщения:', event.data)
       }
     }
 
-    socket.value.onclose = () => {
+    socket.value.onclose = (e) => {
+      console.error('WS закрыт:', e.code, e.reason)
       connected.value = false
       isConnecting.value = false
       errorStore.setErrors('Соединение потеряно, переподключение...', 'error')
@@ -63,7 +66,8 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
       attemptReconnect()
     }
 
-    socket.value.onerror = () => {
+    socket.value.onerror = (e) => {
+      console.error('WS ошибка:', e)
       errorStore.setErrors('Ошибка сети', 'error')
       socket.value?.close()
     }
