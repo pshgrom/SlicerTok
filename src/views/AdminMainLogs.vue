@@ -1,4 +1,9 @@
 <template>
+  <div class="table-actions table-actions_admin">
+    <div class="table-actions__left">
+      <div class="table-actions__label">Логи</div>
+    </div>
+  </div>
   <TableAdminMainLogs
     class="custom-table"
     :headers="headers"
