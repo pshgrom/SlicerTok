@@ -22,13 +22,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, ref } from 'vue'
 
 import TableAdminMain from '@/components/tables/TableAdminMain.vue'
 import TablePagination from '@/components/tables/TablePagination.vue'
+import { useTableQuery } from '@/composables/useTableQuery.ts'
 import { adminMain } from '@/constants/tableHeaders'
-import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
+import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import { useAdminMain } from '@/stores/AdminMain'
 import { useError } from '@/stores/Errors.ts'
 
@@ -37,33 +37,15 @@ const headers = ref<ITableHeaders[]>(adminMain)
 const adminMainStore = useAdminMain()
 const errorStore = useError()
 
-const isLoading = computed(() => adminMainStore.isLoading)
-const router = useRouter()
-
-const calcDataItems = computed<IUserInfoData[]>(() => adminMainStore.items)
-
-const queryParams = computed<ITableParams>({
-  get() {
-    return adminMainStore.queryParams
-  },
-  set(val) {
-    adminMainStore.setQueryParams(val)
-  }
+const { queryParams, totalPages, changePage, getRequest } = useTableQuery({
+  getQueryParams: () => adminMainStore.queryParams,
+  setQueryParams: (params) => adminMainStore.setQueryParams(params),
+  fetchData: (params) => adminMainStore.getPublicationsListMain(params)
 })
 
-const totalPages = computed(() =>
-  queryParams.value?.total && queryParams.value?.perPage
-    ? Math.ceil(queryParams.value.total / queryParams.value.perPage)
-    : 0
-)
+const isLoading = computed(() => adminMainStore.isLoading)
 
-const changePage = (page: number) => {
-  queryParams.value = {
-    ...queryParams.value,
-    page: +page
-  }
-  getRequest()
-}
+const calcDataItems = computed<IUserInfoData[]>(() => adminMainStore.items)
 
 const actionRequest = async (id: number, status: string) => {
   const newData = {
@@ -79,24 +61,4 @@ const actionRequest = async (id: number, status: string) => {
     console.log(e)
   }
 }
-
-const getRequest = () => {
-  const { page, perPage } = queryParams.value
-  router.push({
-    query: {
-      page: page ?? 1,
-      perPage: perPage
-    }
-  })
-  adminMainStore.getPublicationsListMain(queryParams.value)
-}
-
-onMounted(() => {
-  const { page = 1, perPage = 50 } = router.currentRoute.value.query
-  queryParams.value = {
-    page,
-    perPage
-  }
-  getRequest()
-})
 </script>

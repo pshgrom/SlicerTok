@@ -33,12 +33,10 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
     socket.value = new WebSocket(url)
 
     socket.value.onopen = () => {
-      console.log('open connection')
       connected.value = true
       isConnecting.value = false
       reconnectAttempts.value = 0
       // errorStore.setErrors('Соединение установлено', 'success')
-      console.log('Соединение установлено', 'success')
 
       // повторная подписка
       subscribedChannels.value.forEach((channel) => {
@@ -47,10 +45,8 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
     }
 
     socket.value.onmessage = (event) => {
-      console.log('WS RAW:', event.data)
       try {
         const msg = JSON.parse(event.data) as Message
-        console.log('WS PARSED:', msg)
         messages.value.push(msg)
       } catch (e) {
         console.error('Ошибка парсинга сообщения:', event.data)
@@ -58,7 +54,6 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
     }
 
     socket.value.onclose = (e) => {
-      console.error('WS закрыт:', e.code, e.reason)
       connected.value = false
       isConnecting.value = false
       errorStore.setErrors('Соединение потеряно, переподключение...', 'error')
@@ -67,7 +62,6 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
     }
 
     socket.value.onerror = (e) => {
-      console.error('WS ошибка:', e)
       errorStore.setErrors('Ошибка сети', 'error')
       socket.value?.close()
     }
@@ -110,7 +104,6 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
 
     socket.value?.send(JSON.stringify(unsubscribeMsg))
     subscribedChannels.value.delete(channel)
-    console.log('Отписались от канала', channel)
   }
 
   function sendMessage(channel: string, eventName: string, data: any) {

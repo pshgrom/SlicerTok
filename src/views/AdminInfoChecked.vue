@@ -24,14 +24,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import TabsSwitcher from '@/components/base/TabsSwitcher.vue'
 import TableAdminInfoChecked from '@/components/tables/TableAdminInfoChecked.vue'
 import TablePagination from '@/components/tables/TablePagination.vue'
+import { useTableQuery } from '@/composables/useTableQuery.ts'
 import { adminInfoCheckedHeaders } from '@/constants/tableHeaders'
-import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
+import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import { useAdminInfo } from '@/stores/AdminInfo'
 
 const headers = ref<ITableHeaders[]>(adminInfoCheckedHeaders)
@@ -45,52 +46,15 @@ const tabsContent = [
   { id: 'tab2', title: 'Проверенные', count: 0, redirect: '/admin-info-checked' }
 ]
 
-const calcDataItems = computed<IUserInfoData[]>(() => adminInfo.adminInfoData)
-
-const queryParams = computed<ITableParams>({
-  get() {
-    return adminInfo.queryParams
-  },
-  set(val) {
-    adminInfo.setQueryParams(val)
-  }
+const { queryParams, totalPages, changePage } = useTableQuery({
+  getQueryParams: () => adminInfo.queryParams,
+  setQueryParams: (params) => adminInfo.setQueryParams(params),
+  fetchData: (params) => adminInfo.getCompletedList(params)
 })
 
-const totalPages = computed(() =>
-  queryParams.value?.total && queryParams.value?.perPage
-    ? Math.ceil(queryParams.value.total / queryParams.value.perPage)
-    : 0
-)
-
-const changePage = (page: number) => {
-  queryParams.value = {
-    ...queryParams.value,
-    page: +page
-  }
-  getRequest()
-}
+const calcDataItems = computed<IUserInfoData[]>(() => adminInfo.adminInfoData)
 
 const goToPage = (path: string) => {
   router.push(path.redirect)
 }
-
-const getRequest = () => {
-  const { page, perPage } = queryParams.value
-  router.push({
-    query: {
-      page: page ?? 1,
-      perPage: perPage
-    }
-  })
-  adminInfo.getCompletedList(queryParams.value)
-}
-
-onMounted(() => {
-  const { page = 1, perPage = 50 } = router.currentRoute.value.query
-  queryParams.value = {
-    page,
-    perPage
-  }
-  getRequest()
-})
 </script>
