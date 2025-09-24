@@ -8,6 +8,7 @@ import {
 
 import { ROLES, type RoleType } from '@/constants/roles'
 import { useLoader } from '@/stores/GlobalLoader.ts'
+import UserInfo from '@/views/UserInfo.vue'
 
 // Расширяем типы meta
 declare module 'vue-router' {
@@ -106,7 +107,8 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/user-info',
     name: 'UserInfo',
-    component: () => import('@/views/UserInfo.vue'),
+    // component: () => import('@/views/UserInfo.vue'),
+    component: UserInfo,
     meta: { requiresAuth: true, roles: [ROLES.SLICER], showChat: true }
   }
 ]
@@ -121,7 +123,7 @@ router.beforeEach(
     const loader = useLoader()
     const token = localStorage.getItem('authToken')
     const role = localStorage.getItem('role') as RoleType | null
-    const { requiresAuth, roles: allowedRoles } = to.meta
+    const { requiresAuth, roles: allowedRoles } = to.meta || {}
 
     const adminRoles: RoleType[] = [
       ROLES.ADMIN,

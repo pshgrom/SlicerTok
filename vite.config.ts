@@ -115,7 +115,6 @@ export default defineConfig({
   },
 
   esbuild: {
-    // drop: isProd ? ['console', 'debugger'] : []
-    drop: []
+    drop: isProd ? ['console', 'debugger'] : []
   }
 })
