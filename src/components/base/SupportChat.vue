@@ -79,7 +79,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { getChatsSupportQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
 import VCustomInput from '@/components/base/VCustomInput.vue'
-import { useChatSocketStore } from '@/stores/chatSocket'
+import { useChatSocketStore } from '@/stores/ChatSocket'
 import { useSupport } from '@/stores/Support.ts'
 
 const chatStore = useChatSocketStore()

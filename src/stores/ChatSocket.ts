@@ -24,7 +24,6 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
   function connect() {
     const { VITE_APP_WS_URL, VITE_APP_WS_PATH, VITE_APP_WS_QUERY } = import.meta.env ?? {}
     const url = `${VITE_APP_WS_URL}${VITE_APP_WS_PATH}${VITE_APP_WS_QUERY}`
-    console.warn(url)
     if (isConnecting.value || reconnectAttempts.value >= maxReconnectAttempts) return
 
     reconnectUrl.value = url

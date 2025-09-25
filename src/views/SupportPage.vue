@@ -33,6 +33,7 @@ import { supportHeaders } from '@/constants/tableHeaders'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import { useAdminInfo } from '@/stores/AdminInfo.ts'
 import { useError } from '@/stores/Errors.ts'
+import { useRequestSocket } from '@/stores/RequestsSocket.ts'
 import { useSupport } from '@/stores/Support'
 // import type { ISupportSaveStatus } from '@/interfaces/ISupport'
 
@@ -41,6 +42,7 @@ const errorStore = useError()
 const dialog = ref(false)
 
 const supportStore = useSupport()
+const requestSocketStore = useRequestSocket()
 
 const isLoading = computed(() => supportStore.isLoading)
 const router = useRouter()
@@ -106,5 +108,7 @@ onMounted(() => {
   }
   getRequest()
   adminInfo.getCoefficient()
+  requestSocketStore.setChannel('publication-new.support')
+  requestSocketStore.connect()
 })
 </script>

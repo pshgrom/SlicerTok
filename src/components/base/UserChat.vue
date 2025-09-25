@@ -55,7 +55,7 @@ import { ROLES } from '@/constants/roles.ts'
 import { useAdminInfo } from '@/stores/AdminInfo.ts'
 import { useAdminPaymentsFinance } from '@/stores/AdminPaymentsFinance.ts'
 import { useAuth } from '@/stores/Auth.ts'
-import { useChatSocketStore } from '@/stores/chatSocket'
+import { useChatSocketStore } from '@/stores/ChatSocket'
 import { useUserInfo } from '@/stores/UserInfo.ts'
 
 interface ChatMessage {

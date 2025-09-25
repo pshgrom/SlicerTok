@@ -68,9 +68,11 @@ import { adminInfoHeaders } from '@/constants/tableHeaders'
 import type { ITableHeaders, ITableParamsAdmin, IUserInfoData } from '@/interfaces/AppModel'
 import { useAdminInfo } from '@/stores/AdminInfo'
 import { useError } from '@/stores/Errors.ts'
+import { useRequestSocket } from '@/stores/RequestsSocket'
 
 const headers = ref<ITableHeaders[]>(adminInfoHeaders)
 const errorStore = useError()
+const requestSocketStore = useRequestSocket()
 
 const tabsContent = [
   { id: 'tab1', title: 'На модерации', count: 0, redirect: '/admin-info' },
@@ -265,6 +267,8 @@ onMounted(() => {
   getRequest()
   adminInfo.getCoefficient()
   adminInfo.getAdminInfo()
+  requestSocketStore.setChannel('publication-new.admin')
+  requestSocketStore.connect()
   // window.addEventListener('keydown', handleKeydown)
 })
 
