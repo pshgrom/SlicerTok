@@ -157,7 +157,6 @@ const goToChat = async (id: string | number) => {
   min-width: 474px;
   min-height: 259px;
   border-radius: 16px;
-  margin-right: 12px;
   width: 100%;
   height: 100%;
   position: relative;

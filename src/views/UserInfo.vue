@@ -99,8 +99,6 @@ const user = ref<IUser>({
   telegram: ''
 })
 
-// Computed properties
-const phoneStore = computed(() => authStore.phone)
 const isLoading = computed(() => userInfoStore.isLoading)
 const userInfoData = computed<IUserInfoData[]>(() => userInfoStore.userInfoData)
 
@@ -311,7 +309,7 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     margin-bottom: 14px;
-    gap: 16px;
+    gap: 14px;
 
     @media (max-width: 767px) {
       flex-direction: column;

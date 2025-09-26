@@ -99,6 +99,12 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true, roles: [ROLES.ADMIN_MAIN], showChat: false }
   },
   {
+    path: '/admins-online',
+    name: 'AdminsOnlinePage',
+    component: () => import('@/views/AdminsOnlinePage.vue'),
+    meta: { requiresAuth: true, roles: [ROLES.ADMIN_MAIN], showChat: false }
+  },
+  {
     path: '/admin-main-logs',
     name: 'AdminMainLogs',
     component: () => import('@/views/AdminMainLogs.vue'),
