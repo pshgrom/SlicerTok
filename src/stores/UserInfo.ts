@@ -33,6 +33,15 @@ export const useUserInfo = defineStore('userInfoStore', () => {
   const userInfoData = ref<IUserInfoData[]>([])
   const isEnableGoogle2fa = ref(false)
 
+  const updateUserInfoItem = (newItem: any) => {
+    const index = userInfoData.value.findIndex((item) => item.id === newItem.id)
+    if (index !== -1) {
+      userInfoData.value[index] = { ...userInfoData.value[index], ...newItem }
+    } else {
+      console.log('no find')
+    }
+  }
+
   const setQueryParams = (val: ITableParams) => {
     queryParams.value = {
       ...queryParams.value,
@@ -206,6 +215,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     qrCode,
     secretKey,
     checkCode,
-    isEnableGoogle2fa
+    isEnableGoogle2fa,
+    updateUserInfoItem
   }
 })

@@ -60,7 +60,6 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-// Components
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import AddVideoDialog from '@/components/modals/AddVideoDialog.vue'
 import EditProfileDialog from '@/components/modals/EditProfileDialog.vue'
@@ -74,6 +73,7 @@ import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/Ap
 import type { IUploadVideo, IUser, IWallet } from '@/interfaces/Slicer'
 import { useAuth } from '@/stores/Auth'
 import { useError } from '@/stores/Errors'
+import { useRequestSocket } from '@/stores/RequestsSocket.ts'
 import { useUserInfo } from '@/stores/UserInfo'
 
 const headers = ref<ITableHeaders[]>(userInfoHeaders)
@@ -83,15 +83,16 @@ const userInfoStore = useUserInfo()
 const errorStore = useError()
 const router = useRouter()
 
-// Refs
 const wallets = ref<IWallet[]>([])
 const isModalOpen = ref(false)
 const isSubmittingVideo = ref(false)
+const requestSocketStore = useRequestSocket()
 const editDialog = ref(false)
 const dialogVideo = ref(false)
 const endDate = ref<string | null>(null)
 
-// User data
+const userId = ref<string | null | number>(null)
+
 const user = ref<IUser>({
   name: '',
   phone: authStore.phone || '',
@@ -104,9 +105,9 @@ const userInfoData = computed<IUserInfoData[]>(() => userInfoStore.userInfoData)
 
 const mainWallet = computed(() => wallets.value.find((wallet) => wallet.is_main))
 
-const sortedWallets = computed(() => {
-  return [...wallets.value].sort((a, b) => (b.is_main ? 1 : a.is_main ? -1 : 0))
-})
+const sortedWallets = computed(() =>
+  [...wallets.value].sort((a, b) => (b.is_main ? 1 : a.is_main ? -1 : 0))
+)
 
 const queryParams = computed<ITableParams>({
   get() {
@@ -124,7 +125,6 @@ const totalPages = computed(() => {
 
 const showPagination = computed(() => totalPages.value > 0)
 
-// Methods
 const cleanNumber = (str: string): string => {
   return str.replace(/\D/g, '')
 }
@@ -187,13 +187,11 @@ const setAsMain = async (walletId: number) => {
   const walletIndex = wallets.value.findIndex((wallet) => wallet.id === walletId)
   if (walletIndex === -1) return
 
-  // Update local state
   wallets.value = wallets.value.map((wallet) => ({
     ...wallet,
     is_main: wallet.id === walletId
   }))
 
-  // Update server
   await userInfoStore.setWalletMain(walletId)
 }
 
@@ -255,8 +253,9 @@ const fetchPublications = () => {
 const fetchUserInfo = async () => {
   try {
     const response = await userInfoStore.getInfo()
-    const { contacts, name: userName, key } = response.data?.profile ?? {}
+    const { contacts, name: userName, key } = response?.data?.profile ?? {}
     endDate.value = response.data?.inf_updated_at
+    userId.value = response.data?.id
 
     user.value = {
       ...contacts,
@@ -300,6 +299,8 @@ onMounted(async () => {
     console.error('Ошибка при загрузке данных:', error)
     errorStore.setErrors('Не удалось загрузить данные пользователя')
   }
+  requestSocketStore.setChannel(`publication.status.${userId.value}`)
+  requestSocketStore.connect()
 })
 </script>
 

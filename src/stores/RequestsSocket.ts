@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 import { useError } from '@/stores/Errors.ts'
+import { useUserInfo } from '@/stores/UserInfo.ts'
 
 type RequestItem = {
   id: number
@@ -16,6 +17,8 @@ export const useRequestSocket = defineStore('requestSocket', () => {
   const requests = ref<RequestItem[]>([])
   const errorStore = useError()
   const channelName = ref<string>('')
+  const slicerRequest = ref(null)
+  const userInfoStore = useUserInfo()
 
   const reconnectAttempts = ref(0)
   const maxReconnectAttempts = 10
@@ -53,16 +56,28 @@ export const useRequestSocket = defineStore('requestSocket', () => {
       try {
         const msg = JSON.parse(event.data)
 
-        console.warn('msg.event', msg.event)
-        if (msg.event === 'pusher_internal:subscription_succeeded') {
-          subscribed.value = true
-          console.log(`📡 Подписка на ${channelName.value} успешна`)
-        }
+        switch (msg.event) {
+          case 'pusher_internal:subscription_succeeded':
+            subscribed.value = true
+            console.log(`📡 Подписка на ${channelName.value} успешна`)
+            break
 
-        if (msg.event === `App\\Events\\PublicationNew`) {
-          console.log('📩 Получено событие publication.created')
-          errorStore.setErrors('Новая заявка — обновите страницу', 'info')
-          // await adminInfoStore.getPublicationsList(queryParams.value)
+          case 'App\\Events\\PublicationNew':
+            console.log('📩 Получено событие publication.created')
+            errorStore.setErrors('Новая заявка — обновите страницу', 'info')
+            // await adminInfoStore.getPublicationsList(queryParams.value)
+            break
+
+          case 'PublicationStatus': {
+            slicerRequest.value = JSON.parse(msg.data)
+            const id = slicerRequest?.value?.id
+            errorStore.setErrors(`Статус заявки ${id} обновлен`, 'info')
+            userInfoStore.updateUserInfoItem(slicerRequest.value)
+            break
+          }
+
+          default:
+            console.log(`⚠️ Необработанное событие: ${msg.event}`)
         }
       } catch (e) {
         console.error('Ошибка парсинга сообщения:', event.data)
