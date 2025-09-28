@@ -141,42 +141,32 @@ const stepDescription = computed(() => {
 
 const submitButtonText = computed(() => (isPhoneStep.value ? 'Отправить код' : 'Подтвердить'))
 
-const placeholderPhone = computed(() => {
-  const masks = {
-    1: '(__) ___-__-__',
-    2: '(___) ___-__-__'
-  }
-  return masks[currentCountryCode.value] || ''
-})
-
-const currentMask = computed(() => {
-  const masks = {
-    1: '(##) ###-##-##',
-    2: '(###) ###-##-##'
-  }
-  return masks[currentCountryCode.value] || null
-})
-
-const phoneRules = computed(() => {
-  const digitLengthRules = {
-    1: 9,
-    2: 10
-  }
-
-  const requiredLength = digitLengthRules[currentCountryCode.value]
-  if (!requiredLength) return []
-
-  const onlyDigits = phone.value.replace(/\D/g, '')
-  return [() => onlyDigits.length === requiredLength || `Введите ${requiredLength} цифр`]
-})
-
 const phoneRulesWithRequired = computed(() => [...phoneRules.value, requiredRules.required])
 
 const codeValidationRule = (value: string) => {
   return value.length === CODE_LENGTH || 'Код должен быть из 6 цифр'
 }
 
-// Methods
+const currentCountry = computed(
+  () => countryCodes.value.find((c) => c.value === currentCountryCode.value) || null
+)
+
+const currentMask = computed(() => {
+  if (!currentCountry.value) return ''
+  return currentCountry.value.placeholder.replace(/0/g, '#')
+})
+
+const placeholderPhone = computed(() => currentCountry.value?.placeholder || '')
+
+const phoneRules = computed(() => {
+  if (!currentCountry.value) return []
+
+  const requiredLength = (currentCountry.value.placeholder.match(/0/g) || []).length
+  const onlyDigits = phone.value.replace(/\D/g, '')
+
+  return [() => onlyDigits.length === requiredLength || `Введите ${requiredLength} цифр`]
+})
+
 const handleBack = () => {
   step.value = PHONE_STEP
   code.value = ''

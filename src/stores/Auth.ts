@@ -57,10 +57,11 @@ export const useAuth = defineStore('authStore', () => {
       const { data: newData, status } = data ?? {}
       if (status === 'Success' && newData) {
         Object.keys(newData).forEach((item) => {
-          const { id, code, name } = newData[item]
+          const { id, code, name, placeholder } = newData[item]
           countries.push({
             value: id,
-            label: `${code} ${name}`
+            label: `${code} ${name}`,
+            placeholder
           })
         })
         if (!countryCodes.value.length) {
