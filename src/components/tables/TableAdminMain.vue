@@ -95,17 +95,21 @@
       </a>
     </template>
     <template #[`item.actions`]="{ item }">
-      <div class="d-flex align-center" :class="{ 'justify-end': item.status === 'rejected' }">
+      <div
+        v-if="item.status !== 'moderation'"
+        class="d-flex align-center"
+        :class="{ 'justify-end': item.status === 'rejected' }"
+      >
         <VCusomButton
-          v-if="item.status !== 'rejected'"
+          :disabled="item.status === 'rejected'"
           :custom-class="['light']"
           @click="actionRequest(item.id, 'rejected')"
         >
           Отклонить заявку
         </VCusomButton>
         <VCusomButton
-          v-if="item.status !== 'awaiting_payment'"
           class="ml-4"
+          :disabled="item.status === 'awaiting_payment'"
           :custom-class="['dark']"
           @click="actionRequest(item.id, 'approved')"
         >
