@@ -49,7 +49,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
         ...(status_comment ? { status_comment } : {}),
         number_views_moderation: +number_views_moderation,
         ...(status !== 'approved' && { rules }),
-        coefficient_id: coefficient.id ? coefficient.id : undefined
+        coefficient_id: coefficient?.id ? coefficient.id : undefined
       }
       const { data } = await setPublicationStatusQuery(newData)
       const msg = data?.message ?? ''

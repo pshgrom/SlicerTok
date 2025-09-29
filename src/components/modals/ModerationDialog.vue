@@ -47,13 +47,7 @@
             class="mb-1"
             @input="onInput"
           />
-          <VCustomSelect
-            v-model="setCoeff"
-            :rules="[videoRules.required]"
-            label="Коэффициенты"
-            class="mb-2"
-            :items="coeffs"
-          >
+          <VCustomSelect v-model="setCoeff" label="Коэффициенты" class="mb-2" :items="coeffs">
             <template #item="{ item, props }">
               <v-list-item v-bind="props">
                 {{ item.text }}
