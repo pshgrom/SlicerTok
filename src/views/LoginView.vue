@@ -23,7 +23,7 @@
                 v-model="currentCountryCode"
                 label="Код страны"
                 :items="countryCodes"
-                style="width: 120px"
+                style="min-width: 120px; max-width: 120px"
                 class="mr-2"
               >
                 <template #item="{ item, props }">
@@ -35,13 +35,13 @@
               <VCustomInput
                 :key="currentCountryCode"
                 v-model="phone"
-                v-mask="currentMask"
                 label="Номер телефона"
                 autofocus
                 :placeholder="placeholderPhone"
                 :rules="phoneRulesWithRequired"
                 required
               />
+              <!--              v-mask="currentMask"-->
             </div>
           </template>
 
@@ -96,7 +96,7 @@ import type { IAuthByPhone, IAuthConfirmation } from '@/interfaces/Auth'
 import { useAuth } from '@/stores/Auth'
 import { useError } from '@/stores/Errors'
 import { cleanPhoneNumber } from '@/utils/formatNumbers'
-import { requiredRules } from '@/utils/validators.ts'
+import { infoRules, requiredRules } from '@/utils/validators.ts'
 
 const PHONE_STEP = 1
 const CODE_STEP = 2
@@ -141,7 +141,8 @@ const stepDescription = computed(() => {
 
 const submitButtonText = computed(() => (isPhoneStep.value ? 'Отправить код' : 'Подтвердить'))
 
-const phoneRulesWithRequired = computed(() => [...phoneRules.value, requiredRules.required])
+// const phoneRulesWithRequired = computed(() => [...phoneRules.value, requiredRules.required])
+const phoneRulesWithRequired = computed(() => [requiredRules.required, infoRules.phone])
 
 const codeValidationRule = (value: string) => {
   return value.length === CODE_LENGTH || 'Код должен быть из 6 цифр'
@@ -151,21 +152,21 @@ const currentCountry = computed(
   () => countryCodes.value.find((c) => c.value === currentCountryCode.value) || null
 )
 
-const currentMask = computed(() => {
-  if (!currentCountry.value) return ''
-  return currentCountry.value.placeholder.replace(/0/g, '#')
-})
+// const currentMask = computed(() => {
+//   if (!currentCountry.value) return ''
+//   return currentCountry.value.placeholder.replace(/0/g, '#')
+// })
 
 const placeholderPhone = computed(() => currentCountry.value?.placeholder || '')
 
-const phoneRules = computed(() => {
-  if (!currentCountry.value) return []
-
-  const requiredLength = (currentCountry.value.placeholder.match(/0/g) || []).length
-  const onlyDigits = phone.value.replace(/\D/g, '')
-
-  return [() => onlyDigits.length === requiredLength || `Введите ${requiredLength} цифр`]
-})
+// const phoneRules = computed(() => {
+//   if (!currentCountry.value) return []
+//
+//   const requiredLength = (currentCountry.value.placeholder.match(/0/g) || []).length
+//   const onlyDigits = phone.value.replace(/\D/g, '')
+//
+//   return [() => onlyDigits.length === requiredLength || `Введите ${requiredLength} цифр`]
+// })
 
 const handleBack = () => {
   step.value = PHONE_STEP
