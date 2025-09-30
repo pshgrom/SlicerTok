@@ -42,7 +42,9 @@
                 {{ msg?.user?.name ?? '' }}
               </div>
               <div class="chat-messages-item__msg">{{ msg.content }}</div>
-              <div class="chat-messages-item__time">{{ getTime(msg.created_at) }}</div>
+              <div class="chat-messages-item__time">
+                {{ getTime(msg.created_at) }}
+              </div>
             </div>
           </transition-group>
 
@@ -85,18 +87,19 @@ import { useSupport } from '@/stores/Support.ts'
 const chatStore = useChatSocketStore()
 const supportStore = useSupport()
 const route = useRoute()
+const dateFrom = ref(undefined)
 const router = useRouter()
 
 type Room = { id: number; name: string }
 type ChatMessage = {
-  id: string
+  id: string | number
   content: string
   created_at: string
   is_your: boolean
   user?: { id: number; name: string }
 }
 
-const messageIds = ref<Record<number, Set<string>>>({})
+const messageIds = ref<Record<number, Set<string | number>>>({})
 const rooms = ref<Room[]>([])
 const roomId = ref<number | null>(null)
 const messages = ref<Record<number, ChatMessage[]>>({})
@@ -104,8 +107,13 @@ const newMessage = ref('')
 const newMessageCount = ref(0)
 const chatBoxRef = ref<HTMLElement | null>(null)
 const unreadCounts = ref<Record<number, number>>({})
-const loadingMessages = ref(true)
+const loadingMessages = ref(false)
 const userScrolledUp = ref(false)
+const initialScrollDone = ref(false)
+
+const page = ref<Record<number, number>>({})
+const pageSize = 20
+const hasMore = ref<Record<number, boolean>>({})
 
 const userId = computed(() => supportStore.supportInfo?.id)
 const currentRoom = computed(() => rooms.value.find((r) => r.id === roomId.value) || null)
@@ -113,40 +121,41 @@ const currentMessages = computed(() => (roomId.value ? messages.value[roomId.val
 
 const getTime = (time: string) => {
   const date = new Date(time)
-  return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+  return `${date.getHours().toString().padStart(2, '0')}:${date
+    .getMinutes()
+    .toString()
+    .padStart(2, '0')}`
 }
 
 const getMessageSet = (rId: number) => {
   if (!messageIds.value[rId]) messageIds.value[rId] = new Set()
   return messageIds.value[rId]
 }
-
 const getRoomMessages = (rId: number) => {
   if (!messages.value[rId]) messages.value[rId] = []
   return messages.value[rId]
+}
+const getPage = (rId: number) => {
+  if (!page.value[rId]) page.value[rId] = 1
+  return page.value[rId]
+}
+const getHasMore = (rId: number) => {
+  if (hasMore.value[rId] === undefined) hasMore.value[rId] = true
+  return hasMore.value[rId]
 }
 
 function addMessage(msg: ChatMessage, targetRoomId: number) {
   const ids = getMessageSet(targetRoomId)
   const roomMsgs = getRoomMessages(targetRoomId)
-
   if (!msg.id) msg.id = Date.now() + Math.random()
   if (ids.has(msg.id)) return
-
   ids.add(msg.id)
   roomMsgs.push(msg)
-}
-
-function isAtBottom() {
-  const el = chatBoxRef.value
-  if (!el) return false
-  return el.scrollHeight - el.scrollTop <= el.clientHeight + 50
 }
 
 function scrollToBottomAnimated() {
   const el = chatBoxRef.value
   if (!el) return
-
   const target = el.scrollHeight
   const duration = 200
   const start = el.scrollTop
@@ -162,34 +171,71 @@ function scrollToBottomAnimated() {
       userScrolledUp.value = false
     }
   }
-
   requestAnimationFrame(animate)
 }
 
 const scrollToBottom = () =>
-  nextTick(() => chatBoxRef.value?.scrollTo(0, chatBoxRef.value.scrollHeight))
+  nextTick(() => {
+    if (chatBoxRef.value) {
+      chatBoxRef.value.scrollTop = chatBoxRef.value.scrollHeight
+    }
+  })
 
-function onScroll() {
+async function onScroll() {
   const el = chatBoxRef.value
-  if (!el) return
+  if (!el || !roomId.value) return
+
+  if (!initialScrollDone.value) {
+    initialScrollDone.value = true
+    return
+  }
+
   userScrolledUp.value = el.scrollHeight - el.scrollTop > el.clientHeight + 50
+
+  // подгрузка старых сообщений
+  if (el.scrollTop <= 100 && getHasMore(roomId.value) && !loadingMessages.value) {
+    page.value[roomId.value] = getPage(roomId.value) + 1
+    await getMessages(roomId.value, true)
+  }
 }
 
-async function getMessages() {
-  if (!roomId.value) return
+async function getMessages(rId: number, isLoadMore = false) {
   loadingMessages.value = true
+  let oldScrollHeight = 0
+  let oldScrollTop = 0
+  if (isLoadMore && chatBoxRef.value) {
+    oldScrollHeight = chatBoxRef.value.scrollHeight
+    oldScrollTop = chatBoxRef.value.scrollTop
+  }
+
   try {
-    const { data } = await getMessagesQuery(roomId.value)
-    console.warn('data', data)
-    if (data?.data?.length) {
-      for (const m of data.data ?? []) {
-        addMessage({ ...m, is_your: m.user?.id === userId.value }, roomId.value)
-      }
+    const { data } = await getMessagesQuery(rId, getPage(rId), dateFrom.value)
+    dateFrom.value = data?.date_from ?? undefined
+    const newMsgs = data.data.reverse() ?? []
+
+    if (isLoadMore) {
+      messages.value[rId] = [
+        ...newMsgs.map((m) => ({ ...m, is_your: m.user?.id === userId.value })),
+        ...(messages.value[rId] || [])
+      ]
+    } else {
+      messages.value[rId] = newMsgs.map((m) => ({ ...m, is_your: m.user?.id === userId.value }))
+    }
+
+    if (newMsgs.length < pageSize) {
+      hasMore.value[rId] = false
     }
   } catch (error) {
     console.error(error)
   } finally {
     loadingMessages.value = false
+  }
+
+  if (isLoadMore && chatBoxRef.value) {
+    await nextTick()
+    const newScrollHeight = chatBoxRef.value.scrollHeight
+    chatBoxRef.value.scrollTop = oldScrollTop + (newScrollHeight - oldScrollHeight)
+  } else if (!isLoadMore) {
     scrollToBottom()
   }
 }
@@ -210,7 +256,10 @@ async function sendMessage() {
   else newMessageCount.value++
 
   try {
-    await sendMessageQuery({ chatRoomId: roomId.value, message: newMessage.value })
+    await sendMessageQuery({
+      chatRoomId: roomId.value,
+      message: newMessage.value
+    })
   } catch (err) {
     console.error(err)
   } finally {
@@ -223,9 +272,14 @@ const selectRoom = async (id: number) => {
   roomId.value = id
   unreadCounts.value[id] = 0
   chatStore.subscribeChannel(`chat.${id}`)
-  await getMessages()
+
+  page.value[id] = 1
+  hasMore.value[id] = true
+  await getMessages(id)
   newMessageCount.value = 0
   userScrolledUp.value = false
+  initialScrollDone.value = false
+
   await router.push({ name: 'SupportChat', params: { id } })
 }
 

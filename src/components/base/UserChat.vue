@@ -195,7 +195,7 @@ const getMessages = async (isLoadMore = false): Promise<void> => {
     dateFrom.value = data?.date_from ?? undefined
 
     const uid = Number(userId.value)
-    const newMessages = (data?.data ?? []).map((msg: any) => ({
+    const newMessages = (data?.data.reverse() ?? []).map((msg: any) => ({
       ...msg,
       is_your: Number(msg.user_id) === uid
     }))
