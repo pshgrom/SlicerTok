@@ -18,20 +18,52 @@
       <v-form ref="formRef" @submit.prevent="handleSubmit">
         <div class="login-view__content">
           <template v-if="isPhoneStep">
-            <div class="d-flex">
-              <VCustomSelect
+            <div class="d-flex flex-column">
+              <!--              <VCustomSelect-->
+              <!--                v-model="currentCountryCode"-->
+              <!--                label="Код страны"-->
+              <!--                :items="countryCodes"-->
+              <!--                style="min-width: 120px; max-width: 120px"-->
+              <!--                class="mr-2"-->
+              <!--                item-title="label"-->
+              <!--                item-value="value"-->
+              <!--                searchable-->
+              <!--              >-->
+              <!--                <template #prepend-item>-->
+              <!--                  <v-text-field-->
+              <!--                    v-model="search"-->
+              <!--                    placeholder="Поиск..."-->
+              <!--                    density="compact"-->
+              <!--                    clearable-->
+              <!--                    class="ma-2"-->
+              <!--                    hide-details-->
+              <!--                  />-->
+              <!--                  <v-divider />-->
+              <!--                </template>-->
+              <!--                <template #item="{ item, props }">-->
+              <!--                  <v-list-item v-bind="props">-->
+              <!--                    {{ item.text }}-->
+              <!--                  </v-list-item>-->
+              <!--                </template>-->
+              <!--              </VCustomSelect>-->
+              <v-autocomplete
                 v-model="currentCountryCode"
                 label="Код страны"
                 :items="countryCodes"
-                style="min-width: 120px; max-width: 120px"
-                class="mr-2"
+                item-title="label"
+                item-value="value"
+                variant="outlined"
+                density="comfortable"
+                class="custom-autocomplete"
+                clearable
+                hide-details
               >
                 <template #item="{ item, props }">
                   <v-list-item v-bind="props">
-                    {{ item.text }}
+                    {{ item.raw.text }}
                   </v-list-item>
                 </template>
-              </VCustomSelect>
+              </v-autocomplete>
               <VCustomInput
                 :key="currentCountryCode"
                 v-model="phone"
@@ -91,7 +123,6 @@ import { useRouter } from 'vue-router'
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
-import VCustomSelect from '@/components/base/VCustomSelect.vue'
 import type { IAuthByPhone, IAuthConfirmation } from '@/interfaces/Auth'
 import { useAuth } from '@/stores/Auth'
 import { useError } from '@/stores/Errors'
@@ -112,7 +143,8 @@ const isGoogle2faEnabled = ref(false)
 const authStore = useAuth()
 const errorStore = useError()
 const router = useRouter()
-
+const search = ref('')
+console.warn('authStore.countryCodes1', authStore.countryCodes)
 const countryCodes = computed(() => authStore.countryCodes ?? [])
 const currentCountryCode = computed({
   get: () => authStore.currentCountryCode ?? 1,
@@ -294,6 +326,38 @@ onMounted(() => {
   &__actions {
     display: flex;
     justify-content: end;
+  }
+}
+</style>
+
+<style lang="scss">
+.custom-autocomplete {
+  margin-bottom: 30px;
+  height: 40px;
+
+  :deep(input) {
+    font-size: 14px !important;
+    color: rgba(17, 17, 17, 1);
+  }
+
+  :deep(.v-field--outlined) {
+    --v-field-border-opacity: 1;
+    border-color: rgba(100, 100, 100, 1) !important;
+    outline: none;
+  }
+
+  :deep(.v-label) {
+    font-weight: 500;
+    color: rgba(143, 150, 165, 1) !important;
+    font-size: 14px !important;
+  }
+
+  :deep(.v-field--focused .v-field__outline__start),
+  :deep(.v-field--focused .v-field__outline__notch::before),
+  :deep(.v-field--focused .v-field__outline__notch::after),
+  :deep(.v-field--focused .v-field__outline__end) {
+    border-color: rgb(169, 55, 244) !important;
+    --v-field-border-width: 1px !important;
   }
 }
 </style>
