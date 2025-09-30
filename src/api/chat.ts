@@ -4,9 +4,9 @@ export const getChatQuery = () => api.get('/chat/get-chat-support')
 
 export const getChatsSupportQuery = () => api.get('/chat/get-chats')
 
-export const getMessagesQuery = (roomId: number) =>
+export const getMessagesQuery = (roomId: number, page = 1, dateFrom = undefined) =>
   api.get('/chat/get-chat-messages', {
-    params: { chatRoomId: roomId }
+    params: { page, dateFrom, chatRoomId: roomId }
   })
 
 export const getChatByUserQuery = (userId: number | string) =>

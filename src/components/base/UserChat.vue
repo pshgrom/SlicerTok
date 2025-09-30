@@ -79,8 +79,13 @@ const chatStore = useChatSocketStore()
 const { isMobile } = useDeviceDetection()
 const authStore = useAuth()
 
+const page = ref(1)
+const pageSize = 20
+const hasMore = ref(true)
+const isLoadingMore = ref(false)
 const roomId = ref<number | null>(null)
 const newMessage = ref('')
+const dateFrom = ref(undefined)
 const messages = ref<ChatMessage[]>([])
 const chatBoxRef = ref<HTMLElement | null>(null)
 const loadingMessages = ref(true)
@@ -105,6 +110,7 @@ const role = computed(() => authStore.role)
 const filteredMessages = computed(() => {
   const uniqueMessages: ChatMessage[] = []
   const seenKeys = new Set<string>()
+  console.log('messages.value, ', messages.value)
 
   for (const message of messages.value) {
     const key = getMessageKey(message)
@@ -127,12 +133,12 @@ const getMessageKey = (msg: ChatMessage): string => {
   return `time_${msg.created_at}_content_${msg.content.slice(0, 20)}_your_${msg.is_your}`
 }
 
-const scrollToBottom = (): void => {
+const scrollToBottom = (smooth = true) => {
   nextTick(() => {
     if (chatBoxRef.value) {
       chatBoxRef.value.scrollTo({
         top: chatBoxRef.value.scrollHeight,
-        behavior: 'smooth'
+        behavior: smooth ? 'smooth' : 'auto'
       })
     }
   })
@@ -177,28 +183,65 @@ const sendMessageRest = async (): Promise<void> => {
   }
 }
 
-const getMessages = async (): Promise<void> => {
+const getMessages = async (isLoadMore = false): Promise<void> => {
   if (!roomId.value) return
+  if (isLoadMore && (!hasMore.value || isLoadingMore.value)) return
 
-  loadingMessages.value = true
+  let oldScrollHeight = 0
+  let oldScrollTop = 0
+
+  if (isLoadMore && chatBoxRef.value) {
+    oldScrollHeight = chatBoxRef.value.scrollHeight
+    oldScrollTop = chatBoxRef.value.scrollTop
+  }
+
+  if (!isLoadMore) {
+    loadingMessages.value = true
+    page.value = 1
+    hasMore.value = true
+  } else {
+    isLoadingMore.value = true
+    page.value += 1
+  }
+
   try {
-    const { data } = await getMessagesQuery(roomId.value)
-    if (data.code === 200) {
-      processedMessageIds.clear()
-      const uid = Number(userId.value) // фиксируем ID заранее
+    const { data } = await getMessagesQuery(roomId.value, page.value, dateFrom.value)
 
-      const newMessages = (data.data.messages ?? []).map((msg: any) => ({
-        ...msg,
-        is_your: Number(msg.user_id) === uid
-      }))
+    dateFrom.value = data?.date_from ?? undefined
 
+    const uid = Number(userId.value)
+    const newMessages = (data?.data ?? []).map((msg: any) => ({
+      ...msg,
+      is_your: Number(msg.user_id) === uid
+    }))
+
+    if (!newMessages.length) {
+      hasMore.value = false
+      return
+    }
+
+    if (newMessages.length < pageSize) {
+      hasMore.value = false
+    }
+
+    if (isLoadMore) {
+      messages.value = [...newMessages, ...messages.value]
+
+      await nextTick(() => {
+        if (chatBoxRef.value) {
+          const newScrollHeight = chatBoxRef.value.scrollHeight
+          chatBoxRef.value.scrollTop = newScrollHeight - oldScrollHeight + oldScrollTop
+        }
+      })
+    } else {
       messages.value = [...newMessages]
-      scrollToBottom()
+      scrollToBottom(true) // плавный скролл вниз
     }
   } catch (error) {
     console.error('Ошибка загрузки сообщений:', error)
   } finally {
     loadingMessages.value = false
+    isLoadingMore.value = false
   }
 }
 
@@ -287,14 +330,23 @@ watch(
   { deep: true }
 )
 
+const onScroll = (): void => {
+  if (!chatBoxRef.value) return
+  if (chatBoxRef.value.scrollTop === 0) {
+    getMessages(true) // грузим следующую страницу
+  }
+}
+
 onMounted(async () => {
   chatStore.connect()
   await initializeChat()
   document.addEventListener('keydown', closeChat)
+  chatBoxRef.value?.addEventListener('scroll', onScroll)
 })
 
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', closeChat)
+  chatBoxRef.value?.removeEventListener('scroll', onScroll)
   if (roomId.value) {
     const channel = `chat.${roomId.value}`
     chatStore.unsubscribeChannel(channel)
