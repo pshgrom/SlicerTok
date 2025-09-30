@@ -180,8 +180,9 @@ async function getMessages() {
   loadingMessages.value = true
   try {
     const { data } = await getMessagesQuery(roomId.value)
-    if (data.code === 200) {
-      for (const m of data.data.messages ?? []) {
+    console.warn('data', data)
+    if (data?.data?.length) {
+      for (const m of data.data ?? []) {
         addMessage({ ...m, is_your: m.user?.id === userId.value }, roomId.value)
       }
     }

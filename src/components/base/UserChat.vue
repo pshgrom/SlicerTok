@@ -46,6 +46,7 @@
 </template>
 
 <script setup lang="ts">
+import { throttle } from 'lodash'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import { getChatQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
@@ -63,9 +64,7 @@ interface ChatMessage {
   content: string
   created_at: string
   is_your: boolean
-  user?: {
-    name: string
-  }
+  user?: { name: string }
   _uuid?: string
 }
 
@@ -88,13 +87,14 @@ const newMessage = ref('')
 const dateFrom = ref(undefined)
 const messages = ref<ChatMessage[]>([])
 const chatBoxRef = ref<HTMLElement | null>(null)
-const loadingMessages = ref(true)
+const loadingMessages = ref(false)
 const isSending = ref(false)
-const processedMessageIds = new Set<number | string>() // Трекер обработанных сообщений
+const processedMessageIds = new Set<number | string>()
+let scrollListenerAttached = false
+let initialScrollDone = false
 
 const userId = computed(() => {
   if (!role.value) return null
-
   switch (role.value) {
     case ROLES.SLICER:
       return userInfoStore.userInfo?.id
@@ -110,8 +110,6 @@ const role = computed(() => authStore.role)
 const filteredMessages = computed(() => {
   const uniqueMessages: ChatMessage[] = []
   const seenKeys = new Set<string>()
-  console.log('messages.value, ', messages.value)
-
   for (const message of messages.value) {
     const key = getMessageKey(message)
     if (!seenKeys.has(key)) {
@@ -119,16 +117,15 @@ const filteredMessages = computed(() => {
       uniqueMessages.push(message)
     }
   }
-
   return uniqueMessages
 })
 
-const getTime = (time: string): string => {
+const getTime = (time: string) => {
   const date = new Date(time)
   return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
 }
 
-const getMessageKey = (msg: ChatMessage): string => {
+const getMessageKey = (msg: ChatMessage) => {
   if (msg.id) return `id_${msg.id}`
   return `time_${msg.created_at}_content_${msg.content.slice(0, 20)}_your_${msg.is_your}`
 }
@@ -146,9 +143,7 @@ const scrollToBottom = (smooth = true) => {
 
 const sendMessage = async (): Promise<void> => {
   if (!newMessage.value.trim() || !roomId.value || isSending.value) return
-
   isSending.value = true
-
   try {
     const tempMessage: ChatMessage = {
       content: newMessage.value,
@@ -156,10 +151,8 @@ const sendMessage = async (): Promise<void> => {
       is_your: true,
       _uuid: `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     }
-
     messages.value.push(tempMessage)
     scrollToBottom()
-
     await sendMessageRest()
   } finally {
     isSending.value = false
@@ -168,14 +161,8 @@ const sendMessage = async (): Promise<void> => {
 
 const sendMessageRest = async (): Promise<void> => {
   if (!newMessage.value.trim() || !roomId.value) return
-
   try {
-    const newData = {
-      chatRoomId: roomId.value,
-      message: newMessage.value
-    }
-
-    await sendMessageQuery(newData)
+    await sendMessageQuery({ chatRoomId: roomId.value, message: newMessage.value })
     newMessage.value = ''
   } catch (err) {
     console.error('Ошибка отправки сообщения:', err)
@@ -189,7 +176,6 @@ const getMessages = async (isLoadMore = false): Promise<void> => {
 
   let oldScrollHeight = 0
   let oldScrollTop = 0
-
   if (isLoadMore && chatBoxRef.value) {
     oldScrollHeight = chatBoxRef.value.scrollHeight
     oldScrollTop = chatBoxRef.value.scrollTop
@@ -206,7 +192,6 @@ const getMessages = async (isLoadMore = false): Promise<void> => {
 
   try {
     const { data } = await getMessagesQuery(roomId.value, page.value, dateFrom.value)
-
     dateFrom.value = data?.date_from ?? undefined
 
     const uid = Number(userId.value)
@@ -219,14 +204,12 @@ const getMessages = async (isLoadMore = false): Promise<void> => {
       hasMore.value = false
       return
     }
-
     if (newMessages.length < pageSize) {
       hasMore.value = false
     }
 
     if (isLoadMore) {
       messages.value = [...newMessages, ...messages.value]
-
       await nextTick(() => {
         if (chatBoxRef.value) {
           const newScrollHeight = chatBoxRef.value.scrollHeight
@@ -235,7 +218,6 @@ const getMessages = async (isLoadMore = false): Promise<void> => {
       })
     } else {
       messages.value = [...newMessages]
-      scrollToBottom(true) // плавный скролл вниз
     }
   } catch (error) {
     console.error('Ошибка загрузки сообщений:', error)
@@ -250,71 +232,51 @@ const initializeChat = async (): Promise<void> => {
     const { data } = await getChatQuery()
     if (data.code === 200) {
       roomId.value = data.data.chat_room_id
-
-      // Загрузка истории сообщений
-      await getMessages()
-
-      // Подписка на канал только если roomId валиден
-      if (roomId.value) {
-        const channel = `chat.${roomId.value}`
-        chatStore.subscribeChannel(channel)
-      }
+      // только первая страница, без скролла
+      await getMessages(false)
+      if (roomId.value) chatStore.subscribeChannel(`chat.${roomId.value}`)
     }
   } catch (error) {
     console.error('Ошибка инициализации чата:', error)
   }
 }
 
-const handleIncomingMessage = (msg: any): void => {
+const handleIncomingMessage = (msg: any) => {
   if (!msg || msg.channel !== `chat.${roomId.value}` || msg.event !== 'MessageSent') return
-
   const parsed = typeof msg.data === 'string' ? JSON.parse(msg.data) : msg.data
-
-  // Проверяем, не наше ли это сообщение (чтобы избежать дублирования)
   if (parsed.senderId === userId.value) return
-
-  // Проверяем, не обрабатывали ли мы уже это сообщение
   const messageKey = `socket_${parsed.id || parsed.timestamp}_${parsed.content}`
   if (processedMessageIds.has(messageKey)) return
-
   processedMessageIds.add(messageKey)
-
-  const newMessage: ChatMessage = {
+  const newMsg: ChatMessage = {
     content: parsed.content,
     created_at: parsed.timestamp,
     is_your: false,
     id: parsed.id,
     user: parsed.user
   }
-
-  messages.value.push(newMessage)
+  messages.value.push(newMsg)
   scrollToBottom()
-
-  // Увеличиваем счетчик непрочитанных только если чат закрыт
-  if (!userInfoStore.showChat) {
-    userInfoStore.unreadCount++
-  }
+  if (!userInfoStore.showChat) userInfoStore.unreadCount++
 }
 
-const closeChat = (event: KeyboardEvent): void => {
-  if (event.key === 'Escape') {
-    emit('update:showChat', false)
-  }
+const closeChat = (event: KeyboardEvent) => {
+  if (event.key === 'Escape') emit('update:showChat', false)
 }
-
-const close = (): void => {
-  emit('update:showChat', false)
-}
+const close = () => emit('update:showChat', false)
 
 watch(
   () => userInfoStore.showChat,
-  (isOpen) => {
+  async (isOpen) => {
     if (isOpen) {
-      nextTick(() => {
-        userInfoStore.unreadCount = 0
-        localStorage.setItem('unreadCountUser', '0')
-        scrollToBottom()
-      })
+      await nextTick()
+      userInfoStore.unreadCount = 0
+      localStorage.setItem('unreadCountUser', '0')
+      scrollToBottom() // скроллим вниз один раз
+      if (!scrollListenerAttached && chatBoxRef.value) {
+        chatBoxRef.value.addEventListener('scroll', onScroll)
+        scrollListenerAttached = true
+      }
     }
   }
 )
@@ -323,34 +285,35 @@ watch(
   () => chatStore.messages,
   (newMessages) => {
     const lastMessage = newMessages[newMessages.length - 1]
-    if (lastMessage) {
-      handleIncomingMessage(lastMessage)
-    }
+    if (lastMessage) handleIncomingMessage(lastMessage)
   },
   { deep: true }
 )
 
-const onScroll = (): void => {
+const onScroll = throttle(() => {
   if (!chatBoxRef.value) return
-  if (chatBoxRef.value.scrollTop === 0) {
-    getMessages(true) // грузим следующую страницу
+  if (isLoadingMore.value || loadingMessages.value || !hasMore.value) return
+
+  if (!initialScrollDone) {
+    initialScrollDone = true
+    return
   }
-}
+
+  if (chatBoxRef.value.scrollTop <= 100) {
+    getMessages(true)
+  }
+}, 500)
 
 onMounted(async () => {
   chatStore.connect()
   await initializeChat()
   document.addEventListener('keydown', closeChat)
-  chatBoxRef.value?.addEventListener('scroll', onScroll)
 })
 
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', closeChat)
-  chatBoxRef.value?.removeEventListener('scroll', onScroll)
-  if (roomId.value) {
-    const channel = `chat.${roomId.value}`
-    chatStore.unsubscribeChannel(channel)
-  }
+  if (chatBoxRef.value) chatBoxRef.value.removeEventListener('scroll', onScroll)
+  if (roomId.value) chatStore.unsubscribeChannel(`chat.${roomId.value}`)
 })
 </script>
 
