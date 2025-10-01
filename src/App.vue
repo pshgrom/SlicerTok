@@ -74,7 +74,7 @@ watch(
   () => [isMobile.value, userInfoStore.showChat],
   (val) => {
     val[0] && val[1]
-      ? (document?.querySelector('html').style.overflow = 'hidden')
+      ? (document.querySelector('html').style.overflow = 'hidden')
       : (document.querySelector('html').style.overflow = 'auto')
   }
 )
