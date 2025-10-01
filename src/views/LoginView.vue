@@ -28,8 +28,8 @@
                 variant="outlined"
                 density="comfortable"
                 class="custom-autocomplete"
+                :rules="[requiredRules.required]"
                 clearable
-                hide-details
               >
                 <template #item="{ item, props }">
                   <v-list-item v-bind="props">
@@ -300,7 +300,7 @@ onMounted(() => {
 
 <style lang="scss">
 .custom-autocomplete {
-  margin-bottom: 30px;
+  margin-bottom: 35px;
   height: 40px;
 
   .v-field__outline {
