@@ -414,7 +414,7 @@ onBeforeUnmount(() => {
       }
 
       &_your {
-        background: rgb(169, 55, 244);
+        background: $primary-color;
         align-self: flex-end;
         border-top-right-radius: 4px;
         border-top-left-radius: 16px;

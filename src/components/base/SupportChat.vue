@@ -429,7 +429,7 @@ watch(
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgb(169, 55, 244);
+        background: $primary-color;
         color: #fff;
         font-size: 12px;
         font-weight: 400;
@@ -533,7 +533,7 @@ watch(
       }
 
       &_your {
-        background: rgb(169, 55, 244);
+        background: $primary-color;
         align-self: flex-end;
         border-top-right-radius: 4px;
         border-top-left-radius: 16px;
@@ -572,7 +572,7 @@ watch(
   bottom: 70px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgb(169, 55, 244);
+  background: $primary-color;
   color: #fff;
   padding: 6px 12px;
   border-radius: 12px;

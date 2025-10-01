@@ -78,12 +78,12 @@ const customClasses = computed(() => props.customClass.join(' '))
     background: rgba(169, 55, 244, 1) !important;
     color: rgba(255, 255, 255, 1) !important;
     &:hover {
-      background: rgb(169, 55, 244);
+      background: $primary-color;
       box-shadow: none !important;
     }
 
     &:focus {
-      background: rgb(169, 55, 244) !important;
+      background: $primary-color !important;
       border-color: transparent !important;
       box-shadow: none !important;
     }

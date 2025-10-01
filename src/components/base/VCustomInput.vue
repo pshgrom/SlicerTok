@@ -108,7 +108,7 @@ const customClasses = computed(() => props.customClass.join(' '))
 :deep(.v-field--focused .v-field__outline__notch::before),
 :deep(.v-field--focused .v-field__outline__notch::after),
 :deep(.v-field--focused .v-field__outline__end) {
-  border-color: rgb(169, 55, 244) !important;
+  border-color: $primary-color !important;
   --v-field-border-width: 1px !important;
 }
 </style>

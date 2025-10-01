@@ -64,6 +64,13 @@ export default defineConfig({
     }),
     ...(isProd ? prodPlugins : [])
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@use "@/assets/sass/variables.scss" as *;`
+      }
+    }
+  },
   server: {
     host: '0.0.0.0',
     port: 5173,

@@ -310,7 +310,7 @@ onMounted(() => {
 
   &.v-input--focused {
     .v-field__outline {
-      color: rgb(169, 55, 244) !important;
+      color: $primary-color !important;
       --v-field-border-width: 1px !important;
     }
   }

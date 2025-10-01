@@ -11,13 +11,15 @@
       >
         <HeaderMain v-if="showContent || showForSlicer" />
         <div v-if="showChat" class="chat-user">
-          <SvgIcon v-if="!isMobile" name="chat" class="chat-open" @click="toggleChat" />
-          <span
-            v-if="userInfoStore.unreadCount > 0 && !userInfoStore.showChat"
-            class="chat-user__badge"
-          >
-            {{ userInfoStore.unreadCount }}
-          </span>
+          <template v-if="!isMobile">
+            <SvgIcon name="chat" class="chat-open" @click="toggleChat" />
+            <span
+              v-if="userInfoStore.unreadCount > 0 && !userInfoStore.showChat"
+              class="chat-user__badge"
+            >
+              {{ userInfoStore.unreadCount }}
+            </span>
+          </template>
         </div>
         <router-view />
       </v-container>
@@ -31,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import ErrorAlert from '@/components/base/ErrorAlert.vue'
@@ -67,6 +69,15 @@ const toggleChat = () => {
     userInfoStore.unreadCount = 0
   }
 }
+
+watch(
+  () => [isMobile.value, userInfoStore.showChat],
+  (val) => {
+    val[0] && val[1]
+      ? (document?.querySelector('html').style.overflow = 'hidden')
+      : (document.querySelector('html').style.overflow = 'auto')
+  }
+)
 
 const isAdmin = computed(() => authStore.role !== 'slicer')
 
