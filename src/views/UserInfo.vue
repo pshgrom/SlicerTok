@@ -224,12 +224,19 @@ const removeWallet = async (index: number, walletId: number, isMain: boolean) =>
 }
 
 const handlePaymentRequest = () => {
-  const { phone, telegram } = user.value
+  const { phone, telegram, name } = user.value
 
-  if (!phone || !telegram || wallets.value.length === 0) {
-    errorStore.setErrors(
-      'Пожалуйста, заполните все обязательные поля: Имя, Телефон, Telegram и добавьте кошелек'
-    )
+  const missingFields: string[] = []
+
+  if (!name) missingFields.push('Имя')
+  if (!phone) missingFields.push('Телефон')
+  if (!telegram) missingFields.push('Telegram')
+  if (wallets.value.length === 0) missingFields.push('Кошелек')
+
+  if (missingFields.length) {
+    const word = missingFields.length === 1 ? 'обязательное поле' : 'обязательные поля'
+
+    errorStore.setErrors(`Пожалуйста, заполните ${word}: ${missingFields.join(', ')}`)
     return
   }
 
