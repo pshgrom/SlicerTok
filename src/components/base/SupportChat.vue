@@ -353,7 +353,7 @@ watch(
 .chat-wrapper {
   display: flex;
   justify-content: center;
-  max-height: 83vh;
+  max-height: 80vh;
 
   @media (max-width: 767px) {
     flex-direction: column;

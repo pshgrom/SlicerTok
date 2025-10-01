@@ -70,7 +70,7 @@ const toggleChat = () => {
 
 const isAdmin = computed(() => authStore.role !== 'slicer')
 
-const insideSlicer = computed(() => page.value === 'User' || page.value === 'SupportChat')
+const insideSlicer = computed(() => page.value === 'User')
 
 const showForSlicer = computed(() => page.value === 'UserInfo')
 </script>
