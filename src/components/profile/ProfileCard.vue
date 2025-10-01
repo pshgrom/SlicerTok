@@ -155,7 +155,6 @@ const goToChat = async (id: string | number) => {
 .profile {
   border: 4px solid rgba(255, 255, 255, 1);
   min-width: 474px;
-  min-height: 259px;
   border-radius: 16px;
   width: 100%;
   height: 100%;

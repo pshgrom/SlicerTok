@@ -120,8 +120,9 @@ onMounted(async () => {
 .user-info {
   &__wrapper {
     display: flex;
-    align-items: center;
     margin-bottom: 14px;
+    gap: 14px;
+    align-items: stretch;
 
     @media (max-width: 767px) {
       flex-direction: column;
