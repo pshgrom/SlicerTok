@@ -16,7 +16,7 @@ export const useAuth = defineStore('authStore', () => {
   const role = ref<string>(localStorage.getItem('role') || ROLES.SLICER)
   const errorStore = useError()
   const phone = ref('')
-  const currentCountryCode = ref<string | number | null>(null)
+  const currentCountryCode = ref<number | null>(null)
 
   const countryCodes = ref([])
 
@@ -67,7 +67,6 @@ export const useAuth = defineStore('authStore', () => {
         if (!countryCodes.value.length) {
           countryCodes.value = countries
         }
-        currentCountryCode.value = countryCodes.value[0].value
       }
     } catch (error: any) {
       throw error?.response?.data?.message ?? ''

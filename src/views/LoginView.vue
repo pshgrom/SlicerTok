@@ -19,33 +19,6 @@
         <div class="login-view__content">
           <template v-if="isPhoneStep">
             <div class="d-flex flex-column">
-              <!--              <VCustomSelect-->
-              <!--                v-model="currentCountryCode"-->
-              <!--                label="Код страны"-->
-              <!--                :items="countryCodes"-->
-              <!--                style="min-width: 120px; max-width: 120px"-->
-              <!--                class="mr-2"-->
-              <!--                item-title="label"-->
-              <!--                item-value="value"-->
-              <!--                searchable-->
-              <!--              >-->
-              <!--                <template #prepend-item>-->
-              <!--                  <v-text-field-->
-              <!--                    v-model="search"-->
-              <!--                    placeholder="Поиск..."-->
-              <!--                    density="compact"-->
-              <!--                    clearable-->
-              <!--                    class="ma-2"-->
-              <!--                    hide-details-->
-              <!--                  />-->
-              <!--                  <v-divider />-->
-              <!--                </template>-->
-              <!--                <template #item="{ item, props }">-->
-              <!--                  <v-list-item v-bind="props">-->
-              <!--                    {{ item.text }}-->
-              <!--                  </v-list-item>-->
-              <!--                </template>-->
-              <!--              </VCustomSelect>-->
               <v-autocomplete
                 v-model="currentCountryCode"
                 label="Код страны"
@@ -68,7 +41,6 @@
                 :key="currentCountryCode"
                 v-model="phone"
                 label="Номер телефона"
-                autofocus
                 :placeholder="placeholderPhone"
                 :rules="phoneRulesWithRequired"
                 required
@@ -143,14 +115,10 @@ const isGoogle2faEnabled = ref(false)
 const authStore = useAuth()
 const errorStore = useError()
 const router = useRouter()
-const search = ref('')
-console.warn('authStore.countryCodes1', authStore.countryCodes)
 const countryCodes = computed(() => authStore.countryCodes ?? [])
 const currentCountryCode = computed({
-  get: () => authStore.currentCountryCode ?? 1,
-  set: (value) => {
-    authStore.currentCountryCode = value
-  }
+  get: () => authStore.currentCountryCode,
+  set: (value) => (authStore.currentCountryCode = value)
 })
 
 const phone = computed({
@@ -335,29 +303,31 @@ onMounted(() => {
   margin-bottom: 30px;
   height: 40px;
 
-  :deep(input) {
+  .v-field__outline {
+    border-color: rgba(100, 100, 100, 1);
+    color: rgb(211, 219, 237);
+  }
+
+  &.v-input--focused {
+    .v-field__outline {
+      color: rgb(169, 55, 244) !important;
+      --v-field-border-width: 1px !important;
+    }
+  }
+
+  .v-autocomplete__selection {
     font-size: 14px !important;
     color: rgba(17, 17, 17, 1);
   }
 
-  :deep(.v-field--outlined) {
-    --v-field-border-opacity: 1;
-    border-color: rgba(100, 100, 100, 1) !important;
-    outline: none;
-  }
-
-  :deep(.v-label) {
-    font-weight: 500;
-    color: rgba(143, 150, 165, 1) !important;
+  input {
     font-size: 14px !important;
   }
 
-  :deep(.v-field--focused .v-field__outline__start),
-  :deep(.v-field--focused .v-field__outline__notch::before),
-  :deep(.v-field--focused .v-field__outline__notch::after),
-  :deep(.v-field--focused .v-field__outline__end) {
-    border-color: rgb(169, 55, 244) !important;
-    --v-field-border-width: 1px !important;
+  .v-label {
+    font-weight: 500;
+    color: rgba(143, 150, 165, 1) !important;
+    font-size: 14px !important;
   }
 }
 </style>
