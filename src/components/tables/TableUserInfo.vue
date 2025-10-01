@@ -8,6 +8,17 @@
     hover
     hide-default-footer
   >
+    <template #no-data>
+      <div class="empty-table">
+        <div class="empty-table__img">
+          <SvgIcon name="request-empty" />
+        </div>
+        <div class="empty-table__text">
+          У вас пока нет заявок.<br />
+          Подайте ваше первую заявку.
+        </div>
+      </div>
+    </template>
     <template #loading>
       <v-progress-circular indeterminate color="#0070ba" />
     </template>
@@ -78,6 +89,7 @@
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
 
+import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import ReasonsRejectModal from '@/components/modals/ReasonsRejectModal.vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'

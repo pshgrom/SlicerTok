@@ -14,7 +14,7 @@
           >Добавить
         </VCusomButton>
       </div>
-      <div class="wallets__list">
+      <div v-if="wallets.length" class="wallets__list">
         <CurrentWallet
           v-for="(wallet, index) in wallets"
           :key="wallet.id"
@@ -27,12 +27,22 @@
           @remove-wallet="removeWallet"
         />
       </div>
+      <div v-else class="wallets-empty">
+        <div class="wallets-empty__img">
+          <SvgIcon name="wallet-empty" />
+        </div>
+        <div class="wallets-empty__text">
+          У вас пока нет кошельков.<br />
+          Добавьте свой первый кошелек
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { type PropType, ref } from 'vue'
 
+import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import CurrentWallet from '@/components/wallets/CurrentWallet.vue'
 import { type IWallet } from '@/interfaces/Slicer'
@@ -106,6 +116,10 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
     margin-left: 8px;
   }
 
+  &__wrapper {
+    height: 100%;
+  }
+
   &__top {
     display: flex;
     justify-content: space-between;
@@ -117,6 +131,29 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
     padding-top: 14px;
     display: flex;
     align-items: center;
+  }
+
+  &-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: center;
+    position: relative;
+    top: -7px;
+    margin-left: -20px;
+
+    @media (max-width: 767px) {
+      margin-top: 15px;
+    }
+
+    &__text {
+      margin-top: 12px;
+      color: rgba(143, 150, 165, 1);
+      font-size: 14px;
+      line-height: 140%;
+      text-align: center;
+    }
   }
 }
 </style>

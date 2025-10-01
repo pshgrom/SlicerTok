@@ -145,3 +145,21 @@
     }
   }
 }
+
+.empty-table {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: center;
+  margin-top: 48px;
+  margin-bottom: 48px;
+
+  &__text {
+    margin-top: 12px;
+    color: rgba(143, 150, 165, 1);
+    font-size: 14px;
+    line-height: 140%;
+    text-align: center;
+  }
+}
