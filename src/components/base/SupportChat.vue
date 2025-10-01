@@ -209,7 +209,8 @@ async function getMessages(rId: number, isLoadMore = false) {
   }
 
   try {
-    const { data } = await getMessagesQuery(rId, getPage(rId), dateFrom.value)
+    const dateVal = getPage(rId) === 1 ? undefined : dateFrom.value
+    const { data } = await getMessagesQuery(rId, getPage(rId), dateVal)
     dateFrom.value = data?.date_from ?? undefined
     const newMsgs = data.data.reverse() ?? []
 
@@ -353,7 +354,7 @@ watch(
 .chat-wrapper {
   display: flex;
   justify-content: center;
-  max-height: 80vh;
+  max-height: 85vh;
 
   @media (max-width: 767px) {
     flex-direction: column;

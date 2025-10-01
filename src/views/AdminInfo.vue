@@ -9,15 +9,20 @@
     <div class="table-actions__right">
       <DateFilter
         v-model="queryParams.user_created_at"
-        label="Поиск по дате регистрации нарезчика"
+        label="По дате регистрации нарезчика"
         @update:model-value="onDateChangeSlicer"
       />
       <DateFilter
         v-model="queryParams.created_at"
-        label="Поиск по дате загрузки видео"
+        label="По дате загрузки видео"
         @update:model-value="onDateChangeVideo"
       />
-      <VCusomButton :custom-class="['light']" class="ml-2" @click="resetFilters">
+      <VCusomButton
+        :custom-class="['light', 'avg', 'with-icon']"
+        class="ml-2"
+        @click="resetFilters"
+      >
+        <SvgIcon name="cross" />
         Сбросить все
       </VCusomButton>
     </div>
@@ -60,6 +65,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import DateFilter from '@/components/base/DateFilter.vue'
+import SvgIcon from '@/components/base/SvgIcon.vue'
 import TabsSwitcher from '@/components/base/TabsSwitcher.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import TableAdminInfo from '@/components/tables/TableAdminInfo.vue'

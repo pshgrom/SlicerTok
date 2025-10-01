@@ -20,6 +20,9 @@
         hide-details
         class="date-filter__input"
       >
+        <template #prepend-inner>
+          <SvgIcon name="calendar-search" />
+        </template>
         <template #append-inner>
           <v-icon v-if="formattedDate" size="18" class="cursor-pointer" @click.stop="clearDate">
             mdi-close
@@ -39,6 +42,8 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+
+import SvgIcon from '@/components/base/SvgIcon.vue'
 
 const props = defineProps({
   modelValue: {
