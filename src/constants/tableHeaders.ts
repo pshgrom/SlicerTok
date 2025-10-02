@@ -87,12 +87,12 @@ export const adminInfoHeaders = [
   { title: 'Пометки', value: 'mark' },
   { title: 'Комментарии', value: 'status_comment' },
   {
-    title: 'Дата регистрации нарезчика',
+    title: 'Дата регистрации',
     value: 'user_created_at',
     sortable: true
   },
   {
-    title: 'Дата загрузки видео',
+    title: 'Дата загрузки',
     value: 'created_at',
     sortable: true
   },

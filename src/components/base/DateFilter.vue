@@ -94,8 +94,8 @@ watch(
 
 <style scoped lang="scss">
 .date-filter__input {
-  max-width: 280px;
-  min-width: 280px;
+  max-width: 250px;
+  min-width: 250px;
   font-size: 16px;
 
   :deep(.v-field__input) {

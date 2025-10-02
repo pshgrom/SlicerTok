@@ -29,10 +29,10 @@
       </a>
     </template>
     <template #[`item.user_created_at`]="{ item }">
-      {{ formatDate(item.user_created_at) }}
+      <div style="min-width: 150px">{{ formatDate(item.user_created_at) }}</div>
     </template>
     <template #[`item.created_at`]="{ item }">
-      {{ formatDate(item.created_at) }}
+      <div style="min-width: 150px">{{ formatDate(item.created_at) }}</div>
     </template>
     <template #[`item.video_stat_link`]="{ item }">
       <a :href="item.video_stat_link" target="_blank" class="custom-table-ref">
