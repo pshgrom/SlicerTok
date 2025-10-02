@@ -299,7 +299,7 @@ const onScroll = throttle(() => {
     return
   }
 
-  if (chatBoxRef.value.scrollTop <= 100) {
+  if (chatBoxRef.value.scrollTop <= 50) {
     getMessages(true)
   }
 }, 500)
@@ -370,6 +370,8 @@ onBeforeUnmount(() => {
     padding: 20px;
     display: flex;
     flex-direction: column;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
 
     &__empty {
       font-size: 16px;
