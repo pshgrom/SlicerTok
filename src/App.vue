@@ -24,11 +24,13 @@
         <router-view />
       </v-container>
     </v-main>
-    <transition name="fade" mode="out-in">
-      <div v-if="showChat">
-        <UserChat v-show="userInfoStore.showChat" v-model:show-chat="userInfoStore.showChat" />
-      </div>
-    </transition>
+    <teleport to="body">
+      <transition name="fade" mode="out-in">
+        <template v-if="showChat">
+          <UserChat v-show="userInfoStore.showChat" v-model:show-chat="userInfoStore.showChat" />
+        </template>
+      </transition>
+    </teleport>
   </v-app>
 </template>
 
@@ -76,6 +78,15 @@ watch(
     val[0] && val[1]
       ? (document.querySelector('html').style.overflow = 'hidden')
       : (document.querySelector('html').style.overflow = 'auto')
+  }
+)
+
+watch(
+  () => userInfoStore.showChat,
+  (val) => {
+    val
+      ? (document.querySelector('.v-overlay-container').style.display = 'none')
+      : (document.querySelector('.v-overlay-container').style.display = 'contents')
   }
 )
 
