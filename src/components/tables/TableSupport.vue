@@ -90,17 +90,30 @@
     </template>
     <template #[`item.actions`]="{ item }">
       <div class="d-flex align-center">
-        <div class="mr-2 cursor-pointer">
-          <SvgIcon name="edit-row" @click="showDialog(item)" />
-        </div>
-        <VCusomButton
-          class="mr-4"
-          :disabled="!item.is_problem_solved"
-          :custom-class="['light']"
-          @click="actionRequest(item.is_problem_solved, item.id)"
-        >
-          Разрешить спор
-        </VCusomButton>
+        <v-tooltip text="Открыть заявку" location="bottom">
+          <template #activator="{ props }">
+            <VCusomButton
+              v-bind="props"
+              class="mr-1"
+              :custom-class="['light', 'avg', 'only-icon']"
+              @click="showDialog(item)"
+            >
+              <SvgIcon name="open-modal" />
+            </VCusomButton>
+          </template>
+        </v-tooltip>
+        <v-tooltip text="Разрешить спор" location="bottom">
+          <template #activator="{ props }">
+            <VCusomButton
+              v-bind="props"
+              :disabled="!item.is_problem_solved"
+              :custom-class="['dark', 'avg', 'only-icon']"
+              @click="actionRequest(item.is_problem_solved, item.id)"
+            >
+              <SvgIcon name="check-check" />
+            </VCusomButton>
+          </template>
+        </v-tooltip>
       </div>
     </template>
   </v-data-table>
@@ -115,6 +128,7 @@
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
 
+import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import DifferencesDialog from '@/components/modals/DifferencesDialog.vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'

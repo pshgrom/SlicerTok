@@ -50,8 +50,9 @@
       </div>
     </template>
     <template #[`item.actions`]="{ item }">
-      <VCusomButton :custom-class="['light']" @click.stop="goToChat(item.id)">
-        Написать в чат
+      <VCusomButton :custom-class="['light', 'avg', 'with-icon']" @click.stop="goToChat(item.id)">
+        <SvgIcon name="message-circle" />
+        Чат
       </VCusomButton>
     </template>
   </v-data-table>
@@ -61,6 +62,7 @@
 import { computed, type PropType, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import { formatNumber } from '@/utils/formatNumbers.ts'

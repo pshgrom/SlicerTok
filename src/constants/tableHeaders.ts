@@ -110,7 +110,7 @@ export const supportHeaders = [
   { title: 'Ссылка', value: 'url' },
   { title: 'Статистика', value: 'video_stat_link' },
   { title: 'Статус модераторов', value: 'status_moderation' },
-  { title: 'Действия', value: 'actions' }
+  { title: '', value: 'actions' }
 ]
 
 export const supportUsersHeaders = [

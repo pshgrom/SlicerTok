@@ -17,11 +17,7 @@
         label="По дате загрузки видео"
         @update:model-value="onDateChangeVideo"
       />
-      <VCusomButton
-        :custom-class="['light', 'avg', 'with-icon']"
-        class="ml-2"
-        @click="resetFilters"
-      >
+      <VCusomButton :custom-class="['light', 'avg', 'with-icon']" @click="resetFilters">
         <SvgIcon name="cross" />
         Сбросить все
       </VCusomButton>
