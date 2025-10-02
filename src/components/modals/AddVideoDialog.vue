@@ -130,7 +130,7 @@ const submitVideo = async () => {
     position: relative;
     @media (max-width: 767px) {
       order: -1;
-      top: -26px;
+      margin-bottom: 25px;
     }
   }
 }

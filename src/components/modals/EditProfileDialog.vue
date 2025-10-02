@@ -147,6 +147,11 @@ const cancel = () => {
     letter-spacing: 0;
     line-height: normal;
   }
+
+  @media (max-width: 767px) {
+    padding: 12px;
+    height: auto;
+  }
 }
 
 :deep(.v-card-text) {
