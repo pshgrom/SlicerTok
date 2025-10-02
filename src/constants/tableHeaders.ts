@@ -1,64 +1,64 @@
-export const paymentListHeaders = [
-  {
-    title: 'ID',
-    value: 'id'
-  },
-  { title: 'Кошелек нарезчика', value: 'wallet_id' },
-  { title: 'Nickname Tg', value: 'nikname' },
-  { title: 'Количество просмотров', value: 'number_views' },
-  { title: 'Сумма выплаты', value: 'amount' },
-  {
-    title: 'Заявленный статус',
-    value: 'declared_status'
-  },
-  {
-    title: 'Актуальный статус',
-    value: 'actual_status'
-  },
-  {
-    title: 'Вызывающий подозрение',
-    value: 'suspicion_status'
-  }
-]
+// export const paymentListHeaders = [
+//   {
+//     title: 'ID',
+//     value: 'id'
+//   },
+//   { title: 'Кошелек нарезчика', value: 'wallet_id' },
+//   { title: 'Nickname Tg', value: 'nikname' },
+//   { title: 'Просмотры', value: 'number_views' },
+//   { title: 'Сумма выплаты', value: 'amount' },
+//   {
+//     title: 'Заявленный статус',
+//     value: 'declared_status'
+//   },
+//   {
+//     title: 'Актуальный статус',
+//     value: 'actual_status'
+//   },
+//   {
+//     title: 'Вызывающий подозрение',
+//     value: 'suspicion_status'
+//   }
+// ]
 
-export const amountListHeaders = [
-  {
-    title: 'Кошелек Нарезчика',
-    value: 'wallet_id'
-  },
-  { title: 'Сумма выплат', value: 'total_amount' },
-  { title: 'Заявленная сумма выплат', value: 'declared_amount_paid', sortable: true },
-  { title: 'Осталось выплатить', value: 'left_amount_pay', sortable: true },
-  { title: 'Найдено поступлений на сумму', value: 'revenues_found_amount', sortable: true },
-  {
-    title: 'Статус',
-    value: 'status.amount'
-  }
-]
+// export const amountListHeaders = [
+//   {
+//     title: 'Кошелек Нарезчика',
+//     value: 'wallet_id'
+//   },
+//   { title: 'Сумма выплат', value: 'total_amount' },
+//   { title: 'Заявленная сумма выплат', value: 'declared_amount_paid', sortable: true },
+//   { title: 'Осталось выплатить', value: 'left_amount_pay', sortable: true },
+//   { title: 'Найдено поступлений на сумму', value: 'revenues_found_amount', sortable: true },
+//   {
+//     title: 'Статус',
+//     value: 'status.amount'
+//   }
+// ]
 
-export const walletListHeaders = [
-  {
-    title: 'Кошелек выводов',
-    value: 'wallet_id_interaction'
-  },
-  { title: 'Количество кошельков', value: 'count_wallet' },
-  { title: 'Кошельки нарезчиков', value: 'wallet_id_out' }
-]
+// export const walletListHeaders = [
+//   {
+//     title: 'Кошелек выводов',
+//     value: 'wallet_id_interaction'
+//   },
+//   { title: 'Количество кошельков', value: 'count_wallet' },
+//   { title: 'Кошельки нарезчиков', value: 'wallet_id_out' }
+// ]
 
-export const payoutListHeaders = [
-  {
-    title: 'ID',
-    value: 'id'
-  },
-  { title: 'Адрес', value: 'wallet' },
-  { title: 'Nickname Tg', value: 'nikname' },
-  { title: 'Количество просмотров', value: 'number_views' },
-  { title: 'Сумма выплаты', value: 'amount' },
-  {
-    title: 'Публикации',
-    value: 'publications'
-  }
-]
+// export const payoutListHeaders = [
+//   {
+//     title: 'ID',
+//     value: 'id'
+//   },
+//   { title: 'Адрес', value: 'wallet' },
+//   { title: 'Nickname Tg', value: 'nikname' },
+//   { title: 'Просмотры', value: 'number_views' },
+//   { title: 'Сумма выплаты', value: 'amount' },
+//   {
+//     title: 'Публикации',
+//     value: 'publications'
+//   }
+// ]
 
 export const userInfoHeaders = [
   {
@@ -156,12 +156,12 @@ export const adminMain = [
   { title: 'Ключ', value: 'key' },
   { title: 'Дата загрузки', value: 'created_at' },
   { title: 'Бонус', value: 'is_bonus' },
-  { title: 'Количество просмотров', value: 'number_views' },
+  { title: 'Просмотры', value: 'number_views' },
   { title: 'Статус', value: 'status' },
   { title: 'Статус модераторов', value: 'status_moderation' },
   { title: 'Ссылка', value: 'url' },
   { title: 'Статистика', value: 'video_stat_link' },
-  { title: 'Действия', value: 'actions' }
+  { title: '', value: 'actions' }
 ]
 
 export const adminCoeffs = [

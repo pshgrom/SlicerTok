@@ -86,7 +86,7 @@
       </div>
     </template>
     <template #[`item.created_at`]="{ item }">
-      {{ formatDate(item.created_at) }}
+      <div style="min-width: 150px">{{ formatDate(item.created_at) }}</div>
     </template>
     <template #[`item.video_stat_link`]="{ item }">
       <a :href="item.video_stat_link" target="_blank" class="custom-table-ref">
@@ -102,15 +102,15 @@
       >
         <VCusomButton
           :disabled="item.status === 'rejected'"
-          :custom-class="['light']"
+          :custom-class="['light', 'avg']"
           @click="actionRequest(item.id, 'rejected')"
         >
           Отклонить заявку
         </VCusomButton>
         <VCusomButton
-          class="ml-4"
+          class="ml-2"
           :disabled="item.status === 'awaiting_payment'"
-          :custom-class="['dark']"
+          :custom-class="['dark', 'avg']"
           @click="actionRequest(item.id, 'approved')"
         >
           Принять заявку
