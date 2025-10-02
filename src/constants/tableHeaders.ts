@@ -96,7 +96,7 @@ export const adminInfoHeaders = [
     value: 'created_at',
     sortable: true
   },
-  { title: 'Действия', value: 'actions' }
+  { title: '', value: 'actions' }
 ]
 
 export const supportHeaders = [

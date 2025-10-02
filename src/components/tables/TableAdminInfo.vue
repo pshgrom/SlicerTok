@@ -80,30 +80,56 @@
       <SvgIcon v-if="item.is_bonus" :name="'check'" />
     </template>
     <template #[`item.actions`]="{ item }">
-      <div class="d-flex" style="min-width: 500px">
-        <VCusomButton :custom-class="['light', 'avg', 'only-icon']" @click="showDialog(item)">
-          <SvgIcon name="edit-row" />
-        </VCusomButton>
-        <VCusomButton
-          class="custom-table__button ml-2"
-          :custom-class="['light', 'avg']"
-          @click="openMarkModal(item.id)"
-          >Пометка
-        </VCusomButton>
-        <VCusomButton
-          class="custom-table__button ml-2"
-          :custom-class="['dark', 'avg']"
-          :disabled="!!item.user_requires_verification"
-          @click="requestVerification(item.id, item.user_requires_verification)"
-          >Запросить верификацию
-        </VCusomButton>
-        <VCusomButton
-          class="custom-table__button ml-2"
-          :custom-class="['dark', 'avg']"
-          :disabled="item.status === 'todo' || !item.status"
-          @click="finishCheck(item.id, item.status)"
-          >Закончить проверку
-        </VCusomButton>
+      <div class="d-flex">
+        <v-tooltip text="Запросить верификацию" location="bottom">
+          <template #activator="{ props }">
+            <VCusomButton
+              v-bind="props"
+              class="mr-3"
+              :custom-class="['light', 'avg', 'only-icon']"
+              :disabled="!!item.user_requires_verification"
+              @click="requestVerification(item.id, item.user_requires_verification)"
+            >
+              <SvgIcon name="request-verification" />
+            </VCusomButton>
+          </template>
+        </v-tooltip>
+        <v-tooltip text="Пометка" location="bottom">
+          <template #activator="{ props }">
+            <VCusomButton
+              v-bind="props"
+              class="mr-1"
+              :custom-class="['light', 'avg', 'only-icon']"
+              @click="openMarkModal(item.id)"
+            >
+              <SvgIcon name="sticky-note" />
+            </VCusomButton>
+          </template>
+        </v-tooltip>
+        <v-tooltip text="Открыть заявку" location="bottom">
+          <template #activator="{ props }">
+            <VCusomButton
+              v-bind="props"
+              class="mr-1"
+              :custom-class="['light', 'avg', 'only-icon']"
+              @click="showDialog(item)"
+            >
+              <SvgIcon name="open-modal" />
+            </VCusomButton>
+          </template>
+        </v-tooltip>
+        <v-tooltip text="Закончить проверку" location="bottom">
+          <template #activator="{ props }">
+            <VCusomButton
+              v-bind="props"
+              :custom-class="['dark', 'avg', 'only-icon']"
+              :disabled="item.status === 'todo' || !item.status"
+              @click="finishCheck(item.id, item.status)"
+            >
+              <SvgIcon name="check-check" />
+            </VCusomButton>
+          </template>
+        </v-tooltip>
       </div>
     </template>
   </v-data-table>
