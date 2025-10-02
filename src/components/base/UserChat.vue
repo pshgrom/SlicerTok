@@ -46,7 +46,6 @@
 </template>
 
 <script setup lang="ts">
-import { throttle } from 'lodash'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import { getChatQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
@@ -58,6 +57,7 @@ import { useAdminPaymentsFinance } from '@/stores/AdminPaymentsFinance.ts'
 import { useAuth } from '@/stores/Auth.ts'
 import { useChatSocketStore } from '@/stores/ChatSocket'
 import { useUserInfo } from '@/stores/UserInfo.ts'
+import { throttle } from '@/utils/optimize.ts'
 
 interface ChatMessage {
   id?: number

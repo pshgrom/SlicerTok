@@ -99,7 +99,8 @@ export default defineConfig({
             return 'vendor_misc'
           }
           if (id.includes('src/views/')) {
-            return 'view_' + id.split('src/views/')[1].split('/')[0]
+            // return 'view_' + id.split('src/views/')[1].split('/')[0]
+            return 'views'
           }
           if (id.includes('src/components/')) return 'components'
         },
