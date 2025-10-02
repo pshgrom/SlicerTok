@@ -8,12 +8,6 @@ import {
 
 import { ROLES, type RoleType } from '@/constants/roles'
 import { useLoader } from '@/stores/GlobalLoader.ts'
-import AdminInfo from '@/views/AdminInfo.vue'
-import AdminMain from '@/views/AdminMain.vue'
-import AdminPaymentsFinance from '@/views/AdminPaymentsFinance.vue'
-import LoginView from '@/views/LoginView.vue'
-import LoginViewAdmin from '@/views/LoginViewAdmin.vue'
-import SupportPage from '@/views/SupportPage.vue'
 import UserInfo from '@/views/UserInfo.vue'
 
 // Расширяем типы meta
@@ -33,13 +27,15 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'Login',
-    component: LoginView,
+    component: () => import('@/views/LoginView.vue'),
+    // component: LoginView,
     meta: { showChat: false }
   },
   {
     path: '/login-admin',
     name: 'LoginAdmin',
-    component: () => LoginViewAdmin,
+    component: () => import('@/views/LoginViewAdmin.vue'),
+    // component: () => LoginViewAdmin, // lazy-load
     meta: { showChat: false }
   },
   {
@@ -51,13 +47,13 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/admin-info',
     name: 'AdminInfo',
-    component: AdminInfo,
+    component: () => import('@/views/AdminInfo.vue'),
     meta: { requiresAuth: true, roles: [ROLES.ADMIN], showChat: true }
   },
   {
     path: '/support',
     name: 'Support',
-    component: SupportPage,
+    component: () => import('@/views/SupportPage.vue'),
     meta: { requiresAuth: true, roles: [ROLES.SUPPORT], showChat: false }
   },
   {
@@ -87,13 +83,13 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/admin-payments-finance',
     name: 'AdminPaymentsFinance',
-    component: AdminPaymentsFinance,
+    component: () => import('@/views/AdminPaymentsFinance.vue'),
     meta: { requiresAuth: true, roles: [ROLES.ADMIN_FINANCE], showChat: true }
   },
   {
     path: '/admin-main',
     name: 'AdminMain',
-    component: AdminMain,
+    component: () => import('@/views/AdminMain.vue'),
     meta: { requiresAuth: true, roles: [ROLES.ADMIN_MAIN], showChat: false }
   },
   {
@@ -117,6 +113,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/user-info',
     name: 'UserInfo',
+    // component: () => import('@/views/UserInfo.vue'),
     component: UserInfo,
     meta: { requiresAuth: true, roles: [ROLES.SLICER], showChat: true }
   }
