@@ -78,7 +78,7 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
 
 <style scoped lang="scss">
 .wallets {
-  padding: 17px 0 20px 20px;
+  padding: 17px 0 0 20px;
   width: 100%;
   min-width: 474px;
   border-radius: 16px;

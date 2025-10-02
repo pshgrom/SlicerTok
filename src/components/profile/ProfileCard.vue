@@ -64,8 +64,6 @@
               <span v-else>не указано</span>
             </div>
           </div>
-        </div>
-        <div class="profile-info__wrap">
           <div v-if="readonly" class="profile-info-item">
             <div class="profile-info-item__icon">
               <SvgIcon name="show" />
@@ -82,8 +80,6 @@
               {{ user.key }}
             </div>
           </div>
-        </div>
-        <div class="profile-info__wrap">
           <div v-if="readonly" class="profile-info-item">
             <div class="profile-info-item__icon">
               <SvgIcon name="calendar" />
@@ -157,7 +153,6 @@ const goToChat = async (id: string | number) => {
   min-width: 474px;
   border-radius: 16px;
   width: 100%;
-  height: 100%;
   position: relative;
   background: #fff;
 
