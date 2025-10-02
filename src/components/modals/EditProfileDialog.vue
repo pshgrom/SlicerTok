@@ -12,7 +12,7 @@
           </div>
           <div class="change-info__text">
             Вы можете менять информацию 1 раз в неделю.
-            <span v-if="endDate">Следующий раз {{ endDate }}</span>
+            <span v-if="!isEqualDate">Следующий раз {{ endDate }}</span>
           </div>
         </div>
         <v-form ref="formRef">
@@ -89,14 +89,20 @@ const dialogModel = computed({
   set: (val) => emit('update:dialog', val)
 })
 
-const targetDate = computed(() => new Date(props.endDate?.replace(' ', 'T')))
-
 const isEqualDate = computed(() => {
-  if (targetDate.value.getTime() && currentDate.getTime()) {
-    return targetDate.value.getTime() === currentDate.getTime()
-  } else {
-    return true
-  }
+  if (!props.endDate) return true
+
+  const target = new Date(props.endDate.replace(' ', 'T'))
+  const now = new Date()
+
+  const targetDateOnly = new Date(target.getFullYear(), target.getMonth(), target.getDate())
+  const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+  // если дата с бэка больше текущей — кнопка заблокирована
+  if (targetDateOnly.getTime() > nowDateOnly.getTime()) return false
+
+  // если дата прошедшая или равна текущей — кнопка активна
+  return true
 })
 
 watch(

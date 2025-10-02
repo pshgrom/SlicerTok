@@ -170,12 +170,23 @@ const submitVideo = async () => {
   }
 }
 
+:deep(.v-card-title) {
+  position: sticky;
+  top: 0;
+  background: #fff !important;
+  z-index: 1;
+  padding-bottom: 10px !important;
+}
+
 :deep(.v-card-actions) {
   justify-content: center !important;
 
   @media (max-width: 767px) {
     padding-top: 25px !important;
     justify-content: end !important;
+    position: sticky;
+    bottom: 0;
+    background: #fff;
   }
 
   button {

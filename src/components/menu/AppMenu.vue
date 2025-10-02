@@ -61,6 +61,10 @@ const visibleMenuItems = computed(() =>
   align-items: center;
   margin-right: 40px;
 
+  @media (max-width: 767px) {
+    margin-right: 15px;
+  }
+
   li {
     color: rgba(17, 17, 17, 1);
     font-size: 14px;
@@ -70,6 +74,10 @@ const visibleMenuItems = computed(() =>
 
     & + li {
       margin-left: 20px;
+
+      @media (max-width: 767px) {
+        margin-left: 15px;
+      }
     }
 
     &:hover {

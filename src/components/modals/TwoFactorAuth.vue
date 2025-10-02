@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog" class="custom-modal" max-width="500px">
     <v-card>
       <v-card-title>
-        <span class="headline">Двухфакторная аутентификация</span>
+        <span class="headline">Двухфакторка</span>
         <v-btn icon="mdi-close" variant="text" @click="dialog = false" />
       </v-card-title>
       <v-card-text>
@@ -113,8 +113,11 @@ const onChange = async (e: boolean) => {
 
 const submit = async () => {
   const isValid = await formRef?.value?.validate()
-  if (isValid.valid) {
+  if (isValid?.valid) {
     emit('submit', code.value)
+    dialog.value = false
+  }
+  if (!isEnableGoogle2fa.value) {
     dialog.value = false
   }
 }
@@ -148,7 +151,17 @@ const submit = async () => {
 }
 
 :deep(.v-card-title) {
+  position: sticky;
+  top: 0;
+  background: #fff !important;
+  z-index: 1;
   padding-bottom: 10px !important;
+}
+
+:deep(.v-card-actions) {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
 }
 
 .get-code {
