@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 
 import {
   addWalletQuery,
@@ -22,7 +22,6 @@ export const useUserInfo = defineStore('userInfoStore', () => {
   const showChat = ref<boolean>(false)
   const qrCode = ref('')
   const secretKey = ref('')
-  const unreadCount = ref(Number(localStorage.getItem('unreadCountUser') || 0))
   const queryParams = ref<ITableParams>({
     page: 1,
     perPage: 20,
@@ -190,10 +189,6 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     }
   }
 
-  watch(unreadCount, (val) => {
-    localStorage.setItem('unreadCountUser', String(val))
-  })
-
   return {
     isLoading,
     getPublicationsList,
@@ -209,7 +204,6 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     setWalletMain,
     removeWallet,
     showChat,
-    unreadCount,
     enableTwoFactor,
     disabledTwoFactor,
     qrCode,

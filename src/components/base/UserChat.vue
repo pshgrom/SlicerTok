@@ -101,7 +101,14 @@ const onScroll = throttle(() => {
     return
   }
   if (chatBoxRef.value.scrollTop <= 50) {
-    chatStore.getMessages(true)
+    const el = chatBoxRef.value
+    const distanceFromBottom = el.scrollHeight - el.scrollTop
+
+    chatStore.getMessages(true).then(() => {
+      nextTick(() => {
+        el.scrollTop = el.scrollHeight - distanceFromBottom
+      })
+    })
   }
 }, 500)
 
@@ -122,7 +129,7 @@ watch(
   async (isOpen) => {
     if (isOpen) {
       await nextTick()
-      userInfoStore.unreadCount = 0
+      chatStore.unreadCount = 0
       localStorage.setItem('unreadCountUser', '0')
       scrollToBottom()
       if (!scrollListenerAttached && chatBoxRef.value) {

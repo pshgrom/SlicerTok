@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 import { getChatQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
 import { ROLES } from '@/constants/roles.ts'
@@ -34,6 +34,7 @@ export const useChatStore = defineStore('chat', () => {
   const dateFrom = ref<string | undefined>(undefined)
   const isSending = ref(false)
   const processedMessageIds = new Set<number | string>()
+  const unreadCount = ref(Number(localStorage.getItem('unreadCountUser') || 0))
 
   const role = computed(() => authStore.role)
   const userId = computed(() => {
@@ -164,12 +165,15 @@ export const useChatStore = defineStore('chat', () => {
       user: parsed.user
     })
 
-    // ✅ считаем непрочитанные
     if (!userInfoStore.showChat) {
-      userInfoStore.unreadCount++
-      localStorage.setItem('unreadCountUser', userInfoStore.unreadCount.toString())
+      unreadCount.value++
+      localStorage.setItem('unreadCountUser', unreadCount.value.toString())
     }
   }
+
+  watch(unreadCount, (val) => {
+    localStorage.setItem('unreadCountUser', String(val))
+  })
 
   return {
     messages,
@@ -182,6 +186,7 @@ export const useChatStore = defineStore('chat', () => {
     initializeChat,
     handleIncomingMessage,
     getTime,
-    getMessageKey
+    getMessageKey,
+    unreadCount
   }
 })

@@ -14,10 +14,10 @@
           <template v-if="!isMobile">
             <SvgIcon name="chat" class="chat-open" @click="toggleChat" />
             <span
-              v-if="userInfoStore.unreadCount > 0 && !userInfoStore.showChat"
+              v-if="chatStore.unreadCount > 0 && !userInfoStore.showChat"
               class="chat-user__badge"
             >
-              {{ userInfoStore.unreadCount }}
+              {{ chatStore.unreadCount }}
             </span>
           </template>
         </div>
@@ -46,6 +46,7 @@ import HeaderMain from '@/components/layout/HeaderMain.vue'
 import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 import { useAuth } from '@/stores/Auth.ts'
 import { useLoader } from '@/stores/GlobalLoader.ts'
+import { useChatStore } from '@/stores/UserChat.ts'
 import { useUserInfo } from '@/stores/UserInfo.ts'
 
 const loader = useLoader()
@@ -53,6 +54,7 @@ const loader = useLoader()
 const router = useRouter()
 const authStore = useAuth()
 const userInfoStore = useUserInfo()
+const chatStore = useChatStore()
 const { isMobile } = useDeviceDetection()
 
 const page = computed(() => router.currentRoute.value.name)
@@ -68,7 +70,7 @@ const showChat = computed(() => router.currentRoute.value?.meta?.showChat)
 const toggleChat = () => {
   userInfoStore.showChat = !userInfoStore.showChat
   if (userInfoStore.showChat) {
-    userInfoStore.unreadCount = 0
+    chatStore.unreadCount = 0
   }
 }
 
