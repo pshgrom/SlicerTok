@@ -20,7 +20,7 @@
       </div>
     </template>
     <template #loading>
-      <v-progress-circular indeterminate color="#0070ba" />
+      <v-progress-circular indeterminate color="rgb(169, 55, 244)" />
     </template>
     <template #[`item.url`]="{ item }">
       <a v-if="item.url" :href="item.url" target="_blank" class="custom-table-ref">

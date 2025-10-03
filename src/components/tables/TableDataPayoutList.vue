@@ -9,7 +9,7 @@
     hide-default-footer
   >
     <template #loading>
-      <v-progress-circular indeterminate color="#0070ba" />
+      <v-progress-circular indeterminate color="rgb(169, 55, 244)" />
     </template>
     <template #[`item.wallet`]="{ item }">
       {{ item.wallet.address }}

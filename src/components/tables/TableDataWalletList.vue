@@ -9,7 +9,7 @@
 <!--    hide-default-footer-->
 <!--  >-->
 <!--    <template v-slot:loading>-->
-<!--      <v-progress-circular indeterminate color="#0070ba"></v-progress-circular>-->
+<!--      <v-progress-circular indeterminate color="rgb(169, 55, 244)"></v-progress-circular>-->
 <!--    </template>-->
 <!--    <template v-slot:[`item.wallet_id_interaction`]="{ item }">-->
 <!--      <div class="d-flex">-->

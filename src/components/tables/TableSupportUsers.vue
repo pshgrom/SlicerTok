@@ -12,7 +12,7 @@
     @click:row="onRowClick"
   >
     <template #loading>
-      <v-progress-circular indeterminate color="#0070ba" />
+      <v-progress-circular indeterminate color="rgb(169, 55, 244)" />
     </template>
     <template #[`item.total_views`]="{ item }">
       <div class="custom-table-views">

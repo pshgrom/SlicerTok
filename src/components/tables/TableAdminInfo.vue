@@ -16,7 +16,7 @@
     @update:sort-desc="onSortChange"
   >
     <template #loading>
-      <v-progress-circular indeterminate color="#0070ba" />
+      <v-progress-circular indeterminate color="rgb(169, 55, 244)" />
     </template>
 
     <template #[`item.url`]="{ item }">
