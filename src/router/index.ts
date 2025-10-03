@@ -39,7 +39,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login-admin',
     name: 'LoginAdmin',
-    component: () => LoginViewAdmin,
+    component: LoginViewAdmin,
     meta: { showChat: false }
   },
   {
