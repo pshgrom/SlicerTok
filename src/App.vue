@@ -90,6 +90,7 @@ watch(
   }
 )
 
+console.log('test1')
 const isAdmin = computed(() => authStore.role !== 'slicer')
 
 const insideSlicer = computed(() => page.value === 'User')
