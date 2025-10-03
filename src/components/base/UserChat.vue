@@ -5,32 +5,39 @@
         <span>Чат с поддержкой</span>
         <v-btn icon="mdi-close" variant="text" @click="close" />
       </div>
+
       <div ref="chatBoxRef" class="chat-messages">
-        <template v-if="loadingMessages">
+        <template v-if="chatStore.isLoading && !chatStore.messages.length">
           <div class="chat-spinner">
             <v-progress-circular indeterminate color="primary" size="40" />
           </div>
         </template>
 
-        <template v-else-if="filteredMessages.length">
+        <template v-else-if="chatStore.filteredMessages.length">
           <transition-group name="fade-slide">
             <div
-              v-for="msg in filteredMessages"
-              :key="getMessageKey(msg)"
+              v-for="msg in chatStore.filteredMessages"
+              :key="chatStore.getMessageKey(msg)"
               class="chat-messages-item"
               :class="{ 'chat-messages-item_your': msg.is_your }"
             >
               <div class="chat-messages-item__role">
                 {{ msg?.user?.name ?? '' }}
               </div>
-              <div class="chat-messages-item__msg">{{ msg.content }}</div>
-              <div class="chat-messages-item__time">{{ getTime(msg.created_at) }}</div>
+              <div class="chat-messages-item__msg">
+                {{ msg.content }}
+              </div>
+              <div class="chat-messages-item__time">
+                {{ chatStore.getTime(msg.created_at) }}
+              </div>
             </div>
           </transition-group>
         </template>
+
         <h3 v-else class="chat-messages__empty">Пока нет сообщений</h3>
       </div>
     </div>
+
     <div class="chat__actions">
       <VCustomInput
         v-model="newMessage"
@@ -46,89 +53,27 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
-import { getChatQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
 import VCustomInput from '@/components/base/VCustomInput.vue'
-import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
-import { ROLES } from '@/constants/roles.ts'
-import { useAdminInfo } from '@/stores/AdminInfo.ts'
-import { useAdminPaymentsFinance } from '@/stores/AdminPaymentsFinance.ts'
-import { useAuth } from '@/stores/Auth.ts'
+import { useDeviceDetection } from '@/composables/useDeviceDetection'
 import { useChatSocketStore } from '@/stores/ChatSocket'
-import { useUserInfo } from '@/stores/UserInfo.ts'
-import { throttle } from '@/utils/optimize.ts'
+import { useChatStore } from '@/stores/UserChat.ts'
+import { useUserInfo } from '@/stores/UserInfo'
+import { throttle } from '@/utils/optimize'
 
-interface ChatMessage {
-  id?: number
-  content: string
-  created_at: string
-  is_your: boolean
-  user?: { name: string }
-  _uuid?: string
-}
-
-defineProps({ showChat: Boolean })
+defineProps<{ showChat: boolean }>()
 const emit = defineEmits(['update:showChat'])
 
+const chatStore = useChatStore()
+const chatSocket = useChatSocketStore()
 const userInfoStore = useUserInfo()
-const adminStore = useAdminInfo()
-const adminFinanceStore = useAdminPaymentsFinance()
-const chatStore = useChatSocketStore()
 const { isMobile } = useDeviceDetection()
-const authStore = useAuth()
 
-const page = ref(1)
-const pageSize = 20
-const hasMore = ref(true)
-const isLoadingMore = ref(false)
-const roomId = ref<number | null>(null)
-const newMessage = ref('')
-const dateFrom = ref(undefined)
-const messages = ref<ChatMessage[]>([])
 const chatBoxRef = ref<HTMLElement | null>(null)
-const loadingMessages = ref(false)
-const isSending = ref(false)
-const processedMessageIds = new Set<number | string>()
+const newMessage = ref('')
 let scrollListenerAttached = false
 let initialScrollDone = false
-
-const userId = computed(() => {
-  if (!role.value) return null
-  switch (role.value) {
-    case ROLES.SLICER:
-      return userInfoStore.userInfo?.id
-    case ROLES.ADMIN_FINANCE:
-      return adminFinanceStore.adminFinanceInfo?.id
-    default:
-      return adminStore.adminProfileData?.id
-  }
-})
-
-const role = computed(() => authStore.role)
-
-const filteredMessages = computed(() => {
-  const uniqueMessages: ChatMessage[] = []
-  const seenKeys = new Set<string>()
-  for (const message of messages.value) {
-    const key = getMessageKey(message)
-    if (!seenKeys.has(key)) {
-      seenKeys.add(key)
-      uniqueMessages.push(message)
-    }
-  }
-  return uniqueMessages
-})
-
-const getTime = (time: string) => {
-  const date = new Date(time)
-  return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
-}
-
-const getMessageKey = (msg: ChatMessage) => {
-  if (msg.id) return `id_${msg.id}`
-  return `time_${msg.created_at}_content_${msg.content.slice(0, 20)}_your_${msg.is_your}`
-}
 
 const scrollToBottom = (smooth = true) => {
   nextTick(() => {
@@ -141,129 +86,36 @@ const scrollToBottom = (smooth = true) => {
   })
 }
 
-const sendMessage = async (): Promise<void> => {
-  if (!newMessage.value.trim() || !roomId.value || isSending.value) return
-  isSending.value = true
-  try {
-    const tempMessage: ChatMessage = {
-      content: newMessage.value,
-      created_at: new Date().toISOString(),
-      is_your: true,
-      _uuid: `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    }
-    messages.value.push(tempMessage)
-    scrollToBottom()
-    await sendMessageRest()
-  } finally {
-    isSending.value = false
-  }
-}
-
-const sendMessageRest = async (): Promise<void> => {
-  if (!newMessage.value.trim() || !roomId.value) return
-  try {
-    await sendMessageQuery({ chatRoomId: roomId.value, message: newMessage.value })
-    newMessage.value = ''
-  } catch (err) {
-    console.error('Ошибка отправки сообщения:', err)
-    messages.value = messages.value.filter((msg) => !msg._uuid?.includes('temp_'))
-  }
-}
-
-const getMessages = async (isLoadMore = false): Promise<void> => {
-  if (!roomId.value) return
-  if (isLoadMore && (!hasMore.value || isLoadingMore.value)) return
-
-  let oldScrollHeight = 0
-  let oldScrollTop = 0
-  if (isLoadMore && chatBoxRef.value) {
-    oldScrollHeight = chatBoxRef.value.scrollHeight
-    oldScrollTop = chatBoxRef.value.scrollTop
-  }
-
-  if (!isLoadMore) {
-    loadingMessages.value = true
-    page.value = 1
-    hasMore.value = true
-  } else {
-    isLoadingMore.value = true
-    page.value += 1
-  }
-
-  try {
-    const { data } = await getMessagesQuery(roomId.value, page.value, dateFrom.value)
-    dateFrom.value = data?.date_from ?? undefined
-
-    const uid = Number(userId.value)
-    const newMessages = (data?.data.reverse() ?? []).map((msg: any) => ({
-      ...msg,
-      is_your: Number(msg.user_id) === uid
-    }))
-
-    if (!newMessages.length) {
-      hasMore.value = false
-      return
-    }
-    if (newMessages.length < pageSize) {
-      hasMore.value = false
-    }
-
-    if (isLoadMore) {
-      messages.value = [...newMessages, ...messages.value]
-      await nextTick(() => {
-        if (chatBoxRef.value) {
-          const newScrollHeight = chatBoxRef.value.scrollHeight
-          chatBoxRef.value.scrollTop = newScrollHeight - oldScrollHeight + oldScrollTop
-        }
-      })
-    } else {
-      messages.value = [...newMessages]
-    }
-  } catch (error) {
-    console.error('Ошибка загрузки сообщений:', error)
-  } finally {
-    loadingMessages.value = false
-    isLoadingMore.value = false
-  }
-}
-
-const initializeChat = async (): Promise<void> => {
-  try {
-    const { data } = await getChatQuery()
-    if (data.code === 200) {
-      roomId.value = data.data.chat_room_id
-      // только первая страница, без скролла
-      await getMessages(false)
-      if (roomId.value) chatStore.subscribeChannel(`chat.${roomId.value}`)
-    }
-  } catch (error) {
-    console.error('Ошибка инициализации чата:', error)
-  }
-}
-
-const handleIncomingMessage = (msg: any) => {
-  if (!msg || msg.channel !== `chat.${roomId.value}` || msg.event !== 'MessageSent') return
-  const parsed = typeof msg.data === 'string' ? JSON.parse(msg.data) : msg.data
-  if (parsed.senderId === userId.value) return
-  const messageKey = `socket_${parsed.id || parsed.timestamp}_${parsed.content}`
-  if (processedMessageIds.has(messageKey)) return
-  processedMessageIds.add(messageKey)
-  const newMsg: ChatMessage = {
-    content: parsed.content,
-    created_at: parsed.timestamp,
-    is_your: false,
-    id: parsed.id,
-    user: parsed.user
-  }
-  messages.value.push(newMsg)
+const sendMessage = async () => {
+  if (!newMessage.value.trim()) return
+  await chatStore.sendMessage(newMessage.value)
+  newMessage.value = ''
   scrollToBottom()
-  if (!userInfoStore.showChat) userInfoStore.unreadCount++
 }
 
-const closeChat = (event: KeyboardEvent) => {
-  if (event.key === 'Escape') emit('update:showChat', false)
+const onScroll = throttle(() => {
+  if (!chatBoxRef.value) return
+  if (chatStore.isLoading || !chatStore.hasMore) return
+  if (!initialScrollDone) {
+    initialScrollDone = true
+    return
+  }
+  if (chatBoxRef.value.scrollTop <= 50) {
+    chatStore.getMessages(true)
+  }
+}, 500)
+
+const closeChat = (e: KeyboardEvent) => {
+  if (e.key === 'Escape') emit('update:showChat', false)
 }
 const close = () => emit('update:showChat', false)
+
+watch(
+  () => chatStore.filteredMessages.length,
+  () => {
+    scrollToBottom()
+  }
+)
 
 watch(
   () => userInfoStore.showChat,
@@ -272,7 +124,7 @@ watch(
       await nextTick()
       userInfoStore.unreadCount = 0
       localStorage.setItem('unreadCountUser', '0')
-      scrollToBottom() // скроллим вниз один раз
+      scrollToBottom()
       if (!scrollListenerAttached && chatBoxRef.value) {
         chatBoxRef.value.addEventListener('scroll', onScroll)
         scrollListenerAttached = true
@@ -282,38 +134,24 @@ watch(
 )
 
 watch(
-  () => chatStore.messages,
+  () => chatSocket.messages,
   (newMessages) => {
-    const lastMessage = newMessages[newMessages.length - 1]
-    if (lastMessage) handleIncomingMessage(lastMessage)
+    const last = newMessages[newMessages.length - 1]
+    if (last) chatStore.handleIncomingMessage(last)
   },
   { deep: true }
 )
 
-const onScroll = throttle(() => {
-  if (!chatBoxRef.value) return
-  if (isLoadingMore.value || loadingMessages.value || !hasMore.value) return
-
-  if (!initialScrollDone) {
-    initialScrollDone = true
-    return
-  }
-
-  if (chatBoxRef.value.scrollTop <= 50) {
-    getMessages(true)
-  }
-}, 500)
-
 onMounted(async () => {
-  chatStore.connect()
-  await initializeChat()
+  chatSocket.connect()
+  await chatStore.initializeChat()
   document.addEventListener('keydown', closeChat)
 })
 
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', closeChat)
   if (chatBoxRef.value) chatBoxRef.value.removeEventListener('scroll', onScroll)
-  if (roomId.value) chatStore.unsubscribeChannel(`chat.${roomId.value}`)
+  if (chatStore.roomId) chatSocket.unsubscribeChannel(`chat.${chatStore.roomId}`)
 })
 </script>
 
