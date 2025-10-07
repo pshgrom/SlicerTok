@@ -54,6 +54,7 @@
       @submit="handleVideoSubmit"
     />
   </div>
+  <RulesDialog v-if="showRules" v-model="showRules" @save="saveWallet" />
 </template>
 
 <script setup lang="ts">
@@ -63,6 +64,7 @@ import { useRouter } from 'vue-router'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import AddVideoDialog from '@/components/modals/AddVideoDialog.vue'
 import EditProfileDialog from '@/components/modals/EditProfileDialog.vue'
+import RulesDialog from '@/components/modals/RulesDialog.vue'
 import WalletModal from '@/components/modals/WalletModal.vue'
 import ProfileCard from '@/components/profile/ProfileCard.vue'
 import TablePagination from '@/components/tables/TablePagination.vue'
@@ -101,6 +103,15 @@ const user = ref<IUser>({
 })
 
 const isLoading = computed(() => userInfoStore.isLoading)
+
+const showRules = computed({
+  get() {
+    return userInfoStore.showRules
+  },
+  set(val) {
+    userInfoStore.showRules = val
+  }
+})
 const userInfoData = computed<IUserInfoData[]>(() => userInfoStore.userInfoData)
 
 const mainWallet = computed(() => wallets.value.find((wallet) => wallet.is_main))

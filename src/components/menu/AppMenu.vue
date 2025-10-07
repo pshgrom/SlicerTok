@@ -25,11 +25,11 @@ const authStore = useAuth()
 const { isMobile } = useDeviceDetection()
 
 const userInfoStore = useUserInfo()
-const { showChat } = storeToRefs(userInfoStore)
+const { showChat, showRules } = storeToRefs(userInfoStore)
 
 const menuItems: Record<string, any[]> = {
   [ROLES.SLICER]: [
-    { label: 'Правила' },
+    { label: 'Правила', onClick: () => (showRules.value = !showRules.value) },
     { label: '2FA', onClick: () => emit('updateOpenModal', true) },
     {
       label: 'Поддержка',

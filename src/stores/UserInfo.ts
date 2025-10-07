@@ -20,6 +20,7 @@ import { useError } from '@/stores/Errors'
 export const useUserInfo = defineStore('userInfoStore', () => {
   const isLoading = ref<boolean>(false)
   const showChat = ref<boolean>(false)
+  const showRules = ref<boolean>(false)
   const qrCode = ref('')
   const secretKey = ref('')
   const queryParams = ref<ITableParams>({
@@ -204,6 +205,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     setWalletMain,
     removeWallet,
     showChat,
+    showRules,
     enableTwoFactor,
     disabledTwoFactor,
     qrCode,
