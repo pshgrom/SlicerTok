@@ -12,7 +12,12 @@
         <HeaderMain v-if="showContent || showForSlicer" />
         <div v-if="showChat" class="chat-user">
           <template v-if="!isMobile">
-            <SvgIcon name="chat" class="chat-open" @click="toggleChat" />
+            <SvgIcon
+              :disabled="isSlicer && !userName"
+              name="chat"
+              class="chat-open"
+              @click="toggleChat"
+            />
             <span
               v-if="chatStore.unreadCount > 0 && !userInfoStore.showChat"
               class="chat-user__badge"
@@ -45,11 +50,13 @@ import GlobalLoader from '@/components/GlobalLoader.vue'
 import HeaderMain from '@/components/layout/HeaderMain.vue'
 import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 import { useAuth } from '@/stores/Auth.ts'
+import { useError } from '@/stores/Errors.ts'
 import { useLoader } from '@/stores/GlobalLoader.ts'
 import { useChatStore } from '@/stores/UserChat.ts'
 import { useUserInfo } from '@/stores/UserInfo.ts'
 
 const loader = useLoader()
+const errorStore = useError()
 
 const router = useRouter()
 const authStore = useAuth()
@@ -68,6 +75,10 @@ const showContent = computed(() =>
 const showChat = computed(() => router.currentRoute.value?.meta?.showChat)
 
 const toggleChat = () => {
+  if (isSlicer.value && !userName.value) {
+    errorStore.setErrors('Введите имя пользователя', 'error')
+    return
+  }
   userInfoStore.showChat = !userInfoStore.showChat
   if (userInfoStore.showChat) {
     chatStore.unreadCount = 0
@@ -93,6 +104,8 @@ watch(
 )
 
 const isAdmin = computed(() => authStore.role !== 'slicer')
+const isSlicer = computed(() => authStore.role === 'slicer')
+const userName = computed(() => userInfoStore.userInfo?.profile?.name ?? '')
 
 const insideSlicer = computed(() => page.value === 'User')
 

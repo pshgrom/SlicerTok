@@ -1,5 +1,9 @@
 <template>
-  <div class="svg-icon" :style="{ transform: `scale(${scale})` }">
+  <div
+    class="svg-icon"
+    :class="{ 'svg-icon_disabled': disabled }"
+    :style="{ transform: `scale(${scale})` }"
+  >
     <component
       :is="dynamicComponent"
       v-if="width && height"
@@ -57,5 +61,11 @@ const dynamicComponent = computed(() => {
 .svg-icon {
   display: flex;
   align-items: center;
+
+  &_disabled {
+    :deep(svg path:first-child) {
+      fill: rgba(143, 150, 165, 1);
+    }
+  }
 }
 </style>
