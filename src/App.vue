@@ -74,15 +74,15 @@ const showContent = computed(() =>
 
 const showChat = computed(() => router.currentRoute.value?.meta?.showChat)
 
-const toggleChat = () => {
+const toggleChat = async () => {
   if (isSlicer.value && !userName.value) {
     errorStore.setErrors('Введите имя пользователя', 'error')
     return
   }
   userInfoStore.showChat = !userInfoStore.showChat
-  if (userInfoStore.showChat) {
-    chatStore.unreadCount = 0
-  }
+  // if (userInfoStore.showChat) {
+  //   await chatStore.markAllAsRead()
+  // }
 }
 
 watch(

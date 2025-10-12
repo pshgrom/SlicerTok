@@ -15,3 +15,5 @@ export const getChatByUserQuery = (userId: number | string) =>
   })
 
 export const sendMessageQuery = (data: any) => api.post('/chat/send-chat-messages', data)
+export const markMessagesAsReadQuery = (data: any) =>
+  api.post('/chat/read-chat-messages', { message_ids: data })

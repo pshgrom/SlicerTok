@@ -1,7 +1,12 @@
 import { defineStore } from 'pinia'
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 
-import { getChatQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
+import {
+  getChatQuery,
+  getMessagesQuery,
+  markMessagesAsReadQuery,
+  sendMessageQuery
+} from '@/api/chat.ts'
 import { ROLES } from '@/constants/roles.ts'
 import { useAdminInfo } from '@/stores/AdminInfo.ts'
 import { useAdminPaymentsFinance } from '@/stores/AdminPaymentsFinance.ts'
@@ -15,6 +20,7 @@ interface ChatMessage {
   created_at: string
   is_your: boolean
   user?: { name: string }
+  is_read: boolean
   _uuid?: string
 }
 
@@ -34,8 +40,7 @@ export const useChatStore = defineStore('chat', () => {
   const dateFrom = ref<string | undefined>(undefined)
   const isSending = ref(false)
   const processedMessageIds = new Set<number | string>()
-  const unreadCount = ref(Number(localStorage.getItem('unreadCountUser') || 0))
-
+  const unreadCount = computed(() => messages.value.filter((m) => !m.is_your && !m.is_read).length)
   const role = computed(() => authStore.role)
   const userId = computed(() => {
     if (!role.value) return null
@@ -148,6 +153,23 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
+  const markAllAsRead = async () => {
+    const unreadIds = messages.value.filter((m) => !m.is_your && !m.is_read).map((m) => m.id)
+
+    if (!unreadIds.length) return
+
+    await markMessagesAsReadQuery([...unreadIds])
+
+    messages.value.forEach((m) => {
+      if (unreadIds.includes(m.id)) m.is_read = true
+    })
+
+    // уведомляем других через WebSocket (если нужно)
+    // if (socket.value && isConnected.value) {
+    //   socket.value.send(JSON.stringify({ type: 'mark_as_read', message_ids: unreadIds }))
+    // }
+  }
+
   const handleIncomingMessage = (msg: any) => {
     if (!msg || msg.channel !== `chat.${roomId.value}` || msg.event !== 'MessageSent') return
     const parsed = typeof msg.data === 'string' ? JSON.parse(msg.data) : msg.data
@@ -162,18 +184,11 @@ export const useChatStore = defineStore('chat', () => {
       created_at: parsed.timestamp,
       is_your: false,
       id: parsed.id,
-      user: parsed.user
+      is_read: parsed.is_read ?? false,
+      user: parsed.user ?? parsed.senderId,
+      user_id: parsed.user ?? parsed.senderId
     })
-
-    if (!userInfoStore.showChat) {
-      unreadCount.value++
-      localStorage.setItem('unreadCountUser', unreadCount.value.toString())
-    }
   }
-
-  watch(unreadCount, (val) => {
-    localStorage.setItem('unreadCountUser', String(val))
-  })
 
   return {
     messages,
@@ -187,6 +202,7 @@ export const useChatStore = defineStore('chat', () => {
     handleIncomingMessage,
     getTime,
     getMessageKey,
-    unreadCount
+    unreadCount,
+    markAllAsRead
   }
 })

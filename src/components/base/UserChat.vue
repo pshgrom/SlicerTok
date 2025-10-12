@@ -19,17 +19,14 @@
               v-for="msg in chatStore.filteredMessages"
               :key="chatStore.getMessageKey(msg)"
               class="chat-messages-item"
-              :class="{ 'chat-messages-item_your': msg.is_your }"
+              :class="{
+                'chat-messages-item_your': msg.is_your,
+                'chat-messages-item_unread': !msg.is_your && !msg.is_read
+              }"
             >
-              <div class="chat-messages-item__role">
-                {{ msg?.user?.name ?? '' }}
-              </div>
-              <div class="chat-messages-item__msg">
-                {{ msg.content }}
-              </div>
-              <div class="chat-messages-item__time">
-                {{ chatStore.getTime(msg.created_at) }}
-              </div>
+              <div class="chat-messages-item__role">{{ msg?.user?.name ?? '' }}</div>
+              <div class="chat-messages-item__msg">{{ msg.content }}</div>
+              <div class="chat-messages-item__time">{{ chatStore.getTime(msg.created_at) }}</div>
             </div>
           </transition-group>
         </template>
@@ -100,10 +97,10 @@ const onScroll = throttle(() => {
     initialScrollDone = true
     return
   }
+
   if (chatBoxRef.value.scrollTop <= 50) {
     const el = chatBoxRef.value
     const distanceFromBottom = el.scrollHeight - el.scrollTop
-
     chatStore.getMessages(true).then(() => {
       nextTick(() => {
         el.scrollTop = el.scrollHeight - distanceFromBottom
@@ -124,13 +121,13 @@ watch(
   }
 )
 
+// скроллим и отмечаем как прочитанные при открытии
 watch(
   () => userInfoStore.showChat,
   async (isOpen) => {
     if (isOpen) {
       await nextTick()
-      chatStore.unreadCount = 0
-      localStorage.setItem('unreadCountUser', '0')
+      await chatStore.markAllAsRead()
       scrollToBottom()
       if (!scrollListenerAttached && chatBoxRef.value) {
         chatBoxRef.value.addEventListener('scroll', onScroll)
@@ -258,6 +255,10 @@ onBeforeUnmount(() => {
         font-size: 12px;
         color: rgba(143, 150, 165, 1);
         text-align: right;
+      }
+
+      &_unread {
+        border: 2px solid green;
       }
 
       &_your {

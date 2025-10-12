@@ -55,6 +55,7 @@ export const useRequestSocket = defineStore('requestSocket', () => {
     socket.value.onmessage = async (event) => {
       try {
         const msg = JSON.parse(event.data)
+        console.warn(msg)
 
         switch (msg.event) {
           case 'pusher_internal:subscription_succeeded':
