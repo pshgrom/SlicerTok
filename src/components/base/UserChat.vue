@@ -156,6 +156,7 @@ onBeforeUnmount(() => {
   document.removeEventListener('keydown', closeChat)
   if (chatBoxRef.value) chatBoxRef.value.removeEventListener('scroll', onScroll)
   if (chatStore.roomId) chatSocket.unsubscribeChannel(`chat.${chatStore.roomId}`)
+  chatStore.resetDateFrom()
 })
 </script>
 
@@ -257,9 +258,9 @@ onBeforeUnmount(() => {
         text-align: right;
       }
 
-      &_unread {
-        border: 2px solid green;
-      }
+      //&_unread {
+      //  border: 2px solid green;
+      //}
 
       &_your {
         background: $primary-color;

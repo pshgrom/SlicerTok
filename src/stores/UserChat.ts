@@ -90,6 +90,10 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
+  const resetDateFrom = () => {
+    dateFrom.value = undefined
+  }
+
   const getMessages = async (isLoadMore = false) => {
     if (!roomId.value) return
     if (isLoadMore && (!hasMore.value || isLoading.value)) return
@@ -203,6 +207,7 @@ export const useChatStore = defineStore('chat', () => {
     getTime,
     getMessageKey,
     unreadCount,
-    markAllAsRead
+    markAllAsRead,
+    resetDateFrom
   }
 })
