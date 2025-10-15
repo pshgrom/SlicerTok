@@ -145,7 +145,32 @@ export const adminPaymentsFinance = [
     value: 'id'
   },
   { title: 'Адрес кошелька', value: 'wallet_address' },
-  { title: 'Тип кошелька', value: 'wallet_type' }
+  { title: 'Сумма', value: 'amount' },
+  { title: 'Тип кошелька', value: 'wallet_type' },
+  { title: '', value: 'actions' }
+]
+
+export const adminProcessPayments = [
+  {
+    title: 'ID',
+    value: 'id'
+  },
+  { title: 'Адрес кошелька', value: 'wallet' },
+  { title: 'Публикации', value: 'publication' },
+  { title: 'Сумма', value: 'amount' },
+  { title: '', value: 'actions' }
+]
+
+export const adminFinishedPayments = [
+  {
+    title: 'ID',
+    value: 'id'
+  },
+  { title: 'Ссылка', value: 'link' },
+  { title: 'Адрес кошелька', value: 'wallet' },
+  { title: 'Публикации', value: 'publication' },
+  { title: 'Сумма', value: 'amount' },
+  { title: '', value: 'actions' }
 ]
 
 export const adminMain = [

@@ -8,6 +8,12 @@ export const getPublicationListQuery = (data: ITableParams) =>
 export const getPublicationListPaymentQuery = (data: ITableParams) =>
   api.get('/admin-finance/publication/get-publication-list', { params: data })
 
+export const getTransferListQuery = (data: ITableParams) =>
+  api.get('/admin-finance/transfer/get-transfer-list', { params: data })
+
+export const getFinishedListQuery = (data: ITableParams) =>
+  api.get('/admin-finance/transfer/get-transfer-list-finished', { params: data })
+
 export const getPublicationsListMainQuery = (data: ITableParams) =>
   api.get('/admin-main/publication/get-publication-list', { params: data })
 
@@ -35,6 +41,15 @@ export const requestVerificationQuery = (id: number) =>
   api.post('admin/publication/set-require-verification', { id })
 
 export const saveMarkQuery = (data: any) => api.post('/admin/publication/set-mark', data)
+
+export const setTransferQuery = (data: any) =>
+  api.post('/admin-finance/transfer/make-transfer', data)
+
+export const cancelTransferQuery = (data: any) =>
+  api.post('/admin-finance/transfer/cancel-transfer', data)
+
+export const transferFinishedQuery = (data: any) =>
+  api.post('/admin-finance/transfer/transfer-finished', data)
 
 export const actionRequestAdminQuery = (data: any) =>
   api.post('/admin-main/publication/final-status', data)

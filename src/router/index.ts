@@ -11,6 +11,8 @@ import { useLoader } from '@/stores/GlobalLoader.ts'
 import AdminInfo from '@/views/AdminInfo.vue'
 import AdminMain from '@/views/AdminMain.vue'
 import AdminPaymentsFinance from '@/views/AdminPaymentsFinance.vue'
+import AdminPaymentsFinished from '@/views/AdminPaymentsFinished.vue'
+import AdminProcessPayments from '@/views/AdminProcessPayments.vue'
 import LoginView from '@/views/LoginView.vue'
 import LoginViewAdmin from '@/views/LoginViewAdmin.vue'
 import SupportPage from '@/views/SupportPage.vue'
@@ -88,6 +90,18 @@ const routes: RouteRecordRaw[] = [
     path: '/admin-payments-finance',
     name: 'AdminPaymentsFinance',
     component: AdminPaymentsFinance,
+    meta: { requiresAuth: true, roles: [ROLES.ADMIN_FINANCE], showChat: true }
+  },
+  {
+    path: '/admin-process-payments',
+    name: 'AdminProcessPayments',
+    component: AdminProcessPayments,
+    meta: { requiresAuth: true, roles: [ROLES.ADMIN_FINANCE], showChat: true }
+  },
+  {
+    path: '/admin-finished-list',
+    name: 'AdminPaymentsFinished',
+    component: AdminPaymentsFinished,
     meta: { requiresAuth: true, roles: [ROLES.ADMIN_FINANCE], showChat: true }
   },
   {

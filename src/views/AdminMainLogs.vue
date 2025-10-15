@@ -5,7 +5,6 @@
     </div>
   </div>
   <TableAdminMainLogs
-    class="custom-table"
     :headers="headers"
     :is-loading="isLoading"
     :items="calcDataItems"

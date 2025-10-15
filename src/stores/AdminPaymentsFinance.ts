@@ -1,7 +1,15 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-import { getAdminFinanceInfoQuery, getPublicationListPaymentQuery } from '@/api/adminInfo'
+import {
+  cancelTransferQuery,
+  getAdminFinanceInfoQuery,
+  getFinishedListQuery,
+  getPublicationListPaymentQuery,
+  getTransferListQuery,
+  setTransferQuery,
+  transferFinishedQuery
+} from '@/api/adminInfo'
 import type { ITableParams } from '@/interfaces/AppModel'
 import { useError } from '@/stores/Errors'
 
@@ -32,6 +40,40 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
     }
   }
 
+  const setMakeTransfer = async (data) => {
+    try {
+      const newData = {
+        publication_ids: [...data]
+      }
+      return await setTransferQuery({ ...newData })
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    }
+  }
+
+  const cancelTransfer = async (data) => {
+    try {
+      const newData = {
+        transfer_ids: [...data]
+      }
+      return await cancelTransferQuery({ ...newData })
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    }
+  }
+
+  const transferFinished = async (data) => {
+    try {
+      const newData = {
+        transfer_id: data.id,
+        ...data
+      }
+      return await transferFinishedQuery({ ...newData })
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.data ?? '')
+    }
+  }
+
   const getPublicationsListPayment = async (params: ITableParams) => {
     try {
       const data: ITableParams = {
@@ -56,6 +98,54 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
     }
   }
 
+  const getTransferList = async (params: ITableParams) => {
+    try {
+      const data: ITableParams = {
+        page: params.page,
+        perPage: params.perPage ?? 50
+      }
+      isLoading.value = true
+      const resp = await getTransferListQuery(data)
+      items.value = resp?.data?.data ?? []
+      const queryResp = resp?.data?.meta ?? {}
+      const { current_page = 1, per_page = 50, total } = queryResp
+      queryParams.value = {
+        ...queryParams.value,
+        page: current_page,
+        perPage: per_page,
+        total
+      }
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const getFinishedList = async (params: ITableParams) => {
+    try {
+      const data: ITableParams = {
+        page: params.page,
+        perPage: params.perPage ?? 50
+      }
+      isLoading.value = true
+      const resp = await getFinishedListQuery(data)
+      items.value = resp?.data?.data ?? []
+      const queryResp = resp?.data?.meta ?? {}
+      const { current_page = 1, per_page = 50, total } = queryResp
+      queryParams.value = {
+        ...queryParams.value,
+        page: current_page,
+        perPage: per_page,
+        total
+      }
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     isLoading,
     getPublicationsListPayment,
@@ -63,6 +153,11 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
     queryParams,
     setQueryParams,
     getAdminFinanceInfo,
-    adminFinanceInfo
+    adminFinanceInfo,
+    getTransferList,
+    setMakeTransfer,
+    cancelTransfer,
+    getFinishedList,
+    transferFinished
   }
 })

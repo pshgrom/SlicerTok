@@ -3,7 +3,7 @@
     <div class="table-actions__left">
       <div class="table-actions__label">Заявки</div>
       <div>
-        <TabsSwitcher :tabs="tabsContent" initial-tab="tab1" @tab-click="goToPage" />
+        <TabsSwitcher :tabs="tabsContent" initial-tab="tab2" @tab-click="goToPage" />
       </div>
     </div>
     <div class="table-actions__right">
@@ -12,11 +12,11 @@
         :custom-class="['light', 'avg']"
         @click="handleSelected"
       >
-        Отправить на выплату
+        Отменить оплату
       </VCusomButton>
     </div>
   </div>
-  <TableAdminPaymentsFinance
+  <TableAdminProcessPayments
     v-model:selected-ids="selectedIds"
     :headers="headers"
     :is-loading="isLoading"
@@ -39,14 +39,13 @@ import { useRouter } from 'vue-router'
 
 import TabsSwitcher from '@/components/base/TabsSwitcher.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
-import TableAdminPaymentsFinance from '@/components/tables/TableAdminPaymentsFinance.vue'
+import TableAdminProcessPayments from '@/components/tables/TableAdminProcessPayments.vue'
 import TablePagination from '@/components/tables/TablePagination.vue'
-import { adminPaymentsFinance } from '@/constants/tableHeaders'
+import { adminProcessPayments } from '@/constants/tableHeaders'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import { useAdminPaymentsFinance } from '@/stores/AdminPaymentsFinance'
 
-const headers = ref<ITableHeaders[]>(adminPaymentsFinance)
-const selectedIds = ref<number[]>([])
+const headers = ref<ITableHeaders[]>(adminProcessPayments)
 
 const tabsContent = [
   { id: 'tab1', title: 'Все заявки', count: 0, redirect: '/admin-payments-finance' },
@@ -58,6 +57,7 @@ const goToPage = (path: string) => {
   router.push(path.redirect)
 }
 
+const selectedIds = ref<number[]>([])
 const adminPaymentsFinanceStore = useAdminPaymentsFinance()
 
 const isLoading = computed(() => adminPaymentsFinanceStore.isLoading)
@@ -88,12 +88,6 @@ const changePage = (page: number) => {
   getRequest()
 }
 
-const handleSelected = async () => {
-  if (!selectedIds.value.length) return
-  await adminPaymentsFinanceStore.setMakeTransfer(selectedIds.value)
-  getRequest()
-}
-
 const getRequest = () => {
   const { page, perPage } = queryParams.value
   router.push({
@@ -102,7 +96,13 @@ const getRequest = () => {
       perPage: perPage
     }
   })
-  adminPaymentsFinanceStore.getPublicationsListPayment(queryParams.value)
+  adminPaymentsFinanceStore.getTransferList(queryParams.value)
+}
+
+const handleSelected = async () => {
+  if (!selectedIds.value.length) return
+  await adminPaymentsFinanceStore.cancelTransfer(selectedIds.value)
+  getRequest()
 }
 
 onMounted(() => {
