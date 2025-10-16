@@ -17,6 +17,8 @@ export const getTextStatus = (status: string): string => {
       return 'Доп. проверка'
     case 'awaiting_payment':
       return 'Ожидание оплаты'
+    case 'process_payment':
+      return 'Процесс оплаты'
     case 'paid':
       return 'Оплачено'
     case 'approved':
@@ -35,6 +37,7 @@ export const getStatusColor = (status: string): string => {
       return 'rgba(229, 236, 253, 1)'
     case 'moderation':
     case 'awaiting_payment':
+    case 'process_payment':
       return 'rgba(229, 236, 253, 1)'
     case 'approved':
     case 'paid':
@@ -69,6 +72,7 @@ export const getColor = (status: string): string => {
       return 'rgba(169, 55, 244, 1)'
     case 'moderation':
     case 'awaiting_payment':
+    case 'process_payment':
       return 'rgba(169, 55, 244, 1)'
     case 'approved':
     case 'paid':
@@ -91,6 +95,7 @@ export const getIcon = (status: string): string => {
       icon = 'status-new'
       break
     case 'awaiting_payment':
+    case 'process_payment':
       icon = 'status-awaiting-payment'
       break
     case 'approved':
