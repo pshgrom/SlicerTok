@@ -90,7 +90,8 @@ export const useRequestSocket = defineStore('requestSocket', () => {
       subscribed.value = false
       socket.value = null
       isConnecting.value = false
-      errorStore.setErrors('Соединение потеряно, переподключаемся...', 'error')
+      // errorStore.setErrors('Соединение потеряно, переподключаемся...', 'error')
+      console.log('Соединение потеряно, переподключение...')
       attemptReconnect()
     }
 

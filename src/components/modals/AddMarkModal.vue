@@ -16,8 +16,6 @@
             dense
             hide-details
             label="Текст"
-            required
-            :rules="[requiredRules.required]"
             autofocus
           />
         </v-form>
@@ -35,7 +33,6 @@
 import { computed, ref } from 'vue'
 
 import VCusomButton from '@/components/base/VCusomButton.vue'
-import { requiredRules } from '@/utils/validators.ts'
 
 const props = defineProps({
   modelValue: {

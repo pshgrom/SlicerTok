@@ -8,6 +8,7 @@
       item-title="label"
       item-value="value"
       :color="color"
+      :clearable="!readonly"
       :variant="variant"
       :disabled="disabled"
       :menu-icon="readonly ? null : 'mdi-menu-down'"
@@ -15,6 +16,7 @@
       :rules="rules"
       hide-details
       :readonly="readonly"
+      @click:clear="clearSelect"
       @update:model-value="updateStatus"
     >
       <template #item="{ props, item }">
@@ -79,6 +81,11 @@ const select = computed({
 
 const updateStatus = (e: string | number) => {
   emit('updateStatus', e)
+}
+
+const clearSelect = () => {
+  emit('update:modelValue', null)
+  emit('updateStatus', null)
 }
 </script>
 

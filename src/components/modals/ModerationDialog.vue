@@ -10,7 +10,7 @@
           <VCustomSelect
             v-model="currentItem.status"
             :items="allStatuses"
-            class="mt-2 mb-4"
+            class="mt-2 mb-7"
             :label="'Статус'"
           >
             <template #item="{ item, props }">
@@ -43,8 +43,8 @@
           <VCustomInput
             v-model="currentItem.number_views_moderation"
             label="Количество просмотров по факту"
-            :rules="[videoRules.quantityViews, videoRules.required]"
-            class="mb-1"
+            :rules="[videoRules.quantityViews, videoRules.required, videoRules.quantityViewsMin]"
+            class="mb-2"
             @input="onInput"
           />
           <VCustomSelect v-model="setCoeff" label="Коэффициенты" class="mb-2" :items="coeffs">
@@ -169,6 +169,12 @@ const setCoeff = computed({
           ...selectedCoeff,
           id: selectedCoeff.value
         }
+      }
+    } else if (currentItem.value && !value) {
+      currentItem.value.coefficient = {
+        label: '',
+        value: '',
+        id: ''
       }
     }
   }

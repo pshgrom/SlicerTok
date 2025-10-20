@@ -3,7 +3,11 @@ export const videoRules = {
   quantityViews: (v: string) => v.length <= 15 || 'Количество не должно превышать 15 символов',
   quantityLink: (v: string) => v.length <= 120 || 'Ссылка не должна превышать 120 символов',
   url: (v: string) => /^https?:\/\/.+/.test(v) || 'Введите корректную ссылку',
-  noShare: (v: string) => !/share/.test(v) || 'Строка не должна содержать слово "share"'
+  noShare: (v: string) => !/share/.test(v) || 'Строка не должна содержать слово "share"',
+  quantityViewsMin: (v: any) => {
+    const format = v.replace(/\D/g, '')
+    return (!isNaN(+format) && +format >= 100000) || 'Минимум 100 000 просмотров'
+  }
 }
 
 export const infoRules = {
@@ -17,7 +21,8 @@ export const infoRules = {
 }
 
 export const requiredRules = {
-  required: (v: any) => !!v || 'Обязательное поле'
+  required: (v: any) => !!v || 'Обязательное поле',
+  maxLength: (v: any) => v.length <= 500 || 'Максимум 500 символов'
 }
 
 export const coeffsRules = {

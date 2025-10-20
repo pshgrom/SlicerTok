@@ -8,7 +8,7 @@
       <v-card-text>
         <v-form ref="formRef">
           <VCustomInput
-            v-model="videoFields.videoLink"
+            v-model.trim="videoFields.videoLink"
             label="Ссылка на видео *"
             :rules="[
               videoRules.required,
@@ -22,7 +22,7 @@
           <VCustomInput
             v-model="videoFields.number_views"
             label="Количество просмотров *"
-            :rules="[videoRules.required, videoRules.quantityViews]"
+            :rules="[videoRules.required, videoRules.quantityViews, videoRules.quantityViewsMin]"
             class="mb-4"
             required
             @input="onInput"

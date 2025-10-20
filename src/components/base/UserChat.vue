@@ -1,5 +1,5 @@
 <template>
-  <div v-click-outside="closeChat" class="chat" :class="{ chat_mobile: isMobile }">
+  <v-form v-click-outside="closeChat" class="chat" :class="{ chat_mobile: isMobile }">
     <div class="chat-box">
       <div class="chat__title">
         <span>Чат с поддержкой</span>
@@ -35,18 +35,19 @@
       </div>
     </div>
 
-    <div class="chat__actions">
+    <v-form ref="formRef" class="chat__actions" @submit.prevent>
       <VCustomInput
-        v-model="newMessage"
-        :hide-details="true"
+        v-model.trim="newMessage"
         autofocus
         label="Введите текст"
         class="mr-1"
+        :rules="[requiredRules.maxLength]"
+        @input="removeEmoji"
         @keyup.enter="sendMessage"
       />
       <SvgIcon class="chat__actions-send" name="send" @click="sendMessage" />
-    </div>
-  </div>
+    </v-form>
+  </v-form>
 </template>
 
 <script setup lang="ts">
@@ -58,6 +59,7 @@ import { useChatSocketStore } from '@/stores/ChatSocket'
 import { useChatStore } from '@/stores/UserChat.ts'
 import { useUserInfo } from '@/stores/UserInfo'
 import { throttle } from '@/utils/optimize'
+import { requiredRules } from '@/utils/validators.ts'
 
 defineProps<{ showChat: boolean }>()
 const emit = defineEmits(['update:showChat'])
@@ -66,6 +68,7 @@ const chatStore = useChatStore()
 const chatSocket = useChatSocketStore()
 const userInfoStore = useUserInfo()
 const { isMobile } = useDeviceDetection()
+const formRef = ref(null)
 
 const chatBoxRef = ref<HTMLElement | null>(null)
 const newMessage = ref('')
@@ -85,9 +88,17 @@ const scrollToBottom = (smooth = true) => {
 
 const sendMessage = async () => {
   if (!newMessage.value.trim()) return
-  await chatStore.sendMessage(newMessage.value)
-  newMessage.value = ''
-  scrollToBottom()
+  const isValid = await formRef?.value?.validate()
+  if (isValid.valid) {
+    await chatStore.sendMessage(newMessage.value)
+    newMessage.value = ''
+    scrollToBottom()
+  }
+}
+
+const removeEmoji = (e) => {
+  const cleaned = e.target.value.replace(/[^a-zA-Zа-яА-Я0-9\s.,!?'"()\-:;@]/g, '')
+  newMessage.value = cleaned
 }
 
 const onScroll = throttle(() => {
@@ -187,6 +198,8 @@ onBeforeUnmount(() => {
     &-send {
       cursor: pointer;
       transition: opacity 0.15s ease-in;
+      position: relative;
+      top: -10px;
 
       &:hover {
         opacity: 0.7;
@@ -240,6 +253,7 @@ onBeforeUnmount(() => {
         line-height: 140%;
         margin-bottom: 10px;
         font-weight: 400;
+        word-wrap: break-word;
       }
 
       &__role {

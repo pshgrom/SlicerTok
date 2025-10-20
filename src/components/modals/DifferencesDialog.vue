@@ -115,7 +115,7 @@
             v-if="!sameViews"
             v-model="finalViews"
             label="Количество просмотров по факту"
-            :rules="[videoRules.quantityViews, videoRules.required]"
+            :rules="[videoRules.quantityViews, videoRules.required, videoRules.quantityViewsMin]"
             class="mb-1"
             @input="onInput"
           />

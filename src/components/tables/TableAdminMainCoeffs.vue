@@ -16,6 +16,7 @@
     <template #[`item.actions`]="{ item }">
       <div class="d-flex align-center justify-end">
         <VCusomButton
+          v-if="item.rate !== 1"
           :custom-class="['light', 'avg', 'only-icon']"
           :disabled="items.length <= 1"
           @click="removeCoeff(item.id)"

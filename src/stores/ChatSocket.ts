@@ -55,7 +55,8 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
     socket.value.onclose = (e) => {
       connected.value = false
       isConnecting.value = false
-      errorStore.setErrors('Соединение потеряно, переподключение...', 'error')
+      // errorStore.setErrors('Соединение потеряно, переподключение...', 'error')
+      console.log('Соединение потеряно, переподключение...')
       socket.value = null
       attemptReconnect()
     }

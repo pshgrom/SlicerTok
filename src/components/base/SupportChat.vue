@@ -31,7 +31,7 @@
             <v-progress-circular indeterminate color="primary" size="40" />
           </div>
 
-          <transition-group v-else-if="currentMessages.length" name="fade-slide" tag="div">
+          <transition-group v-else-if="currentMessages.length" name="fade-slide">
             <div
               v-for="msg in currentMessages"
               :key="msg.id"
@@ -52,13 +52,15 @@
         </div>
       </div>
 
-      <div class="chat__actions">
+      <v-form ref="formRef" class="chat__actions" @submit.prevent>
         <VCustomInput
-          v-model="newMessage"
-          :hide-details="true"
+          v-model.trim="newMessage"
           autofocus
           label="Введите текст"
           class="mr-1"
+          required
+          :rules="[requiredRules.maxLength]"
+          @input="removeEmoji"
           @keyup.enter="sendMessage"
         />
         <SvgIcon class="chat__actions-send" name="send" @click="sendMessage" />
@@ -70,7 +72,7 @@
         >
           {{ newMessageCount }} новых сообщений
         </div>
-      </div>
+      </v-form>
     </div>
   </div>
 </template>
@@ -83,6 +85,7 @@ import { getChatsSupportQuery, getMessagesQuery, sendMessageQuery } from '@/api/
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import { useChatSocketStore } from '@/stores/ChatSocket'
 import { useSupport } from '@/stores/Support.ts'
+import { requiredRules } from '@/utils/validators.ts'
 
 const chatStore = useChatSocketStore()
 const supportStore = useSupport()
@@ -98,7 +101,7 @@ type ChatMessage = {
   is_your: boolean
   user?: { id: number; name: string }
 }
-
+const formRef = ref(null)
 const messageIds = ref<Record<number, Set<string | number>>>({})
 const rooms = ref<Room[]>([])
 const roomId = ref<number | null>(null)
@@ -151,6 +154,11 @@ function addMessage(msg: ChatMessage, targetRoomId: number) {
   if (ids.has(msg.id)) return
   ids.add(msg.id)
   roomMsgs.push(msg)
+}
+
+const removeEmoji = (e) => {
+  const cleaned = e.target.value.replace(/[^a-zA-Zа-яА-Я0-9\s.,!?'"()\-:;@]/g, '')
+  newMessage.value = cleaned
 }
 
 function scrollToBottomAnimated() {
@@ -243,28 +251,30 @@ async function getMessages(rId: number, isLoadMore = false) {
 
 async function sendMessage() {
   if (!newMessage.value.trim() || !roomId.value) return
+  const isValid = await formRef?.value?.validate()
+  if (isValid.valid) {
+    const msg: ChatMessage = {
+      id: Date.now() + Math.random(),
+      content: newMessage.value,
+      created_at: new Date().toISOString(),
+      is_your: true,
+      user: { id: userId.value, name: 'Вы' }
+    }
 
-  const msg: ChatMessage = {
-    id: Date.now() + Math.random(),
-    content: newMessage.value,
-    created_at: new Date().toISOString(),
-    is_your: true,
-    user: { id: userId.value, name: 'Вы' }
-  }
+    addMessage(msg, roomId.value)
+    if (!userScrolledUp.value) scrollToBottomAnimated()
+    else newMessageCount.value++
 
-  addMessage(msg, roomId.value)
-  if (!userScrolledUp.value) scrollToBottomAnimated()
-  else newMessageCount.value++
-
-  try {
-    await sendMessageQuery({
-      chatRoomId: roomId.value,
-      message: newMessage.value
-    })
-  } catch (err) {
-    console.error(err)
-  } finally {
-    newMessage.value = ''
+    try {
+      await sendMessageQuery({
+        chatRoomId: roomId.value,
+        message: newMessage.value
+      })
+    } catch (err) {
+      console.error(err)
+    } finally {
+      newMessage.value = ''
+    }
   }
 }
 
@@ -378,7 +388,7 @@ watch(
     border-radius: 16px;
     margin-right: 12px;
     padding: 20px 4px;
-    max-height: 602px;
+    max-height: 624px;
     overflow-y: scroll;
     padding-top: 0;
 
@@ -462,6 +472,8 @@ watch(
     position: relative;
 
     &-send {
+      position: relative;
+      top: -10px;
       cursor: pointer;
       transition: opacity 0.15s ease-in;
 
@@ -515,6 +527,7 @@ watch(
         line-height: 140%;
         margin-bottom: 10px;
         font-weight: 400;
+        word-wrap: break-word;
       }
 
       &__role {
