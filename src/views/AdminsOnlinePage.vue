@@ -1,29 +1,29 @@
 <template>
   <v-container>
-    <v-card class="pa-4" elevation="2">
-      <v-card-title> Админы </v-card-title>
+    <!--    <v-card class="pa-4" elevation="2">-->
+    <!--      <v-card-title> Админы </v-card-title>-->
 
-      <v-divider />
+    <!--      <v-divider />-->
 
-      <v-list>
-        <v-list-item v-for="admin in admins" :key="admin.id">
-          <template #prepend>
-            <v-avatar size="40">
-              <img :src="admin.avatar" :alt="admin.name" />
-            </v-avatar>
-          </template>
+    <!--      <v-list>-->
+    <!--        <v-list-item v-for="admin in admins" :key="admin.id">-->
+    <!--          <template #prepend>-->
+    <!--            <v-avatar size="40">-->
+    <!--              <img :src="admin.avatar" :alt="admin.name" />-->
+    <!--            </v-avatar>-->
+    <!--          </template>-->
 
-          <v-list-item-title>{{ admin.name }}</v-list-item-title>
-          <v-list-item-subtitle>{{ admin.role }}</v-list-item-subtitle>
+    <!--          <v-list-item-title>{{ admin.name }}</v-list-item-title>-->
+    <!--          <v-list-item-subtitle>{{ admin.role }}</v-list-item-subtitle>-->
 
-          <template #append>
-            <v-chip :color="admin.online ? 'green' : 'grey'" size="small" text-color="white">
-              {{ admin.online ? 'Онлайн' : 'Оффлайн' }}
-            </v-chip>
-          </template>
-        </v-list-item>
-      </v-list>
-    </v-card>
+    <!--          <template #append>-->
+    <!--            <v-chip :color="admin.online ? 'green' : 'grey'" size="small" text-color="white">-->
+    <!--              {{ admin.online ? 'Онлайн' : 'Оффлайн' }}-->
+    <!--            </v-chip>-->
+    <!--          </template>-->
+    <!--        </v-list-item>-->
+    <!--      </v-list>-->
+    <!--    </v-card>-->
   </v-container>
 </template>
 

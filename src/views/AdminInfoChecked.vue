@@ -52,9 +52,9 @@ const { queryParams, totalPages, changePage } = useTableQuery({
   fetchData: (params) => adminInfo.getCompletedList(params)
 })
 
-const calcDataItems = computed<IUserInfoData[]>(() => adminInfo.adminInfoData)
+const calcDataItems = computed<IUserInfoData[]>(() => adminInfo.adminInfoDataChecked)
 
 const goToPage = (path: string) => {
-  router.push(path.redirect)
+  router.push(`${path.redirect}?page=1`)
 }
 </script>

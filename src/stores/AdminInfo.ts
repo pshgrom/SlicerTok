@@ -23,6 +23,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
   })
   const coeffs = ref([])
   const adminInfoData = ref<IAdminInfoData[]>([])
+  const adminInfoDataChecked = ref<IAdminInfoData[]>([])
   const preloadUserInfo = ref<IUserInfo | null>(null)
   const adminProfileData = ref(null)
   const errorStore = useError()
@@ -141,7 +142,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
       }
       isLoading.value = true
       const resp = await getCompletedListQuery(data)
-      adminInfoData.value = resp?.data?.data ?? []
+      adminInfoDataChecked.value = resp?.data?.data ?? []
       const queryResp = resp?.data?.meta ?? {}
       const { current_page = 1, per_page = 50, total } = queryResp
       queryParams.value = {
@@ -172,6 +173,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     getCoefficient,
     coeffs,
     getAdminInfo,
-    adminProfileData
+    adminProfileData,
+    adminInfoDataChecked
   }
 })

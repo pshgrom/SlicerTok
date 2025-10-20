@@ -55,7 +55,7 @@ const tabsContent = [
 ]
 
 const goToPage = (path: string) => {
-  router.push(path.redirect)
+  router.push(`${path.redirect}?page=1`)
 }
 
 const adminPaymentsFinanceStore = useAdminPaymentsFinance()

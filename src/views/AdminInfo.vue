@@ -97,7 +97,7 @@ const queryParams = computed<ITableParamsAdmin>({
 })
 
 const goToPage = (path: string) => {
-  router.push(path.redirect)
+  router.push(`${path.redirect}?page=1`)
 }
 
 const onRowClick = (item) => {

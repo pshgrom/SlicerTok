@@ -20,12 +20,18 @@
             </template>
           </VCustomSelect>
           <div v-show="currentItem.status === 'rejected'" class="mb-4">
+            <transition name="fade">
+              <div v-if="showError && !selectedTasks.length" class="error-message">
+                Необходимо выбрать хотя бы одну причину
+              </div>
+            </transition>
             <v-checkbox
               v-model="selectAll"
               label="Выбрать все"
               density="compact"
               hide-details
               color="rgb(169, 55, 244)"
+              :error="showError && !selectedTasks.length"
               @change="toggleSelectAll"
             />
             <v-divider />
@@ -36,7 +42,9 @@
                 :label="option.name_reverse"
                 :value="option.key"
                 density="compact"
+                required
                 hide-details
+                :error="showError && !selectedTasks.length"
               />
             </div>
           </div>
@@ -108,6 +116,7 @@ const initialValue = ref({})
 const adminInfo = useAdminInfo()
 
 const selectAll = ref(false)
+const showError = ref(false)
 
 const selectedTasks = ref([])
 
@@ -183,6 +192,11 @@ const setCoeff = computed({
 const change = async () => {
   const isValid = await formRef?.value?.validate()
   if (isValid.valid) {
+    if (currentItem.value.status === 'rejected' && !selectedTasks.value.length) {
+      showError.value = true
+      return
+    }
+    showError.value = false
     emit('changeState', currentItem.value, selectedTasks.value)
     emit('update:modelValue', false)
   }
@@ -242,5 +256,18 @@ onMounted(() => {
   top: 0;
   background: #fff !important;
   z-index: 1;
+}
+
+.error-message {
+  color: #b00020;
+  line-height: 12px;
+  font-size: 12px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+  position: relative;
+  left: 16px;
+  letter-spacing: 0;
 }
 </style>
