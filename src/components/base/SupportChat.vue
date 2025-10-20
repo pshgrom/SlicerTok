@@ -23,7 +23,7 @@
     <div class="chat">
       <div class="chat-box">
         <div class="chat__title">
-          <span>{{ currentRoom?.name || 'Чат' }}</span>
+          <span @click="goToProfile">{{ currentRoom?.name || 'Чат' }}</span>
         </div>
 
         <div ref="chatBoxRef" class="chat-messages" @scroll="onScroll">
@@ -137,6 +137,13 @@ const getMessageSet = (rId: number) => {
 const getRoomMessages = (rId: number) => {
   if (!messages.value[rId]) messages.value[rId] = []
   return messages.value[rId]
+}
+const goToProfile = () => {
+  const el = currentMessages.value.find((el) => !el.is_your)
+  const id = el?.user_id
+  if (id) {
+    router.push({ name: 'User', params: { id } })
+  }
 }
 const getPage = (rId: number) => {
   if (!page.value[rId]) page.value[rId] = 1
@@ -493,6 +500,12 @@ watch(
     color: rgba(17, 17, 17, 1);
     font-weight: 400;
     font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      opacity: 0.7;
+    }
   }
 
   &-messages {

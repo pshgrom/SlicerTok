@@ -62,7 +62,7 @@
                 style="border: none !important"
               >
                 <div class="info-admin__title">{{ formatLabel(groupName) }}</div>
-                <div class="info-admin-comment">
+                <div class="info-admin-comment d-flex">
                   <div
                     v-if="group.status"
                     class="custom-table-chip"
@@ -78,6 +78,12 @@
                       {{ getTextStatus(group.status) }}
                     </div>
                   </div>
+                  <v-tooltip v-if="group.rules.length" location="bottom">
+                    <template #activator="{ props }">
+                      <SvgIcon v-bind="props" class="ml-2 cursor-pointer" name="show" />
+                    </template>
+                    <div class="tooltip-content" v-html="showViolations(group.rules)"></div>
+                  </v-tooltip>
                 </div>
                 <div class="info-admin-comment">
                   <div class="info-admin-comment__label">Просмотры:</div>
@@ -237,6 +243,10 @@ const userId = computed(() => props.currentItem.slicer?.id)
 const videoRejected = computed(
   () => props.currentItem.slicer?.user_rejected_publications_count ?? 0
 )
+
+const showViolations = (rules: any) => {
+  return rules.map((el, index) => `${index + 1}. ${el.name_reverse}`).join('<br>') || '-'
+}
 
 const currentItem = computed({
   get: () => props.currentItem,
