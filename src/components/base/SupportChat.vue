@@ -92,6 +92,7 @@ import {
   sendMessageQuery
 } from '@/api/chat.ts'
 import VCustomInput from '@/components/base/VCustomInput.vue'
+import type { ChatMessage, Room } from '@/interfaces/IChat.ts'
 import { useChatSocketStore } from '@/stores/ChatSocket'
 import { useSupport } from '@/stores/Support.ts'
 import { debounce } from '@/utils/optimize.ts'
@@ -103,14 +104,6 @@ const route = useRoute()
 const dateFrom = ref(undefined)
 const router = useRouter()
 
-type Room = { id: number; name: string }
-type ChatMessage = {
-  id: string | number
-  content: string
-  created_at: string
-  is_your: boolean
-  user?: { id: number; name: string }
-}
 const formRef = ref(null)
 const messageIds = ref<Record<number, Set<string | number>>>({})
 const rooms = ref<Room[]>([])
@@ -364,7 +357,7 @@ const markAllAsRead = async () => {
 const selectRoom = async (id: number) => {
   if (roomId.value === id) return
   roomId.value = id
-  unreadCounts.value[id] = 0
+  // unreadCounts.value[id] = 0
   chatStore.subscribeChannel(`chat.${id}`)
 
   page.value[id] = 1
@@ -555,32 +548,7 @@ watch(
     }
   }
 
-  &__actions {
-    display: flex;
-    align-items: center;
-    padding: 20px;
-    position: relative;
-
-    &-send {
-      position: relative;
-      top: -10px;
-      cursor: pointer;
-      transition: opacity 0.15s ease-in;
-
-      &:hover {
-        opacity: 0.7;
-      }
-    }
-  }
-
   &__title {
-    display: flex;
-    justify-content: space-between;
-    height: 64px;
-    border-bottom: 1px solid rgba(229, 236, 253, 1);
-    align-items: center;
-    padding: 0 20px;
-    color: rgba(17, 17, 17, 1);
     font-weight: 400;
     font-size: 14px;
     cursor: pointer;
@@ -590,143 +558,5 @@ watch(
       opacity: 0.7;
     }
   }
-
-  &-messages {
-    max-height: 450px;
-    min-height: 450px;
-    overflow-y: scroll;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-
-    &__empty {
-      font-size: 16px;
-    }
-
-    &-item {
-      max-width: 420px;
-      width: 100%;
-      background: rgba(179, 246, 255, 1);
-      padding: 16px;
-      border-radius: 16px;
-      border-top-left-radius: 4px;
-      border-top-right-radius: 16px;
-      position: relative;
-
-      &:first-child {
-        margin-top: 10px;
-      }
-
-      &__msg {
-        color: rgba(17, 17, 17, 1);
-        font-size: 14px;
-        line-height: 140%;
-        margin-bottom: 10px;
-        font-weight: 400;
-        word-wrap: break-word;
-      }
-
-      &__role {
-        color: rgba(0, 0, 0, 1);
-        font-weight: 500;
-        font-size: 12px;
-        position: absolute;
-        left: 0;
-        top: -22px;
-      }
-
-      &__time {
-        font-weight: 500;
-        font-size: 12px;
-        color: rgba(143, 150, 165, 1);
-        text-align: right;
-      }
-
-      &_unread {
-        position: relative;
-
-        &:after {
-          content: '';
-          position: absolute;
-          width: 5px;
-          height: 5px;
-          border-radius: 50%;
-          background: rgb(169, 55, 244);
-          right: -15px;
-          top: 50%;
-          transform: translateY(-50%);
-        }
-      }
-
-      &_your {
-        background: $primary-color;
-        align-self: flex-end;
-        border-top-right-radius: 4px;
-        border-top-left-radius: 16px;
-
-        .chat-messages-item__msg {
-          color: rgba(255, 255, 255, 1);
-        }
-
-        .chat-messages-item__time {
-          color: rgba(211, 219, 237, 1);
-          text-align: left;
-        }
-
-        .chat-messages-item__role {
-          left: auto;
-          right: 0;
-        }
-      }
-
-      & + .chat-messages-item {
-        margin-top: 40px;
-      }
-    }
-  }
-}
-
-.chat-spinner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 450px;
-}
-
-.new-message-indicator {
-  position: absolute;
-  bottom: 70px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: $primary-color;
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-/* анимация сообщений */
-.fade-slide-enter-active,
-.fade-slide-leave-active {
-  transition: all 0.3s ease;
-}
-.fade-slide-enter-from {
-  opacity: 0;
-  transform: translateY(20px);
-}
-.fade-slide-enter-to {
-  opacity: 1;
-  transform: translateY(0);
-}
-.fade-slide-leave-from {
-  opacity: 1;
-  transform: translateY(0);
-}
-.fade-slide-leave-to {
-  opacity: 0;
-  transform: translateY(20px);
 }
 </style>
