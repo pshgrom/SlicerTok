@@ -9,7 +9,7 @@
       <div ref="chatBoxRef" class="chat-messages">
         <template v-if="chatStore.isLoading && !chatStore.messages.length">
           <div class="chat-spinner">
-            <v-progress-circular indeterminate color="primary" size="40" />
+            <v-progress-circular indeterminate color="rgba(169, 55, 244, 1)" size="40" />
           </div>
         </template>
 
@@ -272,9 +272,21 @@ onBeforeUnmount(() => {
         text-align: right;
       }
 
-      //&_unread {
-      //  border: 2px solid green;
-      //}
+      &_unread {
+        position: relative;
+
+        &:after {
+          content: '';
+          position: absolute;
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: rgb(169, 55, 244);
+          right: -15px;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+      }
 
       &_your {
         background: $primary-color;

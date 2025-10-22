@@ -28,7 +28,7 @@
 
         <div ref="chatBoxRef" class="chat-messages" @scroll="onScroll">
           <div v-if="loadingMessages" class="chat-spinner">
-            <v-progress-circular indeterminate color="primary" size="40" />
+            <v-progress-circular color="rgba(169, 55, 244, 1)" indeterminate size="40" />
           </div>
 
           <transition-group v-else-if="currentMessages.length" name="fade-slide">
@@ -36,7 +36,11 @@
               v-for="msg in currentMessages"
               :key="msg.id"
               class="chat-messages-item"
-              :class="{ 'chat-messages-item_your': msg.is_your }"
+              :class="{
+                'chat-messages-item_your': msg.is_your,
+                'chat-messages-item_unread': !msg.is_your && !msg.is_read
+              }"
+              :data-id="msg.id"
             >
               <div class="chat-messages-item__role">
                 {{ msg?.user?.name ?? '' }}
@@ -90,6 +94,7 @@ import {
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import { useChatSocketStore } from '@/stores/ChatSocket'
 import { useSupport } from '@/stores/Support.ts'
+import { debounce } from '@/utils/optimize.ts'
 import { requiredRules } from '@/utils/validators.ts'
 
 const chatStore = useChatSocketStore()
@@ -201,6 +206,27 @@ const scrollToBottom = () =>
     }
   })
 
+// Проверяем, какие сообщения видимы в области прокрутки
+function getVisibleMessages(container: HTMLElement): ChatMessage[] {
+  const messagesEls = container.querySelectorAll('.chat-messages-item')
+  const visible: ChatMessage[] = []
+  const containerRect = container.getBoundingClientRect()
+
+  messagesEls.forEach((el) => {
+    const rect = el.getBoundingClientRect()
+    const msgId = el.getAttribute('data-id')
+    if (!msgId || !roomId.value) return
+
+    const msg = messages.value[roomId.value]?.find((m) => String(m.id) === msgId)
+    if (!msg || msg.is_your || msg.is_read) return
+
+    const isVisible = rect.top >= containerRect.top + 10 && rect.bottom <= containerRect.bottom - 10
+    if (isVisible) visible.push(msg)
+  })
+
+  return visible
+}
+
 async function onScroll() {
   const el = chatBoxRef.value
   if (!el || !roomId.value) return
@@ -211,6 +237,10 @@ async function onScroll() {
   }
 
   userScrolledUp.value = el.scrollHeight - el.scrollTop > el.clientHeight + 50
+
+  // --- Пометка видимых сообщений как прочитанных ---
+  const visibleMessages = getVisibleMessages(el)
+  if (visibleMessages.length) markVisibleMessagesAsRead(visibleMessages)
 
   // подгрузка старых сообщений
   if (el.scrollTop <= 100 && getHasMore(roomId.value) && !loadingMessages.value) {
@@ -289,6 +319,24 @@ async function sendMessage() {
     }
   }
 }
+
+// Основная функция (дебаунсится ниже)
+async function _markVisibleMessagesAsRead(msgs: ChatMessage[]) {
+  if (!msgs.length || !roomId.value) return
+
+  const unreadIds = msgs.map((m) => m.id)
+  try {
+    await markMessagesAsReadQuery(unreadIds)
+    msgs.forEach((m) => (m.is_read = true))
+    unreadCounts.value[roomId.value] = Math.max(
+      (unreadCounts.value[roomId.value] || 0) - unreadIds.length,
+      0
+    )
+  } catch (e) {
+    console.error('Ошибка при отметке видимых сообщений прочитанными:', e)
+  }
+}
+const markVisibleMessagesAsRead = debounce(_markVisibleMessagesAsRead, 300)
 
 const markAllAsRead = async () => {
   if (!roomId.value) return
@@ -592,6 +640,22 @@ watch(
         font-size: 12px;
         color: rgba(143, 150, 165, 1);
         text-align: right;
+      }
+
+      &_unread {
+        position: relative;
+
+        &:after {
+          content: '';
+          position: absolute;
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: rgb(169, 55, 244);
+          right: -15px;
+          top: 50%;
+          transform: translateY(-50%);
+        }
       }
 
       &_your {
