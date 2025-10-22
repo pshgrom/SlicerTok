@@ -38,6 +38,7 @@
 import { computed, type PropType, ref } from 'vue'
 
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
+import { formatCompactUSD } from '@/utils/formatNumbers.ts'
 
 const props = defineProps({
   headers: {
@@ -83,13 +84,4 @@ const selectedIds = computed({
     emit('update:selectedIds', val)
   }
 })
-
-const formatCompactUSD = (amount: number) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    notation: 'compact',
-    maximumFractionDigits: 1
-  }).format(amount)
-}
 </script>

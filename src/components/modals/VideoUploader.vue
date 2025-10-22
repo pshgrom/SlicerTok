@@ -197,7 +197,10 @@ const onDrop = (e) => {
   }
 
   &__value {
-    line-height: 1;
+    max-width: 320px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 </style>

@@ -68,6 +68,7 @@ export const userInfoHeaders = [
   { title: 'Ссылка', value: 'url' },
   { title: 'Статистика', value: 'video_stat_link' },
   { title: 'Просмотры', value: 'number_views' },
+  { title: 'Выплаты', value: 'expected_reward' },
   { title: 'Статус', value: 'status' },
   { title: 'Причины отказа', value: 'rules' }
 ]

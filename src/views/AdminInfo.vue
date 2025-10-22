@@ -1,63 +1,68 @@
 <template>
-  <div class="table-actions table-actions_admin">
-    <div class="table-actions__left">
-      <div class="table-actions__label">Заявки</div>
-      <div>
-        <TabsSwitcher :tabs="tabsContent" initial-tab="tab1" @tab-click="goToPage" />
+  <div class="admin-info d-flex">
+    <div class="admin-info__wrap" :class="{ 'admin-info__wrap_half': activePanel }">
+      <div class="table-actions table-actions_admin">
+        <div class="table-actions__left">
+          <div class="table-actions__label">Заявки</div>
+          <div>
+            <TabsSwitcher :tabs="tabsContent" initial-tab="tab1" @tab-click="goToPage" />
+          </div>
+        </div>
+        <div class="table-actions__right">
+          <DateFilter
+            v-model="queryParams.user_created_at"
+            label="По дате регистрации нарезчика"
+            @update:model-value="onDateChangeSlicer"
+          />
+          <DateFilter
+            v-model="queryParams.created_at"
+            label="По дате загрузки видео"
+            @update:model-value="onDateChangeVideo"
+          />
+          <VCusomButton :custom-class="['light', 'avg', 'with-icon']" @click="resetFilters">
+            <SvgIcon name="cross" />
+            Сбросить все
+          </VCusomButton>
+        </div>
+      </div>
+      <TableAdminInfo
+        :headers="headers"
+        :is-loading="isLoading"
+        :items="calcDataItems"
+        :items-per-page="queryParams.perPage"
+        :selected-index="selectedIndex"
+        @finish-check="finishCheck"
+        @request-verification="requestVerification"
+        @change-state="changeState"
+        @save-mark="saveMark"
+        @custom-sort="customSort"
+        @row-click="onRowClick"
+      />
+      <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
+        <TablePagination
+          v-model:query-params="queryParams"
+          :loading="isLoading"
+          :total-pages="totalPages"
+          @change-page="changePage"
+        />
       </div>
     </div>
-    <div class="table-actions__right">
-      <DateFilter
-        v-model="queryParams.user_created_at"
-        label="По дате регистрации нарезчика"
-        @update:model-value="onDateChangeSlicer"
-      />
-      <DateFilter
-        v-model="queryParams.created_at"
-        label="По дате загрузки видео"
-        @update:model-value="onDateChangeVideo"
-      />
-      <VCusomButton :custom-class="['light', 'avg', 'with-icon']" @click="resetFilters">
-        <SvgIcon name="cross" />
-        Сбросить все
-      </VCusomButton>
-    </div>
+    <!--    <transition name="scale-fade">-->
+    <!--      <SidePanel-->
+    <!--        v-if="activePanel"-->
+    <!--        v-model:selected="selected"-->
+    <!--        v-model:active-panel="activePanel"-->
+    <!--        :is-first="selectedIndex === 0"-->
+    <!--        :is-last="selectedIndex === calcDataItems.length - 1"-->
+    <!--        @prev="prevRow"-->
+    <!--        @next="nextRow"-->
+    <!--      />-->
+    <!--    </transition>-->
   </div>
-  <TableAdminInfo
-    :headers="headers"
-    :is-loading="isLoading"
-    :items="calcDataItems"
-    :items-per-page="queryParams.perPage"
-    :selected-index="selectedIndex"
-    @finish-check="finishCheck"
-    @request-verification="requestVerification"
-    @change-state="changeState"
-    @save-mark="saveMark"
-    @custom-sort="customSort"
-    @row-click="onRowClick"
-  />
-  <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
-    <TablePagination
-      v-model:query-params="queryParams"
-      :loading="isLoading"
-      :total-pages="totalPages"
-      @change-page="changePage"
-    />
-  </div>
-  <!--  <transition name="scale-fade">-->
-  <!--    <SidePanel-->
-  <!--      v-if="selected"-->
-  <!--      :selected="selected"-->
-  <!--      :is-first="selectedIndex === 0"-->
-  <!--      :is-last="selectedIndex === calcDataItems.length - 1"-->
-  <!--      @prev="prevRow"-->
-  <!--      @next="nextRow"-->
-  <!--    />-->
-  <!--  </transition>-->
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import DateFilter from '@/components/base/DateFilter.vue'
@@ -81,7 +86,8 @@ const tabsContent = [
   { id: 'tab2', title: 'Проверенные', count: 0, redirect: '/admin-info-checked' }
 ]
 const adminInfo = useAdminInfo()
-// const selected = ref(null)
+const selected = ref(null)
+const activePanel = ref(false)
 const selectedIndex = ref(-1)
 const isLoading = computed(() => adminInfo.isLoading)
 const router = useRouter()
@@ -101,8 +107,9 @@ const goToPage = (path: string) => {
 }
 
 const onRowClick = (item) => {
-  //   selected.value = item?.item ?? {}
-  //   selectedIndex.value = item.index
+  // selected.value = item?.item ?? {}
+  // selectedIndex.value = item.index
+  // activePanel.value = true
 }
 
 // const prevRow = () => {
@@ -274,13 +281,27 @@ onMounted(() => {
   // window.addEventListener('keydown', handleKeydown)
 })
 
-// onBeforeUnmount(() => {
-//   window.removeEventListener('keydown', handleKeydown)
-// })
+onBeforeUnmount(() => {
+  // window.removeEventListener('keydown', handleKeydown)
+})
 </script>
 
 <style scoped lang="scss">
 .table-settings-filter {
   margin: 0;
+}
+
+.admin-info {
+  justify-content: space-between;
+  max-width: 1920px;
+  margin: auto;
+
+  &__wrap {
+    width: 100%;
+
+    &_half {
+      width: 73%;
+    }
+  }
 }
 </style>

@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import Breadcrumbs from '@/components/base/Breadcrumbs.vue'
@@ -113,6 +113,12 @@ const verifyUser = async (value: boolean) => {
 onMounted(async () => {
   const id = Number(route.params.id)
   await Promise.all([getSlicer(id), getInfo(id), getWallets(id)])
+})
+
+onBeforeUnmount(() => {
+  queryParams.value.page = 1
+  queryParams.value.perPage = 10
+  queryParams.value.total = 0
 })
 </script>
 

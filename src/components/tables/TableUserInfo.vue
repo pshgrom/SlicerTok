@@ -37,6 +37,9 @@
         <SvgIcon name="arrow-up-right" />
       </a>
     </template>
+    <template #[`item.expected_reward`]="{ item }">
+      <div>~ {{ formatCompactUSD(item.expected_reward) }}</div>
+    </template>
     <template #[`item.number_views`]="{ item }">
       <div
         v-if="item.number_views"
@@ -93,7 +96,7 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import ReasonsRejectModal from '@/components/modals/ReasonsRejectModal.vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
-import { formatNumber } from '@/utils/formatNumbers'
+import { formatCompactUSD, formatNumber } from '@/utils/formatNumbers'
 import {
   getColor,
   getIcon,

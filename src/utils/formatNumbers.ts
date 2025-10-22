@@ -14,3 +14,12 @@ export function formatNumber(num: number): string {
 export const cleanPhoneNumber = (str: string) => {
   return str.replace(/\D/g, '')
 }
+
+export const formatCompactUSD = (amount: number) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    notation: 'compact',
+    maximumFractionDigits: 1
+  }).format(amount)
+}
