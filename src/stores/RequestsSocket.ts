@@ -96,7 +96,8 @@ export const useRequestSocket = defineStore('requestSocket', () => {
     }
 
     socket.value.onerror = () => {
-      errorStore.setErrors('Ошибка сети (заявки)', 'error')
+      // errorStore.setErrors('Ошибка сети (заявки)', 'error')
+      console.log('Ошибка сети')
       socket.value?.close()
     }
   }

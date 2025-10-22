@@ -62,7 +62,8 @@ export const useChatSocketStore = defineStore('chatSocket', () => {
     }
 
     socket.value.onerror = (e) => {
-      errorStore.setErrors('Ошибка сети', 'error')
+      // errorStore.setErrors('Ошибка сети', 'error')
+      console.log('Ошибка сети')
       socket.value?.close()
     }
   }
