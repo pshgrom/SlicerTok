@@ -78,10 +78,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import { getChatsSupportQuery, getMessagesQuery, sendMessageQuery } from '@/api/chat.ts'
+import {
+  getChatsSupportQuery,
+  getMessagesQuery,
+  markMessagesAsReadQuery,
+  sendMessageQuery
+} from '@/api/chat.ts'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import { useChatSocketStore } from '@/stores/ChatSocket'
 import { useSupport } from '@/stores/Support.ts'
@@ -113,6 +118,7 @@ const unreadCounts = ref<Record<number, number>>({})
 const loadingMessages = ref(false)
 const userScrolledUp = ref(false)
 const initialScrollDone = ref(false)
+const currentTransition = ref(null)
 
 const page = ref<Record<number, number>>({})
 const pageSize = 20
@@ -139,8 +145,7 @@ const getRoomMessages = (rId: number) => {
   return messages.value[rId]
 }
 const goToProfile = () => {
-  const el = currentMessages.value.find((el) => !el.is_your)
-  const id = el?.user_id
+  const id = currentTransition.value
   if (id) {
     router.push({ name: 'User', params: { id } })
   }
@@ -285,6 +290,29 @@ async function sendMessage() {
   }
 }
 
+const markAllAsRead = async () => {
+  if (!roomId.value) return
+
+  const msgs = messages.value[roomId.value] || []
+  const unreadIds = msgs.filter((m) => !m.is_your && !m.is_read).map((m) => m.id)
+
+  if (!unreadIds.length) return
+
+  try {
+    await markMessagesAsReadQuery([...unreadIds])
+
+    // обновляем состояние в сторе/фронте
+    msgs.forEach((m) => {
+      if (unreadIds.includes(m.id)) m.is_read = true
+    })
+
+    // сбрасываем счетчик в UI
+    unreadCounts.value[roomId.value] = 0
+  } catch (e) {
+    console.error('Ошибка при отметке сообщений прочитанными:', e)
+  }
+}
+
 const selectRoom = async (id: number) => {
   if (roomId.value === id) return
   roomId.value = id
@@ -298,21 +326,27 @@ const selectRoom = async (id: number) => {
   userScrolledUp.value = false
   initialScrollDone.value = false
 
+  await markAllAsRead()
+
   await router.push({ name: 'SupportChat', params: { id } })
+  currentTransition.value = currentRoom.value?.slicer_id ?? undefined
 }
 
 onMounted(async () => {
   await supportStore.getSupportInfo()
-  const savedUnread = localStorage.getItem('unreadCounts')
-  if (savedUnread) unreadCounts.value = JSON.parse(savedUnread)
 
   chatStore.connect()
   const { data } = await getChatsSupportQuery()
   if (data.code === 200) {
     rooms.value = data.data.chats.map((chat) => ({
       id: chat.chat_room_id,
-      name: chat.chat_room_name
+      name: chat.chat_room_name,
+      slicer_id: chat.slicer_id,
+      unread_count: chat.unread_count
     }))
+    rooms.value.forEach((room) => {
+      unreadCounts.value[room.id] = room.unread_count || 0
+    })
     rooms.value.forEach((room) => chatStore.subscribeChannel(`chat.${room.id}`))
 
     if (rooms.value.length) {
@@ -322,19 +356,20 @@ onMounted(async () => {
   }
 })
 
-watch(
-  () => route.params.id,
-  async (newId) => {
-    if (!newId && rooms.value.length) await selectRoom(rooms.value[0].id)
-    else if (newId) await selectRoom(Number(newId))
-  }
-)
+onBeforeUnmount(() => {
+  rooms.value.forEach((room) => {
+    chatStore.unsubscribeChannel(`chat.${room.id}`)
+  })
+})
 
-watch(
-  unreadCounts,
-  (newCounts) => localStorage.setItem('unreadCounts', JSON.stringify(newCounts)),
-  { deep: true }
-)
+//лишний вызов текущей комнаты
+// watch(
+//   () => route.params.id,
+//   async (newId) => {
+//     if (!newId && rooms.value.length) await selectRoom(rooms.value[0].id)
+//     else if (newId) await selectRoom(Number(newId))
+//   }
+// )
 
 watch(
   () => chatStore.messages[chatStore.messages.length - 1],
