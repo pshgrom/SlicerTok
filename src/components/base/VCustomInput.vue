@@ -12,7 +12,8 @@
     :hide-details="hideDetails"
     :color="color"
     :base-color="baseColor"
-    clearable
+    :clearable="clearable"
+    @click:clear="onClear"
   />
   <!--  @update:modelValue="updateValue"-->
 </template>
@@ -57,6 +58,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  clearable: {
+    type: Boolean,
+    default: true
+  },
   autofocus: {
     type: Boolean,
     default: false
@@ -72,6 +77,11 @@ const value = computed({
 })
 
 const customClasses = computed(() => props.customClass.join(' '))
+
+const onClear = () => {
+  value.value = ''
+  emit('update:modelValue', '')
+}
 
 // const updateValue = (e: string) => {
 //   console.error('e', e)

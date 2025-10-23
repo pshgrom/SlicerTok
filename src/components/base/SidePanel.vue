@@ -1,11 +1,6 @@
 <template>
-  <v-card class="side-panel pa-4 grey lighten-3">
+  <v-card class="side-panel">
     <v-card-title>
-      <span class="headline"># {{ selectedRecord.id }}</span>
-      <v-btn icon="mdi-close" variant="text" @click="activePanelVal = false" />
-    </v-card-title>
-    <div class="d-flex justify-space-between align-center mb-4">
-      <span class="text-h6">Заявка </span>
       <div>
         <v-btn icon size="small" variant="text" :disabled="isFirst" @click="$emit('prev')">
           <v-icon>mdi-arrow-up</v-icon>
@@ -14,12 +9,110 @@
           <v-icon>mdi-arrow-down</v-icon>
         </v-btn>
       </div>
-    </div>
+      <span class="headline"># {{ currentItem.id }}</span>
+      <v-btn icon="mdi-close" variant="text" @click="activePanelVal = false" />
+    </v-card-title>
+    <v-card-text>
+      <v-form ref="formRef">
+        <VCustomSelect
+          v-model="currentItem.status"
+          :items="allStatuses"
+          class="mt-2 mb-6"
+          :label="'Выберите статус'"
+        >
+          <template #item="{ item, props }">
+            <v-list-item v-bind="props" :style="getItemStyle(item)">
+              {{ item.text }}
+            </v-list-item>
+          </template>
+        </VCustomSelect>
+        <div v-show="currentItem.status === 'rejected'" class="mb-4">
+          <transition name="fade">
+            <div v-if="showError && !selectedTasks.length" class="error-message">
+              Необходимо выбрать хотя бы одну причину
+            </div>
+          </transition>
+          <v-checkbox
+            v-model="selectAll"
+            label="Выбрать все"
+            density="compact"
+            hide-details
+            color="rgb(169, 55, 244)"
+            :error="showError && !selectedTasks.length"
+            @change="toggleSelectAll"
+          />
+          <v-divider />
+          <div v-for="option in allTasks" :key="option.key">
+            <v-checkbox
+              v-model="selectedTasks"
+              color="rgb(169, 55, 244)"
+              :label="option.name_reverse"
+              :value="option.key"
+              density="compact"
+              required
+              hide-details
+              :error="showError && !selectedTasks.length"
+            />
+          </div>
+        </div>
+        <!--        <VCustomInput-->
+        <!--          v-model="currentItem.number_views_moderation"-->
+        <!--          label="Количество просмотров по факту"-->
+        <!--          :rules="[videoRules.quantityViews, videoRules.required, videoRules.quantityViewsMin]"-->
+        <!--          class="mb-2"-->
+        <!--          @input="onInput"-->
+        <!--        />-->
+        <ViewsSelectField
+          v-model="currentItem.number_views_moderation"
+          label="Количество просмотров по факту"
+          :rules="[videoRules.quantityViews, videoRules.required, videoRules.quantityViewsMin]"
+        />
+        <VCustomSelect v-model="setCoeff" label="Коэффициенты" class="mb-6" :items="coeffs">
+          <template #item="{ item, props }">
+            <v-list-item v-bind="props">
+              {{ item.text }}
+            </v-list-item>
+          </template>
+        </VCustomSelect>
+        <v-textarea
+          v-model.trim="currentItem.status_comment"
+          variant="outlined"
+          class="mb-4"
+          label="Комментарий..."
+          auto-grow
+          rows="1"
+          color="rgb(169, 55, 244)"
+          dense
+          style="height: 100px"
+          hide-details
+        />
+      </v-form>
+    </v-card-text>
+    <v-card-actions>
+      <div>
+        <VCusomButton :custom-class="['light', 'avg']" class="mr-2" @click="closeDialog">
+          Отмена
+        </VCusomButton>
+        <VCusomButton
+          :custom-class="['dark', 'avg']"
+          :disabled="currentItem.status === 'todo' || !currentItem.status"
+          @click="change"
+        >
+          Сохранить
+        </VCusomButton>
+      </div>
+    </v-card-actions>
   </v-card>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+
+import VCusomButton from '@/components/base/VCusomButton.vue'
+import VCustomSelect from '@/components/base/VCustomSelect.vue'
+import ViewsSelectField from '@/components/base/ViewsSelectField.vue'
+import { useAdminInfo } from '@/stores/AdminInfo.ts'
+import { videoRules } from '@/utils/validators.ts'
 
 const props = defineProps({
   selected: {
@@ -37,10 +130,142 @@ const props = defineProps({
   isLast: {
     type: Boolean,
     default: false
+  },
+  currentItem: {
+    type: Object,
+    default: () => ({})
   }
 })
 
-const emit = defineEmits(['prev', 'next', 'update:activePanel', 'update:selected'])
+const emit = defineEmits([
+  'prev',
+  'next',
+  'update:activePanel',
+  'update:currentItem',
+  'changeState'
+])
+
+const initialValue = ref({})
+const adminInfo = useAdminInfo()
+
+const selectAll = ref(false)
+const showError = ref(false)
+
+const selectedTasks = ref([])
+
+const allStatuses = [
+  { label: 'Новая', value: 'todo', disabled: true },
+  { label: 'Одобрено', value: 'approved' },
+  { label: 'Отклонено', value: 'rejected' },
+  { label: 'Доп. проверка', value: 'na' }
+]
+
+const formRef = ref(null)
+
+const toggleSelectAll = () => {
+  if (selectAll.value) {
+    selectedTasks.value = allTasks.value.map((item) => item.key)
+  } else {
+    selectedTasks.value = []
+  }
+}
+
+const currentItem = computed({
+  get: () => props.currentItem,
+  set: (val) => emit('update:currentItem', val)
+})
+
+const allTasks = computed(() => currentItem.value?.task?.rules ?? [])
+const coeffs = computed(() => adminInfo.coeffs ?? [])
+
+const closeDialog = () => {
+  resetForm()
+  activePanelVal.value = false
+}
+
+const getItemStyle = (item: any) => {
+  if (item.value === 'na') {
+    return 'color: rgb(169, 55, 244)'
+  }
+  return ''
+}
+
+const resetForm = () => {
+  currentItem.value = { ...initialValue.value }
+}
+
+const setCoeff = computed({
+  get: () => {
+    return currentItem.value?.coefficient?.id || null
+  },
+  set: (value) => {
+    if (currentItem.value && value) {
+      const selectedCoeff = coeffs.value.find((coeff) => coeff.value === value)
+      if (selectedCoeff) {
+        currentItem.value.coefficient = {
+          ...selectedCoeff,
+          id: selectedCoeff.value
+        }
+      }
+    } else if (currentItem.value && !value) {
+      currentItem.value.coefficient = {
+        label: '',
+        value: '',
+        id: ''
+      }
+    }
+  }
+})
+
+const change = async () => {
+  const isValid = await formRef?.value?.validate()
+  if (isValid.valid) {
+    if (currentItem.value.status === 'rejected' && !selectedTasks.value.length) {
+      showError.value = true
+      return
+    }
+    showError.value = false
+    emit('changeState', currentItem.value, selectedTasks.value)
+    activePanelVal.value = false
+  }
+}
+
+const onInput = (val) => {
+  const rawValue = typeof val === 'string' ? val : val?.target?.value || ''
+  const digitsOnly = rawValue.replace(/\D/g, '')
+  currentItem.value.number_views_moderation = digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+}
+
+watch(
+  () => currentItem.value?.rules,
+  (rules) => {
+    if (rules?.length) {
+      selectedTasks.value = rules.map((r) => r.key)
+    } else {
+      selectedTasks.value = []
+    }
+  }
+)
+
+watch(
+  () => currentItem.value.number_views_moderation,
+  (newVal) => {
+    onInput(newVal)
+  },
+  { immediate: false }
+)
+
+watch(
+  () => selectedTasks.value,
+  (newSelected) => {
+    selectAll.value = newSelected.length === allTasks.value.length
+  },
+  { deep: true }
+)
+
+onMounted(() => {
+  onInput(currentItem.value.number_views_moderation)
+})
 
 const activePanelVal = computed({
   get() {
@@ -50,25 +275,58 @@ const activePanelVal = computed({
     emit('update:activePanel', val)
   }
 })
-
-const selectedRecord = computed({
-  get() {
-    return props.selected
-  },
-  set(val) {
-    emit('update:selected', val)
-  }
-})
 </script>
 
 <style scoped lang="scss">
 .side-panel {
-  height: 92vh;
+  height: 90vh;
   z-index: 999;
   min-width: 500px;
   max-width: 500px;
   border-radius: 16px;
   box-shadow: none;
   margin-left: 6px;
+  padding: 6px 20px 20px 20px !important;
+}
+
+:deep(.v-card-title) {
+  position: sticky;
+  top: 0;
+  background: #fff !important;
+  z-index: 1;
+  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+:deep(.v-card-text) {
+  padding: 0 !important;
+  max-height: 700px;
+  min-height: 700px;
+  overflow-y: auto;
+  padding-right: 13px !important;
+}
+
+:deep(.v-card-actions) {
+  position: absolute;
+  background: #fff;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 20px !important;
+}
+
+.error-message {
+  color: #b00020;
+  line-height: 12px;
+  font-size: 12px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+  position: relative;
+  left: 16px;
+  letter-spacing: 0;
 }
 </style>

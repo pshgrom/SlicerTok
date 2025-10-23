@@ -20,7 +20,7 @@
     </template>
 
     <template #[`item.url`]="{ item }">
-      <a v-if="item.url" :href="item.url" target="_blank" class="custom-table-ref">
+      <a v-if="item.url" :href="item.url" target="_blank" class="custom-table-ref" @click.stop>
         <SvgIcon class="custom-table-ref__social" :name="getIconSocial(item.url)" />
         <span>
           {{ getNameSocialMedia(item.url) }}
@@ -35,7 +35,7 @@
       <div style="min-width: 150px">{{ formatDate(item.created_at) }}</div>
     </template>
     <template #[`item.video_stat_link`]="{ item }">
-      <a :href="item.video_stat_link" target="_blank" class="custom-table-ref">
+      <a :href="item.video_stat_link" target="_blank" class="custom-table-ref" @click.stop>
         <span> Смотреть </span>
         <SvgIcon name="arrow-up-right" />
       </a>
@@ -88,7 +88,7 @@
               class="mr-3"
               :custom-class="['light', 'avg', 'only-icon']"
               :disabled="!!item.user_requires_verification"
-              @click="requestVerification(item.id, item.user_requires_verification)"
+              @click.stop="requestVerification(item.id, item.user_requires_verification)"
             >
               <SvgIcon name="request-verification" />
             </VCusomButton>
@@ -100,7 +100,7 @@
               v-bind="props"
               class="mr-1"
               :custom-class="['light', 'avg', 'only-icon']"
-              @click="openMarkModal(item.id)"
+              @click.stop="openMarkModal(item.id)"
             >
               <SvgIcon name="sticky-note" />
             </VCusomButton>
@@ -124,7 +124,7 @@
               v-bind="props"
               :custom-class="['dark', 'avg', 'only-icon']"
               :disabled="item.status === 'todo' || !item.status"
-              @click="finishCheck(item.id, item.status)"
+              @click.stop="finishCheck(item.id, item.status)"
             >
               <SvgIcon name="check-check" />
             </VCusomButton>
@@ -133,11 +133,11 @@
       </div>
     </template>
   </v-data-table>
-  <ModerationDialog
-    v-model="dialog"
-    v-model:current-item="currentItem"
-    @change-state="changeState"
-  />
+  <!--  <ModerationDialog-->
+  <!--    v-model="dialog"-->
+  <!--    v-model:current-item="currentItem"-->
+  <!--    @change-state="changeState"-->
+  <!--  />-->
   <AddMarkModal v-if="isModalOpen" v-model="isModalOpen" @save="saveMark" />
 </template>
 
@@ -147,7 +147,6 @@ import { computed, nextTick, type PropType, ref, watch } from 'vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import AddMarkModal from '@/components/modals/AddMarkModal.vue'
-import ModerationDialog from '@/components/modals/ModerationDialog.vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import { formatDate } from '@/utils/formatDate.ts'
 import { formatNumber } from '@/utils/formatNumbers.ts'

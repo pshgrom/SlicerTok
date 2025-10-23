@@ -47,17 +47,18 @@
         />
       </div>
     </div>
-    <!--    <transition name="scale-fade">-->
-    <!--      <SidePanel-->
-    <!--        v-if="activePanel"-->
-    <!--        v-model:selected="selected"-->
-    <!--        v-model:active-panel="activePanel"-->
-    <!--        :is-first="selectedIndex === 0"-->
-    <!--        :is-last="selectedIndex === calcDataItems.length - 1"-->
-    <!--        @prev="prevRow"-->
-    <!--        @next="nextRow"-->
-    <!--      />-->
-    <!--    </transition>-->
+    <transition name="scale-fade">
+      <SidePanel
+        v-show="activePanel"
+        v-model:current-item="currentRecord"
+        v-model:active-panel="activePanel"
+        :is-first="selectedIndex === 0"
+        :is-last="selectedIndex === calcDataItems.length - 1"
+        @change-state="changeState"
+        @prev="prevRow"
+        @next="nextRow"
+      />
+    </transition>
   </div>
 </template>
 
@@ -66,6 +67,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import DateFilter from '@/components/base/DateFilter.vue'
+import SidePanel from '@/components/base/SidePanel.vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import TabsSwitcher from '@/components/base/TabsSwitcher.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
@@ -86,7 +88,7 @@ const tabsContent = [
   { id: 'tab2', title: 'Проверенные', count: 0, redirect: '/admin-info-checked' }
 ]
 const adminInfo = useAdminInfo()
-const selected = ref(null)
+const currentRecord = ref({})
 const activePanel = ref(false)
 const selectedIndex = ref(-1)
 const isLoading = computed(() => adminInfo.isLoading)
@@ -107,24 +109,24 @@ const goToPage = (path: string) => {
 }
 
 const onRowClick = (item) => {
-  // selected.value = item?.item ?? {}
-  // selectedIndex.value = item.index
-  // activePanel.value = true
+  currentRecord.value = item?.item ?? {}
+  selectedIndex.value = item.index
+  activePanel.value = true
 }
 
-// const prevRow = () => {
-//   if (selectedIndex.value > 0) {
-//     selectedIndex.value--
-//     selected.value = calcDataItems.value[selectedIndex.value]
-//   }
-// }
-//
-// const nextRow = () => {
-//   if (selectedIndex.value < calcDataItems.value.length - 1) {
-//     selectedIndex.value++
-//     selected.value = calcDataItems.value[selectedIndex.value]
-//   }
-// }
+const prevRow = () => {
+  if (selectedIndex.value > 0) {
+    selectedIndex.value--
+    currentRecord.value = calcDataItems.value[selectedIndex.value]
+  }
+}
+
+const nextRow = () => {
+  if (selectedIndex.value < calcDataItems.value.length - 1) {
+    selectedIndex.value++
+    currentRecord.value = calcDataItems.value[selectedIndex.value]
+  }
+}
 
 const onDateChangeSlicer = (val: string) => {
   if (val) {
@@ -257,17 +259,17 @@ const getRequest = () => {
   adminInfo.getPublicationsList(queryParams.value)
 }
 
-// const handleKeydown = (e) => {
-//   if (!calcDataItems.value.length) return
-//   if (e.key === 'ArrowUp') {
-//     e.preventDefault()
-//     prevRow()
-//   }
-//   if (e.key === 'ArrowDown') {
-//     e.preventDefault()
-//     nextRow()
-//   }
-// }
+const handleKeydown = (e) => {
+  if (!calcDataItems.value.length) return
+  if (e.key === 'ArrowUp') {
+    e.preventDefault()
+    prevRow()
+  }
+  if (e.key === 'ArrowDown') {
+    e.preventDefault()
+    nextRow()
+  }
+}
 
 onMounted(() => {
   queryParams.value = {
@@ -278,11 +280,11 @@ onMounted(() => {
   adminInfo.getAdminInfo()
   requestSocketStore.setChannel('publication-new.admin')
   requestSocketStore.connect()
-  // window.addEventListener('keydown', handleKeydown)
+  window.addEventListener('keydown', handleKeydown)
 })
 
 onBeforeUnmount(() => {
-  // window.removeEventListener('keydown', handleKeydown)
+  window.removeEventListener('keydown', handleKeydown)
 })
 </script>
 
@@ -292,10 +294,6 @@ onBeforeUnmount(() => {
 }
 
 .admin-info {
-  justify-content: space-between;
-  max-width: 1920px;
-  margin: auto;
-
   &__wrap {
     width: 100%;
 
