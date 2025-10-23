@@ -49,6 +49,10 @@ img {
   &_none {
     max-width: 100% !important;
   }
+
+  &_slicer {
+    max-width: 1000px;
+  }
 }
 
 .chat-user {

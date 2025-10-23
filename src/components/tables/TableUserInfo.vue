@@ -32,10 +32,10 @@
       </a>
     </template>
     <template #[`item.video_stat_link`]="{ item }">
-      <a :href="item.video_stat_link" target="_blank" class="custom-table-ref">
-        <span> Смотреть </span>
+      <div class="custom-table-ref" @click.stop>
+        <span @click="openVideo(item.video_stat_link)"> Смотреть </span>
         <SvgIcon name="arrow-up-right" />
-      </a>
+      </div>
     </template>
     <template #[`item.expected_reward`]="{ item }">
       <div>~ {{ formatCompactUSD(item.expected_reward) }}</div>
@@ -87,6 +87,7 @@
     v-model="isModalOpen"
     :current-reasons-reject="currentReasonsReject"
   />
+  <VideoPlayModal v-if="isModalOpenVideo" v-model="isModalOpenVideo" v-model:video-src="videoSrc" />
 </template>
 
 <script setup lang="ts">
@@ -95,6 +96,7 @@ import { computed, type PropType, ref } from 'vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import ReasonsRejectModal from '@/components/modals/ReasonsRejectModal.vue'
+import VideoPlayModal from '@/components/modals/VideoPlayModal.vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import { formatCompactUSD, formatNumber } from '@/utils/formatNumbers'
 import {
@@ -125,6 +127,8 @@ const props = defineProps({
   }
 })
 
+const isModalOpenVideo = ref(false)
+const videoSrc = ref('')
 const headersData = ref(props.headers)
 const isModalOpen = ref(false)
 const currentReasonsReject = ref([])
@@ -143,4 +147,9 @@ const computedHeaders = computed<ITableHeaders[]>({
     headersData.value = val
   }
 })
+
+const openVideo = (url: string) => {
+  isModalOpenVideo.value = true
+  videoSrc.value = url
+}
 </script>

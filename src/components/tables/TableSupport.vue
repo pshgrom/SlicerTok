@@ -46,10 +46,10 @@
       </div>
     </template>
     <template #[`item.video_stat_link`]="{ item }">
-      <a :href="item.video_stat_link" target="_blank" class="custom-table-ref">
-        <span> Смотреть </span>
+      <div class="custom-table-ref" @click.stop>
+        <span @click="openVideo(item.video_stat_link)"> Смотреть </span>
         <SvgIcon name="arrow-up-right" />
-      </a>
+      </div>
     </template>
     <template #[`item.status_moderation`]="{ item }">
       <v-row no-gutters class="flex-nowrap" style="overflow-x: auto; white-space: nowrap">
@@ -122,6 +122,7 @@
     v-model:current-item="currentItem"
     @change-final-values="changeFinalValues"
   />
+  <VideoPlayModal v-if="isModalOpenVideo" v-model="isModalOpenVideo" v-model:video-src="videoSrc" />
   <!--  <ShowRulesModal v-if="showRules" v-model="showRules" :currentRules="currentRules" />-->
 </template>
 
@@ -131,6 +132,7 @@ import { computed, type PropType, ref } from 'vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import DifferencesDialog from '@/components/modals/DifferencesDialog.vue'
+import VideoPlayModal from '@/components/modals/VideoPlayModal.vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import { formatNumber } from '@/utils/formatNumbers.ts'
 import {
@@ -170,6 +172,9 @@ const headersData = ref(props.headers)
 // const showRules = ref(false)
 // const currentRules = ref([])
 
+const isModalOpenVideo = ref(false)
+const videoSrc = ref('')
+
 const dialogModel = computed({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val)
@@ -188,6 +193,10 @@ const computedHeaders = computed<ITableHeaders[]>({
 //   // currentRules.value = group.rules
 //   // showRules.value = true
 // }
+const openVideo = (url: string) => {
+  isModalOpenVideo.value = true
+  videoSrc.value = url
+}
 
 const showViolations = (rules: any) => {
   return rules.map((el, index) => `${index + 1}. ${el.name_reverse}`).join('<br>') || '-'

@@ -35,10 +35,10 @@
       <div style="min-width: 150px">{{ formatDate(item.created_at) }}</div>
     </template>
     <template #[`item.video_stat_link`]="{ item }">
-      <a :href="item.video_stat_link" target="_blank" class="custom-table-ref" @click.stop>
-        <span> Смотреть </span>
+      <div class="custom-table-ref" @click.stop>
+        <span @click="openVideo(item.video_stat_link)"> Смотреть </span>
         <SvgIcon name="arrow-up-right" />
-      </a>
+      </div>
     </template>
     <template #[`item.number_views`]="{ item }">
       <div
@@ -139,6 +139,7 @@
   <!--    @change-state="changeState"-->
   <!--  />-->
   <AddMarkModal v-if="isModalOpen" v-model="isModalOpen" @save="saveMark" />
+  <VideoPlayModal v-if="isModalOpenVideo" v-model="isModalOpenVideo" v-model:video-src="videoSrc" />
 </template>
 
 <script setup lang="ts">
@@ -147,6 +148,7 @@ import { computed, nextTick, type PropType, ref, watch } from 'vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import AddMarkModal from '@/components/modals/AddMarkModal.vue'
+import VideoPlayModal from '@/components/modals/VideoPlayModal.vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import { formatDate } from '@/utils/formatDate.ts'
 import { formatNumber } from '@/utils/formatNumbers.ts'
@@ -195,6 +197,8 @@ const headersData = ref(props.headers)
 const dialog = ref(false)
 const currentItem = ref({})
 const isModalOpen = ref(false)
+const isModalOpenVideo = ref(false)
+const videoSrc = ref('')
 const markId = ref<null | number>(null)
 const tableRef = ref(null)
 
@@ -235,6 +239,11 @@ watch(
     }
   }
 )
+
+const openVideo = (url: string) => {
+  isModalOpenVideo.value = true
+  videoSrc.value = url
+}
 
 const finishCheck = (id: number | string, status: string) => {
   if (status === 'todo' || !status) return

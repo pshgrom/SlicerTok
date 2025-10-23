@@ -3,8 +3,11 @@
     <ErrorAlert />
     <GlobalLoader v-if="loader.isLoading" />
     <v-main class="main">
-      <v-container class="custom-container" fluid>
-        <!--        :class="{ 'custom-container_none': isAdmin && !insideSlicer }"-->
+      <v-container
+        class="custom-container"
+        fluid
+        :class="{ 'custom-container_slicer': isSlicer || insideSlicer }"
+      >
         <HeaderMain v-if="showContent || showForSlicer" />
         <div v-if="showChat" class="chat-user">
           <template v-if="!isMobile">
@@ -103,7 +106,7 @@ watch(
 const isSlicer = computed(() => authStore.role === 'slicer')
 const userName = computed(() => userInfoStore.userInfo?.profile?.name ?? '')
 
-// const insideSlicer = computed(() => page.value === 'User')
+const insideSlicer = computed(() => page.value === 'User')
 
 const showForSlicer = computed(() => page.value === 'UserInfo')
 </script>
