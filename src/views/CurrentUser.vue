@@ -15,7 +15,12 @@
         <div class="table-actions__label">Ваши видео</div>
       </div>
     </div>
-    <TableUserInfo :headers="headers" :is-loading="isLoading" :items="slicerItems" />
+    <TableUserInfo
+      :headers="headers"
+      :is-loading="isLoading"
+      :items="slicerItems"
+      :items-per-page="queryParams.perPage"
+    />
     <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
       <TablePagination
         v-model:query-params="queryParams"
@@ -117,7 +122,7 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   queryParams.value.page = 1
-  queryParams.value.perPage = 10
+  queryParams.value.perPage = 20
   queryParams.value.total = 0
 })
 </script>

@@ -39,7 +39,7 @@ const props = defineProps({
   },
   itemsPerPage: {
     type: [Number, String],
-    default: 10
+    default: 20
   }
 })
 

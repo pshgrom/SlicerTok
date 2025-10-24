@@ -27,7 +27,7 @@ export const useSupport = defineStore('supportStore', () => {
   })
   const queryParamsSlicer = ref<ITableParams>({
     page: 1,
-    perPage: 10,
+    perPage: 20,
     total: 0
   })
   const supportInfo = ref(null)
@@ -110,7 +110,7 @@ export const useSupport = defineStore('supportStore', () => {
       const { data } = await getInfoQuery(newData)
       slicerItems.value = data?.data ?? {}
       const queryResp = data?.meta ?? {}
-      const { current_page = 1, per_page = 50, total } = queryResp
+      const { current_page = 1, per_page = 20, total } = queryResp
       queryParamsSlicer.value = {
         ...queryParamsSlicer.value,
         page: current_page,
