@@ -1,11 +1,13 @@
 <template>
   <v-data-table
+    ref="tableRef"
     :headers="computedHeaders"
     :items="items"
     :loading="isLoading"
     :items-per-page="itemsPerPage"
     class="custom-table"
     hover
+    :row-props="rowProps"
     height="70vh"
     fixed-header
     hide-default-footer
@@ -14,7 +16,7 @@
       <v-progress-circular indeterminate color="rgb(169, 55, 244)" />
     </template>
     <template #[`item.url`]="{ item }">
-      <a :href="item.url" target="_blank" class="custom-table-ref">
+      <a v-if="item.url" :href="item.url" target="_blank" class="custom-table-ref" @click.stop>
         <SvgIcon class="custom-table-ref__social" :name="getIconSocial(item.url)" />
         <span>
           {{ getNameSocialMedia(item.url) }}
@@ -127,7 +129,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, type PropType, ref } from 'vue'
+import { computed, nextTick, type PropType, ref, watch } from 'vue'
 
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
@@ -162,18 +164,20 @@ const props = defineProps({
   itemsPerPage: {
     type: [Number, String],
     default: 20
+  },
+  selectedIndex: {
+    type: Number,
+    default: null
   }
 })
 
-const emit = defineEmits(['actionRequest', 'changeFinalValues', 'update:modelValue'])
+const emit = defineEmits(['actionRequest', 'changeFinalValues', 'update:modelValue', 'rowClick'])
 const currentItem = ref({})
 const headersData = ref(props.headers)
 
-// const showRules = ref(false)
-// const currentRules = ref([])
-
 const isModalOpenVideo = ref(false)
 const videoSrc = ref('')
+const tableRef = ref(null)
 
 const dialogModel = computed({
   get: () => props.modelValue,
@@ -206,6 +210,12 @@ const actionRequest = (is_problem_solved: boolean, id: number) => {
   if (is_problem_solved) emit('actionRequest', id)
 }
 
+const rowProps = (item) => ({
+  id: `row-${item.index}`,
+  class: ['cursor-pointer', item.index === props.selectedIndex ? 'bg-blue-lighten-4' : ''],
+  onClick: () => emit('rowClick', item)
+})
+
 const changeFinalValues = (data: any) => {
   emit('changeFinalValues', data)
 }
@@ -225,6 +235,21 @@ const formatLabel = (label: string) => {
       return 'Админ группы B'
   }
 }
+
+watch(
+  () => props.selectedIndex,
+  async (newIndex) => {
+    if (newIndex < 0) return
+    await nextTick()
+    const rowEl = tableRef.value?.$el.querySelector(`#row-${newIndex}`)
+    if (rowEl) {
+      rowEl.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      })
+    }
+  }
+)
 </script>
 
 <style lang="scss" scoped>

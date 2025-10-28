@@ -305,12 +305,6 @@ const change = async () => {
   padding-right: 16px !important;
 }
 
-:deep(.v-card-actions) {
-  //position: sticky;
-  //bottom: 0;
-  background: #fff;
-}
-
 .custom-modal {
   &__row {
     margin-bottom: 32px;

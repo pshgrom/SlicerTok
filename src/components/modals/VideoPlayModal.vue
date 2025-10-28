@@ -72,4 +72,17 @@ const video = computed({
   object-fit: contain;
   background: #000;
 }
+
+:deep(.v-card-actions) {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+}
+
+:deep(.v-card-title) {
+  position: sticky;
+  top: 0;
+  background: #fff !important;
+  z-index: 1;
+}
 </style>

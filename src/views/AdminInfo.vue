@@ -293,12 +293,19 @@ onBeforeUnmount(() => {
   margin: 0;
 }
 
+.table-actions {
+  &_admin {
+    overflow: auto;
+  }
+}
+
 .admin-info {
   &__wrap {
     width: 100%;
 
     &_half {
-      width: 73%;
+      width: 100%;
+      min-width: 100px;
     }
   }
 }

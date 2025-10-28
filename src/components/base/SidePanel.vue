@@ -115,10 +115,6 @@ import { useAdminInfo } from '@/stores/AdminInfo.ts'
 import { videoRules } from '@/utils/validators.ts'
 
 const props = defineProps({
-  selected: {
-    type: Object,
-    default: () => ({})
-  },
   isFirst: {
     type: Boolean,
     default: false
@@ -302,8 +298,8 @@ const activePanelVal = computed({
 
 :deep(.v-card-text) {
   padding: 0 !important;
-  max-height: 700px;
-  min-height: 700px;
+  max-height: 500px;
+  min-height: 500px;
   overflow-y: auto;
   padding-right: 13px !important;
 }
