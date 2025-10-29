@@ -125,13 +125,11 @@
             </v-list-item>
           </template>
         </VCustomSelect>
-        <VCustomInput
+        <ViewsSelectField
           v-if="!sameViews"
           v-model="currentNumberViews"
           label="Количество просмотров по факту"
           :rules="[videoRules.quantityViews, videoRules.required, videoRules.quantityViewsMin]"
-          class="mb-1"
-          @input="onInput"
         />
         <VCustomSelect
           v-if="!sameCoeffs"
@@ -168,8 +166,8 @@ import { useRouter } from 'vue-router'
 
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
-import VCustomInput from '@/components/base/VCustomInput.vue'
 import VCustomSelect from '@/components/base/VCustomSelect.vue'
+import ViewsSelectField from '@/components/base/ViewsSelectField.vue'
 import { useAdminInfo } from '@/stores/AdminInfo.ts'
 import { useSupportUsers } from '@/stores/SupportUsers.ts'
 import { formatNumber } from '@/utils/formatNumbers.ts'
@@ -346,12 +344,6 @@ const formatLabel = (label: string) => {
     case 'group_b':
       return 'Админ группы B'
   }
-}
-
-const onInput = (val) => {
-  const rawValue = typeof val === 'string' ? val : val?.target?.value || ''
-  const digitsOnly = rawValue.replace(/\D/g, '')
-  currentNumberViews.value = digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
 
 const resetForm = () => {
