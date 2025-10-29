@@ -215,7 +215,19 @@ const setCoeff = computed({
 
 const change = async () => {
   const isValid = await formRef?.value?.validate()
-  if (isValid.valid) {
+  if (!isValid.valid) {
+    const formEl = formRef.value?.$el || document.querySelector('.side-panel')
+    const invalidField = formEl?.querySelector('.v-input--error, .v-field--error')
+
+    if (invalidField) {
+      invalidField.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      })
+    }
+
+    return
+  } else {
     if (currentItem.value.status === 'rejected' && !selectedTasks.value.length) {
       showError.value = true
       return
@@ -275,7 +287,7 @@ const activePanelVal = computed({
 
 <style scoped lang="scss">
 .side-panel {
-  height: 90vh;
+  height: 89vh;
   z-index: 999;
   min-width: 500px;
   max-width: 500px;
@@ -298,8 +310,7 @@ const activePanelVal = computed({
 
 :deep(.v-card-text) {
   padding: 0 !important;
-  max-height: 500px;
-  min-height: 500px;
+  max-height: 70vh;
   overflow-y: auto;
   padding-right: 13px !important;
 }

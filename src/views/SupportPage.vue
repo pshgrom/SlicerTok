@@ -8,6 +8,7 @@
       </div>
       <TableSupport
         v-model="dialog"
+        v-model:active-panel="activePanel"
         :headers="headers"
         :is-loading="isLoading"
         :items="calcDataItems"

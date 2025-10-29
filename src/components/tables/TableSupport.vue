@@ -105,7 +105,7 @@
               v-bind="props"
               :disabled="!item.is_problem_solved"
               :custom-class="['dark', 'avg', 'only-icon']"
-              @click="actionRequest(item.is_problem_solved, item.id)"
+              @click.stop="actionRequest(item.is_problem_solved, item.id)"
             >
               <SvgIcon name="check-check" />
             </VCusomButton>
@@ -152,13 +152,17 @@ const props = defineProps({
     type: [Number, String],
     default: 20
   },
+  activePanel: {
+    type: Boolean,
+    default: false
+  },
   selectedIndex: {
     type: Number,
     default: null
   }
 })
 
-const emit = defineEmits(['actionRequest', 'update:modelValue', 'rowClick'])
+const emit = defineEmits(['actionRequest', 'update:modelValue', 'rowClick', 'update:activePanel'])
 const headersData = ref(props.headers)
 
 const isModalOpenVideo = ref(false)
@@ -174,6 +178,15 @@ const computedHeaders = computed<ITableHeaders[]>({
   }
 })
 
+const activePanelVal = computed({
+  get() {
+    return props.activePanel
+  },
+  set(val) {
+    emit('update:activePanel', val)
+  }
+})
+
 const openVideo = (url: string) => {
   isModalOpenVideo.value = true
   videoSrc.value = url
@@ -185,6 +198,7 @@ const showViolations = (rules: any) => {
 
 const actionRequest = (is_problem_solved: boolean, id: number) => {
   if (is_problem_solved) emit('actionRequest', id)
+  activePanelVal.value = false
 }
 
 const rowProps = (item) => ({

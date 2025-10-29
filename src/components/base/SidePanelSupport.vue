@@ -306,6 +306,7 @@ const change = async () => {
       number_views_moderation: !sameViews.value ? cleanNumber(currentNumberViews.value) : undefined
     }
     emit('changeFinalValues', data)
+    closeDialog()
   }
 }
 
@@ -372,7 +373,7 @@ const activePanelVal = computed({
   height: 89vh;
   z-index: 999;
   min-width: 500px;
-  max-width: 70vh;
+  max-width: 500px;
   border-radius: 16px;
   box-shadow: none;
   margin-left: 6px;
@@ -392,8 +393,7 @@ const activePanelVal = computed({
 
 :deep(.v-card-text) {
   padding: 0 !important;
-  max-height: 500px;
-  min-height: 500px;
+  max-height: 70vh;
   overflow-y: auto;
 }
 
