@@ -94,12 +94,7 @@
       <div class="d-flex align-center">
         <v-tooltip text="Открыть заявку" location="bottom">
           <template #activator="{ props }">
-            <VCusomButton
-              v-bind="props"
-              class="mr-1"
-              :custom-class="['light', 'avg', 'only-icon']"
-              @click="showDialog(item)"
-            >
+            <VCusomButton v-bind="props" class="mr-1" :custom-class="['light', 'avg', 'only-icon']">
               <SvgIcon name="open-modal" />
             </VCusomButton>
           </template>
@@ -119,13 +114,7 @@
       </div>
     </template>
   </v-data-table>
-  <DifferencesDialog
-    v-model="dialogModel"
-    v-model:current-item="currentItem"
-    @change-final-values="changeFinalValues"
-  />
   <VideoPlayModal v-if="isModalOpenVideo" v-model="isModalOpenVideo" v-model:video-src="videoSrc" />
-  <!--  <ShowRulesModal v-if="showRules" v-model="showRules" :currentRules="currentRules" />-->
 </template>
 
 <script setup lang="ts">
@@ -133,7 +122,6 @@ import { computed, nextTick, type PropType, ref, watch } from 'vue'
 
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
-import DifferencesDialog from '@/components/modals/DifferencesDialog.vue'
 import VideoPlayModal from '@/components/modals/VideoPlayModal.vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import { formatNumber } from '@/utils/formatNumbers.ts'
@@ -145,7 +133,6 @@ import {
   getStatusColor,
   getTextStatus
 } from '@/utils/socials.ts'
-// import ShowRulesModal from '@/components/modals/ShowRulesModal.vue'
 
 const props = defineProps({
   headers: {
@@ -171,18 +158,12 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['actionRequest', 'changeFinalValues', 'update:modelValue', 'rowClick'])
-const currentItem = ref({})
+const emit = defineEmits(['actionRequest', 'update:modelValue', 'rowClick'])
 const headersData = ref(props.headers)
 
 const isModalOpenVideo = ref(false)
 const videoSrc = ref('')
 const tableRef = ref(null)
-
-const dialogModel = computed({
-  get: () => props.modelValue,
-  set: (val) => emit('update:modelValue', val)
-})
 
 const computedHeaders = computed<ITableHeaders[]>({
   get() {
@@ -193,10 +174,6 @@ const computedHeaders = computed<ITableHeaders[]>({
   }
 })
 
-// const openRules = (group) => {
-//   // currentRules.value = group.rules
-//   // showRules.value = true
-// }
 const openVideo = (url: string) => {
   isModalOpenVideo.value = true
   videoSrc.value = url
@@ -215,17 +192,6 @@ const rowProps = (item) => ({
   class: ['cursor-pointer', item.index === props.selectedIndex ? 'bg-blue-lighten-4' : ''],
   onClick: () => emit('rowClick', item)
 })
-
-const changeFinalValues = (data: any) => {
-  emit('changeFinalValues', data)
-}
-
-const showDialog = (item) => {
-  currentItem.value = {
-    ...item
-  }
-  dialogModel.value = true
-}
 
 const formatLabel = (label: string) => {
   switch (label) {

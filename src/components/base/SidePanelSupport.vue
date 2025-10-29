@@ -66,7 +66,7 @@
               class="info-admin info-admin_dialog"
               variant="outlined"
               rounded
-              style="border: none !important"
+              style="border: none !important; border-radius: 16px"
             >
               <div class="info-admin__title">{{ formatLabel(groupName) }}</div>
               <div class="info-admin-comment d-flex">
@@ -114,6 +114,7 @@
         <VCustomSelect
           v-if="!sameStatuses"
           v-model="currentStatus"
+          :rules="[videoRules.required]"
           :items="allStatuses"
           class="mb-6"
           :label="'Статус'"
@@ -126,7 +127,7 @@
         </VCustomSelect>
         <VCustomInput
           v-if="!sameViews"
-          v-model="finalViews"
+          v-model="currentNumberViews"
           label="Количество просмотров по факту"
           :rules="[videoRules.quantityViews, videoRules.required, videoRules.quantityViewsMin]"
           class="mb-1"
@@ -134,7 +135,7 @@
         />
         <VCustomSelect
           v-if="!sameCoeffs"
-          v-model="finalCoeff"
+          v-model="currentCoefficient"
           :rules="[videoRules.required]"
           label="Коэффициенты"
           class="mb-4"
@@ -196,12 +197,9 @@ const props = defineProps({
 
 const emit = defineEmits(['update:activePanel', 'changeFinalValues', 'update:currentItem'])
 
-const finalCoeff = ref(null)
-const finalViews = ref('')
 const supportUsersStore = useSupportUsers()
 
 const initialValue = ref({})
-const currentStatus = ref('')
 
 const formRef = ref(null)
 const router = useRouter()
@@ -211,6 +209,27 @@ const allStatuses = [
   { label: 'Одобрено', value: 'approved' },
   { label: 'Отклонено', value: 'rejected' }
 ]
+
+const currentStatus = computed({
+  get: () => currentItem.value?.status_moderation_support?.status || '',
+  set: (val) => (currentItem.value.status_moderation_support.status = val)
+})
+
+const currentNumberViews = computed({
+  get: () => currentItem.value?.status_moderation_support?.number_views || '',
+  set: (val) => (currentItem.value.status_moderation_support.number_views = val)
+})
+
+const currentCoefficient = computed({
+  get: () => {
+    return (
+      currentItem.value?.status_moderation_support?.coefficient?.id ||
+      currentItem.value?.status_moderation_support?.coefficient ||
+      ''
+    )
+  },
+  set: (val) => (currentItem.value.status_moderation_support.coefficient = val)
+})
 
 const currentItem = computed({
   get: () => props.currentItem,
@@ -245,15 +264,16 @@ const sameViews = computed(() => {
 })
 
 const sameCoeffs = computed(() => {
-  if (Object.keys(currentItem.value).length) {
-    const values = Object.keys(currentItem.value.status_moderation).map(
-      (item) => currentItem.value.status_moderation[item].coefficient?.rate
-      // (item) => 1
-    )
-    const firstValue = values[0]
-    return values.every((value) => value === firstValue)
-  }
-  return false
+  const item = currentItem.value ?? {}
+  const mods = item.status_moderation ?? {}
+  const keys = Object.keys(mods)
+  if (!keys.length) return false
+
+  const values = keys.map((k) => mods[k]?.coefficient?.rate ?? null)
+  if (values.every((v) => v === null)) return false
+
+  const firstNonNull = values.find((v) => v !== null)
+  return values.every((v) => v === firstNonNull)
 })
 
 const closeDialog = () => {
@@ -265,12 +285,25 @@ const cleanNumber = (str: string) => str.replace(/\D/g, '')
 
 const change = async () => {
   const isValid = await formRef?.value?.validate()
-  if (isValid.valid) {
+  if (!isValid.valid) {
+    const formEl = formRef.value?.$el || document.querySelector('.side-panel')
+    const invalidField = formEl?.querySelector('.v-input--error, .v-field--error')
+
+    if (invalidField) {
+      invalidField.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      })
+    }
+
+    return
+  } else {
+    const { status } = currentItem.value?.status_moderation_support ?? {}
     const data = {
       id: props.currentItem.id,
-      status: !sameStatuses.value ? currentStatus.value : undefined,
-      coefficient_id: !sameCoeffs.value ? finalCoeff.value : undefined,
-      number_views_moderation: !sameViews.value ? cleanNumber(finalViews.value) : undefined
+      status: !sameStatuses.value ? status : undefined,
+      coefficient_id: !sameCoeffs.value ? currentCoefficient.value : undefined,
+      number_views_moderation: !sameViews.value ? cleanNumber(currentNumberViews.value) : undefined
     }
     emit('changeFinalValues', data)
   }
@@ -317,7 +350,7 @@ const formatLabel = (label: string) => {
 const onInput = (val) => {
   const rawValue = typeof val === 'string' ? val : val?.target?.value || ''
   const digitsOnly = rawValue.replace(/\D/g, '')
-  finalViews.value = digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+  currentNumberViews.value = digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
 
 const resetForm = () => {
@@ -336,10 +369,10 @@ const activePanelVal = computed({
 
 <style scoped lang="scss">
 .side-panel {
-  height: 90vh;
+  height: 89vh;
   z-index: 999;
   min-width: 500px;
-  max-width: 500px;
+  max-width: 70vh;
   border-radius: 16px;
   box-shadow: none;
   margin-left: 6px;
@@ -362,7 +395,6 @@ const activePanelVal = computed({
   max-height: 500px;
   min-height: 500px;
   overflow-y: auto;
-  padding-right: 13px !important;
 }
 
 :deep(.v-card-actions) {
@@ -379,6 +411,7 @@ const activePanelVal = computed({
   padding: 16px;
   height: 82px;
   margin-bottom: 4px;
+  border-radius: 16px;
 }
 
 .user-card__row {

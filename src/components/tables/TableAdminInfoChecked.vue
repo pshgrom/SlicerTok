@@ -5,6 +5,8 @@
     :loading="isLoading"
     :items-per-page="itemsPerPage"
     class="custom-table"
+    height="70vh"
+    fixed-header
     hover
     hide-default-footer
   >
