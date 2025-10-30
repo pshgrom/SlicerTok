@@ -87,3 +87,24 @@ img {
     right: -5px;
   }
 }
+
+.tooltip-content {
+  padding: 8px;
+  background: rgba(79, 88, 107, 1);
+  border-radius: 8px;
+  max-width: 300px;
+  color: #fff;
+  font-size: 12px;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 0, 0, 1);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  color: #fff;
+}

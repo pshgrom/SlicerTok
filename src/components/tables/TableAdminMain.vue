@@ -42,9 +42,28 @@
               <div class="info-admin-comment__label">Комментарий:</div>
               <div class="info-admin-comment__value">{{ group.status_comment || '-' }}</div>
             </div>
-            <div class="info-admin-comment">
-              <div class="info-admin-comment__label">Нарушения:</div>
-              <div class="info-admin-comment__value" v-html="showViolations(group.rules)"></div>
+            <div v-if="group.rules?.length" class="info-admin-comment">
+              <div class="info-admin-comment__label mb-2">Нарушения:</div>
+              <div class="info-admin-comment__value info-admin-comment__value_actions">
+                <v-menu
+                  v-if="group.rules.length"
+                  location="bottom"
+                  :close-on-content-click="false"
+                  offset="4"
+                >
+                  <template #activator="{ props }">
+                    <VCusomButton
+                      v-bind="props"
+                      :custom-class="['light', 'avg', 'only-icon']"
+                      @click.stop
+                    >
+                      <SvgIcon name="eye" />
+                    </VCusomButton>
+                  </template>
+                  <div class="tooltip-content" v-html="showViolations(group.rules)"></div>
+                </v-menu>
+                <div class="badge">{{ group.rules?.length }}</div>
+              </div>
             </div>
           </v-card>
         </v-col>
@@ -219,6 +238,12 @@ const actionRequest = (id: number, status: string) => {
       color: rgba(0, 0, 0, 1);
       font-size: 14px;
       line-height: 140%;
+
+      &_actions {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
     }
   }
 }

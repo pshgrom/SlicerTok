@@ -72,7 +72,7 @@
               <div class="info-admin-comment d-flex">
                 <div
                   v-if="group.status"
-                  class="custom-table-chip"
+                  class="custom-table-chip mr-1"
                   :style="{
                     'background-color': getStatusColor(group.status),
                     color: getColor(group.status)
@@ -85,12 +85,17 @@
                     {{ getTextStatus(group.status) }}
                   </div>
                 </div>
-                <v-tooltip v-if="group.rules.length" location="bottom">
+                <v-menu
+                  v-if="group.rules.length"
+                  location="bottom"
+                  :close-on-content-click="false"
+                  offset="4"
+                >
                   <template #activator="{ props }">
-                    <SvgIcon v-bind="props" class="ml-2 cursor-pointer" name="show" />
+                    <SvgIcon v-bind="props" name="eye" @click.stop />
                   </template>
                   <div class="tooltip-content" v-html="showViolations(group.rules)"></div>
-                </v-tooltip>
+                </v-menu>
               </div>
               <div class="info-admin-comment">
                 <div class="info-admin-comment__label">Просмотры:</div>
