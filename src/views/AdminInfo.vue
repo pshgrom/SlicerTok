@@ -33,7 +33,6 @@
         :selected-index="selectedIndex"
         @finish-check="finishCheck"
         @request-verification="requestVerification"
-        @change-state="changeState"
         @save-mark="saveMark"
         @custom-sort="customSort"
         @row-click="onRowClick"

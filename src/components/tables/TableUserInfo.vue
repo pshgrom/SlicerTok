@@ -87,7 +87,7 @@
     v-model="isModalOpen"
     :current-reasons-reject="currentReasonsReject"
   />
-  <VideoPlayModal v-if="isModalOpenVideo" v-model="isModalOpenVideo" v-model:video-src="videoSrc" />
+  <VideoPlayModal v-model="isModalOpenVideo" v-model:video-src="videoSrc" />
 </template>
 
 <script setup lang="ts">

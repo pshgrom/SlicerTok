@@ -134,7 +134,7 @@
       </div>
     </template>
   </v-data-table>
-  <VideoPlayModal v-if="isModalOpenVideo" v-model="isModalOpenVideo" v-model:video-src="videoSrc" />
+  <VideoPlayModal v-model="isModalOpenVideo" v-model:video-src="videoSrc" />
 </template>
 
 <script setup lang="ts">

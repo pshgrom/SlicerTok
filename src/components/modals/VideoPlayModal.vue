@@ -1,18 +1,20 @@
 <template>
-  <v-dialog v-model="dialog" class="custom-modal" max-width="800px">
+  <v-dialog v-model="dialog" class="custom-modal" max-width="800px" persistent>
     <v-card>
       <v-card-title>
         <span class="headline">Видео</span>
-        <VBtn icon="mdi-close" variant="text" @click="dialog = false" />
+        <VBtn icon="mdi-close" variant="text" @click="closeModal" />
       </v-card-title>
       <v-card-text>
         <video
           v-if="video"
+          ref="videoEl"
           :key="video"
           :src="video"
           controls
           autoplay
           class="styled-video"
+          @ended="onVideoEnded"
         ></video>
       </v-card-text>
       <v-card-actions>
@@ -24,7 +26,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import VCusomButton from '@/components/base/VCusomButton.vue'
 
@@ -40,7 +42,15 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue', 'update:videoSrc'])
 
+const videoEl = ref(null)
+const playbackRate = ref(1)
+const currentTime = ref(0)
+
 const closeModal = () => {
+  if (videoEl.value) {
+    currentTime.value = videoEl.value.currentTime
+    playbackRate.value = videoEl.value.playbackRate
+  }
   dialog.value = false
 }
 
@@ -60,6 +70,52 @@ const video = computed({
   set(val) {
     emit('update:videoSrc', val)
   }
+})
+
+watch(dialog, async (val) => {
+  if (val) {
+    await nextTick()
+    const el = videoEl.value
+    if (el) {
+      el.playbackRate = playbackRate.value
+      el.currentTime = currentTime.value
+    }
+  }
+})
+
+watch(video, async (newVal, oldVal) => {
+  if (newVal && newVal !== oldVal) {
+    await nextTick()
+    const el = videoEl.value
+    if (el) {
+      el.pause()
+      el.currentTime = 0
+      el.play().catch(() => {})
+    }
+    currentTime.value = 0
+  }
+})
+
+const handleKeydown = (e) => {
+  if (e.key === 'Escape' && dialog.value) {
+    closeModal()
+  }
+}
+
+const onVideoEnded = () => {
+  const el = videoEl.value
+  if (el) {
+    el.pause()
+    el.currentTime = 0
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown)
 })
 </script>
 

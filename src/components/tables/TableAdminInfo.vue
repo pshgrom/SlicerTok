@@ -133,13 +133,8 @@
       </div>
     </template>
   </v-data-table>
-  <!--  <ModerationDialog-->
-  <!--    v-model="dialog"-->
-  <!--    v-model:current-item="currentItem"-->
-  <!--    @change-state="changeState"-->
-  <!--  />-->
   <AddMarkModal v-if="isModalOpen" v-model="isModalOpen" @save="saveMark" />
-  <VideoPlayModal v-if="isModalOpenVideo" v-model="isModalOpenVideo" v-model:video-src="videoSrc" />
+  <VideoPlayModal v-model="isModalOpenVideo" v-model:video-src="videoSrc" />
 </template>
 
 <script setup lang="ts">
@@ -163,7 +158,6 @@ import {
 
 const emit = defineEmits([
   'finishCheck',
-  'changeState',
   'saveMark',
   'requestVerification',
   'customSort',
@@ -288,9 +282,5 @@ const showDialog = (item) => {
     number_views_moderation: item.number_views_moderation ?? ''
   }
   dialog.value = true
-}
-
-const changeState = (item: any, selectedTasks: any) => {
-  emit('changeState', item, selectedTasks)
 }
 </script>
