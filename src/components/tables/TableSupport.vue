@@ -88,6 +88,7 @@
                 <v-menu
                   v-if="group.rules.length"
                   location="bottom"
+                  open-on-hover
                   :close-on-content-click="false"
                   offset="4"
                 >

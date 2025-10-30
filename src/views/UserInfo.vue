@@ -254,17 +254,16 @@ const handlePaymentRequest = () => {
   dialogVideo.value = true
 }
 
-const handlePageChange = (page: number) => {
+const handlePageChange = (pageNumber: number) => {
   queryParams.value = {
     ...queryParams.value,
-    page: +page
+    page: +pageNumber
   }
-  fetchPublications()
+  const { page, perPage } = queryParams.value
+  updateRouteQuery({ page, perPage })
 }
 
 const fetchPublications = () => {
-  const { page, perPage } = queryParams.value
-  updateRouteQuery({ page, perPage })
   userInfoStore.getPublicationsList(queryParams.value)
 }
 
