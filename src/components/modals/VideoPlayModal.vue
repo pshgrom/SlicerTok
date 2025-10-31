@@ -1,105 +1,105 @@
 <template>
-  <v-dialog v-model="dialog" class="custom-modal" max-width="800px" persistent>
-    <v-card>
-      <v-card-title>
-        <span class="headline">Видео</span>
-        <VBtn icon="mdi-close" variant="text" @click="closeModal" />
-      </v-card-title>
-      <v-card-text>
-        <video
-          v-if="video"
-          ref="videoEl"
-          :key="video"
-          :src="video"
-          controls
-          autoplay
-          class="styled-video"
-          @ended="onVideoEnded"
-        ></video>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer />
-        <VCusomButton :custom-class="['light', 'avg']" @click="closeModal"> Ок </VCusomButton>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <transition name="fade">
+    <div
+      v-if="visible"
+      ref="floatingEl"
+      class="floating-video"
+      :style="{
+        top: position.y + 'px',
+        left: position.x + 'px',
+        width: size.width + 'px',
+        height: size.height + 'px'
+      }"
+      @mousedown="startDrag"
+    >
+      <video
+        ref="videoEl"
+        :src="videoSrc"
+        autoplay
+        playsinline
+        controls
+        class="video-element"
+        @ended="onVideoEnded"
+      ></video>
+      <button class="close-btn" @click.stop="closeVideo">✕</button>
+    </div>
+  </transition>
 </template>
 
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-
-import VCusomButton from '@/components/base/VCusomButton.vue'
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false
-  },
-  videoSrc: {
-    type: String,
-    default: ''
-  }
+  modelValue: { type: Boolean, default: false },
+  videoSrc: { type: String, required: true }
 })
 const emit = defineEmits(['update:modelValue', 'update:videoSrc'])
 
+const visible = ref(props.modelValue)
 const videoEl = ref(null)
-const playbackRate = ref(1)
-const currentTime = ref(0)
+const savedTime = ref(0)
+const savedSpeed = ref(1)
+const floatingEl = ref(null)
+const size = ref({ width: 320, height: 460 })
+const dragging = ref(false)
+const offset = ref({ x: 0, y: 0 })
+const lastVideoSrc = ref(props.videoSrc)
 
-const closeModal = () => {
-  if (videoEl.value) {
-    currentTime.value = videoEl.value.currentTime
-    playbackRate.value = videoEl.value.playbackRate
-  }
-  dialog.value = false
+const position = ref({
+  x: window.innerWidth - size.value.width - 20,
+  y: 20
+})
+
+const saveState = () => {
+  const el = videoEl.value
+  if (!el) return
+  savedTime.value = el.currentTime
+  savedSpeed.value = el.playbackRate
 }
 
-const dialog = computed({
-  get() {
-    return props.modelValue
-  },
-  set(val) {
-    emit('update:modelValue', val)
-  }
-})
+const restoreState = () => {
+  const el = videoEl.value
+  if (!el) return
+  el.currentTime = savedTime.value || 0
+  el.playbackRate = savedSpeed.value || 1
+}
 
-const video = computed({
-  get() {
-    return props.videoSrc
-  },
-  set(val) {
-    emit('update:videoSrc', val)
-  }
-})
+const resetState = () => {
+  savedTime.value = 0
+  // savedSpeed.value = 1
+}
 
-watch(dialog, async (val) => {
-  if (val) {
-    await nextTick()
-    const el = videoEl.value
-    if (el) {
-      el.playbackRate = playbackRate.value
-      el.currentTime = currentTime.value
-    }
+const startDrag = (e) => {
+  dragging.value = true
+  offset.value = {
+    x: e.clientX - position.value.x,
+    y: e.clientY - position.value.y
   }
-})
+  document.addEventListener('mousemove', onDrag)
+  document.addEventListener('mouseup', stopDrag)
+}
 
-watch(video, async (newVal, oldVal) => {
-  if (newVal && newVal !== oldVal) {
-    await nextTick()
-    const el = videoEl.value
-    if (el) {
-      el.pause()
-      el.currentTime = 0
-      el.play().catch(() => {})
-    }
-    currentTime.value = 0
-  }
-})
+const onDrag = (e) => {
+  if (!dragging.value) return
+  const newX = Math.min(
+    Math.max(0, e.clientX - offset.value.x),
+    window.innerWidth - size.value.width
+  )
+  const newY = Math.min(
+    Math.max(0, e.clientY - offset.value.y),
+    window.innerHeight - size.value.height
+  )
+  position.value = { x: newX, y: newY }
+}
 
-const handleKeydown = (e) => {
-  if (e.key === 'Escape' && dialog.value) {
-    closeModal()
-  }
+const stopDrag = () => {
+  dragging.value = false
+  document.removeEventListener('mousemove', onDrag)
+  document.removeEventListener('mouseup', stopDrag)
+}
+
+const closeVideo = () => {
+  visible.value = false
 }
 
 const onVideoEnded = () => {
@@ -108,37 +108,124 @@ const onVideoEnded = () => {
     el.pause()
     el.currentTime = 0
   }
+  resetState()
 }
 
-onMounted(() => {
-  window.addEventListener('keydown', handleKeydown)
+watch(
+  () => props.modelValue,
+  async (val) => {
+    visible.value = val
+    if (val) {
+      await nextTick()
+      const el = videoEl.value
+      if (!el) return
+
+      // если видео то же самое — восстанавливаем
+      if (props.videoSrc === lastVideoSrc.value) {
+        restoreState()
+      } else {
+        // новое видео — сбрасываем
+        resetState()
+        lastVideoSrc.value = props.videoSrc
+      }
+
+      el.play().catch(() => {})
+    } else {
+      saveState()
+    }
+  }
+)
+
+watch(
+  () => props.videoSrc,
+  async (newVal, oldVal) => {
+    if (newVal !== oldVal) {
+      resetState()
+      lastVideoSrc.value = newVal
+      await nextTick()
+      const el = videoEl.value
+      if (el) {
+        el.currentTime = 0
+        // el.playbackRate = 1
+        el.play().catch(() => {})
+      }
+    }
+  }
+)
+
+watch(visible, (val) => emit('update:modelValue', val))
+
+onMounted(async () => {
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') visible.value = false
+  })
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleKeydown)
+  saveState()
+  document.removeEventListener('mousemove', onDrag)
+  document.removeEventListener('mouseup', stopDrag)
 })
 </script>
 
-<style lang="scss" scoped>
-.styled-video {
-  width: 100%;
-  height: auto;
-  max-height: 70vh;
+<style scoped lang="scss">
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.floating-video {
+  position: fixed;
+  z-index: 9999;
+  cursor: grab;
   border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+  user-select: none;
+  transition:
+    box-shadow 0.2s,
+    transform 0.2s;
+}
+
+.floating-video:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.floating-video:active {
+  cursor: grabbing;
+}
+
+.video-element {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   background: #000;
 }
 
-:deep(.v-card-actions) {
-  position: sticky;
-  bottom: 0;
-  background: #fff;
+.close-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  line-height: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
 }
 
-:deep(.v-card-title) {
-  position: sticky;
-  top: 0;
-  background: #fff !important;
-  z-index: 1;
+.floating-video:hover .close-btn {
+  opacity: 1;
 }
 </style>
