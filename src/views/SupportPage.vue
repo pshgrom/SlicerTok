@@ -16,7 +16,6 @@
         :items-per-page="queryParams.perPage"
         @action-request="actionRequest"
         @row-click="onRowClick"
-        @change-final-values="changeFinalValues"
       />
       <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
         <TablePagination

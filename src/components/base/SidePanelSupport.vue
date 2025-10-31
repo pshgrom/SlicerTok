@@ -268,16 +268,15 @@ const sameViews = computed(() => {
 })
 
 const sameCoeffs = computed(() => {
-  const item = currentItem.value ?? {}
-  const mods = item.status_moderation ?? {}
-  const keys = Object.keys(mods)
-  if (!keys.length) return false
-
-  const values = keys.map((k) => mods[k]?.coefficient?.rate ?? null)
-  if (values.every((v) => v === null)) return false
-
-  const firstNonNull = values.find((v) => v !== null)
-  return values.every((v) => v === firstNonNull)
+  if (Object.keys(currentItem.value).length) {
+    const values = Object.keys(currentItem.value.status_moderation).map(
+      (item) => currentItem.value.status_moderation[item].coefficient?.rate
+      // (item) => 1
+    )
+    const firstValue = values[0]
+    return values.every((value) => value === firstValue)
+  }
+  return false
 })
 
 const closeDialog = () => {
