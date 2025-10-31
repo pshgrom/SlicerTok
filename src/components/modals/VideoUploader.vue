@@ -11,7 +11,7 @@
     @drop.prevent="onDrop"
   >
     <template v-if="isUploading">
-      <VProgressCircular indeterminate color="primary" size="40" />
+      <VProgressCircular indeterminate color="rgb(169, 55, 244)" size="40" />
     </template>
 
     <template v-else-if="!videoUrl">

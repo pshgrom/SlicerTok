@@ -72,14 +72,22 @@
       </div>
     </template>
     <template #[`item.rules`]="{ item }">
-      <VCusomButton
-        v-if="item.rules.length"
-        :custom-class="['light']"
-        @click="showReasonsReject(item.rules)"
-      >
-        Показать
-      </VCusomButton>
-      <span v-else> - </span>
+      <div class="d-flex gap-4">
+        <VCusomButton
+          v-if="item.rules.length"
+          :custom-class="['light']"
+          @click="showReasonsReject(item.rules)"
+        >
+          Показать
+        </VCusomButton>
+        <span v-else> - </span>
+        <!--        <SvgIcon-->
+        <!--          v-if="item.rules.length"-->
+        <!--          class="ml-2"-->
+        <!--          name="open-modal"-->
+        <!--          @click="isModalOpen = true"-->
+        <!--        />-->
+      </div>
     </template>
   </v-data-table>
   <ReasonsRejectModal
