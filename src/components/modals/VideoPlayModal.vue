@@ -22,6 +22,7 @@
         @ended="onVideoEnded"
       ></video>
       <button class="close-btn" @click.stop="closeVideo">✕</button>
+      <div class="resize-handle" @mousedown.stop="startResize"></div>
     </div>
   </transition>
 </template>
@@ -44,11 +45,49 @@ const size = ref({ width: 320, height: 460 })
 const dragging = ref(false)
 const offset = ref({ x: 0, y: 0 })
 const lastVideoSrc = ref(props.videoSrc)
+const resizing = ref(false)
+const resizeStart = ref({ x: 0, y: 0, width: 0, height: 0 })
 
 const position = ref({
   x: window.innerWidth - size.value.width - 20,
   y: 20
 })
+
+const startResize = (e) => {
+  e.preventDefault()
+  resizing.value = true
+  resizeStart.value = {
+    x: e.clientX,
+    y: e.clientY,
+    width: size.value.width,
+    height: size.value.height
+  }
+  document.addEventListener('mousemove', onResize)
+  document.addEventListener('mouseup', stopResize)
+}
+
+const onResize = (e) => {
+  if (!resizing.value) return
+  const dx = e.clientX - resizeStart.value.x
+  const dy = e.clientY - resizeStart.value.y
+
+  const newWidth = Math.min(
+    Math.max(200, resizeStart.value.width + dx),
+    window.innerWidth - position.value.x - 20
+  )
+  const newHeight = Math.min(
+    Math.max(150, resizeStart.value.height + dy),
+    window.innerHeight - position.value.y - 20
+  )
+
+  size.value = { width: newWidth, height: newHeight }
+}
+
+const stopResize = () => {
+  resizing.value = false
+  document.removeEventListener('mousemove', onResize)
+  document.removeEventListener('mouseup', stopResize)
+}
 
 const saveState = () => {
   const el = videoEl.value
@@ -165,6 +204,8 @@ onBeforeUnmount(() => {
   saveState()
   document.removeEventListener('mousemove', onDrag)
   document.removeEventListener('mouseup', stopDrag)
+  document.removeEventListener('mousemove', onResize)
+  document.removeEventListener('mouseup', stopResize)
 })
 </script>
 
@@ -199,6 +240,22 @@ onBeforeUnmount(() => {
 
 .floating-video:active {
   cursor: grabbing;
+}
+
+.resize-handle {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  width: 16px;
+  height: 16px;
+  cursor: se-resize;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  transition: background 0.2s;
+}
+
+.resize-handle:hover {
+  background: rgba(255, 255, 255, 0.35);
 }
 
 .video-element {
