@@ -247,10 +247,15 @@ const sameStatuses = computed(() => {
   if (Object.keys(currentItem.value).length) {
     const values = Object.keys(currentItem.value?.status_moderation)?.map(
       (item) => currentItem.value.status_moderation[item].status
-      // (item) => 5
     )
+
     const firstValue = values[0]
-    return values.every((value) => value === firstValue)
+    const allEqual = values.every((value) => value === firstValue)
+    const twoNa = values.filter((v) => v === 'na').length === 2
+
+    if (twoNa) return false
+
+    return allEqual
   }
   return false
 })

@@ -1,4 +1,5 @@
 <template>
+  <!--  <Test />-->
   <div class="user-info">
     <div class="user-info__wrapper">
       <ProfileCard v-model:dialog="editDialog" :user="user" />
