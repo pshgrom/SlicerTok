@@ -7,9 +7,9 @@
     max-width="260px"
     min-width="260px"
   >
-    <template #activator="{ props }">
+    <template #activator="{ props: activatorProps }">
       <v-text-field
-        v-bind="props"
+        v-bind="activatorProps"
         v-model="formattedDate"
         :label="label"
         placeholder="YYYY-MM-DD"

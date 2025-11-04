@@ -10,6 +10,7 @@ import {
   getPublicationListQuery,
   getWalletsQuery,
   removeWalletQuery,
+  resubmissionPublicationQuery,
   setWalletMainQuery,
   updateContactQuery,
   verifyTwoFactorQuery
@@ -52,6 +53,22 @@ export const useUserInfo = defineStore('userInfoStore', () => {
   const createPublication = async (value: INewPublication) => {
     try {
       const { data } = await createPublicationQuery(value)
+      const msg = data?.message ?? ''
+      errorStore.setErrors(msg, 'success')
+      if (data.code === 200) {
+        return await getPublicationsList(queryParams.value)
+      }
+    } catch (error: any) {
+      const err = error?.response?.data?.data
+      const link = err?.message?.link
+      if (link) throw link
+      else throw err ?? 'Error'
+    }
+  }
+
+  const resubmissionPublication = async (value: INewPublication) => {
+    try {
+      const { data } = await resubmissionPublicationQuery(value)
       const msg = data?.message ?? ''
       errorStore.setErrors(msg, 'success')
       if (data.code === 200) {
@@ -212,6 +229,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     secretKey,
     checkCode,
     isEnableGoogle2fa,
-    updateUserInfoItem
+    updateUserInfoItem,
+    resubmissionPublication
   }
 })

@@ -15,11 +15,18 @@ import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 
 import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
-import { ROLES } from '@/constants/roles'
+import { ROLES, type RoleType } from '@/constants/roles'
 import { useAuth } from '@/stores/Auth.ts'
 import { useUserInfo } from '@/stores/UserInfo.ts'
 
 const emit = defineEmits(['updateOpenModal'])
+
+type MenuItem = {
+  label: string
+  to?: string
+  onClick?: () => void
+  show?: () => boolean
+}
 
 const authStore = useAuth()
 const { isMobile } = useDeviceDetection()
@@ -27,7 +34,7 @@ const { isMobile } = useDeviceDetection()
 const userInfoStore = useUserInfo()
 const { showChat, showRules } = storeToRefs(userInfoStore)
 
-const menuItems: Record<string, any[]> = {
+const menuItems: Partial<Record<RoleType, MenuItem[]>> = {
   [ROLES.SLICER]: [
     { label: 'Правила', onClick: () => (showRules.value = !showRules.value) },
     { label: '2FA', onClick: () => emit('updateOpenModal', true) },

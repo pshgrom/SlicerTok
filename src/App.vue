@@ -87,18 +87,22 @@ const toggleChat = async () => {
 watch(
   () => [isMobile.value, userInfoStore.showChat],
   (val) => {
-    val[0] && val[1]
-      ? (document.querySelector('html').style.overflow = 'hidden')
-      : (document.querySelector('html').style.overflow = 'auto')
+    if (val[0] && val[1]) {
+      document.querySelector('html').style.overflow = 'hidden'
+    } else {
+      document.querySelector('html').style.overflow = 'auto'
+    }
   }
 )
 
 watch(
   () => userInfoStore.showChat,
   (val) => {
-    val
-      ? (document.querySelector('.v-overlay-container').style.display = 'none')
-      : (document.querySelector('.v-overlay-container').style.display = 'contents')
+    if (val) {
+      document.querySelector('.v-overlay-container').style.display = 'none'
+    } else {
+      document.querySelector('.v-overlay-container').style.display = 'contents'
+    }
   }
 )
 

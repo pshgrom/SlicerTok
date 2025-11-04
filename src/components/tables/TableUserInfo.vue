@@ -81,12 +81,12 @@
           Показать
         </VCusomButton>
         <span v-else> - </span>
-        <!--        <SvgIcon-->
-        <!--          v-if="item.rules.length"-->
-        <!--          class="ml-2"-->
-        <!--          name="open-modal"-->
-        <!--          @click="isModalOpen = true"-->
-        <!--        />-->
+        <SvgIcon
+          v-if="!item.is_resubmission"
+          class="ml-2"
+          name="open-modal"
+          @click="resubmissionPublication(item)"
+        />
       </div>
     </template>
   </v-data-table>
@@ -135,6 +135,8 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits(['resubmissionPublication'])
+
 const isModalOpenVideo = ref(false)
 const videoSrc = ref('')
 const headersData = ref(props.headers)
@@ -155,6 +157,10 @@ const computedHeaders = computed<ITableHeaders[]>({
     headersData.value = val
   }
 })
+
+const resubmissionPublication = (item) => {
+  emit('resubmissionPublication', item)
+}
 
 const openVideo = (url: string) => {
   isModalOpenVideo.value = true

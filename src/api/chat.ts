@@ -1,19 +1,28 @@
+import type { AxiosResponse } from 'axios'
+
 import api from './axios'
 
-export const getChatQuery = () => api.get('/chat/get-chat-support')
+export const getChatQuery = (): Promise<AxiosResponse<unknown>> => api.get('/chat/get-chat-support')
 
-export const getChatsSupportQuery = () => api.get('/chat/get-chats')
+export const getChatsSupportQuery = (): Promise<AxiosResponse<unknown>> =>
+  api.get('/chat/get-chats')
 
-export const getMessagesQuery = (roomId: number, page = 1, dateFrom = undefined) =>
+export const getMessagesQuery = (
+  roomId: number,
+  page = 1,
+  dateFrom?: string
+): Promise<AxiosResponse<unknown>> =>
   api.get('/chat/get-chat-messages', {
     params: { page, dateFrom, chatRoomId: roomId }
   })
 
-export const getChatByUserQuery = (userId: number | string) =>
+export const getChatByUserQuery = (userId: number | string): Promise<AxiosResponse<unknown>> =>
   api.get('/chat/get-chat', {
     params: { user_id: userId }
   })
 
-export const sendMessageQuery = (data: any) => api.post('/chat/send-chat-messages', data)
-export const markMessagesAsReadQuery = (data: any) =>
+export type SendMessagePayload = Record<string, unknown>
+export const sendMessageQuery = (data: SendMessagePayload): Promise<AxiosResponse<unknown>> =>
+  api.post('/chat/send-chat-messages', data)
+export const markMessagesAsReadQuery = (data: number[]): Promise<AxiosResponse<unknown>> =>
   api.post('/chat/read-chat-messages', { message_ids: data })

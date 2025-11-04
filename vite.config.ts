@@ -6,6 +6,7 @@ import { defineConfig } from 'vite'
 import viteCompression from 'vite-plugin-compression'
 import vuetify from 'vite-plugin-vuetify'
 import svgLoader from 'vite-svg-loader'
+import type { Config as SvgoConfig } from 'svgo'
 
 const isProd = process.env.NODE_ENV === 'production'
 const isAnalyze = process.env.ANALYZE === 'true'
@@ -60,7 +61,7 @@ export default defineConfig({
           { name: 'removeTitle', active: true },
           { name: 'removeDesc', active: true }
         ]
-      }
+      } satisfies SvgoConfig
     }),
     ...(isProd ? prodPlugins : [])
   ],
@@ -82,9 +83,11 @@ export default defineConfig({
     sourcemap: false,
     cssCodeSplit: true,
     minify: 'esbuild',
-    assetsInlineLimit: 4096,
+    assetsInlineLimit: 2048,
     emptyOutDir: true,
     chunkSizeWarningLimit: 2000,
+    modulePreload: { polyfill: false },
+    reportCompressedSize: false,
 
     rollupOptions: {
       output: {
@@ -99,9 +102,10 @@ export default defineConfig({
             return 'vendor_misc'
           }
           if (id.includes('src/views/')) {
-            // return 'view_' + id.split('src/views/')[1].split('/')[0]
-            return 'views'
+            return 'view_' + id.split('src/views/')[1].split('/')[0]
           }
+          if (id.includes('src/components/tables/')) return 'components_tables'
+          if (id.includes('src/components/base/')) return 'components_base'
           if (id.includes('src/components/')) return 'components'
         },
         chunkFileNames: 'assets/[name]-[hash].js',
@@ -112,17 +116,34 @@ export default defineConfig({
   },
 
   optimizeDeps: {
-    include: ['vue', 'vue-router', 'pinia', 'vue-the-mask', 'axios', 'vuetify'],
+    include: [
+      'vue',
+      'vue-router',
+      'pinia',
+      'vue-the-mask',
+      'axios',
+      'vuetify',
+      'dompurify',
+      'click-outside-vue3',
+      'vue-qrcode'
+    ],
     exclude: []
   },
 
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
+    },
+    dedupe: ['vue']
   },
 
   esbuild: {
-    drop: isProd ? ['console', 'debugger'] : []
+    drop: isProd ? ['console', 'debugger'] : [],
+    legalComments: 'none'
+  },
+
+  define: {
+    __VUE_PROD_DEVTOOLS__: false,
+    __VUE_OPTIONS_API__: false
   }
 })

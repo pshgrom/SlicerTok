@@ -4,7 +4,7 @@ export const videoRules = {
   quantityLink: (v: string) => v.length <= 120 || 'Ссылка не должна превышать 120 символов',
   url: (v: string) => /^https?:\/\/.+/.test(v) || 'Введите корректную ссылку',
   noShare: (v: string) => !/share/.test(v) || 'Строка не должна содержать слово "share"',
-  quantityViewsMin: (v: any) => {
+  quantityViewsMin: (v: string) => {
     const format = v.replace(/\D/g, '')
     return (!isNaN(+format) && +format >= 100000) || 'Минимум 100 000 просмотров'
   }
@@ -21,19 +21,19 @@ export const infoRules = {
 }
 
 export const requiredRules = {
-  required: (v: any) => !!v || 'Обязательное поле',
-  maxLength: (v: any) => v.length <= 500 || 'Максимум 500 символов'
+  required: (v: string | number | boolean | null | undefined) => !!v || 'Обязательное поле',
+  maxLength: (v: string) => v.length <= 500 || 'Максимум 500 символов'
 }
 
 export const coeffsRules = {
-  required: (v: any) => !!v || 'Обязательное поле',
-  min: (v: any) => parseFloat(v) >= 0 || 'Минимум 0',
-  format: (v: any) => /^\d+\.\d+$/.test(v) || 'Введите число в формате X.Y',
-  max: (v: any) => parseFloat(v) <= 10 || 'Максимум 10'
+  required: (v: string) => !!v || 'Обязательное поле',
+  min: (v: string) => parseFloat(v) >= 0 || 'Минимум 0',
+  format: (v: string) => /^\d+\.\d+$/.test(v) || 'Введите число в формате X.Y',
+  max: (v: string) => parseFloat(v) <= 10 || 'Максимум 10'
 }
 
 export const walletRules = {
-  required: (v: any) => !!v || 'Обязательное поле',
+  required: (v: string | null | undefined) => !!v || 'Обязательное поле',
 
   isValidWallet: (v: string) => {
     if (!v || typeof v !== 'string') return true

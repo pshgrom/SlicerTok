@@ -33,7 +33,7 @@ const emit = defineEmits(['changePage'])
 
 const page = computed<number>({
   get() {
-    return +props.queryParams.page!
+    return +(props.queryParams.page ?? 1)
   },
   set(val) {
     emit('changePage', val)

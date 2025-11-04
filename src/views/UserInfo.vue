@@ -36,6 +36,7 @@
       :is-loading="isLoading"
       :items="userInfoData"
       :items-per-page="queryParams.perPage"
+      @resubmission-publication="resubmissionPublication"
     />
 
     <div v-if="showPagination" class="sticky-pagination custom-pagination">
@@ -52,6 +53,8 @@
       v-model="dialogVideo"
       :wallet="mainWallet"
       :loading="isSubmittingVideo"
+      :edit-mode="editMode"
+      :video-link="videoLink"
       @submit="handleVideoSubmit"
     />
   </div>
@@ -88,6 +91,8 @@ const router = useRouter()
 
 const wallets = ref<IWallet[]>([])
 const isModalOpen = ref(false)
+const videoLink = ref('')
+const editMode = ref(false)
 const isSubmittingVideo = ref(false)
 const requestSocketStore = useRequestSocket()
 const editDialog = ref(false)
@@ -120,6 +125,12 @@ const mainWallet = computed(() => wallets.value.find((wallet) => wallet.is_main)
 const sortedWallets = computed(() =>
   [...wallets.value].sort((a, b) => (b.is_main ? 1 : a.is_main ? -1 : 0))
 )
+
+const resubmissionPublication = (item) => {
+  dialogVideo.value = true
+  videoLink.value = item.url
+  editMode.value = true
+}
 
 const queryParams = computed<ITableParams>({
   get() {
@@ -167,7 +178,9 @@ const handleVideoSubmit = async (videoData: IUploadVideo) => {
   try {
     isSubmittingVideo.value = true
     resetToFirstPage()
-    await userInfoStore.createPublication(formData)
+    editMode.value
+      ? await userInfoStore.resubmissionPublication(formData)
+      : await userInfoStore.createPublication(formData)
   } catch (error: any) {
     errorStore.setErrors(error)
   } finally {
@@ -252,6 +265,8 @@ const handlePaymentRequest = () => {
     return
   }
 
+  editMode.value = false
+  videoLink.value = ''
   dialogVideo.value = true
 }
 

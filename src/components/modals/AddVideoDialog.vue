@@ -2,7 +2,7 @@
   <v-dialog v-model="dialogModel" class="custom-modal" max-width="831px" persistent>
     <v-card>
       <v-card-title>
-        <span class="headline">Подать заявку</span>
+        <span class="headline">{{ editMode ? 'Переподать завку' : 'Подать заявку' }}</span>
         <v-btn icon="mdi-close" variant="text" @click="dialogModel = false" />
       </v-card-title>
       <v-card-text>
@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, type PropType, ref } from 'vue'
+import { computed, type PropType, ref, watch } from 'vue'
 
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
@@ -70,13 +70,20 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  editMode: {
+    type: Boolean,
+    default: false
+  },
+  videoLink: {
+    type: String,
+    default: ''
   }
 })
 
 const emit = defineEmits(['update:modelValue', 'submit'])
 
 const videoFields = ref<IUploadVideo>({
-  // https://www.instagram.com/reel/23DHlJ1NAIU6g/asdkasndjkasnfacmalcmlaksmc
   videoLink: '',
   videoFile: null,
   number_views: '',
@@ -109,6 +116,16 @@ const submitVideo = async () => {
     emit('submit', videoFields.value)
   }
 }
+
+watch(
+  () => props.videoLink,
+  (newVal) => {
+    if (newVal) {
+      videoFields.value.videoLink = newVal
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped lang="scss">

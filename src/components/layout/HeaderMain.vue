@@ -43,9 +43,11 @@ const updateOpenModal = (value: boolean) => {
 
 const logout = () => {
   authStore.logout()
-  authStore.role === ROLES.SLICER
-    ? router.push({ name: 'Login' })
-    : router.push({ name: 'LoginAdmin' })
+  if (authStore.role === ROLES.SLICER) {
+    router.push({ name: 'Login' })
+  } else {
+    router.push({ name: 'LoginAdmin' })
+  }
 }
 
 const goHome = () => {

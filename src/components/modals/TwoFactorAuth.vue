@@ -108,7 +108,11 @@ const closeModal = () => {
 }
 
 const onChange = async (e: boolean) => {
-  e ? await userInfo.enableTwoFactor() : await userInfo.disabledTwoFactor()
+  if (e) {
+    await userInfo.enableTwoFactor()
+  } else {
+    await userInfo.disabledTwoFactor()
+  }
 }
 
 const submit = async () => {

@@ -11,11 +11,11 @@ export function formatNumber(num: number): string {
   return num.toString()
 }
 
-export const cleanPhoneNumber = (str: string) => {
+export const cleanPhoneNumber = (str: string): string => {
   return str.replace(/\D/g, '')
 }
 
-export const formatCompactUSD = (amount: number) => {
+export const formatCompactUSD = (amount: number): string => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',

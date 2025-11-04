@@ -92,8 +92,8 @@
                   :close-on-content-click="false"
                   offset="4"
                 >
-                  <template #activator="{ props }">
-                    <SvgIcon v-bind="props" name="eye" @click.stop />
+                  <template #activator="{ props: menuProps }">
+                    <SvgIcon v-bind="menuProps" name="eye" @click.stop />
                   </template>
                   <div class="tooltip-content" v-html="showViolations(group.rules)"></div>
                 </v-menu>
@@ -125,8 +125,8 @@
           class="mb-6"
           :label="'Статус'"
         >
-          <template #item="{ item, props }">
-            <v-list-item v-bind="props">
+          <template #item="{ item, props: slotProps }">
+            <v-list-item v-bind="slotProps">
               {{ item.text }}
             </v-list-item>
           </template>
@@ -145,8 +145,8 @@
           class="mb-4"
           :items="coeffs"
         >
-          <template #item="{ item, props }">
-            <v-list-item v-bind="props">
+          <template #item="{ item, props: slotProps }">
+            <v-list-item v-bind="slotProps">
               {{ item.text }}
             </v-list-item>
           </template>
@@ -199,7 +199,13 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['update:activePanel', 'changeFinalValues', 'update:currentItem'])
+const emit = defineEmits([
+  'update:activePanel',
+  'changeFinalValues',
+  'update:currentItem',
+  'prev',
+  'next'
+])
 
 const supportUsersStore = useSupportUsers()
 
@@ -333,7 +339,8 @@ const videoRejected = computed(
   () => props.currentItem.slicer?.user_rejected_publications_count ?? 0
 )
 
-const showViolations = (rules: any) => {
+type Violation = { name_reverse: string }
+const showViolations = (rules: Violation[]) => {
   return rules.map((el, index) => `${index + 1}. ${el.name_reverse}`).join('<br>') || '-'
 }
 

@@ -1,61 +1,79 @@
+import type { AxiosResponse } from 'axios'
+
 import type { ITableParams } from '@/interfaces/AppModel'
 
 import api from './axios'
 
-export const getPublicationListQuery = (data: ITableParams) =>
+export const getPublicationListQuery = (data: ITableParams): Promise<AxiosResponse<unknown>> =>
   api.get('/admin/publication/get-publication-list', { params: data })
 
-export const getPublicationListPaymentQuery = (data: ITableParams) =>
+export const getPublicationListPaymentQuery = (
+  data: ITableParams
+): Promise<AxiosResponse<unknown>> =>
   api.get('/admin-finance/publication/get-publication-list', { params: data })
 
-export const getTransferListQuery = (data: ITableParams) =>
+export const getTransferListQuery = (data: ITableParams): Promise<AxiosResponse<unknown>> =>
   api.get('/admin-finance/transfer/get-transfer-list', { params: data })
 
-export const getFinishedListQuery = (data: ITableParams) =>
+export const getFinishedListQuery = (data: ITableParams): Promise<AxiosResponse<unknown>> =>
   api.get('/admin-finance/transfer/get-transfer-list-finished', { params: data })
 
-export const getPublicationsListMainQuery = (data: ITableParams) =>
+export const getPublicationsListMainQuery = (data: ITableParams): Promise<AxiosResponse<unknown>> =>
   api.get('/admin-main/publication/get-publication-list', { params: data })
 
-export const getCoeffsListQuery = () => api.get('/admin-main/coefficient/get-coefficient-list')
+export const getCoeffsListQuery = (): Promise<AxiosResponse<unknown>> =>
+  api.get('/admin-main/coefficient/get-coefficient-list')
 
-export const getCompletedListQuery = (data: ITableParams) =>
+export const getCompletedListQuery = (data: ITableParams): Promise<AxiosResponse<unknown>> =>
   api.get('/admin/publication/get-publication-moderation-completed-list', { params: data })
 
-export const getLogListQuery = (data: ITableParams) =>
+export const getLogListQuery = (data: ITableParams): Promise<AxiosResponse<unknown>> =>
   api.get('/admin-main/log/get-log-list', { params: data })
 
-export const getAdminInfoQuery = () => api.get('/admin/profile/get-info')
+export const getAdminInfoQuery = (): Promise<AxiosResponse<unknown>> =>
+  api.get('/admin/profile/get-info')
 
-export const getAdminFinanceInfoQuery = () => api.get('/admin-finance/profile/get-info')
+export const getAdminFinanceInfoQuery = (): Promise<AxiosResponse<unknown>> =>
+  api.get('/admin-finance/profile/get-info')
 
-export const getCoefficientQuery = () => api.get('/coefficient/get-coefficient')
+export const getCoefficientQuery = (): Promise<AxiosResponse<unknown>> =>
+  api.get('/coefficient/get-coefficient')
 
-export const setPublicationStatusQuery = (data: any) =>
-  api.post('/admin/publication/set-publication-status', data)
+export type SetPublicationStatusPayload = Record<string, unknown>
+export const setPublicationStatusQuery = (
+  data: SetPublicationStatusPayload
+): Promise<AxiosResponse<unknown>> => api.post('/admin/publication/set-publication-status', data)
 
-export const finishCheckQuery = (id: number) =>
+export const finishCheckQuery = (id: number): Promise<AxiosResponse<unknown>> =>
   api.post('/admin/publication/complete-moderation', { id })
 
-export const requestVerificationQuery = (id: number) =>
+export const requestVerificationQuery = (id: number): Promise<AxiosResponse<unknown>> =>
   api.post('admin/publication/set-require-verification', { id })
 
-export const saveMarkQuery = (data: any) => api.post('/admin/publication/set-mark', data)
+export type SaveMarkPayload = Record<string, unknown>
+export const saveMarkQuery = (data: SaveMarkPayload): Promise<AxiosResponse<unknown>> =>
+  api.post('/admin/publication/set-mark', data)
 
-export const setTransferQuery = (data: any) =>
+export type SetTransferPayload = Record<string, unknown>
+export const setTransferQuery = (data: SetTransferPayload): Promise<AxiosResponse<unknown>> =>
   api.post('/admin-finance/transfer/make-transfer', data)
 
-export const cancelTransferQuery = (data: any) =>
+export type CancelTransferPayload = Record<string, unknown>
+export const cancelTransferQuery = (data: CancelTransferPayload): Promise<AxiosResponse<unknown>> =>
   api.post('/admin-finance/transfer/cancel-transfer', data)
 
-export const transferFinishedQuery = (data: any) =>
-  api.post('/admin-finance/transfer/transfer-finished', data)
+export type TransferFinishedPayload = Record<string, unknown>
+export const transferFinishedQuery = (
+  data: TransferFinishedPayload
+): Promise<AxiosResponse<unknown>> => api.post('/admin-finance/transfer/transfer-finished', data)
 
-export const actionRequestAdminQuery = (data: any) =>
-  api.post('/admin-main/publication/final-status', data)
+export type ActionRequestAdminPayload = Record<string, unknown>
+export const actionRequestAdminQuery = (
+  data: ActionRequestAdminPayload
+): Promise<AxiosResponse<unknown>> => api.post('/admin-main/publication/final-status', data)
 
-export const removeCoeffQuery = (id: number) =>
+export const removeCoeffQuery = (id: number): Promise<AxiosResponse<unknown>> =>
   api.post('/admin-main/coefficient/delete-coefficient', { id })
 
-export const addNewCoeffQuery = (value: string) =>
+export const addNewCoeffQuery = (value: string): Promise<AxiosResponse<unknown>> =>
   api.post('/admin-main/coefficient/create-coefficient', { rate: value })

@@ -20,8 +20,8 @@
           class="mt-2 mb-6"
           :label="'Выберите статус'"
         >
-          <template #item="{ item, props }">
-            <v-list-item v-bind="props" :style="getItemStyle(item)">
+          <template #item="{ item, props: slotProps }">
+            <v-list-item v-bind="slotProps" :style="getItemStyle(item)">
               {{ item.text }}
             </v-list-item>
           </template>
@@ -68,8 +68,8 @@
           :rules="[videoRules.quantityViews, videoRules.required, videoRules.quantityViewsMin]"
         />
         <VCustomSelect v-model="setCoeff" label="Коэффициенты" class="mb-6" :items="coeffs">
-          <template #item="{ item, props }">
-            <v-list-item v-bind="props">
+          <template #item="{ item, props: slotProps }">
+            <v-list-item v-bind="slotProps">
               {{ item.text }}
             </v-list-item>
           </template>
@@ -179,7 +179,8 @@ const closeDialog = () => {
   activePanelVal.value = false
 }
 
-const getItemStyle = (item: any) => {
+type StatusItem = { value: string }
+const getItemStyle = (item: StatusItem) => {
   if (item.value === 'na') {
     return 'color: rgb(169, 55, 244)'
   }

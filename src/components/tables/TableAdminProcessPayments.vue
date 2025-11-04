@@ -18,7 +18,7 @@
         {{ item?.wallet?.address }}
       </div>
     </template>
-    <template #item.publication="{ item }">
+    <template #[`item.publication`]="{ item }">
       <div class="flex flex-col gap-1">
         <div v-for="pub in item.publication" :key="pub.id">
           ID {{ pub.id }} —
@@ -33,11 +33,11 @@
       <div class="d-flex align-center">
         <div class="table-checkbox mr-2">
           <v-tooltip text="Отменить выплату" location="bottom">
-            <template #activator="{ props }">
+            <template #activator="{ props: activatorProps }">
               <v-checkbox
                 v-model="selectedIds"
                 :value="item.id"
-                v-bind="props"
+                v-bind="activatorProps"
                 color="rgb(169, 55, 244)"
                 hide-details
               />
@@ -45,9 +45,9 @@
           </v-tooltip>
         </div>
         <v-tooltip text="Выплатить" location="bottom">
-          <template #activator="{ props }">
+          <template #activator="{ props: activatorProps }">
             <VCusomButton
-              v-bind="props"
+              v-bind="activatorProps"
               class="mr-1"
               :custom-class="['light', 'avg', 'only-icon']"
               @click="showDialog(item)"

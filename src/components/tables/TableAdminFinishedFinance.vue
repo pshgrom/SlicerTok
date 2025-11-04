@@ -22,7 +22,7 @@
     <template #[`item.wallet`]="{ item }">
       <div>{{ item?.wallet?.address }}</div>
     </template>
-    <template #item.publication="{ item }">
+    <template #[`item.publication`]="{ item }">
       <div class="flex flex-col gap-1">
         <div v-for="pub in item.publication" :key="pub.id">
           ID {{ pub.id }} —
