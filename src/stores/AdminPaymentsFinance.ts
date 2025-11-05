@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import type { AxiosError } from 'axios'
 
 import {
   cancelTransferQuery,
@@ -20,9 +21,9 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
     perPage: 10,
     total: 0
   })
-  const items = ref([])
+  const items = ref<Array<Record<string, unknown>>>([])
   const errorStore = useError()
-  const adminFinanceInfo = ref(null)
+  const adminFinanceInfo = ref<Record<string, unknown> | null>(null)
 
   const setQueryParams = (val: ITableParams) => {
     queryParams.value = {
@@ -35,42 +36,46 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
     try {
       const { data } = await getAdminFinanceInfoQuery()
       adminFinanceInfo.value = data?.data ?? {}
-    } catch (error: any) {
-      errorStore.setErrors(error.response?.data?.message ?? '')
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
     }
   }
 
-  const setMakeTransfer = async (data) => {
+  const setMakeTransfer = async (data: Array<string | number>) => {
     try {
       const newData = {
         publication_ids: [...data]
       }
       return await setTransferQuery({ ...newData })
-    } catch (error: any) {
-      errorStore.setErrors(error.response?.data?.message ?? '')
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
     }
   }
 
-  const cancelTransfer = async (data) => {
+  const cancelTransfer = async (data: Array<string | number>) => {
     try {
       const newData = {
         transfer_ids: [...data]
       }
       return await cancelTransferQuery({ ...newData })
-    } catch (error: any) {
-      errorStore.setErrors(error.response?.data?.message ?? '')
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
     }
   }
 
-  const transferFinished = async (data) => {
+  const transferFinished = async (data: Record<string, unknown> & { id: number | string }) => {
     try {
       const newData = {
         transfer_id: data.id,
         ...data
       }
       return await transferFinishedQuery({ ...newData })
-    } catch (error: any) {
-      errorStore.setErrors(error.response?.data?.data ?? '')
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ data?: string; message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? axiosError.response?.data?.data ?? '')
     }
   }
 
@@ -91,8 +96,9 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
         perPage: per_page,
         total
       }
-    } catch (error: any) {
-      errorStore.setErrors(error.response?.data?.message ?? '')
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
     } finally {
       isLoading.value = false
     }
@@ -115,8 +121,9 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
         perPage: per_page,
         total
       }
-    } catch (error: any) {
-      errorStore.setErrors(error.response?.data?.message ?? '')
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
     } finally {
       isLoading.value = false
     }
@@ -139,8 +146,9 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
         perPage: per_page,
         total
       }
-    } catch (error: any) {
-      errorStore.setErrors(error.response?.data?.message ?? '')
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
     } finally {
       isLoading.value = false
     }

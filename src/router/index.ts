@@ -8,6 +8,10 @@ import {
 
 import { ROLES, type RoleType } from '@/constants/roles'
 import { useLoader } from '@/stores/GlobalLoader.ts'
+import AdminInfo from '@/views/AdminInfo.vue'
+import LoginView from '@/views/LoginView.vue'
+import LoginViewAdmin from '@/views/LoginViewAdmin.vue'
+import UserInfo from '@/views/UserInfo.vue'
 
 // Расширяем типы meta
 declare module 'vue-router' {
@@ -26,13 +30,13 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/LoginView.vue'),
+    component: LoginView,
     meta: { showChat: false }
   },
   {
     path: '/login-admin',
     name: 'LoginAdmin',
-    component: () => import('@/views/LoginViewAdmin.vue'),
+    component: LoginViewAdmin,
     meta: { showChat: false }
   },
   {
@@ -44,7 +48,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/admin-info',
     name: 'AdminInfo',
-    component: () => import('@/views/AdminInfo.vue'),
+    component: AdminInfo,
     meta: { requiresAuth: true, roles: [ROLES.ADMIN], showChat: true }
   },
   {
@@ -122,7 +126,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/user-info',
     name: 'UserInfo',
-    component: () => import('@/views/UserInfo.vue'),
+    component: UserInfo,
     meta: { requiresAuth: true, roles: [ROLES.SLICER], showChat: true }
   }
 ]

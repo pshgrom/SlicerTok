@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import type { AxiosError } from 'axios'
 
 import {
   finishCheckQuery,
@@ -21,11 +22,12 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     perPage: 10,
     total: 0
   })
-  const coeffs = ref([])
+  type CoefficientOption = { label: string | number; value: string | number }
+  const coeffs = ref<CoefficientOption[]>([])
   const adminInfoData = ref<IAdminInfoData[]>([])
   const adminInfoDataChecked = ref<IAdminInfoData[]>([])
   const preloadUserInfo = ref<IUserInfo | null>(null)
-  const adminProfileData = ref(null)
+  const adminProfileData = ref<Record<string, unknown> | null>(null)
   const errorStore = useError()
 
   const setQueryParams = (val: ITableParams) => {
@@ -55,7 +57,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
       const { data } = await setPublicationStatusQuery(newData)
       const msg = data?.message ?? ''
       errorStore.setErrors(msg, 'success')
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw error
     }
   }
@@ -63,49 +65,49 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
   const finishCheck = async (id: number) => {
     try {
       return await finishCheckQuery(id)
-    } catch (error: any) {
-      errorStore.setErrors(error.response?.data?.message ?? '')
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
     }
   }
 
   const getCoefficient = async () => {
     try {
       const { data } = await getCoefficientQuery()
-      coeffs.value = data?.data ?? []
-      coeffs.value = coeffs.value?.map((item) => {
-        const { id, rate } = item
-        return {
-          label: rate,
-          value: id
-        }
-      })
-    } catch (error: any) {
-      errorStore.setErrors(error.response?.data?.message ?? '')
+      const raw = (data?.data ?? []) as Array<{ id: string | number; rate: string | number }>
+      coeffs.value = raw.map(({ id, rate }) => ({ label: rate, value: id }))
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
     }
   }
 
   const requestVerification = async (id: number) => {
     try {
       return await requestVerificationQuery(id)
-    } catch (error: any) {
-      errorStore.setErrors(error.response?.data?.message ?? '')
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
     }
   }
 
   const getAdminInfo = async () => {
     try {
       const { data } = await getAdminInfoQuery()
-      adminProfileData.value = data?.data ?? {}
-    } catch (error: any) {
-      errorStore.setErrors(error.response?.data?.message ?? '')
+      adminProfileData.value = (data?.data as Record<string, unknown>) ?? {}
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
     }
   }
 
-  const saveMark = async (markData: any) => {
+  type SaveMark = { id: number; mark?: string | number } & Record<string, unknown>
+  const saveMark = async (markData: SaveMark) => {
     try {
       return await saveMarkQuery(markData)
-    } catch (error: any) {
-      errorStore.setErrors(error.response?.data?.message ?? '')
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
     }
   }
 
@@ -127,8 +129,9 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
         perPage: per_page,
         total
       }
-    } catch (error: any) {
-      errorStore.setErrors(error.response?.data?.message ?? '')
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
     } finally {
       isLoading.value = false
     }
@@ -151,8 +154,9 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
         perPage: per_page,
         total
       }
-    } catch (error: any) {
-      errorStore.setErrors(error.response?.data?.message ?? '')
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
     } finally {
       isLoading.value = false
     }
