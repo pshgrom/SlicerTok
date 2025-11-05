@@ -97,6 +97,7 @@ const isSubmittingVideo = ref(false)
 const requestSocketStore = useRequestSocket()
 const editDialog = ref(false)
 const dialogVideo = ref(false)
+const publicationId = ref(null)
 const endDate = ref<string | null>(null)
 
 const userId = ref<string | null | number>(null)
@@ -128,6 +129,7 @@ const sortedWallets = computed(() =>
 
 const resubmissionPublication = (item) => {
   dialogVideo.value = true
+  publicationId.value = item.id
   videoLink.value = item.url
   editMode.value = true
 }
@@ -174,13 +176,17 @@ const handleVideoSubmit = async (videoData: IUploadVideo) => {
   formData.append('video_stat', videoFile)
   formData.append('is_bonus', Boolean(isBonus))
   formData.append('number_views', cleanNumber(number_views))
+  if (editMode.value) formData.append('publication_id', publicationId.value)
 
   try {
     isSubmittingVideo.value = true
-    resetToFirstPage()
-    editMode.value
-      ? await userInfoStore.resubmissionPublication(formData)
-      : await userInfoStore.createPublication(formData)
+    if (editMode.value) {
+      const { code } = await userInfoStore.resubmissionPublication(formData)
+      if (code === 200) resetToFirstPage()
+    } else {
+      const { code } = await userInfoStore.createPublication(formData)
+      if (code === 200) resetToFirstPage()
+    }
   } catch (error: any) {
     errorStore.setErrors(error)
   } finally {

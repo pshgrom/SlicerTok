@@ -23,6 +23,7 @@
       ></video>
       <button class="close-btn" @click.stop="closeVideo">✕</button>
       <div class="resize-handle" @mousedown.stop="startResize"></div>
+      <button class="pip-btn" @click="togglePiP">⧉</button>
     </div>
   </transition>
 </template>
@@ -87,6 +88,21 @@ const stopResize = () => {
   resizing.value = false
   document.removeEventListener('mousemove', onResize)
   document.removeEventListener('mouseup', stopResize)
+}
+
+const togglePiP = async () => {
+  const el = videoEl.value
+  if (!el) return
+
+  try {
+    if (document.pictureInPictureElement) {
+      await document.exitPictureInPicture()
+    } else {
+      await el.requestPictureInPicture()
+    }
+  } catch (err) {
+    console.error('PiP error:', err)
+  }
 }
 
 const saveState = () => {
@@ -265,7 +281,8 @@ onBeforeUnmount(() => {
   background: #000;
 }
 
-.close-btn {
+.close-btn,
+.pip-btn {
   position: absolute;
   top: 6px;
   right: 6px;
@@ -278,11 +295,12 @@ onBeforeUnmount(() => {
   line-height: 20px;
   font-size: 12px;
   cursor: pointer;
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.2s;
 }
 
-.floating-video:hover .close-btn {
-  opacity: 1;
+.pip-btn {
+  right: 0;
+  left: 6px;
 }
 </style>

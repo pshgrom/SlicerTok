@@ -55,9 +55,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
       const { data } = await createPublicationQuery(value)
       const msg = data?.message ?? ''
       errorStore.setErrors(msg, 'success')
-      if (data.code === 200) {
-        return await getPublicationsList(queryParams.value)
-      }
+      return data
     } catch (error: any) {
       const err = error?.response?.data?.data
       const link = err?.message?.link
@@ -71,14 +69,10 @@ export const useUserInfo = defineStore('userInfoStore', () => {
       const { data } = await resubmissionPublicationQuery(value)
       const msg = data?.message ?? ''
       errorStore.setErrors(msg, 'success')
-      if (data.code === 200) {
-        return await getPublicationsList(queryParams.value)
-      }
+      return data
     } catch (error: any) {
-      const err = error?.response?.data?.data
-      const link = err?.message?.link
-      if (link) throw link
-      else throw err ?? 'Error'
+      const err = error?.response?.data?.message
+      throw err
     }
   }
 

@@ -76,17 +76,23 @@
         <VCusomButton
           v-if="item.rules.length"
           :custom-class="['light']"
+          class="mr-2"
           @click="showReasonsReject(item.rules)"
         >
           Показать
         </VCusomButton>
-        <span v-else> - </span>
-        <SvgIcon
-          v-if="!item.is_resubmission"
-          class="ml-2"
-          name="open-modal"
-          @click="resubmissionPublication(item)"
-        />
+        <v-tooltip text="Переподать видео" location="bottom">
+          <template #activator="{ props }">
+            <VCusomButton
+              v-if="item.is_resubmission"
+              v-bind="props"
+              :custom-class="['light', 'only-icon']"
+              @click="resubmissionPublication(item)"
+            >
+              <SvgIcon name="resend" />
+            </VCusomButton>
+          </template>
+        </v-tooltip>
       </div>
     </template>
   </v-data-table>
