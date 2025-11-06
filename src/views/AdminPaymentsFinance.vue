@@ -92,6 +92,7 @@ const handleSelected = async () => {
   if (!selectedIds.value.length) return
   await adminPaymentsFinanceStore.setMakeTransfer(selectedIds.value)
   getRequest()
+  selectedIds.value = []
 }
 
 const getRequest = () => {

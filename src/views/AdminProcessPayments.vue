@@ -7,7 +7,6 @@
       </div>
     </div>
     <div class="table-actions__right">
-      <ImportDocuments />
       <VCusomButton
         :disabled="!selectedIds.length"
         :custom-class="['dark', 'avg']"
@@ -16,6 +15,7 @@
       >
         Выгрузка Excel
       </VCusomButton>
+      <ImportDocuments />
       <VCusomButton
         :disabled="!selectedIds.length"
         :custom-class="['light', 'avg']"
@@ -113,11 +113,13 @@ const handleSelected = async () => {
   if (!selectedIds.value.length) return
   await adminPaymentsFinanceStore.cancelTransfer(selectedIds.value)
   getRequest()
+  selectedIds.value = []
 }
 
 const downLoadExcel = async () => {
   if (!selectedIds.value.length) return
   const response = await adminPaymentsFinanceStore.getTransferListExel(selectedIds.value)
+  selectedIds.value = []
   const blob = new Blob([response.data], {
     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   })
