@@ -8,8 +8,10 @@
       <v-card-text>
         <v-form ref="formRef">
           <VCustomInput
+            ref="videoInputRef"
             v-model.trim="videoFields.videoLink"
             label="Ссылка на видео *"
+            :error-messages="videoError"
             :rules="[
               videoRules.required,
               videoRules.url,
@@ -18,6 +20,8 @@
             ]"
             autofocus
             class="mb-4"
+            @blur="checkVideoExists"
+            @input="input"
           />
           <VCustomInput
             v-model="videoFields.number_views"
@@ -59,6 +63,7 @@ import VideoUploader from '@/components/modals/VideoUploader.vue'
 import CurrentWallet from '@/components/wallets/CurrentWallet.vue'
 import type { IUploadVideo, IWallet } from '@/interfaces/Slicer'
 import { useError } from '@/stores/Errors'
+import { useUserInfo } from '@/stores/UserInfo.ts'
 import { videoRules } from '@/utils/validators'
 
 const props = defineProps({
@@ -82,6 +87,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue', 'submit'])
+const userInfoStore = useUserInfo()
 
 const videoFields = ref<IUploadVideo>({
   videoLink: '',
@@ -92,10 +98,25 @@ const videoFields = ref<IUploadVideo>({
 const errorStore = useError()
 
 const formRef = ref(null)
+const videoInputRef = ref(null)
+const videoError = ref('')
 
 const onInput = (val) => {
   const digitsOnly = val.target.value.replace(/\D/g, '')
   videoFields.value.number_views = digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+}
+
+const checkVideoExists = async () => {
+  const isValid = await videoInputRef.value?.validate()
+  if (isValid?.length) return
+
+  const { data } = await userInfoStore.checkLinkPublication(videoFields.value.videoLink)
+  const { available_add, message } = data ?? {}
+  if (!available_add) videoError.value = message ?? ''
+}
+
+const input = () => {
+  if (videoError.value) videoError.value = ''
 }
 
 const dialogModel = computed({
@@ -112,7 +133,7 @@ const submitVideo = async () => {
   if (!videoFields.value.videoFile) {
     errorStore.setErrors('Загрузите видео')
   }
-  if (valid && videoFields.value.videoFile) {
+  if (valid && videoFields.value.videoFile && !videoError.value) {
     emit('submit', videoFields.value)
   }
 }

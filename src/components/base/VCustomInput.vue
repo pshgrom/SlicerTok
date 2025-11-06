@@ -1,5 +1,6 @@
 <template>
   <v-text-field
+    ref="inputRef"
     v-model="value"
     class="custom-input"
     :class="customClasses"
@@ -19,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 const props = defineProps({
   rules: {
@@ -77,6 +78,12 @@ const value = computed({
 })
 
 const customClasses = computed(() => props.customClass.join(' '))
+const inputRef = ref(null)
+
+defineExpose({
+  validate: () => inputRef.value?.validate?.(),
+  resetValidation: () => inputRef.value?.resetValidation?.()
+})
 
 const onClear = () => {
   value.value = ''

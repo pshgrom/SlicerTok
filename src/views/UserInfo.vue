@@ -182,7 +182,7 @@ const handleVideoSubmit = async (videoData: IUploadVideo) => {
     isSubmittingVideo.value = true
     if (editMode.value) {
       const { code } = await userInfoStore.resubmissionPublication(formData)
-      if (code === 200) resetToFirstPage()
+      if (code === 200) fetchPublications()
     } else {
       const { code } = await userInfoStore.createPublication(formData)
       if (code === 200) resetToFirstPage()

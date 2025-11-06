@@ -57,61 +57,59 @@
       </v-card>
       <v-form ref="formRef">
         <v-row no-gutters class="custom-modal__row flex-nowrap">
-          <v-col
-            v-for="(group, groupName) in currentItem.status_moderation"
-            :key="groupName"
-            style="margin: 0 2px"
-          >
-            <v-card
-              class="info-admin info-admin_dialog"
-              variant="outlined"
-              rounded
-              style="border: none !important; border-radius: 16px"
-            >
-              <div class="info-admin__title">{{ formatLabel(groupName) }}</div>
-              <div class="info-admin-comment d-flex">
-                <div
-                  v-if="group.status"
-                  class="custom-table-chip mr-1"
-                  :style="{
-                    'background-color': getStatusColor(group.status),
-                    color: getColor(group.status)
-                  }"
-                >
-                  <div class="custom-table-chip__icon">
-                    <SvgIcon :name="getIcon(group.status)" />
+          <template v-for="(group, groupName) in currentItem.status_moderation" :key="groupName">
+            <v-col v-if="groupName === 'group_a' || groupName === 'group_b'" style="margin: 0 2px">
+              <v-card
+                class="info-admin info-admin_dialog"
+                variant="outlined"
+                rounded
+                style="border: none !important; border-radius: 16px"
+              >
+                <div class="info-admin__title">{{ formatLabel(groupName) }}</div>
+                <div class="info-admin-comment d-flex">
+                  <div
+                    v-if="group.status"
+                    class="custom-table-chip mr-1"
+                    :style="{
+                      'background-color': getStatusColor(group.status),
+                      color: getColor(group.status)
+                    }"
+                  >
+                    <div class="custom-table-chip__icon">
+                      <SvgIcon :name="getIcon(group.status)" />
+                    </div>
+                    <div class="custom-table-chip__status">
+                      {{ getTextStatus(group.status) }}
+                    </div>
                   </div>
-                  <div class="custom-table-chip__status">
-                    {{ getTextStatus(group.status) }}
+                  <v-menu
+                    v-if="group.rules.length"
+                    location="bottom"
+                    open-on-hover
+                    :close-on-content-click="false"
+                    offset="4"
+                  >
+                    <template #activator="{ props: menuProps }">
+                      <SvgIcon v-bind="menuProps" name="eye" @click.stop />
+                    </template>
+                    <div class="tooltip-content" v-html="showViolations(group.rules)"></div>
+                  </v-menu>
+                </div>
+                <div class="info-admin-comment">
+                  <div class="info-admin-comment__label">Просмотры:</div>
+                  <div class="info-admin-comment__value">
+                    {{ formatNumber(group?.number_views_moderation) || '-' }}
                   </div>
                 </div>
-                <v-menu
-                  v-if="group.rules.length"
-                  location="bottom"
-                  open-on-hover
-                  :close-on-content-click="false"
-                  offset="4"
-                >
-                  <template #activator="{ props: menuProps }">
-                    <SvgIcon v-bind="menuProps" name="eye" @click.stop />
-                  </template>
-                  <div class="tooltip-content" v-html="showViolations(group.rules)"></div>
-                </v-menu>
-              </div>
-              <div class="info-admin-comment">
-                <div class="info-admin-comment__label">Просмотры:</div>
-                <div class="info-admin-comment__value">
-                  {{ formatNumber(group.number_views_moderation) || '-' }}
+                <div class="info-admin-comment">
+                  <div class="info-admin-comment__label">Коэффициент:</div>
+                  <div class="info-admin-comment__value">
+                    {{ group.coefficient?.rate || '-' }}
+                  </div>
                 </div>
-              </div>
-              <div class="info-admin-comment">
-                <div class="info-admin-comment__label">Коэффициент:</div>
-                <div class="info-admin-comment__value">
-                  {{ group.coefficient?.rate || '-' }}
-                </div>
-              </div>
-            </v-card>
-          </v-col>
+              </v-card>
+            </v-col>
+          </template>
         </v-row>
 
         <div v-if="showActions" class="info-admin__title info-admin__title_offset">

@@ -55,7 +55,7 @@ onBeforeUnmount(() => {
 <style scoped lang="scss">
 .alert-container {
   position: fixed;
-  top: 15px;
+  top: 60px;
   right: 15px;
   z-index: 999999999;
   display: flex;

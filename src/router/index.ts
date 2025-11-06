@@ -11,6 +11,7 @@ import { useLoader } from '@/stores/GlobalLoader.ts'
 import AdminInfo from '@/views/AdminInfo.vue'
 import LoginView from '@/views/LoginView.vue'
 import LoginViewAdmin from '@/views/LoginViewAdmin.vue'
+import SupportPage from '@/views/SupportPage.vue'
 import UserInfo from '@/views/UserInfo.vue'
 
 // Расширяем типы meta
@@ -54,7 +55,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/support',
     name: 'Support',
-    component: () => import('@/views/SupportPage.vue'),
+    component: SupportPage,
     meta: { requiresAuth: true, roles: [ROLES.SUPPORT], showChat: false }
   },
   {

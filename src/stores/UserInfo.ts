@@ -3,6 +3,7 @@ import { ref } from 'vue'
 
 import {
   addWalletQuery,
+  checkLinkPublicationQuery,
   createPublicationQuery,
   disabledTwoFactorQuery,
   enableTwoFactorQuery,
@@ -164,6 +165,16 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     }
   }
 
+  const checkLinkPublication = async (url: string) => {
+    try {
+      const { data } = await checkLinkPublicationQuery(url)
+      return data
+    } catch (error: any) {
+      const msg = error?.response?.data?.message ?? 'Error'
+      errorStore.setErrors(msg)
+    }
+  }
+
   const getInfo = async () => {
     try {
       const { data } = await getInfoQuery()
@@ -224,6 +235,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     checkCode,
     isEnableGoogle2fa,
     updateUserInfoItem,
-    resubmissionPublication
+    resubmissionPublication,
+    checkLinkPublication
   }
 })

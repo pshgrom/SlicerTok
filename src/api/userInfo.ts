@@ -42,6 +42,9 @@ export const setWalletMainQuery = (id: number): Promise<AxiosResponse<unknown>> 
 export const removeWalletQuery = (id: number): Promise<AxiosResponse<unknown>> =>
   api.post('/slicer/profile/wallet/delete-wallet', { wallet_id: id })
 
+export const checkLinkPublicationQuery = (link: string): Promise<AxiosResponse<unknown>> =>
+  api.post('/slicer/publication/check-link-publication', { link })
+
 export const getInfoQuery = (): Promise<AxiosResponse<unknown>> =>
   api.get('/slicer/profile/get-info')
 

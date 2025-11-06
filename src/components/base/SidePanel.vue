@@ -55,13 +55,6 @@
             />
           </div>
         </div>
-        <!--        <VCustomInput-->
-        <!--          v-model="currentItem.number_views_moderation"-->
-        <!--          label="Количество просмотров по факту"-->
-        <!--          :rules="[videoRules.quantityViews, videoRules.required, videoRules.quantityViewsMin]"-->
-        <!--          class="mb-2"-->
-        <!--          @input="onInput"-->
-        <!--        />-->
         <ViewsSelectField
           v-model="currentItem.number_views_moderation"
           label="Количество просмотров по факту"
