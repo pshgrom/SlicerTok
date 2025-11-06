@@ -1,12 +1,13 @@
+import type { AxiosError } from 'axios'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { AxiosError } from 'axios'
 
 import {
   cancelTransferQuery,
   getAdminFinanceInfoQuery,
   getFinishedListQuery,
   getPublicationListPaymentQuery,
+  getTransferListExelQuery,
   getTransferListQuery,
   setTransferQuery,
   transferFinishedQuery
@@ -66,6 +67,18 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
     }
   }
 
+  const getTransferListExel = async (data: Array<string | number>) => {
+    try {
+      const newData = {
+        transfer_ids: [...data]
+      }
+      return await getTransferListExelQuery({ ...newData })
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+    }
+  }
+
   const transferFinished = async (data: Record<string, unknown> & { id: number | string }) => {
     try {
       const newData = {
@@ -75,7 +88,9 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
       return await transferFinishedQuery({ ...newData })
     } catch (error: unknown) {
       const axiosError = error as AxiosError<{ data?: string; message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? axiosError.response?.data?.data ?? '')
+      errorStore.setErrors(
+        axiosError.response?.data?.message ?? axiosError.response?.data?.data ?? ''
+      )
     }
   }
 
@@ -166,6 +181,7 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
     setMakeTransfer,
     cancelTransfer,
     getFinishedList,
-    transferFinished
+    transferFinished,
+    getTransferListExel
   }
 })

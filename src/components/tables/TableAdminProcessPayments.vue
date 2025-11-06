@@ -32,7 +32,7 @@
     <template #[`item.actions`]="{ item }">
       <div class="d-flex align-center">
         <div class="table-checkbox mr-2">
-          <v-tooltip text="Отменить выплату" location="bottom">
+          <v-tooltip text="Выбрать" location="bottom">
             <template #activator="{ props: activatorProps }">
               <v-checkbox
                 v-model="selectedIds"

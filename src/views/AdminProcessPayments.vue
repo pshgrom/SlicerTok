@@ -9,6 +9,14 @@
     <div class="table-actions__right">
       <VCusomButton
         :disabled="!selectedIds.length"
+        :custom-class="['dark', 'avg']"
+        class="mr-2"
+        @click="downLoadExcel"
+      >
+        Выгрузка Excel
+      </VCusomButton>
+      <VCusomButton
+        :disabled="!selectedIds.length"
         :custom-class="['light', 'avg']"
         @click="handleSelected"
       >
@@ -103,6 +111,20 @@ const handleSelected = async () => {
   if (!selectedIds.value.length) return
   await adminPaymentsFinanceStore.cancelTransfer(selectedIds.value)
   getRequest()
+}
+
+const downLoadExcel = async () => {
+  if (!selectedIds.value.length) return
+  const response = await adminPaymentsFinanceStore.getTransferListExel(selectedIds.value)
+  const blob = new Blob([response.data], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  })
+  const url = window.URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'transfer_list.xlsx'
+  a.click()
+  window.URL.revokeObjectURL(url)
 }
 
 onMounted(() => {

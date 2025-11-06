@@ -62,6 +62,13 @@ export type CancelTransferPayload = Record<string, unknown>
 export const cancelTransferQuery = (data: CancelTransferPayload): Promise<AxiosResponse<unknown>> =>
   api.post('/admin-finance/transfer/cancel-transfer', data)
 
+export const getTransferListExelQuery = (data: {
+  transfer_ids: number[]
+}): Promise<AxiosResponse<Blob>> =>
+  api.post('/admin-finance/transfer/get-transfer-list-exel', data, {
+    responseType: 'blob'
+  })
+
 export type TransferFinishedPayload = Record<string, unknown>
 export const transferFinishedQuery = (
   data: TransferFinishedPayload
