@@ -47,6 +47,11 @@ export const setPublicationStatusQuery = (
 export const finishCheckQuery = (id: number): Promise<AxiosResponse<unknown>> =>
   api.post('/admin/publication/complete-moderation', { id })
 
+export const importFileQuery = (formData: FormData): Promise<AxiosResponse<unknown>> =>
+  api.post('/admin-finance/transfer/import-transfer-list-exel', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })
+
 export const requestVerificationQuery = (id: number): Promise<AxiosResponse<unknown>> =>
   api.post('admin/publication/set-require-verification', { id })
 

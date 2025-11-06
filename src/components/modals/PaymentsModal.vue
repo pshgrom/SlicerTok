@@ -2,11 +2,10 @@
   <v-dialog v-model="dialog" class="custom-modal" max-width="500px">
     <v-card>
       <v-card-title>
-        <span class="headline">Добавить кошелек</span>
+        <span class="headline">Оплата</span>
         <v-btn icon="mdi-close" variant="text" @click="dialog = false" />
       </v-card-title>
       <v-card-text>
-        <!--        7b1365f927a49c3e75f439c9ce85649d2e3055dbe64088c0207a32c13c28f4ca-->
         <v-form ref="formRef">
           <VCustomInput
             v-model="currentPay.txid"
@@ -20,7 +19,9 @@
       <v-card-actions>
         <v-spacer />
         <VCusomButton :custom-class="['light', 'avg']" @click="closeModal"> Отмена </VCusomButton>
-        <VCusomButton :custom-class="['dark', 'avg']" @click="submit"> Выплатить </VCusomButton>
+        <VCusomButton :custom-class="['dark', 'avg']" :loading="loadingPay" @click="submit">
+          Выплатить
+        </VCusomButton>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -35,6 +36,10 @@ import { requiredRules } from '@/utils/validators.ts'
 
 const props = defineProps({
   modelValue: {
+    type: Boolean,
+    default: false
+  },
+  loadingPay: {
     type: Boolean,
     default: false
   },

@@ -9,6 +9,7 @@ import {
   getPublicationListPaymentQuery,
   getTransferListExelQuery,
   getTransferListQuery,
+  importFileQuery,
   setTransferQuery,
   transferFinishedQuery
 } from '@/api/adminInfo'
@@ -61,6 +62,15 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
         transfer_ids: [...data]
       }
       return await cancelTransferQuery({ ...newData })
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+    }
+  }
+
+  const importFile = async (formData: FormData) => {
+    try {
+      return await importFileQuery(formData)
     } catch (error: unknown) {
       const axiosError = error as AxiosError<{ message?: string }>
       errorStore.setErrors(axiosError.response?.data?.message ?? '')
@@ -182,6 +192,7 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
     cancelTransfer,
     getFinishedList,
     transferFinished,
-    getTransferListExel
+    getTransferListExel,
+    importFile
   }
 })

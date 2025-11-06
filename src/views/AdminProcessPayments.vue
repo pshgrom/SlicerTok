@@ -7,6 +7,7 @@
       </div>
     </div>
     <div class="table-actions__right">
+      <ImportDocuments />
       <VCusomButton
         :disabled="!selectedIds.length"
         :custom-class="['dark', 'avg']"
@@ -45,6 +46,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import ImportDocuments from '@/components/base/ImportDocuments.vue'
 import TabsSwitcher from '@/components/base/TabsSwitcher.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import TableAdminProcessPayments from '@/components/tables/TableAdminProcessPayments.vue'

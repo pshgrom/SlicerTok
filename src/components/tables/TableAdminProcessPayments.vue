@@ -62,6 +62,7 @@
     v-if="isModalOpen"
     v-model="isModalOpen"
     v-model:current-item="currentItem"
+    :loading-pay="loadingPay"
     @pay="pay"
   />
 </template>
@@ -102,6 +103,7 @@ const emit = defineEmits(['update:selectedIds', 'pay'])
 const adminPaymentsFinanceStore = useAdminPaymentsFinance()
 const isModalOpen = ref(false)
 const currentItem = ref({})
+const loadingPay = ref(false)
 
 const headersData = ref(props.headers)
 
@@ -124,8 +126,14 @@ const selectedIds = computed({
 })
 
 const pay = async (data) => {
-  const resp = await adminPaymentsFinanceStore.transferFinished(data)
-  console.warn(11, resp)
+  try {
+    loadingPay.value = true
+    await adminPaymentsFinanceStore.transferFinished(data)
+  } catch (e) {
+    console.error(e)
+  } finally {
+    loadingPay.value = false
+  }
 }
 
 const showDialog = (item) => {
