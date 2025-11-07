@@ -17,7 +17,7 @@
     <template #[`item.total_views`]="{ item }">
       <div class="custom-table-views">
         <SvgIcon name="show" />
-        <div>{{ formatNumber(item.total_views) }}</div>
+        <div>{{ formatNumber(item.total_views) || 0 }}</div>
       </div>
     </template>
     <template #[`item.is_verified`]="{ item }">
