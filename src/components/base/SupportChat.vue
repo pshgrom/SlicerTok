@@ -374,7 +374,7 @@ const selectRoom = async (id: number) => {
 }
 
 onMounted(async () => {
-  await supportStore.getSupportInfo()
+  if (!userId.value) await supportStore.getSupportInfo()
 
   chatStore.connect()
   const { data } = await getChatsSupportQuery()
