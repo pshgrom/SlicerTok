@@ -14,7 +14,7 @@
       :menu-icon="readonly ? null : 'mdi-menu-down'"
       :density="density"
       :rules="rules"
-      hide-details
+      :hide-details="hideDetails"
       :readonly="readonly"
       @click:clear="clearSelect"
       @update:model-value="updateStatus"
@@ -57,6 +57,10 @@ const props = defineProps({
   readonly: {
     type: Boolean,
     default: false
+  },
+  hideDetails: {
+    type: Boolean,
+    default: true
   },
   color: {
     type: String,

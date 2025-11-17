@@ -64,6 +64,9 @@ const goHome = () => {
     case ROLES.ADMIN_MAIN:
       router.push({ name: 'AdminMain' })
       break
+    case ROLES.STREAMER:
+      router.push({ name: 'Streamer' })
+      break
     case ROLES.SUPPORT:
       router.push({ name: 'Support' })
       break

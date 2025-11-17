@@ -21,15 +21,19 @@
         class="video-element"
         @ended="onVideoEnded"
       ></video>
-      <button class="close-btn" @click.stop="closeVideo">✕</button>
+      <button class="close-btn" :class="{ 'close-btn_mobile': !isMobile }" @click.stop="closeVideo">
+        ✕
+      </button>
       <div class="resize-handle" @mousedown.stop="startResize"></div>
-      <button class="pip-btn" @click="togglePiP">⧉</button>
+      <button v-if="!isMobile" class="pip-btn" @click="togglePiP">⧉</button>
     </div>
   </transition>
 </template>
 
 <script setup>
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+
+import { useDeviceDetection } from '@/composables/useDeviceDetection.js'
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
@@ -38,6 +42,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'update:videoSrc'])
 
 const visible = ref(props.modelValue)
+const { isMobile } = useDeviceDetection()
 const videoEl = ref(null)
 const savedTime = ref(0)
 const savedSpeed = ref(1)
@@ -302,5 +307,11 @@ onBeforeUnmount(() => {
 .pip-btn {
   right: 0;
   left: 6px;
+}
+
+.close-btn {
+  &_mobile {
+    right: 20px;
+  }
 }
 </style>

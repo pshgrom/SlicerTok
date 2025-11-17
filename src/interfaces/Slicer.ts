@@ -3,6 +3,7 @@ export interface IUploadVideo {
   videoFile: null | File | string
   number_views: number | string
   isBonus: boolean
+  blogger?: string | number
 }
 
 export interface IUser {

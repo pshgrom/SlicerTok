@@ -113,6 +113,6 @@ onMounted(() => {
     perPage
   }
   getRequest()
-  // adminPaymentsFinanceStore.getAdminFinanceInfo()
+  adminPaymentsFinanceStore.getAdminFinanceInfo()
 })
 </script>

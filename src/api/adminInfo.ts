@@ -37,7 +37,7 @@ export const getAdminFinanceInfoQuery = (): Promise<AxiosResponse<unknown>> =>
   api.get('/admin-finance/profile/get-info')
 
 export const getCoefficientQuery = (): Promise<AxiosResponse<unknown>> =>
-  api.get('/coefficient/get-coefficient')
+  api.get('/coefficient/get-coefficient-for-admin')
 
 export type SetPublicationStatusPayload = Record<string, unknown>
 export const setPublicationStatusQuery = (

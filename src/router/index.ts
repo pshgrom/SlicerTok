@@ -8,6 +8,7 @@ import {
 
 import { ROLES, type RoleType } from '@/constants/roles'
 import { useLoader } from '@/stores/GlobalLoader.ts'
+import { useStreamers } from '@/stores/Streamers.ts'
 import AdminInfo from '@/views/AdminInfo.vue'
 import LoginView from '@/views/LoginView.vue'
 import LoginViewAdmin from '@/views/LoginViewAdmin.vue'
@@ -107,22 +108,28 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true, roles: [ROLES.ADMIN_MAIN], showChat: false }
   },
   {
+    path: '/streamer',
+    name: 'Streamer',
+    component: () => import('@/views/Streamer.vue'),
+    meta: { requiresAuth: true, roles: [ROLES.STREAMER], showChat: false }
+  },
+  {
     path: '/coefficients',
     name: 'AdminCoeff',
     component: () => import('@/views/AdminCoeff.vue'),
-    meta: { requiresAuth: true, roles: [ROLES.ADMIN_MAIN], showChat: false }
+    meta: { requiresAuth: true, roles: [ROLES.ADMIN_MAIN, ROLES.STREAMER], showChat: false }
   },
   {
     path: '/admins-online',
     name: 'AdminsOnlinePage',
     component: () => import('@/views/AdminsOnlinePage.vue'),
-    meta: { requiresAuth: true, roles: [ROLES.ADMIN_MAIN], showChat: false }
+    meta: { requiresAuth: true, roles: [ROLES.ADMIN_MAIN, ROLES.STREAMER], showChat: false }
   },
   {
     path: '/admin-main-logs',
     name: 'AdminMainLogs',
     component: () => import('@/views/AdminMainLogs.vue'),
-    meta: { requiresAuth: true, roles: [ROLES.ADMIN_MAIN], showChat: false }
+    meta: { requiresAuth: true, roles: [ROLES.ADMIN_MAIN, ROLES.STREAMER], showChat: false }
   },
   {
     path: '/user-info',
@@ -138,7 +145,7 @@ const router = createRouter({
 })
 
 router.beforeEach(
-  (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+  async (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
     const loader = useLoader()
     const token = localStorage.getItem('authToken')
     const role = localStorage.getItem('role') as RoleType | null
@@ -148,8 +155,20 @@ router.beforeEach(
       ROLES.ADMIN,
       ROLES.ADMIN_FINANCE,
       ROLES.ADMIN_MAIN,
-      ROLES.SUPPORT
+      ROLES.SUPPORT,
+      ROLES.STREAMER
     ]
+
+    if (token) {
+      const streamers = useStreamers()
+      if (!streamers.streamersLoaded) {
+        try {
+          await streamers.getStreamerList()
+        } catch (e) {
+          console.error('Ошибка загрузки стримеров', e)
+        }
+      }
+    }
 
     if (token && role && (to.name === 'Login' || to.name === 'LoginAdmin' || to.path === '/')) {
       if (role === ROLES.SLICER) {
@@ -166,6 +185,10 @@ router.beforeEach(
 
       if (role === ROLES.ADMIN_MAIN) {
         return next({ name: 'AdminMain' })
+      }
+
+      if (role === ROLES.STREAMER) {
+        return next({ name: 'Streamer' })
       }
 
       if (role === ROLES.SUPPORT) {

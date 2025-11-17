@@ -57,20 +57,34 @@
       </div>
     </template>
     <template #[`item.status`]="{ item }">
-      <div
-        v-if="item.status"
-        class="custom-table-chip"
-        :style="{
-          'background-color': getStatusColor(item.status),
-          color: getColor(item.status)
-        }"
-      >
-        <div class="custom-table-chip__icon">
-          <SvgIcon :name="getIcon(item.status)" />
+      <div class="d-flex align-center ga-2">
+        <div
+          v-if="item.status"
+          class="custom-table-chip"
+          :style="{
+            'background-color': getStatusColor(item.status),
+            color: getColor(item.status)
+          }"
+        >
+          <div class="custom-table-chip__icon">
+            <SvgIcon :name="getIcon(item.status)" />
+          </div>
+          <div class="custom-table-chip__status">
+            {{ getTextStatus(item.status) }}
+          </div>
         </div>
-        <div class="custom-table-chip__status">
-          {{ getTextStatus(item.status) }}
-        </div>
+        <v-tooltip text="Было переподано" location="bottom">
+          <template #activator="{ props: activatorProps }">
+            <VCusomButton
+              v-if="item.status_old?.length"
+              v-bind="activatorProps"
+              :custom-class="['light', 'avg', 'only-icon']"
+              @click.stop="openHistory(item)"
+            >
+              <SvgIcon name="rotate" />
+            </VCusomButton>
+          </template>
+        </v-tooltip>
       </div>
     </template>
     <template #[`item.status_comment`]="{ item }">
@@ -135,6 +149,11 @@
   </v-data-table>
   <AddMarkModal v-if="isModalOpen" v-model="isModalOpen" @save="saveMark" />
   <VideoPlayModal v-model="isModalOpenVideo" v-model:video-src="videoSrc" />
+  <OldHistoryModal
+    v-model="showOldHistory"
+    :item-history="itemHistory"
+    :id-item-history="idItemHistory"
+  />
 </template>
 
 <script setup lang="ts">
@@ -143,6 +162,7 @@ import { computed, nextTick, type PropType, ref, watch } from 'vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import AddMarkModal from '@/components/modals/AddMarkModal.vue'
+import OldHistoryModal from '@/components/modals/OldHistoryModal.vue'
 import VideoPlayModal from '@/components/modals/VideoPlayModal.vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import { formatDate } from '@/utils/formatDate.ts'
@@ -191,10 +211,13 @@ const headersData = ref(props.headers)
 const dialog = ref(false)
 const currentItem = ref({})
 const isModalOpen = ref(false)
+const itemHistory = ref({})
+const idItemHistory = ref(null)
 const isModalOpenVideo = ref(false)
 const videoSrc = ref('')
 const markId = ref<null | number>(null)
 const tableRef = ref(null)
+const showOldHistory = ref(false)
 
 const computedHeaders = computed<ITableHeaders[]>({
   get() {
@@ -233,6 +256,12 @@ watch(
     }
   }
 )
+
+const openHistory = (item) => {
+  itemHistory.value = item.status_old
+  idItemHistory.value = item.id
+  showOldHistory.value = true
+}
 
 const openVideo = (url: string) => {
   isModalOpenVideo.value = true

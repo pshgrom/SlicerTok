@@ -169,11 +169,12 @@ const closeVideoDialog = () => {
 }
 
 const handleVideoSubmit = async (videoData: IUploadVideo) => {
-  const { videoFile, videoLink, number_views, isBonus } = videoData
+  const { videoFile, videoLink, number_views, isBonus, blogger } = videoData
   const formData = new FormData()
 
   formData.append('link', videoLink)
   formData.append('video_stat', videoFile)
+  formData.append('streamer_id', +blogger)
   formData.append('is_bonus', Boolean(isBonus))
   formData.append('number_views', cleanNumber(number_views))
   if (editMode.value) formData.append('publication_id', publicationId.value)
@@ -182,15 +183,20 @@ const handleVideoSubmit = async (videoData: IUploadVideo) => {
     isSubmittingVideo.value = true
     if (editMode.value) {
       const { code } = await userInfoStore.resubmissionPublication(formData)
-      if (code === 200) fetchPublications()
+      if (code === 200) {
+        closeVideoDialog()
+        fetchPublications()
+      }
     } else {
       const { code } = await userInfoStore.createPublication(formData)
-      if (code === 200) resetToFirstPage()
+      if (code === 200) {
+        closeVideoDialog()
+        resetToFirstPage()
+      }
     }
   } catch (error: any) {
     errorStore.setErrors(error)
   } finally {
-    closeVideoDialog()
     isSubmittingVideo.value = false
   }
 }

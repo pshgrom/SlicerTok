@@ -3,7 +3,8 @@ export const ROLES = {
   ADMIN_FINANCE: 'admin_finance',
   SLICER: 'slicer',
   ADMIN_MAIN: 'admin_main',
-  SUPPORT: 'admin_support'
+  SUPPORT: 'admin_support',
+  STREAMER: 'streamer'
 }
 
 export type RoleType = (typeof ROLES)[keyof typeof ROLES]

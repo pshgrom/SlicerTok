@@ -58,7 +58,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
       errorStore.setErrors(msg, 'success')
       return data
     } catch (error: any) {
-      const err = error?.response?.data?.data
+      const err = error?.response?.data?.message ?? ''
       const link = err?.message?.link
       if (link) throw link
       else throw err ?? 'Error'

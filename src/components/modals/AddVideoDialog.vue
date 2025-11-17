@@ -7,6 +7,20 @@
       </v-card-title>
       <v-card-text>
         <v-form ref="formRef">
+          <VCustomSelect
+            v-model="videoFields.blogger"
+            :rules="[videoRules.required]"
+            :hide-details="false"
+            label="Блоггер"
+            class="mb-4"
+            :items="streamerStore.streamerList"
+          >
+            <template #item="{ item, props: slotProps }">
+              <v-list-item v-bind="slotProps">
+                {{ item.text }}
+              </v-list-item>
+            </template>
+          </VCustomSelect>
           <VCustomInput
             ref="videoInputRef"
             v-model.trim="videoFields.videoLink"
@@ -59,10 +73,12 @@ import { computed, type PropType, ref, watch } from 'vue'
 
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
+import VCustomSelect from '@/components/base/VCustomSelect.vue'
 import VideoUploader from '@/components/modals/VideoUploader.vue'
 import CurrentWallet from '@/components/wallets/CurrentWallet.vue'
 import type { IUploadVideo, IWallet } from '@/interfaces/Slicer'
 import { useError } from '@/stores/Errors'
+import { useStreamers } from '@/stores/Streamers.ts'
 import { useUserInfo } from '@/stores/UserInfo.ts'
 import { videoRules } from '@/utils/validators'
 
@@ -91,11 +107,13 @@ const userInfoStore = useUserInfo()
 
 const videoFields = ref<IUploadVideo>({
   videoLink: '',
+  blogger: '',
   videoFile: null,
   number_views: '',
   isBonus: false
 })
 const errorStore = useError()
+const streamerStore = useStreamers()
 
 const formRef = ref(null)
 const videoInputRef = ref(null)

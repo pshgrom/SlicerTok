@@ -1,6 +1,6 @@
+import type { AxiosError } from 'axios'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { AxiosError } from 'axios'
 
 import {
   finishCheckQuery,
