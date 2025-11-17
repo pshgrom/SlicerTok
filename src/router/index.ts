@@ -119,12 +119,12 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/AdminCoeff.vue'),
     meta: { requiresAuth: true, roles: [ROLES.ADMIN_MAIN, ROLES.STREAMER], showChat: false }
   },
-  {
-    path: '/admins-online',
-    name: 'AdminsOnlinePage',
-    component: () => import('@/views/AdminsOnlinePage.vue'),
-    meta: { requiresAuth: true, roles: [ROLES.ADMIN_MAIN, ROLES.STREAMER], showChat: false }
-  },
+  // {
+  //   path: '/admins-online',
+  //   name: 'AdminsOnlinePage',
+  //   component: () => import('@/views/AdminsOnlinePage.vue'),
+  //   meta: { requiresAuth: true, roles: [ROLES.ADMIN_MAIN, ROLES.STREAMER], showChat: false }
+  // },
   {
     path: '/admin-main-logs',
     name: 'AdminMainLogs',
