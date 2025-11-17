@@ -191,7 +191,7 @@ const handleVideoSubmit = async (videoData: IUploadVideo) => {
       const { code } = await userInfoStore.createPublication(formData)
       if (code === 200) {
         closeVideoDialog()
-        resetToFirstPage()
+        queryParams.value.page === 1 ? fetchPublications() : resetToFirstPage()
       }
     }
   } catch (error: any) {

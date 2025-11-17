@@ -46,7 +46,11 @@
       <v-card-actions>
         <v-spacer />
         <VCusomButton :custom-class="['light', 'avg']" @click="cancel"> Отмена </VCusomButton>
-        <VCusomButton :custom-class="['dark', 'avg']" :disabled="!isEqualDate" @click="save">
+        <VCusomButton
+          :custom-class="['dark', 'avg']"
+          :disabled="!isEqualDate || !isChanged"
+          @click="save"
+        >
           Сохранить
         </VCusomButton>
       </v-card-actions>
@@ -82,12 +86,13 @@ const emit = defineEmits(['update', 'update:dialog'])
 const initialUser = ref({ ...props.user })
 const formRef = ref(null)
 const form = ref({ ...initialUser.value })
-const currentDate = new Date()
 
 const dialogModel = computed({
   get: () => props.dialog,
   set: (val) => emit('update:dialog', val)
 })
+
+const isChanged = computed(() => JSON.stringify(form.value) !== JSON.stringify(initialUser.value))
 
 const isEqualDate = computed(() => {
   if (!props.endDate) return true

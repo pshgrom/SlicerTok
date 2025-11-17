@@ -91,6 +91,7 @@ const currentRecord = ref({})
 const activePanel = ref(false)
 const selectedIndex = ref(-1)
 const isLoading = computed(() => adminInfo.isLoading)
+const adminProfileData = computed(() => adminInfo.adminProfileData)
 const router = useRouter()
 const calcDataItems = computed<IUserInfoData[]>(() => adminInfo.adminInfoData)
 
@@ -276,7 +277,7 @@ onMounted(() => {
   }
   getRequest()
   adminInfo.getCoefficient()
-  adminInfo.getAdminInfo()
+  if (!adminProfileData.value?.id) adminInfo.getAdminInfo()
   requestSocketStore.setChannel('publication-new.admin')
   requestSocketStore.connect()
   window.addEventListener('keydown', handleKeydown)
