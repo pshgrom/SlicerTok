@@ -175,7 +175,6 @@ const showViolations = (rules: Violation[]) => {
 
 :deep(.v-card-text) {
   max-height: 450px;
-  min-height: 450px;
   overflow-y: scroll;
 }
 </style>

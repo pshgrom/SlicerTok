@@ -32,6 +32,7 @@
               videoRules.noShare,
               videoRules.quantityLink
             ]"
+            :disabled="editMode"
             autofocus
             class="mb-4"
             @blur="checkVideoExists"

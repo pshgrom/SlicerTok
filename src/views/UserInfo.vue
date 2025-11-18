@@ -172,12 +172,13 @@ const handleVideoSubmit = async (videoData: IUploadVideo) => {
   const { videoFile, videoLink, number_views, isBonus, blogger } = videoData
   const formData = new FormData()
 
-  formData.append('link', videoLink)
   formData.append('video_stat', videoFile)
   formData.append('streamer_id', +blogger)
   formData.append('is_bonus', Boolean(isBonus))
   formData.append('number_views', cleanNumber(number_views))
-  if (editMode.value) formData.append('publication_id', publicationId.value)
+  editMode.value
+    ? formData.append('publication_id', publicationId.value)
+    : formData.append('link', videoLink)
 
   try {
     isSubmittingVideo.value = true
