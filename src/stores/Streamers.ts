@@ -13,10 +13,11 @@ export const useStreamers = defineStore('streamersStore', () => {
       if (data?.code === 200) {
         streamerList.value = data?.data ?? []
         streamerList.value = streamerList.value?.map((el) => {
-          const { id: value, name: label } = el ?? {}
+          const { id: value, name: label, key } = el ?? {}
           return {
             label,
-            value
+            value,
+            key
           }
         })
         streamersLoaded.value = true

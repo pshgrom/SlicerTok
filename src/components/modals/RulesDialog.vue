@@ -20,7 +20,7 @@
             </v-list-item>
           </template>
         </VCustomSelect>
-        <div v-if="blogger === 25" class="custom-rules-container">
+        <div v-if="currentStreamer === 'mellstroy'" class="custom-rules-container">
           <h2 class="mt-8">Важная информация:</h2>
           <ul>
             <li>
@@ -511,7 +511,7 @@
           </div>
           <p>Список вопросов будет обновляться...</p>
         </div>
-        <div v-if="blogger === 26" class="custom-rules-container">
+        <div v-if="currentStreamer === 'graf'" class="custom-rules-container">
           <h2 class="mt-8">Важная информация:</h2>
           <p style="line-height: 140%">
             Начиная с 17.05.2025 все свежие нарезки с Графом , набравшие 100.000, 500.000, 1.000.000
@@ -1035,6 +1035,10 @@ const emit = defineEmits(['update:modelValue'])
 const streamerStore = useStreamers()
 
 const blogger = ref(null)
+
+const currentStreamer = computed(
+  () => streamerStore.streamerList?.find((el) => el.value === blogger.value)?.key
+)
 
 const dialog = computed({
   get() {
