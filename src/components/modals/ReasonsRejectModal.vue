@@ -58,4 +58,9 @@ const closeModal = () => {
   padding-bottom: 0;
   background: #fff;
 }
+
+:deep(.v-card-text) {
+  max-height: 450px;
+  overflow-y: scroll;
+}
 </style>
