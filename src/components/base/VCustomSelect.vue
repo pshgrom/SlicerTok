@@ -5,12 +5,13 @@
       class="v-custom-select__select"
       :items="items"
       :label="label"
+      :color="color"
       item-title="label"
       item-value="value"
-      :color="color"
-      :clearable="!readonly"
+      :clearable="clearable"
       :variant="variant"
       :disabled="disabled"
+      :attach="attach"
       :menu-icon="readonly ? null : 'mdi-menu-down'"
       :density="density"
       :rules="rules"
@@ -62,6 +63,10 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
+  clearable: {
+    type: Boolean,
+    default: true
+  },
   color: {
     type: String,
     default: ''
@@ -69,6 +74,10 @@ const props = defineProps({
   variant: {
     type: String as () => 'underlined' | 'outlined' | 'filled' | 'solo' | 'plain',
     default: 'outlined'
+  },
+  attach: {
+    type: [String, Boolean, HTMLElement],
+    default: 'self'
   },
   density: {
     type: String as () => 'default' | 'comfortable' | 'compact',
