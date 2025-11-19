@@ -22,7 +22,7 @@ export const getPublicationsListMainQuery = (data: ITableParams): Promise<AxiosR
   api.get('/admin-main/publication/get-publication-list', { params: data })
 
 export const getCoeffsListQuery = (): Promise<AxiosResponse<unknown>> =>
-  api.get('/admin-main/coefficient/get-coefficient-list')
+  api.get('/streamer/coefficient/get-coefficient-list')
 
 export const getCompletedListQuery = (data: ITableParams): Promise<AxiosResponse<unknown>> =>
   api.get('/admin/publication/get-publication-moderation-completed-list', { params: data })
@@ -85,7 +85,7 @@ export const actionRequestAdminQuery = (
 ): Promise<AxiosResponse<unknown>> => api.post('/admin-main/publication/final-status', data)
 
 export const removeCoeffQuery = (id: number): Promise<AxiosResponse<unknown>> =>
-  api.post('/admin-main/coefficient/delete-coefficient', { id })
+  api.post('/streamer/coefficient/delete-coefficient', { id })
 
 export const addNewCoeffQuery = (value: string): Promise<AxiosResponse<unknown>> =>
-  api.post('/admin-main/coefficient/create-coefficient', { rate: value })
+  api.post('/streamer/coefficient/create-coefficient', { rate: value })

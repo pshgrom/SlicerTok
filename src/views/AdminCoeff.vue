@@ -60,7 +60,7 @@ const removeCoeff = async (id: number) => {
 const addCoeff = async (newCoeff: string) => {
   const resp = await adminMainStore.addNewCoeff(newCoeff)
   const msg = resp?.data?.message
-  errorStore.setErrors(msg, 'success')
+  if (msg) errorStore.setErrors(msg, 'success')
   if (resp?.data?.code === 200) {
     isModalOpen.value = false
     getRequest()

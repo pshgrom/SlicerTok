@@ -44,12 +44,7 @@ const menuItems: Partial<Record<RoleType, MenuItem[]>> = {
       onClick: () => (showChat.value = !showChat.value)
     }
   ],
-  [ROLES.ADMIN_MAIN]: [
-    { label: 'Заявки', to: '/admin-main' },
-    { label: 'Коэффициенты', to: '/coefficients' },
-    // { label: 'Админы онлайн', to: '/admins-online' },
-    { label: 'Логи', to: '/admin-main-logs' }
-  ],
+  [ROLES.ADMIN_MAIN]: [{ label: 'Общая информация', to: '/admin-main' }],
   [ROLES.STREAMER]: [
     { label: 'Заявки', to: '/streamer' },
     { label: 'Коэффициенты', to: '/coefficients' },
