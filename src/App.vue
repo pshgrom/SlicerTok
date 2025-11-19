@@ -98,15 +98,18 @@ watch(
 watch(
   () => userInfoStore.showChat,
   (val) => {
-    if (val) {
-      document.querySelector('.v-overlay-container').style.display = 'none'
-    } else {
-      document.querySelector('.v-overlay-container').style.display = 'contents'
-    }
+    const overlays = document.querySelectorAll('.v-overlay-container > .v-overlay')
+    overlays.forEach((overlay) => {
+      const isMenu = overlay.classList.contains('v-overlay--menu')
+      if (val) {
+        overlay.style.display = isMenu ? 'contents' : 'none'
+      } else {
+        overlay.style.display = 'contents'
+      }
+    })
   }
 )
 
-// const isAdmin = computed(() => authStore.role !== 'slicer')
 const isSlicer = computed(() => authStore.role === 'slicer')
 const userName = computed(() => userInfoStore.userInfo?.profile?.name ?? '')
 

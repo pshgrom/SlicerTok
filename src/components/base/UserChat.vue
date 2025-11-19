@@ -3,6 +3,22 @@
     <div class="chat-box">
       <div class="chat__title">
         <span>Чат с поддержкой</span>
+        <VCustomSelect
+          v-if="isSlicer"
+          v-model="streamer"
+          :items="streamerStore.streamerList"
+          :label="'Стример'"
+          attach="self"
+          density="compact"
+          :clearable="false"
+          style="width: 158px"
+        >
+          <template #item="{ item, props }">
+            <v-list-item v-bind="props">
+              {{ item.raw.text }}
+            </v-list-item>
+          </template>
+        </VCustomSelect>
         <v-btn icon="mdi-close" variant="text" @click="close" />
       </div>
 
@@ -51,11 +67,14 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import VCustomInput from '@/components/base/VCustomInput.vue'
+import VCustomSelect from '@/components/base/VCustomSelect.vue'
 import { useDeviceDetection } from '@/composables/useDeviceDetection'
+import { useAuth } from '@/stores/Auth.ts'
 import { useChatSocketStore } from '@/stores/ChatSocket'
+import { useStreamers } from '@/stores/Streamers.ts'
 import { useChatStore } from '@/stores/UserChat.ts'
 import { useUserInfo } from '@/stores/UserInfo'
 import { throttle } from '@/utils/optimize'
@@ -74,6 +93,19 @@ const chatBoxRef = ref<HTMLElement | null>(null)
 const newMessage = ref('')
 let scrollListenerAttached = false
 let initialScrollDone = false
+const streamerStore = useStreamers()
+const authStore = useAuth()
+
+const isSlicer = computed(() => authStore.role === 'slicer')
+
+const streamer = computed({
+  get() {
+    return streamerStore.streamer
+  },
+  set(val) {
+    streamerStore.setStreamer(val)
+  }
+})
 
 const scrollToBottom = (smooth = true) => {
   nextTick(() => {
@@ -132,7 +164,6 @@ watch(
   }
 )
 
-// скроллим и отмечаем как прочитанные при открытии
 watch(
   () => userInfoStore.showChat,
   async (isOpen) => {
@@ -157,9 +188,34 @@ watch(
   { deep: true }
 )
 
+watch(
+  () => streamerStore.streamersLoaded,
+  async (loaded) => {
+    if (!loaded) return
+
+    const savedStreamer = streamer.value
+
+    if (savedStreamer) {
+      await chatStore.initializeChat(+savedStreamer)
+    } else {
+      await chatStore.initializeChat()
+    }
+  },
+  { immediate: true }
+)
+
+watch(
+  () => streamer.value,
+  async (value, oldValue) => {
+    if (!value || value === oldValue) return
+
+    await chatStore.initializeChat(+value)
+    // nextTick(scrollToBottom)
+  }
+)
+
 onMounted(async () => {
   chatSocket.connect()
-  await chatStore.initializeChat()
   document.addEventListener('keydown', closeChat)
 })
 
@@ -180,7 +236,7 @@ onBeforeUnmount(() => {
   box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
   width: 432px;
   border-radius: 16px;
-  z-index: 9999;
+  z-index: 200;
 
   &_mobile {
     position: fixed;

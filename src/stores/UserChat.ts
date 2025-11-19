@@ -72,18 +72,42 @@ export const useChatStore = defineStore('chat', () => {
     return `time_${msg.created_at}_content_${msg.content.slice(0, 20)}_your_${msg.is_your}`
   }
 
+  const resetChatBeforeInit = () => {
+    if (roomId.value) {
+      chatSocketStore.unsubscribeChannel(`chat.${roomId.value}`)
+    }
+
+    roomId.value = null
+    messages.value = []
+    dateFrom.value = undefined
+    page.value = 1
+    hasMore.value = true
+    isLoading.value = false
+  }
+
   const getTime = (time: string) => {
     const d = new Date(time)
     return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
   }
 
-  const initializeChat = async () => {
+  const initializeChat = async (streamerId?: number) => {
     try {
-      const { data } = await getChatQuery()
-      if (data.code === 200) {
-        roomId.value = data.data.chat_room_id
-        await getMessages(false)
-        if (roomId.value) chatSocketStore.subscribeChannel(`chat.${roomId.value}`)
+      // 1) Полностью сбрасываем чат
+      resetChatBeforeInit()
+
+      // 2) Получаем id комнаты
+      const { data } = await getChatQuery(streamerId)
+
+      if (data.code !== 200) return
+
+      roomId.value = data.data.chat_room_id
+
+      // 3) Загружаем первые сообщения
+      await getMessages(false)
+
+      // 4) Подписываемся на websocket НОВОЙ комнаты
+      if (roomId.value) {
+        chatSocketStore.subscribeChannel(`chat.${roomId.value}`)
       }
     } catch (err) {
       console.error('Ошибка инициализации чата:', err)
