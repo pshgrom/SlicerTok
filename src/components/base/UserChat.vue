@@ -252,7 +252,7 @@ onBeforeUnmount(() => {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 90vh;
+    height: 100%;
   }
 
   &__title {
