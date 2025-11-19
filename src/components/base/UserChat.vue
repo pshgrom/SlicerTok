@@ -40,7 +40,12 @@
                 'chat-messages-item_unread': !msg.is_your && !msg.is_read
               }"
             >
-              <div class="chat-messages-item__role">{{ msg?.user?.name ?? '' }}</div>
+              <div class="chat-messages-item__role">
+                {{ msg?.user?.name ?? '' }}
+                <span v-if="!msg.is_your" class="chat-messages-item__role-name">
+                  {{ streamerName }}</span
+                >
+              </div>
               <div class="chat-messages-item__msg">{{ msg.content }}</div>
               <div class="chat-messages-item__time">{{ chatStore.getTime(msg.created_at) }}</div>
             </div>
@@ -97,6 +102,10 @@ const streamerStore = useStreamers()
 const authStore = useAuth()
 
 const isSlicer = computed(() => authStore.role === 'slicer')
+
+const streamerName = computed(() => {
+  return streamerStore.streamerList?.find((el) => (el.value = streamer.value)).label
+})
 
 const streamer = computed({
   get() {
@@ -189,29 +198,29 @@ watch(
 )
 
 watch(
-  () => streamerStore.streamersLoaded,
-  async (loaded) => {
-    if (!loaded) return
-
-    const savedStreamer = streamer.value
-
-    if (savedStreamer) {
-      await chatStore.initializeChat(+savedStreamer)
-    } else {
-      await chatStore.initializeChat()
-    }
-  },
-  { immediate: true }
-)
-
-watch(
   () => streamer.value,
   async (value, oldValue) => {
     if (!value || value === oldValue) return
 
-    await chatStore.initializeChat(+value)
-    // nextTick(scrollToBottom)
-  }
+    // 1️⃣ Снимаем старый scrollListener
+    if (chatBoxRef.value && scrollListenerAttached) {
+      chatBoxRef.value.removeEventListener('scroll', onScroll)
+      scrollListenerAttached = false
+    }
+
+    // 2️⃣ Инициализация новой комнаты (с полным сбросом)
+    await chatStore.initializeChat(+value, true)
+
+    // 3️⃣ Добавляем scrollListener заново
+    if (chatBoxRef.value && !scrollListenerAttached) {
+      chatBoxRef.value.addEventListener('scroll', onScroll)
+      scrollListenerAttached = true
+    }
+
+    // 4️⃣ Скроллим вниз после загрузки сообщений
+    scrollToBottom(false)
+  },
+  { immediate: true } // сразу при монтировании, если streamer.value уже выбран
 )
 
 onMounted(async () => {

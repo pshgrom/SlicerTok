@@ -77,6 +77,7 @@ export const useChatStore = defineStore('chat', () => {
       chatSocketStore.unsubscribeChannel(`chat.${roomId.value}`)
     }
 
+    // Новый чат — сбрасываем состояние
     roomId.value = null
     messages.value = []
     dateFrom.value = undefined
@@ -90,22 +91,25 @@ export const useChatStore = defineStore('chat', () => {
     return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
   }
 
-  const initializeChat = async (streamerId?: number) => {
+  const initializeChat = async (streamerId?: number, reset = true) => {
     try {
-      // 1) Полностью сбрасываем чат
-      resetChatBeforeInit()
+      if (reset) {
+        // Полный сброс только если нужно (новый стример)
+        resetChatBeforeInit()
+      }
 
-      // 2) Получаем id комнаты
+      // Получаем id комнаты для стримера
       const { data } = await getChatQuery(streamerId)
-
       if (data.code !== 200) return
 
       roomId.value = data.data.chat_room_id
 
-      // 3) Загружаем первые сообщения
-      await getMessages(false)
+      // Загружаем первые сообщения только если reset
+      if (reset) {
+        await getMessages(false)
+      }
 
-      // 4) Подписываемся на websocket НОВОЙ комнаты
+      // Подписка на WebSocket новой комнаты
       if (roomId.value) {
         chatSocketStore.subscribeChannel(`chat.${roomId.value}`)
       }
@@ -122,13 +126,16 @@ export const useChatStore = defineStore('chat', () => {
     if (!roomId.value) return
     if (isLoadMore && (!hasMore.value || isLoading.value)) return
 
-    if (!isLoadMore) {
-      isLoading.value = true
+    isLoading.value = true
+
+    if (isLoadMore) {
+      page.value += 1
+    } else {
+      // Если это не подгрузка, а инициализация новой комнаты, сбрасываем page/hasMore/messages
       page.value = 1
       hasMore.value = true
-    } else {
-      isLoading.value = true
-      page.value += 1
+      messages.value = []
+      dateFrom.value = undefined
     }
 
     try {
