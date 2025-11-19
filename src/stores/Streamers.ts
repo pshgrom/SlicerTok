@@ -22,7 +22,7 @@ export const useStreamers = defineStore('streamersStore', () => {
           const { id: value, name: label, key } = el ?? {}
           return {
             label,
-            value,
+            value: value.toString(),
             key
           }
         })
