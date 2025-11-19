@@ -11,7 +11,7 @@
             v-model="videoFields.blogger"
             :rules="[videoRules.required]"
             :hide-details="false"
-            label="Блоггер"
+            label="Стример"
             class="mb-4"
             :items="streamerStore.streamerList"
           >

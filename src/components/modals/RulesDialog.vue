@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" class="custom-modal" :max-width="blogger ? '708px' : '538px'">
+  <v-dialog v-model="dialog" class="custom-modal" :max-width="streamer ? '708px' : '538px'">
     <v-card class="custom-rules">
       <v-card-title>
         <span class="headline">Правила загрузки</span>
@@ -7,10 +7,11 @@
       </v-card-title>
       <v-card-text>
         <VCustomSelect
-          v-model="blogger"
+          v-model="streamer"
+          :clearable="false"
           style="max-width: 500px"
           :rules="[videoRules.required]"
-          label="Блоггер *"
+          label="Стример *"
           class="mb-4 mt-2"
           :items="streamerStore.streamerList"
         >
@@ -1008,7 +1009,7 @@
           <p>Список вопросов будет обновляться...</p>
         </div>
       </v-card-text>
-      <v-card-actions v-if="blogger">
+      <v-card-actions v-if="streamer">
         <v-spacer />
         <VCusomButton :custom-class="['light', 'avg']" @click="closeModal"> Закрыть </VCusomButton>
       </v-card-actions>
@@ -1017,7 +1018,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
@@ -1034,10 +1035,17 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 const streamerStore = useStreamers()
 
-const blogger = ref(null)
+const streamer = computed({
+  get() {
+    return streamerStore.streamer
+  },
+  set(val) {
+    streamerStore.setStreamer(val)
+  }
+})
 
 const currentStreamer = computed(
-  () => streamerStore.streamerList?.find((el) => el.value === blogger.value)?.key
+  () => streamerStore.streamerList?.find((el) => el.value === streamer.value)?.key
 )
 
 const dialog = computed({
