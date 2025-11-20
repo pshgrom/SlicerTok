@@ -7,13 +7,13 @@ import {
   loginConfirmationQuery,
   loginUser
 } from '@/api/auth'
-import { ROLES } from '@/constants/roles'
 import type { IAuth, IAuthByPhone, IAuthConfirmation, LoginResult } from '@/interfaces/Auth'
 import { useError } from '@/stores/Errors'
 
 export const useAuth = defineStore('authStore', () => {
   const token = ref<string | null>(localStorage.getItem('authToken') || null)
-  const role = ref<string>(localStorage.getItem('role') || ROLES.SLICER)
+  // const role = ref<string>(localStorage.getItem('role') || ROLES.SLICER)
+  const role = ref<null | string>(localStorage.getItem('role') || null)
   const errorStore = useError()
   const phone = ref('')
   const currentCountryCode = ref<number | null>(null)
@@ -83,6 +83,7 @@ export const useAuth = defineStore('authStore', () => {
 
   const logout = () => {
     token.value = null
+    role.value = null
     localStorage.removeItem('authToken')
     localStorage.removeItem('role')
     errorStore.setErrors('Вы вышли из системы', 'info')

@@ -7,12 +7,14 @@ import { createApp } from 'vue'
 
 // import VueTheMask from 'vue-the-mask/dist/vue-the-mask.js'
 import SvgIcon from '@/components/base/SvgIcon.vue'
+import reveal from '@/directives/reveal'
 import vuetify from '@/plugins/vuetify'
 
 import App from './App.vue'
 import router from './router'
 
 createApp(App)
+  .directive('reveal', reveal)
   .component('SvgIcon', SvgIcon)
   .use(router)
   // .use(VueTheMask)

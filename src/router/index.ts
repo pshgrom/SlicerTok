@@ -10,6 +10,7 @@ import { ROLES, type RoleType } from '@/constants/roles'
 import { useLoader } from '@/stores/GlobalLoader.ts'
 import { useStreamers } from '@/stores/Streamers.ts'
 import AdminInfo from '@/views/AdminInfo.vue'
+import Landing from '@/views/Landing.vue'
 import LoginView from '@/views/LoginView.vue'
 import LoginViewAdmin from '@/views/LoginViewAdmin.vue'
 import SupportPage from '@/views/SupportPage.vue'
@@ -27,7 +28,9 @@ declare module 'vue-router' {
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/login'
+    name: 'Landing',
+    component: () => Landing,
+    meta: { showChat: false }
   },
   {
     path: '/login',

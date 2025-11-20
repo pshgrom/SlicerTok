@@ -6,7 +6,10 @@
       <v-container
         class="custom-container"
         fluid
-        :class="{ 'custom-container_slicer': isSlicer || insideSlicer }"
+        :class="{
+          'custom-container_slicer': isSlicer || insideSlicer,
+          'custom-container_none': landing
+        }"
       >
         <HeaderMain v-if="showContent || showForSlicer" />
         <div v-if="showChat" class="chat-user">
@@ -65,7 +68,7 @@ const { isMobile } = useDeviceDetection()
 
 const page = computed(() => router.currentRoute.value.name)
 
-const hideChatPages = ['Login', 'LoginAdmin']
+const hideChatPages = ['Login', 'LoginAdmin', 'Landing']
 
 const showContent = computed(() =>
   page.value ? !hideChatPages.includes(page.value as string) : false
@@ -114,6 +117,7 @@ const isSlicer = computed(() => authStore.role === 'slicer')
 const userName = computed(() => userInfoStore.userInfo?.profile?.name ?? '')
 
 const insideSlicer = computed(() => page.value === 'User')
+const landing = computed(() => page.value === 'Landing')
 
 const showForSlicer = computed(() => page.value === 'UserInfo')
 </script>

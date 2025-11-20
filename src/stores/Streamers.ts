@@ -11,6 +11,9 @@ export const useStreamers = defineStore('streamersStore', () => {
   const streamer = ref<number | string | null>(
     authStore.role === ROLES.SLICER ? localStorage.getItem('streamerChat') || null : null
   )
+  const streamerRules = ref<number | string | null>(
+    authStore.role === ROLES.SLICER ? localStorage.getItem('streamerRules') || null : null
+  )
   const streamersLoaded = ref(false)
 
   const getStreamerList = async () => {
@@ -40,11 +43,20 @@ export const useStreamers = defineStore('streamersStore', () => {
     }
   }
 
+  const setStreamerRules = async (value: number) => {
+    streamerRules.value = value
+    if (authStore.role === ROLES.SLICER) {
+      localStorage.setItem('streamerRules', value.toString())
+    }
+  }
+
   return {
     getStreamerList,
     streamersLoaded,
     streamerList,
     setStreamer,
-    streamer
+    streamer,
+    setStreamerRules,
+    streamerRules
   }
 })

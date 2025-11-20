@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" class="custom-modal" :max-width="streamer ? '708px' : '538px'">
+  <v-dialog v-model="dialog" class="custom-modal" :max-width="streamerRules ? '708px' : '538px'">
     <v-card class="custom-rules">
       <v-card-title>
         <span class="headline">Правила загрузки</span>
@@ -7,7 +7,7 @@
       </v-card-title>
       <v-card-text>
         <VCustomSelect
-          v-model="streamer"
+          v-model="streamerRules"
           :clearable="false"
           style="max-width: 500px"
           :rules="[videoRules.required]"
@@ -1009,7 +1009,7 @@
           <p>Список вопросов будет обновляться...</p>
         </div>
       </v-card-text>
-      <v-card-actions v-if="streamer">
+      <v-card-actions v-if="streamerRules">
         <v-spacer />
         <VCusomButton :custom-class="['light', 'avg']" @click="closeModal"> Закрыть </VCusomButton>
       </v-card-actions>
@@ -1035,17 +1035,17 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 const streamerStore = useStreamers()
 
-const streamer = computed({
+const streamerRules = computed({
   get() {
-    return streamerStore.streamer
+    return streamerStore.streamerRules
   },
   set(val) {
-    streamerStore.setStreamer(val)
+    streamerStore.setStreamerRules(val)
   }
 })
 
 const currentStreamer = computed(
-  () => streamerStore.streamerList?.find((el) => el.value === streamer.value)?.key
+  () => streamerStore.streamerList?.find((el) => el.value === streamerRules.value)?.key
 )
 
 const dialog = computed({
