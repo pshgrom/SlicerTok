@@ -29,7 +29,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'Landing',
-    component: () => Landing,
+    component: Landing,
     meta: { showChat: false }
   },
   {
