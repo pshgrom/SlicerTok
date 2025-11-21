@@ -90,7 +90,6 @@ export default defineConfig({
   build: {
     target: 'esnext',
     sourcemap: false,
-    cssMinify: 'lightningcss',
     cssCodeSplit: true,
     minify: 'esbuild',
     assetsInlineLimit: 2048,
