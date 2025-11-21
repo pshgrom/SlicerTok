@@ -126,8 +126,8 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
 
     &__title {
       font-size: 16px;
-      font-family: 'Manrope', sans-serif;
-      font-weight: 600;
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 500;
       margin-bottom: 5px;
       letter-spacing: -0.4px;
     }
