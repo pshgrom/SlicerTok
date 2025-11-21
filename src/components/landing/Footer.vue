@@ -9,6 +9,9 @@
           <div class="footer__policy">
             <p>Политика конфиденциальности</p>
             <p>Условия использования</p>
+            <p v-if="isMobile" class="footer__copyright">
+              {{ year }} SlicerTok. Все права защищены
+            </p>
           </div>
         </div>
 
@@ -26,11 +29,11 @@
 
         <div class="footer__right">
           <v-btn class="footer__btn" to="/login"> Войти </v-btn>
-          <p class="footer__copyright">{{ year }} SlicerTok. Все права защищены</p>
+          <p v-if="!isMobile" class="footer__copyright">{{ year }} SlicerTok. Все права защищены</p>
         </div>
       </div>
       <div class="footer__logo-big">
-        <SvgIcon name="logo-big" />
+        <img src="@/static/img/logo-big.png" alt="logo" />
       </div>
     </v-container>
   </footer>
@@ -38,8 +41,10 @@
 
 <script setup lang="ts">
 import SvgIcon from '@/components/base/SvgIcon.vue'
+import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 
 const year: number = new Date().getFullYear()
+const { isMobile } = useDeviceDetection()
 
 const scrollToSection = (id: string) => {
   const el = document.getElementById(id)
@@ -56,6 +61,17 @@ const scrollToSection = (id: string) => {
   padding-top: 18px;
   padding-bottom: 18px;
 
+  @media (max-width: 767px) {
+    padding-top: 65px;
+  }
+
+  .container {
+    @media (max-width: 767px) {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
   &__btn {
     height: 44px;
     width: 86px;
@@ -71,15 +87,25 @@ const scrollToSection = (id: string) => {
     box-shadow: none;
     margin-bottom: 53px;
     align-self: flex-end;
+
+    @media (max-width: 767px) {
+      position: relative;
+      top: -8px;
+    }
   }
 
   &__logo {
     margin-bottom: 50px;
 
+    @media (max-width: 767px) {
+      margin-bottom: 60px;
+    }
+
     &-big {
       margin-top: 29px;
       position: absolute;
       bottom: 0;
+      max-width: 1120px;
     }
   }
 
@@ -87,6 +113,10 @@ const scrollToSection = (id: string) => {
     display: flex;
     justify-content: space-between;
     margin-bottom: 134px;
+
+    @media (max-width: 767px) {
+      margin-bottom: 80px;
+    }
   }
 
   &__links {
@@ -96,6 +126,10 @@ const scrollToSection = (id: string) => {
     position: relative;
     top: 9px;
     height: 100%;
+
+    @media (max-width: 767px) {
+      display: none;
+    }
   }
 
   &__link {
@@ -111,6 +145,10 @@ const scrollToSection = (id: string) => {
     font-size: 11px;
     color: rgba(17, 17, 17, 0.5);
     letter-spacing: -0.2px;
+
+    @media (max-width: 767px) {
+      margin-top: 20px !important;
+    }
   }
 
   &__right {

@@ -94,6 +94,10 @@ const goHome = () => {
     height: 100%;
     align-items: center;
 
+    @media (max-width: 767px) {
+      display: none;
+    }
+
     &__link {
       color: rgba(0, 0, 0, 0.64);
       font-family: 'Manrope', sans-serif;

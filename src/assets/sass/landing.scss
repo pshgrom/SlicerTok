@@ -5,6 +5,10 @@
   color: rgba(17, 17, 17, 1);
   background: #fff;
   padding: 0 8px;
+
+  @media (max-width: 767px) {
+    padding: 0 16px;
+  }
 }
 
 h1, h2 {
@@ -14,6 +18,11 @@ h1, h2 {
   font-weight: 700;
   color: rgba(17, 17, 17, 1);
   margin-bottom: 20px;
+
+  @media (max-width: 767px) {
+    font-size: 28px;
+    line-height: 140%;
+  }
 
   span {
     display: block;

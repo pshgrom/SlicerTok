@@ -34,6 +34,11 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
   background-position-x: 50%;
   background-position-y: 50%;
 
+  @media (max-width: 767px) {
+    padding-top: 46px;
+    padding-bottom: 53px;
+  }
+
   &__btn {
     height: 62px;
     background-color: #fff;

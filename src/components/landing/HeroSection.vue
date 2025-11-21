@@ -24,7 +24,9 @@
           <SvgIcon name="arrow-top" />
           Стать клипмейкером
         </v-btn>
-        <v-btn class="hero__btn hero__btn--dark"><SvgIcon name="video" />Как это работает</v-btn>
+        <v-btn class="hero__btn hero__btn--dark" @click.prevent="scrollToSection('how')"
+          ><SvgIcon name="video" />Как это работает</v-btn
+        >
       </div>
 
       <div class="hero-stats">
@@ -49,6 +51,13 @@
 
 <script setup lang="ts">
 import SvgIcon from '@/components/base/SvgIcon.vue'
+
+const scrollToSection = (id: string) => {
+  const el = document.getElementById(id)
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth' })
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -64,10 +73,27 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
     display: flex;
     justify-content: center;
     gap: 4px;
-    margin-bottom: 7px;
+    margin-bottom: 6px;
 
     :deep(button) {
       box-shadow: none;
+    }
+  }
+
+  @media (max-width: 767px) {
+    padding-top: 57px;
+    padding-bottom: 56px;
+  }
+
+  &__social {
+    @media (max-width: 767px) {
+      margin-bottom: 6px;
+    }
+  }
+
+  &__title {
+    @media (max-width: 767px) {
+      margin-bottom: 12px;
     }
   }
 
@@ -91,10 +117,18 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
     &--dark {
       background: rgba(17, 17, 17, 1);
     }
+
+    @media (max-width: 767px) {
+      width: 245px;
+    }
   }
 
   &__subtitle {
     margin-bottom: 31px;
+
+    @media (max-width: 767px) {
+      margin-bottom: 20px;
+    }
   }
 
   &__actions {
@@ -102,6 +136,12 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
     justify-content: center;
     gap: 8px;
     margin-bottom: 80px;
+
+    @media (max-width: 767px) {
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 70px;
+    }
   }
 }
 
@@ -109,6 +149,11 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
   display: flex;
   justify-content: center;
   gap: 10px;
+
+  @media (max-width: 767px) {
+    gap: 4px;
+    justify-content: space-between;
+  }
 
   &__item {
     max-width: 150px;
@@ -127,6 +172,15 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
       font-size: 12px;
       line-height: 132%;
       text-align: center;
+    }
+
+    @media (max-width: 767px) {
+      max-width: none;
+      min-width: auto;
+
+      h3 {
+        font-size: 20px;
+      }
     }
   }
 }

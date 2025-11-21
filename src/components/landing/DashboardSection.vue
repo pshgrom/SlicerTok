@@ -62,11 +62,27 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
   background-position-x: 80%;
   background-position-y: -150%;
 
+  .container {
+    @media (max-width: 767px) {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  @media (max-width: 767px) {
+    background-image: none;
+    padding-top: 97px;
+  }
+
   &__title {
     margin-bottom: 12px;
 
     span {
       display: block;
+
+      @media (max-width: 767px) {
+        display: inline;
+      }
     }
   }
 
@@ -78,14 +94,26 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
     display: flex;
     align-items: center;
     gap: 20px;
+
+    @media (max-width: 767px) {
+      flex-direction: column;
+    }
   }
 
   &__left {
     max-width: 550px;
+
+    @media (max-width: 767px) {
+      max-width: none;
+    }
   }
 
   &__img {
     max-width: 550px;
+
+    @media (max-width: 767px) {
+      max-width: none;
+    }
   }
 
   &-item {

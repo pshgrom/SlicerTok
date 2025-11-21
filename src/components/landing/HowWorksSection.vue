@@ -36,13 +36,33 @@
   padding-top: 103px;
   padding-bottom: 125px;
 
+  @media (max-width: 767px) {
+    padding-top: 118px;
+    padding-bottom: 120px;
+  }
+
+  .container {
+    @media (max-width: 767px) {
+      padding: 0;
+    }
+  }
+
   &__title {
     text-align: center;
     margin-bottom: 5px;
+
+    @media (max-width: 767px) {
+      margin-bottom: 8px;
+    }
   }
+
   &__subtitle {
     text-align: center;
     margin-bottom: 58px;
+
+    @media (max-width: 767px) {
+      margin-bottom: 23px;
+    }
   }
 }
 
@@ -51,6 +71,10 @@
   justify-content: center;
   gap: 20px;
   flex-wrap: wrap;
+
+  @media (max-width: 767px) {
+    gap: 12px;
+  }
 }
 
 .how-step {

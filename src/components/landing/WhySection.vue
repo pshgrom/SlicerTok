@@ -64,6 +64,11 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
   padding-bottom: 81px;
   border-radius: 24px;
 
+  @media (max-width: 767px) {
+    padding-top: 28px;
+    padding-bottom: 0;
+  }
+
   &__title {
     text-align: center;
     margin-bottom: 10px;
@@ -72,12 +77,21 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
   &__subtitle {
     text-align: center;
     margin-bottom: 62px;
+
+    @media (max-width: 767px) {
+      margin-bottom: 35px;
+    }
   }
 
   &__grid {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+    justify-content: center;
+
+    @media (max-width: 767px) {
+      gap: 8px;
+    }
   }
 
   &-item {
@@ -87,6 +101,10 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
     border-radius: 24px;
     background: #fff;
     box-shadow: none;
+
+    @media (max-width: 767px) {
+      height: auto;
+    }
 
     &__icon {
       margin-bottom: 40px;
