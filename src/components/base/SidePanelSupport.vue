@@ -57,8 +57,14 @@
       </v-card>
       <v-form ref="formRef">
         <v-row no-gutters class="custom-modal__row flex-nowrap">
-          <template v-for="(group, groupName) in currentItem.status_moderation" :key="groupName">
-            <v-col v-if="groupName === 'group_a' || groupName === 'group_b'" style="margin: 0 2px">
+          <template
+            v-for="(group, groupName) in currentItem.status_moderation_admins"
+            :key="groupName"
+          >
+            <v-col
+              v-if="groupName === 'group_a_current' || groupName === 'group_b_current'"
+              style="margin: 0 2px"
+            >
               <v-card
                 class="info-admin info-admin_dialog"
                 variant="outlined"
@@ -83,7 +89,7 @@
                     </div>
                   </div>
                   <v-menu
-                    v-if="group.rules.length"
+                    v-if="group.rules?.length"
                     location="bottom"
                     open-on-hover
                     :close-on-content-click="false"
@@ -219,24 +225,24 @@ const allStatuses = [
 ]
 
 const currentStatus = computed({
-  get: () => currentItem.value?.status_moderation_support?.status || '',
-  set: (val) => (currentItem.value.status_moderation_support.status = val)
+  get: () => currentItem.value?.status_moderation_support?.support?.status || '',
+  set: (val) => (currentItem.value.status_moderation_support.support.status = val)
 })
 
 const currentNumberViews = computed({
-  get: () => currentItem.value?.status_moderation_support?.number_views || '',
-  set: (val) => (currentItem.value.status_moderation_support.number_views = val)
+  get: () => currentItem.value?.status_moderation_support?.support?.number_views_moderation || '',
+  set: (val) => (currentItem.value.status_moderation_support.support.number_views_moderation = val)
 })
 
 const currentCoefficient = computed({
   get: () => {
     return (
-      currentItem.value?.status_moderation_support?.coefficient?.id ||
-      currentItem.value?.status_moderation_support?.coefficient ||
+      currentItem.value?.status_moderation_support?.support?.coefficient?.id ||
+      currentItem.value?.status_moderation_support?.support.coefficient ||
       ''
     )
   },
-  set: (val) => (currentItem.value.status_moderation_support.coefficient = val)
+  set: (val) => (currentItem.value.status_moderation_support.support.coefficient = val)
 })
 
 const currentItem = computed({
@@ -249,8 +255,8 @@ const showActions = computed(() => !sameViews.value || !sameCoeffs.value || !sam
 
 const sameStatuses = computed(() => {
   if (Object.keys(currentItem.value).length) {
-    const values = Object.keys(currentItem.value?.status_moderation)?.map(
-      (item) => currentItem.value.status_moderation[item].status
+    const values = Object.keys(currentItem.value?.status_moderation_admins)?.map(
+      (item) => currentItem.value.status_moderation_admins[item].status
     )
 
     const firstValue = values[0]
@@ -266,9 +272,8 @@ const sameStatuses = computed(() => {
 
 const sameViews = computed(() => {
   if (Object.keys(currentItem.value).length) {
-    const values = Object.keys(currentItem.value.status_moderation)?.map(
-      (item) => currentItem.value.status_moderation[item].number_views_moderation
-      // (item) => 5
+    const values = Object.keys(currentItem.value.status_moderation_admins)?.map(
+      (item) => currentItem.value.status_moderation_admins[item].number_views_moderation
     )
     const firstValue = values[0]
     return values.every((value) => value === firstValue)
@@ -278,9 +283,8 @@ const sameViews = computed(() => {
 
 const sameCoeffs = computed(() => {
   if (Object.keys(currentItem.value).length) {
-    const values = Object.keys(currentItem.value.status_moderation).map(
-      (item) => currentItem.value.status_moderation[item].coefficient?.rate
-      // (item) => 1
+    const values = Object.keys(currentItem.value.status_moderation_admins).map(
+      (item) => currentItem.value.status_moderation_admins[item].coefficient?.rate
     )
     const firstValue = values[0]
     return values.every((value) => value === firstValue)
@@ -310,7 +314,7 @@ const change = async () => {
 
     return
   } else {
-    const { status } = currentItem.value?.status_moderation_support ?? {}
+    const { status } = currentItem.value?.status_moderation_support?.support ?? {}
     const data = {
       id: props.currentItem.id,
       status: !sameStatuses.value ? status : undefined,
@@ -354,9 +358,9 @@ const goToUser = async () => {
 
 const formatLabel = (label: string) => {
   switch (label) {
-    case 'group_a':
+    case 'group_a_current':
       return 'Админ группы А'
-    case 'group_b':
+    case 'group_b_current':
       return 'Админ группы B'
   }
 }

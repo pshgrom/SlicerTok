@@ -13,9 +13,9 @@
       <v-btn icon="mdi-close" variant="text" @click="activePanelVal = false" />
     </v-card-title>
     <v-card-text>
-      <v-form ref="formRef">
+      <v-form v-if="currentItem.status_moderation_admin?.current" ref="formRef">
         <VCustomSelect
-          v-model="currentItem.status"
+          v-model="currentItem.status_moderation_admin.current.status"
           :items="allStatuses"
           class="mt-2 mb-6"
           :label="'Выберите статус'"
@@ -26,7 +26,10 @@
             </v-list-item>
           </template>
         </VCustomSelect>
-        <div v-show="currentItem.status === 'rejected'" class="mb-4">
+        <div
+          v-show="currentItem.status_moderation_admin.current.status === 'rejected'"
+          class="mb-4"
+        >
           <transition name="fade">
             <div v-if="showError && !selectedTasks.length" class="error-message">
               Необходимо выбрать хотя бы одну причину
@@ -56,7 +59,7 @@
           </div>
         </div>
         <ViewsSelectField
-          v-model="currentItem.number_views_moderation"
+          v-model="currentItem.status_moderation_admin.current.number_views_moderation"
           label="Количество просмотров по факту"
           :rules="[videoRules.quantityViews, videoRules.required, videoRules.quantityViewsMin]"
         />
@@ -68,7 +71,7 @@
           </template>
         </VCustomSelect>
         <v-textarea
-          v-model.trim="currentItem.status_comment"
+          v-model.trim="currentItem.status_moderation_admin.current.status_comment"
           variant="outlined"
           class="mb-4"
           label="Комментарий..."
@@ -87,8 +90,12 @@
           Отмена
         </VCusomButton>
         <VCusomButton
+          v-if="currentItem.status_moderation_admin?.current"
           :custom-class="['dark', 'avg']"
-          :disabled="currentItem.status === 'todo' || !currentItem.status"
+          :disabled="
+            currentItem.status_moderation_admin.current.status === 'todo' ||
+            !currentItem.status_moderation_admin.current.status
+          "
           @click="change"
         >
           Сохранить
@@ -186,19 +193,19 @@ const resetForm = () => {
 
 const setCoeff = computed({
   get: () => {
-    return currentItem.value?.coefficient?.id || null
+    return currentItem.value?.status_moderation_admin?.current?.coefficient?.id || null
   },
   set: (value) => {
     if (currentItem.value && value) {
       const selectedCoeff = coeffs.value.find((coeff) => coeff.value === value)
       if (selectedCoeff) {
-        currentItem.value.coefficient = {
+        currentItem.value.status_moderation_admin.current.coefficient = {
           ...selectedCoeff,
           id: selectedCoeff.value
         }
       }
     } else if (currentItem.value && !value) {
-      currentItem.value.coefficient = {
+      currentItem.value.status_moderation_admin.current.coefficient = {
         label: '',
         value: '',
         id: ''
@@ -219,10 +226,12 @@ const change = async () => {
         block: 'center'
       })
     }
-
     return
   } else {
-    if (currentItem.value.status === 'rejected' && !selectedTasks.value.length) {
+    if (
+      currentItem.value.status_moderation_admin.current === 'rejected' &&
+      !selectedTasks.value.length
+    ) {
       showError.value = true
       return
     }
@@ -235,14 +244,17 @@ const change = async () => {
 const onInput = (val) => {
   const rawValue = typeof val === 'string' ? val : val?.target?.value || ''
   const digitsOnly = rawValue.replace(/\D/g, '')
-  currentItem.value.number_views_moderation = digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+  currentItem.value.status_moderation_admin.number_views_moderation = digitsOnly.replace(
+    /\B(?=(\d{3})+(?!\d))/g,
+    ' '
+  )
 }
 
 watch(
-  () => currentItem.value?.rules,
+  () => currentItem.value?.status_moderation_admin?.current?.rules,
   (rules) => {
     if (rules?.length) {
-      selectedTasks.value = rules.map((r) => r.key)
+      selectedTasks.value = rules.map((r) => r)
     } else {
       selectedTasks.value = []
     }
@@ -250,11 +262,10 @@ watch(
 )
 
 watch(
-  () => currentItem.value.number_views_moderation,
+  () => currentItem.value?.status_moderation_admin?.number_views_moderation,
   (newVal) => {
     onInput(newVal)
-  },
-  { immediate: false }
+  }
 )
 
 watch(
@@ -266,7 +277,8 @@ watch(
 )
 
 onMounted(() => {
-  onInput(currentItem.value.number_views_moderation)
+  if (currentItem.value?.status_moderation_admin?.number_views_moderation)
+    onInput(currentItem.value.status_moderation_admin.number_views_moderation)
 })
 
 const activePanelVal = computed({

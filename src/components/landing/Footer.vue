@@ -6,30 +6,16 @@
           <div class="footer__logo">
             <SvgIcon name="logo" />
           </div>
+        </div>
+        <p v-if="!isMobile" class="footer__copyright">{{ year }} SlicerTok. Все права защищены</p>
+        <div class="footer__right">
           <div class="footer__policy">
-            <p>Политика конфиденциальности</p>
-            <p>Условия использования</p>
+            <a href="#">Политика конфиденциальности</a>
+            <a href="#">Условия использования</a>
             <p v-if="isMobile" class="footer__copyright">
               {{ year }} SlicerTok. Все права защищены
             </p>
           </div>
-        </div>
-
-        <div class="footer__links">
-          <a href="#how" class="footer__link" @click.prevent="scrollToSection('how')"
-            >Как работает</a
-          >
-          <a href="#why" class="footer__link" @click.prevent="scrollToSection('why')"
-            >Почему SlicerTok</a
-          >
-          <a href="#join" class="footer__link" @click.prevent="scrollToSection('join')"
-            >Присоединяйся</a
-          >
-        </div>
-
-        <div class="footer__right">
-          <v-btn class="footer__btn" to="/login"> Войти </v-btn>
-          <p v-if="!isMobile" class="footer__copyright">{{ year }} SlicerTok. Все права защищены</p>
         </div>
       </div>
       <div class="footer__logo-big">
@@ -45,24 +31,17 @@ import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 
 const year: number = new Date().getFullYear()
 const { isMobile } = useDeviceDetection()
-
-const scrollToSection = (id: string) => {
-  const el = document.getElementById(id)
-  if (el) {
-    el.scrollIntoView({ behavior: 'smooth' })
-  }
-}
 </script>
 
 <style scoped lang="scss">
 .footer {
   position: relative;
   background: #fff;
-  padding-top: 18px;
+  padding-top: 4px;
   padding-bottom: 18px;
 
   @media (max-width: 767px) {
-    padding-top: 65px;
+    padding-top: 0;
   }
 
   .container {
@@ -72,33 +51,11 @@ const scrollToSection = (id: string) => {
     }
   }
 
-  &__btn {
-    height: 44px;
-    width: 86px;
-    background-color: rgba(17, 17, 17, 1);
-    font-family: 'Manrope', sans-serif;
-    font-weight: 600;
-    font-size: 14px;
-    border-radius: 14px;
-    text-transform: none;
-    letter-spacing: -0.2px;
-    padding: 0 22px;
-    color: #fff;
-    box-shadow: none;
-    margin-bottom: 53px;
-    align-self: flex-end;
-
-    @media (max-width: 767px) {
-      position: relative;
-      top: -8px;
-    }
-  }
-
   &__logo {
     margin-bottom: 50px;
 
     @media (max-width: 767px) {
-      margin-bottom: 60px;
+      margin-bottom: 25px;
     }
 
     &-big {
@@ -112,39 +69,21 @@ const scrollToSection = (id: string) => {
   &__content {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 134px;
+    margin-bottom: 73px;
 
     @media (max-width: 767px) {
-      margin-bottom: 80px;
+      margin-bottom: 64px;
+      flex-direction: column;
     }
-  }
-
-  &__links {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-    position: relative;
-    top: 9px;
-    height: 100%;
-
-    @media (max-width: 767px) {
-      display: none;
-    }
-  }
-
-  &__link {
-    color: rgba(0, 0, 0, 0.64);
-    font-family: 'Manrope', sans-serif;
-    font-weight: 600;
-    font-size: 14px;
-    display: block;
-    letter-spacing: -0.4px;
   }
 
   &__copyright {
-    font-size: 11px;
+    font-size: 12px;
     color: rgba(17, 17, 17, 0.5);
     letter-spacing: -0.2px;
+    height: 100%;
+    position: relative;
+    top: 6px;
 
     @media (max-width: 767px) {
       margin-top: 20px !important;
@@ -157,11 +96,16 @@ const scrollToSection = (id: string) => {
   }
 
   &__policy {
-    font-size: 11px;
-    color: rgba(17, 17, 17, 0.4);
+    a {
+      display: block;
+      color: rgba(126, 126, 126, 1);
+      text-decoration: underline;
+      font-size: 12px;
+      letter-spacing: -0.2px;
+    }
 
-    p + p {
-      margin-top: 4px;
+    a + a {
+      margin-top: 7px;
     }
   }
 }

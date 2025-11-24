@@ -2,31 +2,26 @@
   <section id="hero" v-reveal class="hero">
     <v-container class="container">
       <div class="hero-social">
-        <v-btn icon size="small">
-          <SvgIcon name="tiktok" scale="1.5" />
-        </v-btn>
-        <v-btn icon size="small">
-          <SvgIcon name="shorts" scale="1.5" />
-        </v-btn>
-        <v-btn icon size="small">
-          <SvgIcon name="instagram" scale="1.4" />
-        </v-btn>
+        <div class="hero-social__item"><SvgIcon name="tiktok" scale="1.4" /></div>
+        <div class="hero-social__item"><SvgIcon name="shorts" scale="1.5" /></div>
+        <div class="hero-social__item"><SvgIcon name="instagram" scale="1.4" /></div>
       </div>
       <h1 class="hero__title">Клипмейкеры и блогеры <span>растут вместе</span></h1>
 
       <p class="hero__subtitle">
-        <span>Платформа, где блогеры и клипмейкеры создают вирусный</span>
-        <span> контент вместе. Загружай, попадай в ТОП и получай оплату.</span>
+        <span>Платформа, где блогеры и клипмейкеры создают вирусный контент вместе.</span>
+        <span> Загружай, попадай в ТОП и получай оплату.</span>
       </p>
 
       <div class="hero__actions">
         <v-btn class="hero__btn" to="/login">
-          <SvgIcon name="arrow-top" />
           Стать клипмейкером
+          <SvgIcon name="arrow-top" />
         </v-btn>
         <v-btn class="hero__btn hero__btn--dark" @click.prevent="scrollToSection('how')"
-          ><SvgIcon name="video" />Как это работает</v-btn
-        >
+          >Как это работает
+          <SvgIcon name="video" />
+        </v-btn>
       </div>
 
       <div class="hero-stats">
@@ -66,23 +61,33 @@ const scrollToSection = (id: string) => {
   background-size: cover;
   text-align: center;
   border-radius: 24px;
-  padding-bottom: 65px;
-  padding-top: 65px;
+  padding-bottom: 100px;
+  padding-top: 103px;
 
   &-social {
     display: flex;
     justify-content: center;
     gap: 4px;
-    margin-bottom: 6px;
+    margin-bottom: 16px;
 
     :deep(button) {
       box-shadow: none;
     }
+
+    &__item {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 
   @media (max-width: 767px) {
-    padding-top: 57px;
-    padding-bottom: 56px;
+    padding-top: 82px;
+    padding-bottom: 82px;
   }
 
   &__social {
@@ -92,13 +97,14 @@ const scrollToSection = (id: string) => {
   }
 
   &__title {
+    margin-bottom: 9px;
     @media (max-width: 767px) {
       margin-bottom: 12px;
     }
   }
 
   &__btn {
-    height: 62px;
+    height: 64px;
     background-color: rgba(169, 55, 244, 1);
     font-family: 'Manrope', sans-serif;
     font-weight: 600;
@@ -111,7 +117,7 @@ const scrollToSection = (id: string) => {
     box-shadow: none;
 
     :deep(.svg-icon) {
-      margin-right: 10px;
+      margin-left: 12px;
     }
 
     &--dark {
@@ -125,22 +131,18 @@ const scrollToSection = (id: string) => {
 
   &__subtitle {
     margin-bottom: 31px;
-
-    @media (max-width: 767px) {
-      margin-bottom: 20px;
-    }
   }
 
   &__actions {
     display: flex;
     justify-content: center;
     gap: 8px;
-    margin-bottom: 80px;
+    margin-bottom: 52px;
 
     @media (max-width: 767px) {
       flex-direction: column;
       align-items: center;
-      margin-bottom: 70px;
+      margin-bottom: 51px;
     }
   }
 }
@@ -148,7 +150,7 @@ const scrollToSection = (id: string) => {
 .hero-stats {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 4px;
 
   @media (max-width: 767px) {
     gap: 4px;
@@ -161,11 +163,12 @@ const scrollToSection = (id: string) => {
     margin-bottom: 2px;
 
     h3 {
-      color: rgba(169, 55, 244, 1);
+      color: rgba(17, 17, 17, 1);
       font-size: 22px;
       line-height: 160%;
       font-family: 'Unbounded', sans-serif;
       font-weight: 500;
+      margin-bottom: 4px;
     }
 
     p {

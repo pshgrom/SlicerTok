@@ -56,7 +56,7 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
 
 <style scoped lang="scss">
 .dashboard {
-  padding-top: 103px;
+  padding-top: 95px;
   padding-bottom: 103px;
   background-image: url('@/static/img/ellipse.png');
   background-position-x: 80%;
@@ -71,7 +71,8 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
 
   @media (max-width: 767px) {
     background-image: none;
-    padding-top: 97px;
+    padding-top: 106px;
+    padding-bottom: 90px;
   }
 
   &__title {
@@ -87,7 +88,7 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
   }
 
   &__subtitle {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
   }
 
   &__content {
@@ -102,6 +103,8 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
 
   &__left {
     max-width: 550px;
+    position: relative;
+    top: -3px;
 
     @media (max-width: 767px) {
       max-width: none;
@@ -109,7 +112,7 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
   }
 
   &__img {
-    max-width: 550px;
+    max-width: 560px;
 
     @media (max-width: 767px) {
       max-width: none;
@@ -121,7 +124,7 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
     gap: 16px;
 
     & + .dashboard-item {
-      margin-top: 22px;
+      margin-top: 17px;
     }
 
     &__title {

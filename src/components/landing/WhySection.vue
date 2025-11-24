@@ -60,13 +60,13 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
 .why {
   background-image: url('@/static/img/why-bg.png');
   background-size: cover;
-  padding-top: 84px;
-  padding-bottom: 81px;
+  padding-top: 102px;
+  padding-bottom: 103px;
   border-radius: 24px;
 
   @media (max-width: 767px) {
-    padding-top: 28px;
-    padding-bottom: 0;
+    padding-top: 63px;
+    padding-bottom: 62px;
   }
 
   &__title {
@@ -76,11 +76,7 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
 
   &__subtitle {
     text-align: center;
-    margin-bottom: 62px;
-
-    @media (max-width: 767px) {
-      margin-bottom: 35px;
-    }
+    margin-bottom: 32px;
   }
 
   &__grid {

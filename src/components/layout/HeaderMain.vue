@@ -48,6 +48,7 @@ const logout = () => {
   } else {
     router.push({ name: 'LoginAdmin' })
   }
+  authStore.role = null
 }
 
 const goHome = () => {

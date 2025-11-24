@@ -186,9 +186,10 @@ const changePage = (page: number) => {
 const cleanNumber = (str: string) => str.replace(/\D/g, '')
 
 const changeState = async (item, selectedTasks) => {
-  const { id, status, status_comment, number_views_moderation, coefficient } = item
+  const { status, status_comment, number_views_moderation, coefficient } =
+    item.status_moderation_admin.current ?? {}
   const data = {
-    id,
+    id: item.id,
     status,
     status_comment,
     number_views_moderation: cleanNumber(number_views_moderation),

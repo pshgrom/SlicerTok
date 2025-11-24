@@ -53,30 +53,30 @@
       </div>
       <div v-if="showNumberViews(item)" class="custom-table-views">
         <SvgIcon name="show" />
-        <div>{{ formatNumber(item.number_views_moderation) }}</div>
+        <div>{{ formatNumber(item.status_moderation_admin.current.number_views_moderation) }}</div>
       </div>
     </template>
     <template #[`item.status`]="{ item }">
       <div class="d-flex align-center ga-2">
         <div
-          v-if="item.status"
+          v-if="item.status_moderation_admin.current.status"
           class="custom-table-chip"
           :style="{
-            'background-color': getStatusColor(item.status),
-            color: getColor(item.status)
+            'background-color': getStatusColor(item.status_moderation_admin.current.status),
+            color: getColor(item.status_moderation_admin.current.status)
           }"
         >
           <div class="custom-table-chip__icon">
-            <SvgIcon :name="getIcon(item.status)" />
+            <SvgIcon :name="getIcon(item.status_moderation_admin.current.status)" />
           </div>
           <div class="custom-table-chip__status">
-            {{ getTextStatus(item.status) }}
+            {{ getTextStatus(item.status_moderation_admin.current.status) }}
           </div>
         </div>
         <v-tooltip text="Было переподано" location="bottom">
           <template #activator="{ props: activatorProps }">
             <VCusomButton
-              v-if="item.status_old?.length"
+              v-if="item.status_moderation_admin.old?.length"
               v-bind="activatorProps"
               :custom-class="['light', 'avg', 'only-icon']"
               @click.stop="openHistory(item)"
@@ -88,7 +88,7 @@
       </div>
     </template>
     <template #[`item.status_comment`]="{ item }">
-      <p>{{ item.status_comment ? item.status_comment : '-' }}</p>
+      <p>{{ item.status_moderation_admin?.current?.status_comment || '-' }}</p>
     </template>
     <template #[`item.is_bonus`]="{ item }">
       <SvgIcon v-if="item.is_bonus" :name="'check'" />
@@ -137,8 +137,11 @@
             <VCusomButton
               v-bind="props"
               :custom-class="['dark', 'avg', 'only-icon']"
-              :disabled="item.status === 'todo' || !item.status"
-              @click.stop="finishCheck(item.id, item.status)"
+              :disabled="
+                item.status_moderation_admin.current.status === 'todo' ||
+                !item.status_moderation_admin.current.status
+              "
+              @click.stop="finishCheck(item.id, item.status_moderation_admin.current.status)"
             >
               <SvgIcon name="check-check" />
             </VCusomButton>
@@ -236,9 +239,9 @@ const rowProps = (item) => ({
 
 const showNumberViews = (item) => {
   return (
-    item.number_views_moderation &&
-    item.number_views !== item.number_views_moderation &&
-    item.number_views_moderation !== '0'
+    item.status_moderation_admin.current.number_views_moderation &&
+    item.number_views !== item.status_moderation_admin.current.number_views_moderation &&
+    item.status_moderation_admin.current.number_views_moderation !== '0'
   )
 }
 
@@ -258,7 +261,7 @@ watch(
 )
 
 const openHistory = (item) => {
-  itemHistory.value = item.status_old
+  itemHistory.value = item.status_moderation_admin.old
   idItemHistory.value = item.id
   showOldHistory.value = true
 }
@@ -308,7 +311,7 @@ const saveMark = async (mark: string) => {
 const showDialog = (item) => {
   currentItem.value = {
     ...item,
-    number_views_moderation: item.number_views_moderation ?? ''
+    number_views_moderation: item.status_moderation_admin.current.number_views_moderation ?? ''
   }
   dialog.value = true
 }

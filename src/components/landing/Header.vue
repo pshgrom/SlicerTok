@@ -1,5 +1,5 @@
 <template>
-  <header class="header-lp">
+  <header class="header-lp" :class="{ 'header-lp_scrolled': isScrolled }">
     <v-container class="container">
       <div class="header-lp__wrapper">
         <div class="header-lp__logo" @click="goHome()">
@@ -27,9 +27,16 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+
+const isScrolled = ref(false)
+
+const handleScroll = () => {
+  isScrolled.value = window.scrollY > 0
+}
 
 const scrollToSection = (id: string) => {
   const el = document.getElementById(id)
@@ -41,6 +48,14 @@ const scrollToSection = (id: string) => {
 const goHome = () => {
   router.push({ name: 'Landing' })
 }
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <style scoped lang="scss">
@@ -50,7 +65,11 @@ const goHome = () => {
   position: sticky;
   top: 0;
   z-index: 150;
-  border-bottom: 1px solid #f6f1f9;
+  border-bottom: 1px solid transparent;
+
+  &.header-lp_scrolled {
+    border-bottom-color: #f6f1f9;
+  }
 
   .container {
     height: 100%;

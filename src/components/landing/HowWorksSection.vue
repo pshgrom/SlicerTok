@@ -34,11 +34,11 @@
 <style scoped lang="scss">
 .how {
   padding-top: 103px;
-  padding-bottom: 125px;
+  padding-bottom: 104px;
 
   @media (max-width: 767px) {
     padding-top: 118px;
-    padding-bottom: 120px;
+    padding-bottom: 118px;
   }
 
   .container {
@@ -49,20 +49,12 @@
 
   &__title {
     text-align: center;
-    margin-bottom: 5px;
-
-    @media (max-width: 767px) {
-      margin-bottom: 8px;
-    }
+    margin-bottom: 10px;
   }
 
   &__subtitle {
     text-align: center;
-    margin-bottom: 58px;
-
-    @media (max-width: 767px) {
-      margin-bottom: 23px;
-    }
+    margin-bottom: 30px;
   }
 }
 
@@ -73,7 +65,7 @@
   flex-wrap: wrap;
 
   @media (max-width: 767px) {
-    gap: 12px;
+    gap: 6px;
   }
 }
 

@@ -21,7 +21,7 @@ const props = defineProps({
   tabs: {
     type: Array,
     default: () => [
-      { id: 'moderation', title: 'На модерации', count: 26 },
+      { id: 'moderation', title: 'На модерации', count: 0 },
       { id: 'verified', title: 'Проверенные', count: 0 }
     ]
   },

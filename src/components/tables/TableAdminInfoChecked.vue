@@ -28,34 +28,38 @@
         class="custom-table-views"
         :class="{
           'custom-table-views_cross':
-            item.number_views_moderation && item.number_views !== item.number_views_moderation
+            item.status_moderation_admin.current.number_views_moderation &&
+            item.number_views !== item.status_moderation_admin.current.number_views_moderation
         }"
       >
         <SvgIcon name="show" />
         <div>{{ formatNumber(item.number_views) }}</div>
       </div>
       <div
-        v-if="item.number_views_moderation && item.number_views !== item.number_views_moderation"
+        v-if="
+          item.status_moderation_admin.current.number_views_moderation &&
+          item.number_views !== item.status_moderation_admin.current.number_views_moderation
+        "
         class="custom-table-views"
       >
         <SvgIcon name="show" />
-        <div>{{ formatNumber(item.number_views_moderation) }}</div>
+        <div>{{ formatNumber(item.status_moderation_admin.current.number_views_moderation) }}</div>
       </div>
     </template>
     <template #[`item.status`]="{ item }">
       <div
-        v-if="item.status"
+        v-if="item.status_moderation_admin.current.status"
         class="custom-table-chip"
         :style="{
-          'background-color': getStatusColor(item.status),
-          color: getColor(item.status)
+          'background-color': getStatusColor(item.status_moderation_admin.current.status),
+          color: getColor(item.status_moderation_admin.current.status)
         }"
       >
         <div class="custom-table-chip__icon">
-          <SvgIcon :name="getIcon(item.status)" />
+          <SvgIcon :name="getIcon(item.status_moderation_admin.current.status)" />
         </div>
         <div class="custom-table-chip__status">
-          {{ getTextStatus(item.status) }}
+          {{ getTextStatus(item.status_moderation_admin.current.status) }}
         </div>
       </div>
     </template>
