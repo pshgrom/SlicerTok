@@ -101,8 +101,11 @@ onUnmounted(() => {
     padding: 0 22px;
     color: #fff;
     box-shadow: none;
-    margin-bottom: 53px;
     align-self: flex-end;
+
+    &:hover {
+      background: rgba(59, 59, 59, 1);
+    }
   }
 
   &-nav {
@@ -118,12 +121,17 @@ onUnmounted(() => {
     }
 
     &__link {
-      color: rgba(0, 0, 0, 0.64);
+      color: rgba(126, 126, 126, 1);
       font-family: 'Manrope', sans-serif;
       font-weight: 600;
       font-size: 14px;
       display: block;
       letter-spacing: -0.4px;
+      transition: color 0.2s ease-in;
+
+      &:hover {
+        color: rgba(17, 17, 17, 1);
+      }
     }
   }
 }

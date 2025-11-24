@@ -120,8 +120,16 @@ const scrollToSection = (id: string) => {
       margin-left: 12px;
     }
 
+    &:hover {
+      background: rgba(169, 77, 250, 1);
+    }
+
     &--dark {
       background: rgba(17, 17, 17, 1);
+
+      &:hover {
+        background: rgba(59, 59, 59, 1);
+      }
     }
 
     @media (max-width: 767px) {

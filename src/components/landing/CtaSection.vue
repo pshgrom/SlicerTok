@@ -48,10 +48,15 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
     letter-spacing: -0.2px;
     padding: 0 24px;
     color: rgba(17, 17, 17, 1);
+    box-shadow: none;
 
     :deep(.svg-icon) {
       margin-left: 12px;
       color: #000;
+    }
+
+    &:hover {
+      background: rgba(242, 242, 242, 1);
     }
   }
 }

@@ -102,6 +102,11 @@ const { isMobile } = useDeviceDetection()
       text-decoration: underline;
       font-size: 12px;
       letter-spacing: -0.2px;
+      transition: color 0.2s ease-in;
+
+      &:hover {
+        color: rgba(17, 17, 17, 1);
+      }
     }
 
     a + a {
