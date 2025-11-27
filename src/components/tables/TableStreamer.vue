@@ -15,59 +15,60 @@
     </template>
     <template #[`item.status_moderation`]="{ item }">
       <v-row no-gutters class="flex-nowrap" style="overflow-x: auto; white-space: nowrap">
-        <v-col
-          v-for="(group, groupName) in item.status_moderation"
-          :key="groupName"
-          cols="auto"
-          style="min-width: 250px"
-        >
-          <v-card class="info-admin" variant="outlined" rounded style="border: none !important">
-            <div class="info-admin__title">{{ formatLabel(groupName) }}</div>
-            <div
-              v-if="group.status"
-              class="custom-table-chip"
-              :style="{
-                'background-color': getStatusColor(group.status),
-                color: getColor(group.status)
-              }"
-            >
-              <div class="custom-table-chip__icon">
-                <SvgIcon :name="getIcon(group.status)" />
+        <template v-for="(group, groupName) in item.status_moderation_admins" :key="groupName">
+          <v-col
+            v-if="groupName === 'group_a_current' || groupName === 'group_b_current'"
+            cols="auto"
+            style="min-width: 250px"
+          >
+            <v-card class="info-admin" variant="outlined" rounded style="border: none !important">
+              <div class="info-admin__title">{{ formatLabel(groupName) }}</div>
+              <div
+                v-if="group.status"
+                class="custom-table-chip"
+                :style="{
+                  'background-color': getStatusColor(group.status),
+                  color: getColor(group.status)
+                }"
+              >
+                <div class="custom-table-chip__icon">
+                  <SvgIcon :name="getIcon(group.status)" />
+                </div>
+                <div class="custom-table-chip__status">
+                  {{ getTextStatus(group.status) }}
+                </div>
               </div>
-              <div class="custom-table-chip__status">
-                {{ getTextStatus(group.status) }}
+              <div class="info-admin-comment">
+                <div class="info-admin-comment__label">Комментарий:</div>
+                <div class="info-admin-comment__value">{{ group.status_comment || '-' }}</div>
               </div>
-            </div>
-            <div class="info-admin-comment">
-              <div class="info-admin-comment__label">Комментарий:</div>
-              <div class="info-admin-comment__value">{{ group.status_comment || '-' }}</div>
-            </div>
-            <div v-if="group.rules?.length" class="info-admin-comment">
-              <div class="info-admin-comment__label mb-2">Нарушения:</div>
-              <div class="info-admin-comment__value info-admin-comment__value_actions">
-                <v-menu
-                  v-if="group.rules.length"
-                  location="bottom"
-                  open-on-hover
-                  :close-on-content-click="false"
-                  offset="4"
-                >
-                  <template #activator="{ props }">
-                    <VCusomButton
-                      v-bind="props"
-                      :custom-class="['light', 'avg', 'only-icon']"
-                      @click.stop
-                    >
-                      <SvgIcon name="eye" />
-                    </VCusomButton>
-                  </template>
-                  <div class="tooltip-content" v-html="showViolations(group.rules)"></div>
-                </v-menu>
-                <div class="badge">{{ group.rules?.length }}</div>
+              <div v-if="group.rules?.length" class="info-admin-comment">
+                <div class="info-admin-comment__label mb-2">Нарушения:</div>
+                <div class="info-admin-comment__value info-admin-comment__value_actions">
+                  <v-menu
+                    v-if="group.rules.length"
+                    location="bottom"
+                    open-on-hover
+                    :close-on-content-click="false"
+                    offset="4"
+                  >
+                    <template #activator="{ props }">
+                      <VCusomButton
+                        v-bind="props"
+                        :custom-class="['light', 'avg', 'only-icon']"
+                        @click.stop
+                      >
+                        <SvgIcon name="eye" />
+                      </VCusomButton>
+                    </template>
+                    <div class="tooltip-content" v-html="showViolations(group.rules)"></div>
+                  </v-menu>
+                  <div class="badge">{{ group.rules?.length }}</div>
+                </div>
               </div>
-            </div>
-          </v-card>
-        </v-col>
+            </v-card>
+          </v-col>
+        </template>
       </v-row>
     </template>
     <template #[`item.is_bonus`]="{ item }">
@@ -199,14 +200,19 @@ const openVideo = (url: string) => {
 }
 
 const showViolations = (rules: any) => {
-  return rules?.map((el, index) => `${index + 1}. ${el.name_reverse}`).join('<br>') || '-'
+  const taskRules = props.items[0]?.task?.rules
+  return taskRules
+    .filter((tr) => rules.includes(tr.key))
+    .map((tr) => tr.name_reverse)
+    .map((name, index) => `${index + 1}. ${name}`)
+    .join('<br>')
 }
 
 const formatLabel = (label: string) => {
   switch (label) {
-    case 'group_a':
+    case 'group_a_current':
       return 'Админ группы А'
-    case 'group_b':
+    case 'group_b_current':
       return 'Админ группы B'
   }
 }

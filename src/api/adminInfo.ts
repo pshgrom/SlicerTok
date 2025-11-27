@@ -19,7 +19,7 @@ export const getFinishedListQuery = (data: ITableParams): Promise<AxiosResponse<
   api.get('/admin-finance/transfer/get-transfer-list-finished', { params: data })
 
 export const getPublicationsListMainQuery = (data: ITableParams): Promise<AxiosResponse<unknown>> =>
-  api.get('/admin-main/publication/get-publication-list', { params: data })
+  api.get('/streamer/publication/get-publication-list', { params: data })
 
 export const getCoeffsListQuery = (): Promise<AxiosResponse<unknown>> =>
   api.get('/streamer/coefficient/get-coefficient-list')
@@ -82,7 +82,7 @@ export const transferFinishedQuery = (
 export type ActionRequestAdminPayload = Record<string, unknown>
 export const actionRequestAdminQuery = (
   data: ActionRequestAdminPayload
-): Promise<AxiosResponse<unknown>> => api.post('/admin-main/publication/final-status', data)
+): Promise<AxiosResponse<unknown>> => api.post('/streamer/publication/final-status', data)
 
 export const removeCoeffQuery = (id: number): Promise<AxiosResponse<unknown>> =>
   api.post('/streamer/coefficient/delete-coefficient', { id })

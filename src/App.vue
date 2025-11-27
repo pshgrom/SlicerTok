@@ -8,7 +8,7 @@
         fluid
         :class="{
           'custom-container_slicer': isSlicer || insideSlicer,
-          'custom-container_none': landing
+          'custom-container_none': landing || terms || privacyPolicy
         }"
       >
         <HeaderMain v-if="showContent || showForSlicer" />
@@ -68,7 +68,7 @@ const { isMobile } = useDeviceDetection()
 
 const page = computed(() => router.currentRoute.value.name)
 
-const hideChatPages = ['Login', 'LoginAdmin', 'Landing']
+const hideChatPages = ['Login', 'LoginAdmin', 'Landing', 'Terms', 'PrivacyPolicy']
 
 const showContent = computed(() =>
   page.value ? !hideChatPages.includes(page.value as string) : false
@@ -118,6 +118,8 @@ const userName = computed(() => userInfoStore.userInfo?.profile?.name ?? '')
 
 const insideSlicer = computed(() => page.value === 'User')
 const landing = computed(() => page.value === 'Landing')
+const terms = computed(() => page.value === 'Terms')
+const privacyPolicy = computed(() => page.value === 'PrivacyPolicy')
 
 const showForSlicer = computed(() => page.value === 'UserInfo')
 </script>

@@ -10,8 +10,8 @@
         <p v-if="!isMobile" class="footer__copyright">{{ year }} SlicerTok. Все права защищены</p>
         <div class="footer__right">
           <div class="footer__policy">
-            <a href="#">Политика конфиденциальности</a>
-            <a href="#">Условия использования</a>
+            <router-link to="/privacy-policy">Политика конфиденциальности</router-link>
+            <router-link to="/terms">Условия использования</router-link>
             <p v-if="isMobile" class="footer__copyright">
               {{ year }} SlicerTok. Все права защищены
             </p>

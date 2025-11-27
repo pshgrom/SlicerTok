@@ -4,7 +4,7 @@
       <div class="table-actions__label">Заявки</div>
     </div>
   </div>
-  <TableAdminMain
+  <TableStreamer
     :headers="headers"
     :is-loading="isLoading"
     :items="calcDataItems"
@@ -24,8 +24,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
-import TableAdminMain from '@/components/tables/TableAdminMain.vue'
 import TablePagination from '@/components/tables/TablePagination.vue'
+import TableStreamer from '@/components/tables/TableStreamer.vue'
 import { useTableQuery } from '@/composables/useTableQuery.ts'
 import { adminMain } from '@/constants/tableHeaders'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'

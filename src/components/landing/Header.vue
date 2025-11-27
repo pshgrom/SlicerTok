@@ -6,7 +6,7 @@
           <SvgIcon name="logo" />
         </div>
 
-        <nav class="header-lp-nav">
+        <nav v-if="!hideMenu" class="header-lp-nav">
           <a href="#how" class="header-lp-nav__link" @click.prevent="scrollToSection('how')"
             >Как работает</a
           >
@@ -29,6 +29,13 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+
+defineProps({
+  hideMenu: {
+    type: Boolean,
+    default: false
+  }
+})
 
 const router = useRouter()
 

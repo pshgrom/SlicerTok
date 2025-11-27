@@ -225,24 +225,24 @@ const allStatuses = [
 ]
 
 const currentStatus = computed({
-  get: () => currentItem.value?.status_moderation_support?.support?.status || '',
-  set: (val) => (currentItem.value.status_moderation_support.support.status = val)
+  get: () => currentItem.value?.status_moderation_support?.current?.status || '',
+  set: (val) => (currentItem.value.status_moderation_support.current.status = val)
 })
 
 const currentNumberViews = computed({
-  get: () => currentItem.value?.status_moderation_support?.support?.number_views_moderation || '',
-  set: (val) => (currentItem.value.status_moderation_support.support.number_views_moderation = val)
+  get: () => currentItem.value?.status_moderation_support?.current?.number_views_moderation || '',
+  set: (val) => (currentItem.value.status_moderation_support.current.number_views_moderation = val)
 })
 
 const currentCoefficient = computed({
   get: () => {
     return (
-      currentItem.value?.status_moderation_support?.support?.coefficient?.id ||
-      currentItem.value?.status_moderation_support?.support.coefficient ||
+      currentItem.value?.status_moderation_support?.current?.coefficient?.id ||
+      currentItem.value?.status_moderation_support?.current?.coefficient ||
       ''
     )
   },
-  set: (val) => (currentItem.value.status_moderation_support.support.coefficient = val)
+  set: (val) => (currentItem.value.status_moderation_support.current.coefficient = val)
 })
 
 const currentItem = computed({
@@ -255,9 +255,9 @@ const showActions = computed(() => !sameViews.value || !sameCoeffs.value || !sam
 
 const sameStatuses = computed(() => {
   if (Object.keys(currentItem.value).length) {
-    const values = Object.keys(currentItem.value?.status_moderation_admins)?.map(
-      (item) => currentItem.value.status_moderation_admins[item].status
-    )
+    const values = Object.keys(currentItem.value?.status_moderation_admins)
+      .filter((key) => key === 'group_a_current' || key === 'group_b_current')
+      .map((item) => currentItem.value.status_moderation_admins[item].status)
 
     const firstValue = values[0]
     const allEqual = values.every((value) => value === firstValue)
@@ -272,9 +272,9 @@ const sameStatuses = computed(() => {
 
 const sameViews = computed(() => {
   if (Object.keys(currentItem.value).length) {
-    const values = Object.keys(currentItem.value.status_moderation_admins)?.map(
-      (item) => currentItem.value.status_moderation_admins[item].number_views_moderation
-    )
+    const values = Object.keys(currentItem.value.status_moderation_admins)
+      .filter((key) => key === 'group_a_current' || key === 'group_b_current')
+      .map((item) => currentItem.value.status_moderation_admins[item].number_views_moderation)
     const firstValue = values[0]
     return values.every((value) => value === firstValue)
   }
@@ -283,11 +283,14 @@ const sameViews = computed(() => {
 
 const sameCoeffs = computed(() => {
   if (Object.keys(currentItem.value).length) {
-    const values = Object.keys(currentItem.value.status_moderation_admins).map(
-      (item) => currentItem.value.status_moderation_admins[item].coefficient?.rate
-    )
+    const values = Object.keys(currentItem.value.status_moderation_admins)
+      .filter((key) => key === 'group_a_current' || key === 'group_b_current')
+      .map((item) => currentItem.value.status_moderation_admins[item].coefficient?.rate)
     const firstValue = values[0]
-    return values.every((value) => value === firstValue)
+    return values.every((value) => {
+      if (value === undefined && firstValue === undefined) return false
+      return value === firstValue
+    })
   }
   return false
 })
@@ -311,10 +314,9 @@ const change = async () => {
         block: 'center'
       })
     }
-
     return
   } else {
-    const { status } = currentItem.value?.status_moderation_support?.support ?? {}
+    const { status } = currentItem.value?.status_moderation_support?.current ?? {}
     const data = {
       id: props.currentItem.id,
       status: !sameStatuses.value ? status : undefined,
@@ -341,9 +343,13 @@ const videoRejected = computed(
   () => props.currentItem.slicer?.user_rejected_publications_count ?? 0
 )
 
-type Violation = { name_reverse: string }
-const showViolations = (rules: Violation[]) => {
-  return rules.map((el, index) => `${index + 1}. ${el.name_reverse}`).join('<br>') || '-'
+const showViolations = (rules: any) => {
+  const taskRules = props.currentItem?.task?.rules
+  return taskRules
+    .filter((tr) => rules.includes(tr.key))
+    .map((tr) => tr.name_reverse)
+    .map((name, index) => `${index + 1}. ${name}`)
+    .join('<br>')
 }
 
 const goToChat = async () => {

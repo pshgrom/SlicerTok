@@ -184,9 +184,9 @@ export const adminMain = [
   { title: 'Бонус', value: 'is_bonus' },
   { title: 'Просмотры', value: 'number_views' },
   { title: 'Статус', value: 'status' },
-  { title: 'Статус модераторов', value: 'status_moderation' },
   { title: 'Ссылка', value: 'url' },
   { title: 'Статистика', value: 'video_stat_link' },
+  { title: 'Статус модераторов', value: 'status_moderation' },
   { title: '', value: 'actions' }
 ]
 

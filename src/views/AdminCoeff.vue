@@ -9,7 +9,7 @@
       </VCusomButton>
     </div>
   </div>
-  <TableAdminMainCoeffs
+  <TableStreamerCoeffs
     :headers="headers"
     :is-loading="isLoading"
     :items="calcDataItems"
@@ -25,7 +25,7 @@ import { computed, onMounted, ref } from 'vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import AddCoeffsModal from '@/components/modals/AddCoeffsModal.vue'
-import TableAdminMainCoeffs from '@/components/tables/TableAdminMainCoeffs.vue'
+import TableStreamerCoeffs from '@/components/tables/TableStreamerCoeffs.vue'
 import { adminCoeffs } from '@/constants/tableHeaders'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import { useAdminMain } from '@/stores/AdminMain'

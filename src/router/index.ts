@@ -33,6 +33,18 @@ const routes: RouteRecordRaw[] = [
     meta: { showChat: false }
   },
   {
+    path: '/terms',
+    name: 'Terms',
+    component: () => import('@/views/Terms.vue'),
+    meta: { showChat: false }
+  },
+  {
+    path: '/privacy-policy',
+    name: 'PrivacyPolicy',
+    component: () => import('@/views/PrivacyPolicy.vue'),
+    meta: { showChat: false }
+  },
+  {
     path: '/login',
     name: 'Login',
     component: LoginView,

@@ -218,7 +218,12 @@ const openVideo = (url: string) => {
 }
 
 const showViolations = (rules: any) => {
-  return rules.map((el, index) => `${index + 1}. ${el.name_reverse}`).join('<br>') || '-'
+  const taskRules = props.items[0]?.task?.rules
+  return taskRules
+    .filter((tr) => rules.includes(tr.key))
+    .map((tr) => tr.name_reverse)
+    .map((name, index) => `${index + 1}. ${name}`)
+    .join('<br>')
 }
 
 const actionRequest = (is_problem_solved: boolean, id: number) => {

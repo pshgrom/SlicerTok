@@ -4,7 +4,7 @@
       <div class="table-actions__label">Логи</div>
     </div>
   </div>
-  <TableAdminMainLogs
+  <TableStreamerLogs
     :headers="headers"
     :is-loading="isLoading"
     :items="calcDataItems"
@@ -24,8 +24,8 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import TableAdminMainLogs from '@/components/tables/TableAdminMainLogs.vue'
 import TablePagination from '@/components/tables/TablePagination.vue'
+import TableStreamerLogs from '@/components/tables/TableStreamerLogs.vue'
 import { adminMainLogs } from '@/constants/tableHeaders'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import { useAdminMain } from '@/stores/AdminMain'
