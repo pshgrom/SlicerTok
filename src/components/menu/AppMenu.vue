@@ -4,7 +4,15 @@
       <RouterLink v-if="item.to" :to="item.to" class="menu-link" active-class="active">
         {{ item.label }}
       </RouterLink>
-      <span v-else @click="item.onClick?.()">{{ item.label }}</span>
+      <span v-else class="menu-el" @click="item.onClick?.()">
+        {{ item.label }}
+        <span
+          v-if="item.isChat && chatStore.unreadCount > 0 && !userInfoStore.showChat"
+          class="chat-user__badge menu-el__badge"
+        >
+          {{ chatStore.unreadCount >= 9 ? '9+' : chatStore.unreadCount }}
+        </span>
+      </span>
     </li>
   </ul>
 </template>
@@ -17,15 +25,18 @@ import { RouterLink } from 'vue-router'
 import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 import { ROLES, type RoleType } from '@/constants/roles'
 import { useAuth } from '@/stores/Auth.ts'
+import { useChatStore } from '@/stores/UserChat.ts'
 import { useUserInfo } from '@/stores/UserInfo.ts'
 
 const emit = defineEmits(['updateOpenModal'])
+const chatStore = useChatStore()
 
 type MenuItem = {
   label: string
   to?: string
   onClick?: () => void
   show?: () => boolean
+  isChat?: () => boolean
 }
 
 const authStore = useAuth()
@@ -40,7 +51,8 @@ const menuItems: Partial<Record<RoleType, MenuItem[]>> = {
     { label: '2FA', onClick: () => emit('updateOpenModal', true) },
     {
       label: 'Поддержка',
-      show: () => isMobile,
+      isChat: true,
+      show: () => isMobile.value,
       onClick: () => (showChat.value = !showChat.value)
     }
   ],
@@ -96,5 +108,14 @@ const visibleMenuItems = computed(() =>
 .menu-link.active {
   color: rgba(169, 55, 244, 1);
   pointer-events: none !important;
+}
+
+.menu-el {
+  position: relative;
+
+  &__badge {
+    top: -15px;
+    right: -10px;
+  }
 }
 </style>

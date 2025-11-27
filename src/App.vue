@@ -12,21 +12,19 @@
         }"
       >
         <HeaderMain v-if="showContent || showForSlicer" />
-        <div v-if="showChat" class="chat-user">
-          <template v-if="!isMobile">
-            <SvgIcon
-              :disabled="isSlicer && !userName"
-              name="chat"
-              class="chat-open"
-              @click="toggleChat"
-            />
-            <span
-              v-if="chatStore.unreadCount > 0 && !userInfoStore.showChat"
-              class="chat-user__badge"
-            >
-              {{ chatStore.unreadCount }}
-            </span>
-          </template>
+        <div v-if="showChat && !isMobile" class="chat-user">
+          <SvgIcon
+            :disabled="isSlicer && !userName"
+            name="chat"
+            class="chat-open"
+            @click="toggleChat"
+          />
+          <span
+            v-if="chatStore.unreadCount > 0 && !userInfoStore.showChat"
+            class="chat-user__badge"
+          >
+            {{ chatStore.unreadCount >= 9 ? '9+' : chatStore.unreadCount }}
+          </span>
         </div>
         <router-view />
       </v-container>
