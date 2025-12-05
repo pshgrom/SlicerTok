@@ -28,23 +28,23 @@ import TablePagination from '@/components/tables/TablePagination.vue'
 import TableStreamerLogs from '@/components/tables/TableStreamerLogs.vue'
 import { adminMainLogs } from '@/constants/tableHeaders'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
-import { useAdminMain } from '@/stores/AdminMain'
+import { useStreamer } from '@/stores/Streamer'
 
 const headers = ref<ITableHeaders[]>(adminMainLogs)
 
-const adminMainStore = useAdminMain()
+const streamer = useStreamer()
 
-const isLoading = computed(() => adminMainStore.isLoading)
+const isLoading = computed(() => streamer.isLoading)
 const router = useRouter()
 
-const calcDataItems = computed<IUserInfoData[]>(() => adminMainStore.items)
+const calcDataItems = computed<IUserInfoData[]>(() => streamer.items)
 
 const queryParams = computed<ITableParams>({
   get() {
-    return adminMainStore.queryParams
+    return streamer.queryParams
   },
   set(val) {
-    adminMainStore.setQueryParams(val)
+    streamer.setQueryParams(val)
   }
 })
 
@@ -70,7 +70,7 @@ const getRequest = () => {
       perPage: perPage
     }
   })
-  adminMainStore.getLogList(queryParams.value)
+  streamer.getLogList(queryParams.value)
 }
 
 onMounted(() => {

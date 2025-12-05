@@ -247,10 +247,11 @@
               Видео в Instagram Reels, опубликованные с 24.01.2024, при входе в аналитику - должны
               показывать подробную статистику, в случае, если в статистике будут прочерки,
               опубликованный Reels не будет принят. (ГАЙД, КАК СДЕЛАТЬ БИЗНЕС АККАУНТ, ЧТОБЫ БЫЛА
-              ВИДНА СТАТИСТИКА -
-              <a href="https://t.me/mellstroytiktok/250)" target="_blank"
-                >https://t.me/mellstroytiktok/250</a
-              >)
+              ВИДНА СТАТИСТИКА
+              <button class="custom-table-ref mt-2 mb-2" @click.stop>
+                <span @click="openVideo"> Смотреть </span>
+                <SvgIcon name="arrow-up-right" />
+              </button>
             </li>
             <li>
               Запрещено скрывать комментарии и статистику видео (лайки, репосты и т.д), такие ролики
@@ -999,14 +1000,16 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
+  <VideoPlayModal v-model="isModalOpenVideo" v-model:video-src="videoSrc" />
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomSelect from '@/components/base/VCustomSelect.vue'
+import VideoPlayModal from '@/components/modals/VideoPlayModal.vue'
 import { useStreamers } from '@/stores/Streamers.ts'
 import { videoRules } from '@/utils/validators.ts'
 
@@ -1018,6 +1021,14 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 const streamerStore = useStreamers()
+
+const isModalOpenVideo = ref(false)
+const videoSrc = ref('')
+
+const openVideo = () => {
+  isModalOpenVideo.value = true
+  videoSrc.value = '/videos/rules.MP4'
+}
 
 const streamerRules = computed({
   get() {
@@ -1127,6 +1138,8 @@ h3 {
 a {
   color: #a937f5;
   transition: color 0.2s ease-in;
+  white-space: normal;
+  word-break: break-word;
 
   &:hover {
     opacity: 0.7;

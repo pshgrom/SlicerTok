@@ -1,6 +1,6 @@
 <template>
   <footer class="footer">
-    <v-container class="container">
+    <v-container class="container" :class="{ container_offset: offsetContainer }">
       <div class="footer__content">
         <div class="footer__left">
           <div class="footer__logo">
@@ -29,6 +29,13 @@
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 
+defineProps({
+  offsetContainer: {
+    type: Boolean,
+    default: false
+  }
+})
+
 const year: number = new Date().getFullYear()
 const { isMobile } = useDeviceDetection()
 </script>
@@ -48,6 +55,11 @@ const { isMobile } = useDeviceDetection()
     @media (max-width: 767px) {
       padding-left: 0;
       padding-right: 0;
+    }
+
+    &_offset {
+      padding-left: 16px;
+      padding-right: 16px;
     }
   }
 

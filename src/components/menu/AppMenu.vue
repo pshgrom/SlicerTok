@@ -59,9 +59,9 @@ const menuItems: Partial<Record<RoleType, MenuItem[]>> = {
   [ROLES.ADMIN_MAIN]: [{ label: 'Общая информация', to: '/admin-main' }],
   [ROLES.STREAMER]: [
     { label: 'Заявки', to: '/streamer' },
-    { label: 'Коэффициенты', to: '/coefficients' },
+    { label: 'Коэффициенты', to: '/streamer-coefficients' },
     // { label: 'Админы онлайн', to: '/admins-online' },
-    { label: 'Логи', to: '/admin-main-logs' }
+    { label: 'Логи', to: '/streamer-logs' }
   ],
   [ROLES.SUPPORT]: [
     { label: 'Заявки', to: '/support' },

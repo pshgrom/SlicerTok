@@ -52,10 +52,10 @@
       </div>
     </template>
     <template #[`item.video_stat_link`]="{ item }">
-      <div class="custom-table-ref" @click.stop>
+      <button class="custom-table-ref" @click.stop>
         <span @click="openVideo(item.video_stat_link)"> Смотреть </span>
         <SvgIcon name="arrow-up-right" />
-      </div>
+      </button>
     </template>
     <template #[`item.status_moderation`]="{ item }">
       <v-row no-gutters class="flex-nowrap" style="overflow-x: auto; white-space: nowrap">

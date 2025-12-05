@@ -129,7 +129,7 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true, roles: [ROLES.STREAMER], showChat: false }
   },
   {
-    path: '/coefficients',
+    path: '/streamer-coefficients',
     name: 'AdminCoeff',
     component: () => import('@/views/AdminCoeff.vue'),
     meta: { requiresAuth: true, roles: ROLES.STREAMER, showChat: false }
@@ -141,9 +141,9 @@ const routes: RouteRecordRaw[] = [
   //   meta: { requiresAuth: true, roles: ROLES.STREAMER, showChat: false }
   // },
   {
-    path: '/admin-main-logs',
-    name: 'AdminMainLogs',
-    component: () => import('@/views/AdminMainLogs.vue'),
+    path: '/streamer-logs',
+    name: 'AdminStreamerLogs',
+    component: () => import('@/views/AdminStreamerLogs.vue'),
     meta: { requiresAuth: true, roles: ROLES.STREAMER, showChat: false }
   },
   {
@@ -156,7 +156,13 @@ const routes: RouteRecordRaw[] = [
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.VITE_BASE_URL),
-  routes
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    }
+    return { left: 0, top: 0 }
+  }
 })
 
 router.beforeEach(

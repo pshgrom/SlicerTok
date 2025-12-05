@@ -1,5 +1,6 @@
 <template>
   <v-data-table
+    ref="tableRef"
     :headers="computedHeaders"
     :items="items"
     :loading="isLoading"
@@ -9,6 +10,7 @@
     height="70vh"
     fixed-header
     hide-default-footer
+    :row-props="rowProps"
   >
     <template #loading>
       <v-progress-circular indeterminate color="rgb(169, 55, 244)" />
@@ -110,10 +112,10 @@
       <div style="min-width: 150px">{{ formatDate(item.created_at) }}</div>
     </template>
     <template #[`item.video_stat_link`]="{ item }">
-      <div class="custom-table-ref" @click.stop>
+      <button class="custom-table-ref" @click.stop>
         <span @click="openVideo(item.video_stat_link)"> Смотреть </span>
         <SvgIcon name="arrow-up-right" />
-      </div>
+      </button>
     </template>
     <template #[`item.actions`]="{ item }">
       <div
@@ -143,7 +145,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, type PropType, ref } from 'vue'
+import { computed, nextTick, type PropType, ref, watch } from 'vue'
 
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
@@ -160,7 +162,7 @@ import {
   getTextStatus
 } from '@/utils/socials.ts'
 
-const emit = defineEmits(['actionRequest'])
+const emit = defineEmits(['actionRequest', 'rowClick', 'update:activePanel'])
 
 const props = defineProps({
   headers: {
@@ -178,12 +180,21 @@ const props = defineProps({
   itemsPerPage: {
     type: [Number, String],
     default: 20
+  },
+  activePanel: {
+    type: Boolean,
+    default: false
+  },
+  selectedIndex: {
+    type: Number,
+    default: null
   }
 })
 
 const headersData = ref(props.headers)
 const isModalOpenVideo = ref(false)
 const videoSrc = ref('')
+const tableRef = ref(null)
 
 const computedHeaders = computed<ITableHeaders[]>({
   get() {
@@ -191,6 +202,15 @@ const computedHeaders = computed<ITableHeaders[]>({
   },
   set(val) {
     headersData.value = val
+  }
+})
+
+const activePanelVal = computed({
+  get() {
+    return props.activePanel
+  },
+  set(val) {
+    emit('update:activePanel', val)
   }
 })
 
@@ -219,7 +239,29 @@ const formatLabel = (label: string) => {
 
 const actionRequest = (id: number, status: string) => {
   emit('actionRequest', id, status)
+  activePanelVal.value = false
 }
+
+const rowProps = (item) => ({
+  id: `row-${item.index}`,
+  class: ['cursor-pointer', item.index === props.selectedIndex ? 'bg-blue-lighten-4' : ''],
+  onClick: () => emit('rowClick', item)
+})
+
+watch(
+  () => props.selectedIndex,
+  async (newIndex) => {
+    if (newIndex < 0) return
+    await nextTick()
+    const rowEl = tableRef.value?.$el.querySelector(`#row-${newIndex}`)
+    if (rowEl) {
+      rowEl.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      })
+    }
+  }
+)
 </script>
 
 <style lang="scss" scoped>

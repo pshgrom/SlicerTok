@@ -28,37 +28,37 @@ import AddCoeffsModal from '@/components/modals/AddCoeffsModal.vue'
 import TableStreamerCoeffs from '@/components/tables/TableStreamerCoeffs.vue'
 import { adminCoeffs } from '@/constants/tableHeaders'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
-import { useAdminMain } from '@/stores/AdminMain'
 import { useError } from '@/stores/Errors.ts'
+import { useStreamer } from '@/stores/Streamer.ts'
 
 const headers = ref<ITableHeaders[]>(adminCoeffs)
 
 const errorStore = useError()
-const adminMainStore = useAdminMain()
+const streamer = useStreamer()
 const isModalOpen = ref(false)
 
-const isLoading = computed(() => adminMainStore.isLoading)
+const isLoading = computed(() => streamer.isLoading)
 
-const calcDataItems = computed<IUserInfoData[]>(() => adminMainStore.coeffs)
+const calcDataItems = computed<IUserInfoData[]>(() => streamer.coeffs)
 
 const queryParams = computed<ITableParams>({
   get() {
-    return adminMainStore.queryParams
+    return streamer.queryParams
   },
   set(val) {
-    adminMainStore.setQueryParams(val)
+    streamer.setQueryParams(val)
   }
 })
 
 const removeCoeff = async (id: number) => {
-  const { data } = await adminMainStore.removeCoeff(id)
+  const { data } = await streamer.removeCoeff(id)
   if (data.code === 200) {
     getRequest()
   }
 }
 
 const addCoeff = async (newCoeff: string) => {
-  const resp = await adminMainStore.addNewCoeff(newCoeff)
+  const resp = await streamer.addNewCoeff(newCoeff)
   const msg = resp?.data?.message
   if (msg) errorStore.setErrors(msg, 'success')
   if (resp?.data?.code === 200) {
@@ -68,7 +68,7 @@ const addCoeff = async (newCoeff: string) => {
 }
 
 const getRequest = () => {
-  adminMainStore.getCoeffsList()
+  streamer.getCoeffsList()
 }
 
 onMounted(() => {

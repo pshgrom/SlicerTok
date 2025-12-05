@@ -36,6 +36,9 @@ export const getAdminInfoQuery = (): Promise<AxiosResponse<unknown>> =>
 export const getAdminFinanceInfoQuery = (): Promise<AxiosResponse<unknown>> =>
   api.get('/admin-finance/profile/get-info')
 
+export const getAdminMainInfoQuery = (): Promise<AxiosResponse<unknown>> =>
+  api.get('/admin-main/streamer/get-streamer-list')
+
 export const getCoefficientQuery = (): Promise<AxiosResponse<unknown>> =>
   api.get('/coefficient/get-coefficient-for-admin')
 

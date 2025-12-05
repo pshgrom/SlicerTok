@@ -64,10 +64,10 @@
       </div>
     </template>
     <template #[`item.video_stat_link`]="{ item }">
-      <div class="custom-table-ref" @click.stop>
+      <button class="custom-table-ref" @click.stop>
         <span @click="openVideo(item.video_stat_link)"> Смотреть </span>
         <SvgIcon name="arrow-up-right" />
-      </div>
+      </button>
     </template>
   </v-data-table>
   <VideoPlayModal v-model="isModalOpenVideo" v-model:video-src="videoSrc" />
