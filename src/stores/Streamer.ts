@@ -7,7 +7,8 @@ import {
   getCoeffsListQuery,
   getLogListQuery,
   getPublicationsListMainQuery,
-  removeCoeffQuery
+  removeCoeffQuery,
+  setPublicationStreamerStatusQuery
 } from '@/api/adminInfo'
 import type { ITableParams } from '@/interfaces/AppModel'
 import { useError } from '@/stores/Errors'
@@ -27,6 +28,31 @@ export const useStreamer = defineStore('streamerStore', () => {
     queryParams.value = {
       ...queryParams.value,
       ...val
+    }
+  }
+
+  const setPublicationStreamerStatus = async ({
+    id = '',
+    status = '',
+    status_comment = '',
+    number_views_moderation = '',
+    rules = {},
+    coefficient = {}
+  }) => {
+    try {
+      const newData = {
+        id,
+        status,
+        ...(status_comment ? { status_comment } : {}),
+        number_views_moderation: +number_views_moderation,
+        ...(status !== 'approved' && { rules }),
+        coefficient_id: coefficient?.id ? coefficient.id : undefined
+      }
+      const { data } = await setPublicationStreamerStatusQuery(newData)
+      const msg = data?.message ?? ''
+      errorStore.setErrors(msg, 'success')
+    } catch (error: unknown) {
+      throw error
     }
   }
 
@@ -125,6 +151,7 @@ export const useStreamer = defineStore('streamerStore', () => {
     getCoeffsList,
     coeffs,
     removeCoeff,
-    addNewCoeff
+    addNewCoeff,
+    setPublicationStreamerStatus
   }
 })

@@ -47,6 +47,10 @@ export const setPublicationStatusQuery = (
   data: SetPublicationStatusPayload
 ): Promise<AxiosResponse<unknown>> => api.post('/admin/publication/set-publication-status', data)
 
+export const setPublicationStreamerStatusQuery = (
+  data: SetPublicationStatusPayload
+): Promise<AxiosResponse<unknown>> => api.post('/streamer/publication/set-publication-status', data)
+
 export const finishCheckQuery = (id: number): Promise<AxiosResponse<unknown>> =>
   api.post('/admin/publication/complete-moderation', { id })
 

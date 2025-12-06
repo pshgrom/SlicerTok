@@ -13,9 +13,9 @@
       <v-btn icon="mdi-close" variant="text" @click="activePanelVal = false" />
     </v-card-title>
     <v-card-text>
-      <v-form v-if="currentItem.status_moderation_admin?.current" ref="formRef">
+      <v-form v-if="currentItem.status_moderation_streamer?.current" ref="formRef">
         <VCustomSelect
-          v-model="currentItem.status_moderation_admin.current.status"
+          v-model="currentItem.status_moderation_streamer.current.status"
           :items="allStatuses"
           class="mt-2 mb-6"
           :label="'Выберите статус'"
@@ -27,7 +27,7 @@
           </template>
         </VCustomSelect>
         <div
-          v-show="currentItem.status_moderation_admin.current.status === 'rejected'"
+          v-show="currentItem.status_moderation_streamer.current.status === 'rejected'"
           class="mb-4"
         >
           <transition name="fade">
@@ -59,7 +59,7 @@
           </div>
         </div>
         <ViewsSelectField
-          v-model="currentItem.status_moderation_admin.current.number_views_moderation"
+          v-model="currentItem.status_moderation_streamer.current.number_views_moderation"
           label="Количество просмотров по факту"
           :rules="[videoRules.quantityViews, videoRules.required, videoRules.quantityViewsMin]"
         />
@@ -71,7 +71,7 @@
           </template>
         </VCustomSelect>
         <v-textarea
-          v-model.trim="currentItem.status_moderation_admin.current.status_comment"
+          v-model.trim="currentItem.status_moderation_streamer.current.status_comment"
           variant="outlined"
           class="mb-4"
           label="Комментарий..."
@@ -90,11 +90,11 @@
           Отмена
         </VCusomButton>
         <VCusomButton
-          v-if="currentItem.status_moderation_admin?.current"
+          v-if="currentItem.status_moderation_streamer?.current"
           :custom-class="['dark', 'avg']"
           :disabled="
-            currentItem.status_moderation_admin.current.status === 'todo' ||
-            !currentItem.status_moderation_admin.current.status
+            currentItem.status_moderation_streamer.current.status === 'todo' ||
+            !currentItem.status_moderation_streamer.current.status
           "
           @click="change"
         >
@@ -111,7 +111,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomSelect from '@/components/base/VCustomSelect.vue'
 import ViewsSelectField from '@/components/base/ViewsSelectField.vue'
-import { useAdminInfo } from '@/stores/AdminInfo.ts'
+import { useStreamer } from '@/stores/Streamer.ts'
 import { videoRules } from '@/utils/validators.ts'
 
 const props = defineProps({
@@ -142,7 +142,7 @@ const emit = defineEmits([
 ])
 
 const initialValue = ref({})
-const adminInfo = useAdminInfo()
+const streamerStore = useStreamer()
 
 const selectAll = ref(false)
 const showError = ref(false)
@@ -172,7 +172,9 @@ const currentItem = computed({
 })
 
 const allTasks = computed(() => currentItem.value?.task?.rules ?? [])
-const coeffs = computed(() => adminInfo.coeffs ?? [])
+const coeffs = computed(() =>
+  streamerStore.coeffs.map(({ id, rate }) => ({ label: rate, value: id }))
+)
 
 const closeDialog = () => {
   resetForm()
@@ -193,19 +195,19 @@ const resetForm = () => {
 
 const setCoeff = computed({
   get: () => {
-    return currentItem.value?.status_moderation_admin?.current?.coefficient?.id || null
+    return currentItem.value?.status_moderation_streamer?.current?.coefficient?.id || null
   },
   set: (value) => {
     if (currentItem.value && value) {
       const selectedCoeff = coeffs.value.find((coeff) => coeff.value === value)
       if (selectedCoeff) {
-        currentItem.value.status_moderation_admin.current.coefficient = {
+        currentItem.value.status_moderation_streamer.current.coefficient = {
           ...selectedCoeff,
           id: selectedCoeff.value
         }
       }
     } else if (currentItem.value && !value) {
-      currentItem.value.status_moderation_admin.current.coefficient = {
+      currentItem.value.status_moderation_streamer.current.coefficient = {
         label: '',
         value: '',
         id: ''
@@ -229,7 +231,7 @@ const change = async () => {
     return
   } else {
     if (
-      currentItem.value.status_moderation_admin.current === 'rejected' &&
+      currentItem.value.status_moderation_streamer.current === 'rejected' &&
       !selectedTasks.value.length
     ) {
       showError.value = true
@@ -244,14 +246,14 @@ const change = async () => {
 const onInput = (val) => {
   const rawValue = typeof val === 'string' ? val : val?.target?.value || ''
   const digitsOnly = rawValue.replace(/\D/g, '')
-  currentItem.value.status_moderation_admin.number_views_moderation = digitsOnly.replace(
+  currentItem.value.status_moderation_streamer.number_views_moderation = digitsOnly.replace(
     /\B(?=(\d{3})+(?!\d))/g,
     ' '
   )
 }
 
 watch(
-  () => currentItem.value?.status_moderation_admin?.current?.rules,
+  () => currentItem.value?.status_moderation_streamer?.current?.rules,
   (rules) => {
     if (rules?.length) {
       selectedTasks.value = rules.map((r) => r)
@@ -262,7 +264,7 @@ watch(
 )
 
 watch(
-  () => currentItem.value?.status_moderation_admin?.number_views_moderation,
+  () => currentItem.value?.status_moderation_streamer?.number_views_moderation,
   (newVal) => {
     onInput(newVal)
   }
@@ -277,8 +279,8 @@ watch(
 )
 
 onMounted(() => {
-  if (currentItem.value?.status_moderation_admin?.number_views_moderation)
-    onInput(currentItem.value.status_moderation_admin.number_views_moderation)
+  if (currentItem.value?.status_moderation_streamer?.number_views_moderation)
+    onInput(currentItem.value.status_moderation_streamer.number_views_moderation)
 })
 
 const activePanelVal = computed({
@@ -290,56 +292,3 @@ const activePanelVal = computed({
   }
 })
 </script>
-
-<style scoped lang="scss">
-.side-panel {
-  height: 89vh;
-  z-index: 999;
-  min-width: 500px;
-  max-width: 500px;
-  border-radius: 16px;
-  box-shadow: none;
-  margin-left: 6px;
-  padding: 6px 20px 20px 20px !important;
-}
-
-:deep(.v-card-title) {
-  position: sticky;
-  top: 0;
-  background: #fff !important;
-  z-index: 1;
-  padding: 0 !important;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-:deep(.v-card-text) {
-  padding: 0 !important;
-  max-height: 70vh;
-  overflow-y: auto;
-  padding-right: 13px !important;
-}
-
-:deep(.v-card-actions) {
-  position: absolute;
-  background: #fff;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  padding: 20px !important;
-}
-
-.error-message {
-  color: #b00020;
-  line-height: 12px;
-  font-size: 12px;
-  word-break: break-word;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  hyphens: auto;
-  position: relative;
-  left: 16px;
-  letter-spacing: 0;
-}
-</style>

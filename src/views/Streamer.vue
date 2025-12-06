@@ -13,7 +13,6 @@
         :items="calcDataItems"
         :selected-index="selectedIndex"
         :items-per-page="queryParams.perPage"
-        @action-request="actionRequest"
         @row-click="onRowClick"
       />
       <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
@@ -32,7 +31,7 @@
         v-model:active-panel="activePanel"
         :is-first="selectedIndex === 0"
         :is-last="selectedIndex === calcDataItems.length - 1"
-        @change-final-values="changeFinalValues"
+        @change-state="changeState"
         @prev="prevRow"
         @next="nextRow"
     /></transition>
@@ -53,42 +52,26 @@ import { useStreamer } from '@/stores/Streamer.ts'
 
 const headers = ref<ITableHeaders[]>(adminMain)
 
-const adminMainStore = useStreamer()
+const streamerStore = useStreamer()
 const errorStore = useError()
 const activePanel = ref(false)
 const currentRecord = ref({})
 const selectedIndex = ref(-1)
 
 const { queryParams, totalPages, changePage, getRequest } = useTableQuery({
-  getQueryParams: () => adminMainStore.queryParams,
-  setQueryParams: (params) => adminMainStore.setQueryParams(params),
-  fetchData: (params) => adminMainStore.getPublicationsListMain(params)
+  getQueryParams: () => streamerStore.queryParams,
+  setQueryParams: (params) => streamerStore.setQueryParams(params),
+  fetchData: (params) => streamerStore.getPublicationsListMain(params)
 })
 
-const isLoading = computed(() => adminMainStore.isLoading)
+const isLoading = computed(() => streamerStore.isLoading)
 
-const calcDataItems = computed<IUserInfoData[]>(() => adminMainStore.items)
+const calcDataItems = computed<IUserInfoData[]>(() => streamerStore.items)
 
 const onRowClick = (item) => {
-  console.warn(item)
   currentRecord.value = item?.item ?? {}
   selectedIndex.value = item.index
   activePanel.value = true
-}
-
-const actionRequest = async (id: number, status: string) => {
-  const newData = {
-    id,
-    status
-  }
-  try {
-    const { data } = await adminMainStore.actionRequest(newData)
-    const msg = data?.message ?? ''
-    errorStore.setErrors(msg, 'success')
-    getRequest()
-  } catch (e) {
-    console.log(e)
-  }
 }
 
 const prevRow = () => {
@@ -105,17 +88,25 @@ const nextRow = () => {
   }
 }
 
-const changeFinalValues = async (dataRes: any) => {
-  console.log('cnahge')
-  // try {
-  //   const { data } = await supportStore.changeFinalValues(dataRes)
-  //   const msg = data?.message ?? ''
-  //   errorStore.setErrors(msg, 'success')
-  //   getRequest()
-  //   dialog.value = false
-  // } catch (e) {
-  //   console.error(e)
-  // }
+const cleanNumber = (str: string) => str.replace(/\D/g, '')
+
+const changeState = async (item, selectedTasks) => {
+  const { status, status_comment, number_views_moderation, coefficient } =
+    item.status_moderation_streamer.current ?? {}
+  const data = {
+    id: item.id,
+    status,
+    status_comment,
+    number_views_moderation: cleanNumber(number_views_moderation),
+    rules: selectedTasks,
+    coefficient
+  }
+  try {
+    await streamerStore.setPublicationStreamerStatus(data)
+    getRequest()
+  } catch (error: any) {
+    errorStore.setErrors(error.response?.data?.message ?? '')
+  }
 }
 
 const handleKeydown = (e) => {
@@ -132,6 +123,7 @@ const handleKeydown = (e) => {
 
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
+  streamerStore.getCoeffsList()
 })
 
 onBeforeUnmount(() => {

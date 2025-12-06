@@ -386,43 +386,6 @@ const activePanelVal = computed({
 </script>
 
 <style scoped lang="scss">
-.side-panel {
-  height: 89vh;
-  z-index: 999;
-  min-width: 500px;
-  max-width: 500px;
-  border-radius: 16px;
-  box-shadow: none;
-  margin-left: 6px;
-  padding: 6px 20px 20px 20px !important;
-}
-
-:deep(.v-card-title) {
-  position: sticky;
-  top: 0;
-  background: #fff !important;
-  z-index: 1;
-  padding: 0 !important;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-:deep(.v-card-text) {
-  padding: 0 !important;
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
-:deep(.v-card-actions) {
-  position: absolute;
-  background: #fff;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  padding: 20px !important;
-}
-
 .user-card {
   background-color: #f5f9ff;
   padding: 16px;

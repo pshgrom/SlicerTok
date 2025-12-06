@@ -118,26 +118,26 @@
       </button>
     </template>
     <template #[`item.actions`]="{ item }">
-      <div
-        v-if="item.status !== 'moderation'"
-        class="d-flex align-center"
-        :class="{ 'justify-end': item.status === 'rejected' }"
-      >
-        <VCusomButton
-          :disabled="item.status === 'rejected'"
-          :custom-class="['light', 'avg']"
-          @click="actionRequest(item.id, 'rejected')"
-        >
-          Отклонить заявку
-        </VCusomButton>
-        <VCusomButton
-          class="ml-2"
-          :disabled="item.status === 'awaiting_payment'"
-          :custom-class="['dark', 'avg']"
-          @click="actionRequest(item.id, 'approved')"
-        >
-          Принять заявку
-        </VCusomButton>
+      <div class="d-flex align-center">
+        <v-tooltip text="Открыть заявку" location="bottom">
+          <template #activator="{ props }">
+            <VCusomButton v-bind="props" class="mr-1" :custom-class="['light', 'avg', 'only-icon']">
+              <SvgIcon name="open-modal" />
+            </VCusomButton>
+          </template>
+        </v-tooltip>
+        <!--        <v-tooltip text="Разрешить спор" location="bottom">-->
+        <!--          <template #activator="{ props }">-->
+        <!--            <VCusomButton-->
+        <!--              v-bind="props"-->
+        <!--              :disabled="!item.is_problem_solved"-->
+        <!--              :custom-class="['dark', 'avg', 'only-icon']"-->
+        <!--              @click.stop="actionRequest(item.is_problem_solved, item.id)"-->
+        <!--            >-->
+        <!--              <SvgIcon name="check-check" />-->
+        <!--            </VCusomButton>-->
+        <!--          </template>-->
+        <!--        </v-tooltip>-->
       </div>
     </template>
   </v-data-table>
@@ -162,7 +162,7 @@ import {
   getTextStatus
 } from '@/utils/socials.ts'
 
-const emit = defineEmits(['actionRequest', 'rowClick', 'update:activePanel'])
+const emit = defineEmits(['rowClick', 'update:activePanel'])
 
 const props = defineProps({
   headers: {
@@ -235,11 +235,6 @@ const formatLabel = (label: string) => {
     case 'group_b_current':
       return 'Админ группы B'
   }
-}
-
-const actionRequest = (id: number, status: string) => {
-  emit('actionRequest', id, status)
-  activePanelVal.value = false
 }
 
 const rowProps = (item) => ({
