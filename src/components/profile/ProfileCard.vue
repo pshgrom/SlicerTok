@@ -100,6 +100,7 @@
         </div>
       </div>
     </div>
+    <SmallLoader v-if="isLoading" />
   </div>
 </template>
 <script setup lang="ts">
@@ -108,6 +109,7 @@ import { useRouter } from 'vue-router'
 
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
+import SmallLoader from '@/components/SmallLoader.vue'
 import type { IUser } from '@/interfaces/Slicer'
 import { useSupportUsers } from '@/stores/SupportUsers.ts'
 import { formatDate } from '@/utils/formatDate.ts'
@@ -120,6 +122,10 @@ defineProps({
     default: false
   },
   readonly: {
+    type: Boolean,
+    default: false
+  },
+  isLoading: {
     type: Boolean,
     default: false
   },

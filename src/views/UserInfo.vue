@@ -2,9 +2,10 @@
   <!--  <Test />-->
   <div class="user-info">
     <div class="user-info__wrapper">
-      <ProfileCard v-model:dialog="editDialog" :user="user" />
+      <ProfileCard v-model:dialog="editDialog" :user="user" :is-loading="isLoading" />
       <WalletsCard
         :wallets="sortedWallets"
+        :is-loading="isLoading"
         @set-as-main="setAsMain"
         @remove-wallet="removeWallet"
         @open-modal-wallet="openModalWallet"

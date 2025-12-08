@@ -37,6 +37,7 @@
         </div>
       </div>
     </div>
+    <SmallLoader v-if="isLoading" />
   </div>
 </template>
 <script setup lang="ts">
@@ -44,6 +45,7 @@ import { type PropType, ref } from 'vue'
 
 import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
+import SmallLoader from '@/components/SmallLoader.vue'
 import CurrentWallet from '@/components/wallets/CurrentWallet.vue'
 import { type IWallet } from '@/interfaces/Slicer'
 
@@ -53,6 +55,10 @@ const props = defineProps({
     default: () => []
   },
   readonly: {
+    type: Boolean,
+    default: false
+  },
+  isLoading: {
     type: Boolean,
     default: false
   }
@@ -83,6 +89,7 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
   min-width: 474px;
   border-radius: 16px;
   background: rgba(255, 255, 255, 1);
+  position: relative;
 
   @media (max-width: 1024px) {
     min-width: 358px;
