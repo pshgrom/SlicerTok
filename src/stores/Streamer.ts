@@ -1,3 +1,4 @@
+import type { AxiosError } from 'axios'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -10,6 +11,7 @@ import {
   removeCoeffQuery,
   setPublicationStreamerStatusQuery
 } from '@/api/adminInfo'
+import { finishCheckStreamerQuery } from '@/api/streamers.ts'
 import type { ITableParams } from '@/interfaces/AppModel'
 import { useError } from '@/stores/Errors'
 
@@ -132,6 +134,15 @@ export const useStreamer = defineStore('streamerStore', () => {
     }
   }
 
+  const finishCheckStreamer = async (id: number) => {
+    try {
+      return await finishCheckStreamerQuery(id)
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+    }
+  }
+
   const addNewCoeff = async (newCoeff: string) => {
     try {
       return await addNewCoeffQuery(newCoeff)
@@ -152,6 +163,7 @@ export const useStreamer = defineStore('streamerStore', () => {
     coeffs,
     removeCoeff,
     addNewCoeff,
-    setPublicationStreamerStatus
+    setPublicationStreamerStatus,
+    finishCheckStreamer
   }
 })

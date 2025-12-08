@@ -126,18 +126,33 @@
             </VCusomButton>
           </template>
         </v-tooltip>
-        <!--        <v-tooltip text="Разрешить спор" location="bottom">-->
-        <!--          <template #activator="{ props }">-->
-        <!--            <VCusomButton-->
-        <!--              v-bind="props"-->
-        <!--              :disabled="!item.is_problem_solved"-->
-        <!--              :custom-class="['dark', 'avg', 'only-icon']"-->
-        <!--              @click.stop="actionRequest(item.is_problem_solved, item.id)"-->
-        <!--            >-->
-        <!--              <SvgIcon name="check-check" />-->
-        <!--            </VCusomButton>-->
-        <!--          </template>-->
-        <!--        </v-tooltip>-->
+        <v-tooltip text="Закончить проверку" location="bottom">
+          <template #activator="{ props }">
+            <VCusomButton
+              v-bind="props"
+              :custom-class="['dark', 'avg', 'only-icon']"
+              :disabled="
+                item.status_moderation_streamer.current.status === 'todo' ||
+                !item.status_moderation_streamer.current.status
+              "
+              @click.stop="finishCheck(item.id, item.status_moderation_streamer.current.status)"
+            >
+              <SvgIcon name="check-check" />
+            </VCusomButton>
+          </template>
+        </v-tooltip>
+        <v-tooltip text="Было проверено" location="bottom">
+          <template #activator="{ props }">
+            <span
+              v-if="item.was_updated"
+              v-bind="props"
+              class="updated-chip"
+              title="Статус был обновлён"
+            >
+              ●
+            </span>
+          </template>
+        </v-tooltip>
       </div>
     </template>
   </v-data-table>
@@ -162,7 +177,7 @@ import {
   getTextStatus
 } from '@/utils/socials.ts'
 
-const emit = defineEmits(['rowClick', 'update:activePanel'])
+const emit = defineEmits(['rowClick', 'update:activePanel', 'finishCheck'])
 
 const props = defineProps({
   headers: {
@@ -213,6 +228,11 @@ const activePanelVal = computed({
     emit('update:activePanel', val)
   }
 })
+
+const finishCheck = (id: number | string, status: string) => {
+  if (status === 'todo' || !status) return
+  emit('finishCheck', id)
+}
 
 const openVideo = (url: string) => {
   isModalOpenVideo.value = true
@@ -290,5 +310,14 @@ watch(
       }
     }
   }
+}
+
+.updated-chip {
+  background: #e9ffe9;
+  color: #0a8a0a;
+  padding: 2px 6px;
+  font-size: 12px;
+  border-radius: 6px;
+  margin-left: 8px;
 }
 </style>

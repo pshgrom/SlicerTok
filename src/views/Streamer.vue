@@ -14,6 +14,7 @@
         :selected-index="selectedIndex"
         :items-per-page="queryParams.perPage"
         @row-click="onRowClick"
+        @finish-check="finishCheck"
       />
       <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
         <TablePagination
@@ -85,6 +86,15 @@ const nextRow = () => {
   if (selectedIndex.value < calcDataItems.value.length - 1) {
     selectedIndex.value++
     currentRecord.value = calcDataItems.value[selectedIndex.value]
+  }
+}
+
+const finishCheck = async (id: number) => {
+  const { data } = await streamerStore.finishCheckStreamer(id)
+  const msg = data?.message ?? ''
+  errorStore.setErrors(msg, 'success')
+  if (data?.code === 200) {
+    getRequest()
   }
 }
 

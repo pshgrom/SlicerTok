@@ -1027,7 +1027,7 @@ const videoSrc = ref('')
 
 const openVideo = () => {
   isModalOpenVideo.value = true
-  videoSrc.value = '/videos/rules.MP4'
+  videoSrc.value = '/videos/rules-min.mp4'
 }
 
 const streamerRules = computed({
