@@ -12,13 +12,8 @@
         }"
       >
         <HeaderMain v-if="showContent || showForSlicer" />
-        <div v-if="showChat && !isMobile" class="chat-user">
-          <SvgIcon
-            :disabled="isSlicer && !userName"
-            name="chat"
-            class="chat-open"
-            @click="toggleChat"
-          />
+        <div v-if="showChat && !isMobile" class="chat-user" @click="toggleChat">
+          <SvgIcon :disabled="isSlicer && !userName" name="chat" class="chat-open" />
           <span
             v-if="chatStore.unreadCount > 0 && !userInfoStore.showChat"
             class="chat-user__badge"

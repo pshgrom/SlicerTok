@@ -17,12 +17,21 @@ import {
   verifyTwoFactorQuery
 } from '@/api/userInfo'
 import type { INewPublication, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
+import type { IUser } from '@/interfaces/Slicer'
+import { useAuth } from '@/stores/Auth.ts'
 import { useError } from '@/stores/Errors'
 
 export const useUserInfo = defineStore('userInfoStore', () => {
   const isLoading = ref<boolean>(false)
   const showChat = ref<boolean>(false)
+  const authStore = useAuth()
   const showRules = ref<boolean>(false)
+  const user = ref<IUser>({
+    name: '',
+    phone: authStore.phone || '',
+    email: '',
+    telegram: ''
+  })
   const qrCode = ref('')
   const secretKey = ref('')
   const queryParams = ref<ITableParams>({
@@ -236,6 +245,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     isEnableGoogle2fa,
     updateUserInfoItem,
     resubmissionPublication,
-    checkLinkPublication
+    checkLinkPublication,
+    user
   }
 })

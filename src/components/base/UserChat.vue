@@ -198,6 +198,16 @@ watch(
 )
 
 watch(
+  () => userInfoStore.user.name,
+  async (name) => {
+    if (name && streamer.value) {
+      await chatStore.initializeChat(+streamer.value, true)
+    }
+  },
+  { deep: true }
+)
+
+watch(
   () => streamer.value,
   async (value, oldValue) => {
     if (!value || value === oldValue) return

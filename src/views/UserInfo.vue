@@ -77,14 +77,12 @@ import WalletsCard from '@/components/wallets/WalletsCard.vue'
 import { userInfoHeaders } from '@/constants/tableHeaders'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import type { IUploadVideo, IUser, IWallet } from '@/interfaces/Slicer'
-import { useAuth } from '@/stores/Auth'
 import { useError } from '@/stores/Errors'
 import { useRequestSocket } from '@/stores/RequestsSocket.ts'
 import { useUserInfo } from '@/stores/UserInfo'
 
 const headers = ref<ITableHeaders[]>(userInfoHeaders)
 
-const authStore = useAuth()
 const userInfoStore = useUserInfo()
 const errorStore = useError()
 const router = useRouter()
@@ -104,14 +102,16 @@ const loadingUser = ref<boolean>(false)
 
 const userId = ref<string | null | number>(null)
 
-const user = ref<IUser>({
-  name: '',
-  phone: authStore.phone || '',
-  email: '',
-  telegram: ''
-})
-
 const isLoading = computed(() => userInfoStore.isLoading)
+
+const user = computed({
+  get() {
+    return userInfoStore.user
+  },
+  set(val) {
+    userInfoStore.user = val
+  }
+})
 
 const showRules = computed({
   get() {
