@@ -62,13 +62,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import AddVideoDialog from '@/components/modals/AddVideoDialog.vue'
 import EditProfileDialog from '@/components/modals/EditProfileDialog.vue'
-import RulesDialog from '@/components/modals/RulesDialog.vue'
+const RulesDialog = defineAsyncComponent(() => import('@/components/modals/RulesDialog.vue'))
 import WalletModal from '@/components/modals/WalletModal.vue'
 import ProfileCard from '@/components/profile/ProfileCard.vue'
 import TablePagination from '@/components/tables/TablePagination.vue'
