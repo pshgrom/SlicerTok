@@ -1,11 +1,10 @@
 <template>
-  <!--  <Test />-->
   <div class="user-info">
     <div class="user-info__wrapper">
       <ProfileCard v-model:dialog="editDialog" :user="user" :is-loading="isLoading" />
       <WalletsCard
         :wallets="sortedWallets"
-        :is-loading="isLoading"
+        :is-loading="loadingWallets"
         @set-as-main="setAsMain"
         @remove-wallet="removeWallet"
         @open-modal-wallet="openModalWallet"
@@ -34,7 +33,7 @@
 
     <TableUserInfo
       :headers="headers"
-      :is-loading="isLoading"
+      :is-loading="loadingUser"
       :items="userInfoData"
       :items-per-page="queryParams.perPage"
       @resubmission-publication="resubmissionPublication"
@@ -100,6 +99,8 @@ const editDialog = ref(false)
 const dialogVideo = ref(false)
 const publicationId = ref(null)
 const endDate = ref<string | null>(null)
+const loadingWallets = ref<boolean>(false)
+const loadingUser = ref<boolean>(false)
 
 const userId = ref<string | null | number>(null)
 
@@ -299,11 +300,11 @@ const fetchPublications = () => {
 
 const fetchUserInfo = async () => {
   try {
+    loadingUser.value = true
     const response = await userInfoStore.getInfo()
     const { contacts, name: userName, key } = response?.data?.profile ?? {}
     endDate.value = response.data?.inf_updated_at
     userId.value = response.data?.id
-
     user.value = {
       ...contacts,
       name: userName,
@@ -311,17 +312,22 @@ const fetchUserInfo = async () => {
     }
   } catch (error) {
     console.error('Ошибка загрузки информации пользователя:', error)
+  } finally {
+    loadingUser.value = false
   }
 }
 
 const fetchWallets = async () => {
   try {
+    loadingWallets.value = true
     const response = await userInfoStore.getWallets()
     if (response.data?.data?.length) {
       wallets.value = response.data.data
     }
   } catch (error) {
     console.error('Ошибка загрузки кошельков:', error)
+  } finally {
+    loadingWallets.value = false
   }
 }
 
