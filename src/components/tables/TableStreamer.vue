@@ -143,7 +143,7 @@
         </v-tooltip>
         <v-tooltip text="Статус был обновлён" location="bottom">
           <template #activator="{ props }">
-            <span v-if="item.was_updated" v-bind="props" class="updated-chip"> ● </span>
+            <span v-if="!item.was_updated" v-bind="props" class="updated-chip"> ● </span>
           </template>
         </v-tooltip>
       </div>
@@ -213,15 +213,6 @@ const computedHeaders = computed<ITableHeaders[]>({
   }
 })
 
-const activePanelVal = computed({
-  get() {
-    return props.activePanel
-  },
-  set(val) {
-    emit('update:activePanel', val)
-  }
-})
-
 const finishCheck = (id: number | string, status: string) => {
   if (status === 'todo' || !status) return
   emit('finishCheck', id)
@@ -237,7 +228,7 @@ const showViolations = (rules: any) => {
   return taskRules
     .filter((tr) => rules.includes(tr.key))
     .map((tr) => tr.name_reverse)
-    .map((name, index) => `${index + 1}. ${name}`)
+    .map((name, index: number) => `${index + 1}. ${name}`)
     .join('<br>')
 }
 

@@ -13,6 +13,7 @@ import AdminInfo from '@/views/AdminInfo.vue'
 import Landing from '@/views/Landing.vue'
 import LoginView from '@/views/LoginView.vue'
 import LoginViewAdmin from '@/views/LoginViewAdmin.vue'
+import Streamer from '@/views/Streamer.vue'
 import SupportPage from '@/views/SupportPage.vue'
 import UserInfo from '@/views/UserInfo.vue'
 
@@ -125,7 +126,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/streamer',
     name: 'Streamer',
-    component: () => import('@/views/Streamer.vue'),
+    component: Streamer,
     meta: { requiresAuth: true, roles: [ROLES.STREAMER], showChat: false }
   },
   {
@@ -134,12 +135,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/AdminCoeff.vue'),
     meta: { requiresAuth: true, roles: ROLES.STREAMER, showChat: false }
   },
-  // {
-  //   path: '/admins-online',
-  //   name: 'AdminsOnlinePage',
-  //   component: () => import('@/views/AdminsOnlinePage.vue'),
-  //   meta: { requiresAuth: true, roles: ROLES.STREAMER, showChat: false }
-  // },
   {
     path: '/streamer-logs',
     name: 'AdminStreamerLogs',

@@ -5,6 +5,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import type { Config as SvgoConfig } from 'svgo'
 import { defineConfig } from 'vite'
 import viteCompression from 'vite-plugin-compression'
+import { lazyImport } from 'vite-plugin-lazy-import'
 import vuetify from 'vite-plugin-vuetify'
 import svgLoader from 'vite-svg-loader'
 
@@ -42,8 +43,13 @@ const prodPlugins = [
 
 export default defineConfig({
   cacheDir: 'node_modules/.vite_cache',
-
+  experimental: {
+    persistentCache: true
+  },
   plugins: [
+    lazyImport({
+      dirs: ['src/views', 'src/components/modals']
+    }),
     vue({
       script: {
         defineModel: true,
@@ -156,6 +162,7 @@ export default defineConfig({
 
   define: {
     __VUE_PROD_DEVTOOLS__: false,
-    __VUE_OPTIONS_API__: false
+    __VUE_OPTIONS_API__: false,
+    'process.env.DEBUG': false
   }
 })
