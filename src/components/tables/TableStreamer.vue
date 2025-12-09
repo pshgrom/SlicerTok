@@ -143,7 +143,13 @@
         </v-tooltip>
         <v-tooltip text="Статус был обновлён" location="bottom">
           <template #activator="{ props }">
-            <span v-if="!item.was_updated" v-bind="props" class="updated-chip"> ● </span>
+            <span
+              v-if="item.status_moderation_streamer.current.is_complete"
+              v-bind="props"
+              class="updated-chip"
+            >
+              ●
+            </span>
           </template>
         </v-tooltip>
       </div>
