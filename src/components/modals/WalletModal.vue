@@ -6,7 +6,6 @@
         <v-btn icon="mdi-close" variant="text" @click="dialog = false" />
       </v-card-title>
       <v-card-text>
-        <!--        TPAgKfYzRdK83Qocc4gXvEVu4jPKfeuer5-->
         <v-form ref="formRef">
           <VCustomInput
             v-model="wallet.address"

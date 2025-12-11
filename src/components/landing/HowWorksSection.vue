@@ -29,8 +29,6 @@
   </section>
 </template>
 
-<script setup lang="ts"></script>
-
 <style scoped lang="scss">
 .how {
   padding-top: 103px;

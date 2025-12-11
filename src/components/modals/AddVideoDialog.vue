@@ -70,18 +70,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, type PropType, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, type PropType, ref, watch } from 'vue'
 
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import VCustomSelect from '@/components/base/VCustomSelect.vue'
-import VideoUploader from '@/components/modals/VideoUploader.vue'
 import CurrentWallet from '@/components/wallets/CurrentWallet.vue'
 import type { IUploadVideo, IWallet } from '@/interfaces/Slicer'
 import { useError } from '@/stores/Errors'
 import { useStreamers } from '@/stores/Streamers.ts'
 import { useUserInfo } from '@/stores/UserInfo.ts'
 import { videoRules } from '@/utils/validators'
+const VideoUploader = defineAsyncComponent(() => import('@/components/modals/VideoUploader.vue'))
 
 const props = defineProps({
   modelValue: Boolean,
