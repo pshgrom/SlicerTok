@@ -5,14 +5,13 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import type { Config as SvgoConfig } from 'svgo'
 import { defineConfig } from 'vite'
 import viteCompression from 'vite-plugin-compression'
-import { lazyImport } from 'vite-plugin-lazy-import'
 import vuetify from 'vite-plugin-vuetify'
 import svgLoader from 'vite-svg-loader'
 
 const isProd = process.env.NODE_ENV === 'production'
 const isAnalyze = process.env.ANALYZE === 'true'
 
-const prodPlugins = [
+const compressionPlugins = [
   viteCompression({
     algorithm: 'gzip',
     ext: '.gz',
@@ -26,20 +25,26 @@ const prodPlugins = [
     threshold: 10240,
     filter: /\.(js|mjs|json|css|html)$/i,
     compressionOptions: { level: 11 }
-  }),
-
-  ...(isAnalyze
-    ? [
-        visualizer({
-          filename: 'bundle-report.html',
-          template: 'treemap',
-          brotliSize: true,
-          gzipSize: true,
-          open: true
-        })
-      ]
-    : [])
+  })
 ]
+
+const analyzerPlugins = isAnalyze
+  ? [
+      visualizer({
+        filename: 'bundle-report.html',
+        template: 'treemap',
+        brotliSize: true,
+        gzipSize: true,
+        open: true
+      }),
+      visualizer({
+        filename: 'bundle-report.json',
+        json: true,
+        brotliSize: true,
+        gzipSize: true
+      })
+    ]
+  : []
 
 export default defineConfig({
   cacheDir: 'node_modules/.vite_cache',
@@ -47,9 +52,9 @@ export default defineConfig({
     persistentCache: true
   },
   plugins: [
-    lazyImport({
-      dirs: ['src/views', 'src/components/modals']
-    }),
+    // lazyImport({
+    //   dirs: ['src/views', 'src/components/modals']
+    // }),
     vue({
       script: {
         defineModel: true,
@@ -61,8 +66,10 @@ export default defineConfig({
         }
       }
     }),
-
     vuetify({ autoImport: true, styles: 'sass' }),
+    // Components({
+    //   resolvers: [VuetifyResolver()]
+    // }),
 
     svgLoader({
       svgoConfig: {
@@ -75,7 +82,7 @@ export default defineConfig({
       } satisfies SvgoConfig
     }),
 
-    ...(isProd ? prodPlugins : [])
+    ...(isProd ? compressionPlugins : [])
   ],
 
   css: {
@@ -105,6 +112,8 @@ export default defineConfig({
     reportCompressedSize: false,
 
     rollupOptions: {
+      external: ['vuetify/lib'],
+      plugins: [...analyzerPlugins],
       output: {
         inlineDynamicImports: false,
 
@@ -122,9 +131,14 @@ export default defineConfig({
             return 'view_' + id.split('src/views/')[1].split('/')[0]
           }
 
+          if (id.includes('src/components/modals/')) {
+            const name = id.split('src/components/modals/')[1].split('/')[0]
+            return 'modal_' + name
+          }
+          if (id.includes('src/components/landing/')) return 'components_landing'
           if (id.includes('src/components/tables/')) return 'components_tables'
           if (id.includes('src/components/base/')) return 'components_base'
-          if (id.includes('src/components/')) return 'components'
+          if (id.includes('src/components/')) return 'components_misc'
         },
 
         chunkFileNames: 'assets/[name]-[hash].js',
