@@ -60,6 +60,7 @@ const menuItems: Partial<Record<RoleType, MenuItem[]>> = {
   [ROLES.STREAMER]: [
     { label: 'Заявки', to: '/streamer' },
     { label: 'Коэффициенты', to: '/streamer-coefficients' },
+    { label: 'Статистика', to: '/streamer-stats' },
     // { label: 'Админы онлайн', to: '/admins-online' },
     { label: 'Логи', to: '/streamer-logs' }
   ],

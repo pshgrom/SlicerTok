@@ -136,6 +136,12 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true, roles: ROLES.STREAMER, showChat: false }
   },
   {
+    path: '/streamer-stats',
+    name: 'StreamerStats',
+    component: () => import('@/views/StreamerStats.vue'),
+    meta: { requiresAuth: true, roles: ROLES.STREAMER, showChat: false }
+  },
+  {
     path: '/streamer-logs',
     name: 'AdminStreamerLogs',
     component: () => import('@/views/AdminStreamerLogs.vue'),
