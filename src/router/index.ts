@@ -7,6 +7,7 @@ import {
 } from 'vue-router'
 
 import { ROLES, type RoleType } from '@/constants/roles'
+import { redirectByRole } from '@/interfaces/IRouter.ts'
 import { useLoader } from '@/stores/GlobalLoader.ts'
 import { useStreamers } from '@/stores/Streamers.ts'
 import AdminInfo from '@/views/AdminInfo.vue'
@@ -192,30 +193,17 @@ router.beforeEach(
       }
     }
 
-    if (token && role && (to.name === 'Login' || to.name === 'LoginAdmin' || to.path === '/')) {
-      if (role === ROLES.SLICER) {
-        return next({ name: 'UserInfo' })
+    const isAuthPage = to.name === 'Login' || to.name === 'LoginAdmin' || to.path === '/'
+
+    if (token && role && isAuthPage) {
+      const redirectRoute = redirectByRole[role]
+
+      if (redirectRoute) {
+        return next({ name: redirectRoute })
       }
 
-      if (role === ROLES.ADMIN) {
-        return next({ name: 'AdminInfo' })
-      }
-
-      if (role === ROLES.ADMIN_FINANCE) {
-        return next({ name: 'AdminPaymentsFinance' })
-      }
-
-      if (role === ROLES.ADMIN_MAIN) {
-        return next({ name: 'AdminMain' })
-      }
-
-      if (role === ROLES.STREAMER) {
-        return next({ name: 'Streamer' })
-      }
-
-      if (role === ROLES.SUPPORT) {
-        return next({ name: 'Support' })
-      }
+      // fallback — если роль неизвестна
+      return next({ name: 'Login' })
     }
 
     if (requiresAuth && !token) {

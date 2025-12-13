@@ -11,7 +11,7 @@ import {
   removeCoeffQuery,
   setPublicationStreamerStatusQuery
 } from '@/api/adminInfo'
-import { finishCheckStreamerQuery } from '@/api/streamers.ts'
+import { finishCheckStreamerQuery, getStreamerStatsQuery } from '@/api/streamers.ts'
 import type { ITableParams } from '@/interfaces/AppModel'
 import { useError } from '@/stores/Errors'
 
@@ -24,6 +24,7 @@ export const useStreamer = defineStore('streamerStore', () => {
   })
   const items = ref([])
   const coeffs = ref([])
+  const stats = ref([])
   const errorStore = useError()
 
   const setQueryParams = (val: ITableParams) => {
@@ -118,6 +119,30 @@ export const useStreamer = defineStore('streamerStore', () => {
     }
   }
 
+  const getStreamerStats = async (params: ITableParams) => {
+    try {
+      const data: ITableParams = {
+        page: params.page,
+        perPage: params.perPage ?? 50
+      }
+      isLoading.value = true
+      const resp = await getStreamerStatsQuery(data)
+      stats.value = resp?.data?.data ?? []
+      const queryResp = resp?.data?.meta ?? {}
+      const { current_page = 1, per_page = 50, total } = queryResp
+      queryParams.value = {
+        ...queryParams.value,
+        page: current_page,
+        perPage: per_page,
+        total
+      }
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const removeCoeff = async (id: number) => {
     try {
       return await removeCoeffQuery(id)
@@ -164,6 +189,7 @@ export const useStreamer = defineStore('streamerStore', () => {
     removeCoeff,
     addNewCoeff,
     setPublicationStreamerStatus,
-    finishCheckStreamer
+    finishCheckStreamer,
+    getStreamerStats
   }
 })

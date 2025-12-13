@@ -190,6 +190,17 @@ export const adminMain = [
   { title: '', value: 'actions' }
 ]
 
+export const streamerStats = [
+  {
+    title: 'ID',
+    value: 'id'
+  },
+  { title: 'Дата', value: 'date' },
+  { title: 'Количество видео загруженных за день', value: 'quantity1' },
+  { title: 'Количество принятых', value: 'quantity12' },
+  { title: 'Количество отклоненных', value: 'quantity13' }
+]
+
 export const adminCoeffs = [
   { title: 'Значение', value: 'rate' },
   { title: '', value: 'actions' }

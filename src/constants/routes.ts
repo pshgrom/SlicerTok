@@ -3,6 +3,6 @@ export const ADMIN_ROUTE_MAP = {
   FINANCE: 'AdminPaymentsFinance',
   MAIN: 'AdminMain',
   SUPPORT: 'Support',
-  STREAMER: 'Streamer',
+  STREAMER: 'StreamerStats',
   DEFAULT: 'Login'
 } as const

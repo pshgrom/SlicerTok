@@ -7,3 +7,6 @@ export const streamerListQuery = (): Promise<AxiosResponse<unknown>> =>
 
 export const finishCheckStreamerQuery = (id: number): Promise<AxiosResponse<unknown>> =>
   api.post('/streamer/publication/complete-moderation', { id })
+
+export const getStreamerStatsQuery = (): Promise<AxiosResponse<unknown>> =>
+  api.get('/streamer/stats/stats')

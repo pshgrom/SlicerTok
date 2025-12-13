@@ -1,14 +1,14 @@
 <!--<template>-->
 <!--  <div class="graph">-->
-<!--    <DoughnutChart :chartData="dataGraphDef" />-->
+<!--    <DoughnutChart :chart-data="dataGraphDef" />-->
 <!--  </div>-->
 <!--  <div class="table-settings">-->
 <!--    <div class="table-settings-search">-->
 <!--      <VCustomInput-->
 <!--        v-model.trim="queryParams.walletId"-->
 <!--        :label="'Поиск по кошельку'"-->
-<!--        :hideDetails="true"-->
-<!--        @updateValue="searchByWallet"-->
+<!--        :hide-details="true"-->
+<!--        @update-value="searchByWallet"-->
 <!--      />-->
 <!--    </div>-->
 <!--    <div class="table-settings-filter">-->
@@ -17,22 +17,22 @@
 <!--          v-model="queryParams.declaredStatus"-->
 <!--          :label="'Заявленный статус'"-->
 <!--          :items="statuses"-->
-<!--          @updateStatus="changeDeclaredStatus"-->
 <!--          :style="{ width: '140px' }"-->
+<!--          @update-status="changeDeclaredStatus"-->
 <!--        />-->
 <!--        <VCustomSelect-->
 <!--          v-model="queryParams.actualStatus"-->
 <!--          :label="'Актуальный статус'"-->
 <!--          :items="statuses"-->
-<!--          @updateStatus="changeActualStatus"-->
 <!--          :style="{ width: '140px' }"-->
+<!--          @update-status="changeActualStatus"-->
 <!--        />-->
 <!--        <VCustomSelect-->
 <!--          v-model="queryParams.suspicionStatus"-->
 <!--          :label="'Подозрительный статус'"-->
 <!--          :items="statusesSuspicion"-->
-<!--          @updateStatus="changeSuspicionStatus"-->
 <!--          :style="{ width: '140px' }"-->
+<!--          @update-status="changeSuspicionStatus"-->
 <!--        />-->
 <!--        <v-btn class="table-settings-filter__reset" size="x-small" @click="resetFilters">-->
 <!--          Сбросить-->
@@ -42,33 +42,34 @@
 <!--  </div>-->
 <!--  <TableData-->
 <!--    :headers="headers"-->
-<!--    :isLoading="isLoading"-->
+<!--    :is-loading="isLoading"-->
 <!--    :items="calcDataWallet"-->
 <!--    :items-per-page="queryParams.perPage"-->
-<!--  ></TableData>-->
+<!--  />-->
 <!--  <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">-->
 <!--    <TablePagination-->
-<!--      v-model:queryParams="queryParams"-->
+<!--      v-model:query-params="queryParams"-->
 <!--      :loading="isLoading"-->
-<!--      :totalPages="totalPages"-->
-<!--      @changePage="changePage"-->
+<!--      :total-pages="totalPages"-->
+<!--      @change-page="changePage"-->
 <!--    />-->
 <!--  </div>-->
 <!--</template>-->
 
 <!--<script setup lang="ts">-->
-<!--import TableData from '@/components/tables/TableData.vue'-->
-<!--import { computed, onMounted, ref, watch } from 'vue'-->
-<!--import { paymentListHeaders } from '@/constants/tableHeaders'-->
-<!--import { ITableHeaders, ITableItems, ITableParams } from '@/interfaces/AppModel'-->
-<!--import { usePaymentList } from '@/stores/PaymentList'-->
-<!--import TablePagination from '@/components/tables/TablePagination.vue'-->
-<!--import { useRouter } from 'vue-router'-->
-<!--import VCustomSelect from '@/components/base/VCustomSelect.vue'-->
-<!--import VCustomInput from '@/components/base/VCustomInput.vue'-->
-<!--import debounce from 'lodash/debounce'-->
-<!--import { DoughnutChart } from 'vue-chart-3'-->
 <!--import { Chart, registerables } from 'chart.js'-->
+<!--import debounce from 'lodash/debounce'-->
+<!--import { computed, onMounted, ref, watch } from 'vue'-->
+<!--import { DoughnutChart } from 'vue-chart-3'-->
+<!--import { useRouter } from 'vue-router'-->
+
+<!--import VCustomInput from '@/components/base/VCustomInput.vue'-->
+<!--import VCustomSelect from '@/components/base/VCustomSelect.vue'-->
+<!--import TableData from '@/components/tables/TableData.vue'-->
+<!--import TablePagination from '@/components/tables/TablePagination.vue'-->
+<!--import { paymentListHeaders } from '@/constants/tableHeaders'-->
+<!--import type { ITableHeaders, ITableItems, ITableParams } from '@/interfaces/AppModel'-->
+<!--import { usePaymentList } from '@/stores/PaymentList'-->
 
 <!--Chart.register(...registerables)-->
 
