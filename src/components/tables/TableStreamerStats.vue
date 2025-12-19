@@ -13,6 +13,9 @@
     <template #loading>
       <v-progress-circular indeterminate color="rgb(169, 55, 244)" />
     </template>
+    <template #[`item.date`]="{ item }">
+      <div style="min-width: 150px">{{ formatDate(item.date) }}</div>
+    </template>
   </v-data-table>
 </template>
 
@@ -20,6 +23,7 @@
 import { computed, type PropType, ref } from 'vue'
 
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
+import { formatDate } from '@/utils/formatDate.ts'
 
 const props = defineProps({
   headers: {

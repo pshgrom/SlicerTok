@@ -11,7 +11,11 @@ import {
   removeCoeffQuery,
   setPublicationStreamerStatusQuery
 } from '@/api/adminInfo'
-import { finishCheckStreamerQuery, getStreamerStatsQuery } from '@/api/streamers.ts'
+import {
+  finishCheckStreamerQuery,
+  getStreamerAllStatsQuery,
+  getStreamerDailyStatsQuery
+} from '@/api/streamers.ts'
 import type { ITableParams } from '@/interfaces/AppModel'
 import { useError } from '@/stores/Errors'
 
@@ -24,7 +28,8 @@ export const useStreamer = defineStore('streamerStore', () => {
   })
   const items = ref([])
   const coeffs = ref([])
-  const stats = ref([])
+  const allStats = ref([])
+  const dailyStats = ref([])
   const errorStore = useError()
 
   const setQueryParams = (val: ITableParams) => {
@@ -119,15 +124,27 @@ export const useStreamer = defineStore('streamerStore', () => {
     }
   }
 
-  const getStreamerStats = async (params: ITableParams) => {
+  const getStreamerAllStats = async () => {
+    try {
+      isLoading.value = true
+      const { data } = await getStreamerAllStatsQuery()
+      allStats.value = data?.data?.statistic ?? []
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const getStreamerDailyStats = async (params: ITableParams) => {
     try {
       const data: ITableParams = {
         page: params.page,
         perPage: params.perPage ?? 50
       }
       isLoading.value = true
-      const resp = await getStreamerStatsQuery(data)
-      stats.value = resp?.data?.data ?? []
+      const resp = await getStreamerDailyStatsQuery(data)
+      dailyStats.value = resp?.data?.data ?? []
       const queryResp = resp?.data?.meta ?? {}
       const { current_page = 1, per_page = 50, total } = queryResp
       queryParams.value = {
@@ -190,6 +207,9 @@ export const useStreamer = defineStore('streamerStore', () => {
     addNewCoeff,
     setPublicationStreamerStatus,
     finishCheckStreamer,
-    getStreamerStats
+    getStreamerDailyStats,
+    getStreamerAllStats,
+    dailyStats,
+    allStats
   }
 })

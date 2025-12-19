@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed, nextTick, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import ErrorAlert from '@/components/base/ErrorAlert.vue'
@@ -94,16 +94,25 @@ watch(
 watch(
   () => userInfoStore.showChat,
   (val) => {
-    const overlays = document.querySelectorAll('.v-overlay-container > .v-overlay')
-    overlays.forEach((overlay) => {
-      const isMenu = overlay.classList.contains('v-overlay--menu')
-      if (val) {
-        overlay.style.display = isMenu ? 'contents' : 'none'
-      } else {
-        overlay.style.display = 'contents'
-      }
+    nextTick(() => {
+      const overlays = document.querySelectorAll('.v-overlay-container > .v-overlay')
+      overlays.forEach((overlay) => {
+        const isMenu = overlay.classList.contains('v-overlay--menu')
+        const isActive = overlay.classList.contains('v-overlay--active')
+
+        if (val && !isMenu && isActive) {
+          overlay.style.opacity = '0'
+          overlay.style.pointerEvents = 'none'
+          overlay.style.visibility = 'hidden'
+        } else if (!val && isActive) {
+          overlay.style.opacity = ''
+          overlay.style.pointerEvents = ''
+          overlay.style.visibility = ''
+        }
+      })
     })
-  }
+  },
+  { immediate: true }
 )
 
 const isSlicer = computed(() => authStore.role === 'slicer')

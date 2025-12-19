@@ -8,5 +8,8 @@ export const streamerListQuery = (): Promise<AxiosResponse<unknown>> =>
 export const finishCheckStreamerQuery = (id: number): Promise<AxiosResponse<unknown>> =>
   api.post('/streamer/publication/complete-moderation', { id })
 
-export const getStreamerStatsQuery = (): Promise<AxiosResponse<unknown>> =>
-  api.get('/streamer/stats/stats')
+export const getStreamerDailyStatsQuery = (): Promise<AxiosResponse<unknown>> =>
+  api.get('/streamer/statistic/get-statistic-daily')
+
+export const getStreamerAllStatsQuery = (): Promise<AxiosResponse<unknown>> =>
+  api.get('/streamer/statistic/get-all-statistic')
