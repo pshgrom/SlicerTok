@@ -25,6 +25,17 @@
           class="mb-3"
         />
 
+        <VCustomInput
+          v-if="isEnableGoogle2fa"
+          v-model="code"
+          label="Код подтверждения"
+          placeholder="123456"
+          class="mb-4"
+          autofocus
+          :rules="[codeValidationRule]"
+          required
+        />
+
         <div class="login-admin__actions">
           <VCusomButton type="submit" :custom-class="['dark', 'avg']" :loading="isLoading">
             Войти
@@ -36,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import SvgIcon from '@/components/base/SvgIcon.vue'
@@ -63,9 +74,14 @@ const credentials = reactive<LoginCredentials>({
   password: ''
 })
 
+const code = ref('')
+
 const authStore = useAuth()
 const errorStore = useError()
 const router = useRouter()
+const CODE_LENGTH = 6
+
+const isEnableGoogle2fa = computed(() => authStore.isEnableGoogle2fa)
 
 // const isFormValid = computed(() => credentials.login.trim() && credentials.password.trim())
 
@@ -79,6 +95,10 @@ const getRouteForRole = (role: number): string => {
   }
 
   return routeMap[role] || ADMIN_ROUTE_MAP.DEFAULT
+}
+
+const codeValidationRule = (value: string) => {
+  return value.length === CODE_LENGTH || 'Код должен быть из 6 цифр'
 }
 
 const handleSuccessfulLogin = async (token: string, role: number) => {
@@ -103,11 +123,11 @@ const handleLogin = async (): Promise<void> => {
 
     const authData: IAuth = {
       login: credentials.login.trim(),
-      password: credentials.password.trim()
+      password: credentials.password.trim(),
+      google2fa_key: isEnableGoogle2fa.value ? code.value : undefined
     }
 
     const { token, role } = await authStore.login(authData)
-
     if (token && role) {
       await handleSuccessfulLogin(token, role)
     }
@@ -118,7 +138,6 @@ const handleLogin = async (): Promise<void> => {
     isLoading.value = false
   }
 }
-console.log('admin auth')
 </script>
 
 <style scoped lang="scss">

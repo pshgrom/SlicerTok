@@ -117,7 +117,18 @@ const onChange = async (e: boolean) => {
 
 const submit = async () => {
   const isValid = await formRef?.value?.validate()
-  if (isValid?.valid) {
+  if (!isValid.valid) {
+    const formEl = formRef.value?.$el || document.querySelector('.side-panel')
+    const invalidField = formEl?.querySelector('.v-input--error, .v-field--error')
+
+    if (invalidField) {
+      invalidField.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      })
+    }
+    return
+  } else {
     emit('submit', code.value)
     dialog.value = false
   }

@@ -16,14 +16,24 @@ export const useAuth = defineStore('authStore', () => {
   const role = ref<null | string>(localStorage.getItem('role') || null)
   const errorStore = useError()
   const phone = ref('')
+  const isEnableGoogle2fa = ref(false)
   const currentCountryCode = ref<number | null>(null)
 
   const countryCodes = ref([])
 
-  const login = async ({ login, password }: IAuth): Promise<LoginResult | undefined> => {
+  const login = async ({
+    login,
+    password,
+    google2fa_key
+  }: IAuth): Promise<LoginResult | undefined> => {
     try {
-      const { data } = await loginUser({ login, password })
-      const { access_token } = data ?? {}
+      const { data } = await loginUser({ login, password, google2fa_key })
+      const { access_token, is_enable_google2fa } = data ?? {}
+      if (is_enable_google2fa) {
+        isEnableGoogle2fa.value = true
+        return
+      }
+
       if (access_token && data.role[0]) {
         token.value = access_token
         localStorage.setItem('authToken', access_token)
@@ -99,6 +109,7 @@ export const useAuth = defineStore('authStore', () => {
     token,
     setPhone,
     phone,
-    currentCountryCode
+    currentCountryCode,
+    isEnableGoogle2fa
   }
 })

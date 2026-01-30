@@ -4,9 +4,13 @@ import type { IAuth, IAuthByPhone, IAuthConfirmation } from '@/interfaces/Auth'
 
 import api from './axios'
 
-export const loginUser = ({ login, password }: IAuth): Promise<AxiosResponse<unknown>> =>
+export const loginUser = ({
+  login,
+  password,
+  google2fa_key
+}: IAuth): Promise<AxiosResponse<unknown>> =>
   api.post('/user/auth', null, {
-    params: { login, password }
+    params: { login, password, google2fa_key }
   })
 
 export const loginByPhoneQuery = ({

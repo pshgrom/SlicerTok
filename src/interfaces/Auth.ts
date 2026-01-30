@@ -1,6 +1,8 @@
 export interface IAuth {
   login: string
   password: string
+  code?: string
+  google2fa_key?: string
 }
 
 export interface IAuthByPhone {

@@ -46,6 +46,10 @@ const userInfoStore = useUserInfo()
 const { showChat, showRules } = storeToRefs(userInfoStore)
 
 const menuItems: Partial<Record<RoleType, MenuItem[]>> = {
+  [ROLES.ADMIN]: [
+    { label: 'Заявки', to: '/admin-info' },
+    { label: '2FA', onClick: () => emit('updateOpenModal', true) }
+  ],
   [ROLES.SLICER]: [
     { label: 'Правила', onClick: () => (showRules.value = !showRules.value) },
     { label: '2FA', onClick: () => emit('updateOpenModal', true) },
