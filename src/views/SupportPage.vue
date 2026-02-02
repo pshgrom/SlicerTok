@@ -65,6 +65,7 @@ const supportStore = useSupport()
 const requestSocketStore = useRequestSocket()
 
 const isLoading = computed(() => supportStore.isLoading)
+const userId = computed(() => supportStore.supportInfo?.id)
 const router = useRouter()
 const currentRecord = ref({})
 const selectedIndex = ref(-1)
@@ -155,7 +156,8 @@ const handleKeydown = (e) => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  if (!userId.value) await supportStore.getSupportInfo()
   const { page = 1, perPage = 50 } = router.currentRoute.value.query
   queryParams.value = {
     page,

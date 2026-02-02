@@ -60,6 +60,7 @@ const menuItems: Partial<Record<RoleType, MenuItem[]>> = {
       onClick: () => (showChat.value = !showChat.value)
     }
   ],
+  [ROLES.ADMIN_FINANCE]: [{ label: '2FA', onClick: () => emit('updateOpenModal', true) }],
   [ROLES.ADMIN_MAIN]: [{ label: 'Общая информация', to: '/admin-main' }],
   [ROLES.STREAMER]: [
     { label: 'Статистика', to: '/streamer-stats' },
@@ -70,7 +71,8 @@ const menuItems: Partial<Record<RoleType, MenuItem[]>> = {
   [ROLES.SUPPORT]: [
     { label: 'Заявки', to: '/support' },
     { label: 'Пользователи', to: '/support-users' },
-    { label: 'Чат', to: '/support-chat' }
+    { label: 'Чат', to: '/support-chat' },
+    { label: '2FA', onClick: () => emit('updateOpenModal', true) }
   ]
 }
 

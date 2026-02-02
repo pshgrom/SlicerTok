@@ -12,8 +12,11 @@ import {
   saveMarkQuery,
   setPublicationStatusQuery
 } from '@/api/adminInfo'
+import { verifyTwoFactorQuery } from '@/api/userInfo.ts'
 import type { IAdminInfoData, ITableParams, IUserInfo } from '@/interfaces/AppModel'
 import { useError } from '@/stores/Errors'
+import { useHeaderMain } from '@/stores/HeaderMain.ts'
+import { useUserInfo } from '@/stores/UserInfo.ts'
 
 export const useAdminInfo = defineStore('adminInfoStore', () => {
   const isLoading = ref<boolean>(false)
@@ -25,10 +28,13 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
   type CoefficientOption = { label: string | number; value: string | number }
   const coeffs = ref<CoefficientOption[]>([])
   const adminInfoData = ref<IAdminInfoData[]>([])
+  const headerMainStore = useHeaderMain()
+  const userInfo = useUserInfo()
   const adminInfoDataChecked = ref<IAdminInfoData[]>([])
   const preloadUserInfo = ref<IUserInfo | null>(null)
   const adminProfileData = ref<Record<string, unknown> | null>(null)
   const errorStore = useError()
+  const isEnableGoogle2fa = ref(false)
 
   const setQueryParams = (val: ITableParams) => {
     queryParams.value = {
@@ -95,9 +101,28 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     try {
       const { data } = await getAdminInfoQuery()
       adminProfileData.value = (data?.data as Record<string, unknown>) ?? {}
+      isEnableGoogle2fa.value = !!data.data?.is_enable_google2fa
     } catch (error: unknown) {
       const axiosError = error as AxiosError<{ message?: string }>
       errorStore.setErrors(axiosError.response?.data?.message ?? '')
+    }
+  }
+
+  const checkCode = async (code: string) => {
+    try {
+      const { data } = await verifyTwoFactorQuery(+code)
+      const isValidCode = data.valid
+      if (isValidCode) {
+        errorStore.setErrors('Верный код', 'success')
+        await getAdminInfo()
+        headerMainStore.isModalOpen = false
+        userInfo.qrCode = ''
+      } else {
+        errorStore.setErrors('Неверный код', 'error')
+      }
+    } catch (error: any) {
+      const msg = error?.response?.data?.message ?? 'Error'
+      errorStore.setErrors(msg)
     }
   }
 
@@ -178,6 +203,8 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     coeffs,
     getAdminInfo,
     adminProfileData,
-    adminInfoDataChecked
+    adminInfoDataChecked,
+    isEnableGoogle2fa,
+    checkCode
   }
 })

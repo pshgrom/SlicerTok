@@ -11,14 +11,20 @@ import {
   getWalletsQuery,
   verifyUserQuery
 } from '@/api/support'
+import { verifyTwoFactorQuery } from '@/api/userInfo.ts'
 import type { IAdminInfoData, ITableParams, IUserInfo } from '@/interfaces/AppModel'
 import type { IWallet } from '@/interfaces/Slicer.ts'
 import { useError } from '@/stores/Errors'
+import { useHeaderMain } from '@/stores/HeaderMain.ts'
+import { useUserInfo } from '@/stores/UserInfo.ts'
 // import type { ISupportSaveStatus } from '@/interfaces/ISupport'
 
 export const useSupport = defineStore('supportStore', () => {
   const isLoading = ref<boolean>(false)
   const currentUser = ref({})
+  const isEnableGoogle2fa = ref(false)
+  const headerMainStore = useHeaderMain()
+  const userInfo = useUserInfo()
   const wallets = ref<IWallet[]>([])
   const queryParams = ref<ITableParams>({
     page: 1,
@@ -54,8 +60,27 @@ export const useSupport = defineStore('supportStore', () => {
     try {
       const { data } = await getSupportInfoQuery()
       supportInfo.value = data?.data ?? {}
+      isEnableGoogle2fa.value = !!data.data?.is_enable_google2fa
     } catch (error: any) {
       errorStore.setErrors(error.response?.data?.message ?? '')
+    }
+  }
+
+  const checkCode = async (code: string) => {
+    try {
+      const { data } = await verifyTwoFactorQuery(+code)
+      const isValidCode = data.valid
+      if (isValidCode) {
+        errorStore.setErrors('Верный код', 'success')
+        await getSupportInfo()
+        headerMainStore.isModalOpen = false
+        userInfo.qrCode = ''
+      } else {
+        errorStore.setErrors('Неверный код', 'error')
+      }
+    } catch (error: any) {
+      const msg = error?.response?.data?.message ?? 'Error'
+      errorStore.setErrors(msg)
     }
   }
 
@@ -181,6 +206,8 @@ export const useSupport = defineStore('supportStore', () => {
     setQueryParamsSlicer,
     changeFinalValues,
     getSupportInfo,
-    supportInfo
+    supportInfo,
+    isEnableGoogle2fa,
+    checkCode
   }
 })

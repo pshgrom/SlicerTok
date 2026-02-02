@@ -20,10 +20,12 @@ import type { INewPublication, ITableParams, IUserInfoData } from '@/interfaces/
 import type { IUser } from '@/interfaces/Slicer'
 import { useAuth } from '@/stores/Auth.ts'
 import { useError } from '@/stores/Errors'
+import { useHeaderMain } from '@/stores/HeaderMain.ts'
 
 export const useUserInfo = defineStore('userInfoStore', () => {
   const isLoading = ref<boolean>(false)
   const showChat = ref<boolean>(false)
+  const headerMainStore = useHeaderMain()
   const authStore = useAuth()
   const showRules = ref<boolean>(false)
   const user = ref<IUser>({
@@ -104,6 +106,8 @@ export const useUserInfo = defineStore('userInfoStore', () => {
       if (isValidCode) {
         errorStore.setErrors('Верный код', 'success')
         await getInfo()
+        headerMainStore.isModalOpen = false
+        qrCode.value = ''
       } else {
         errorStore.setErrors('Неверный код', 'error')
       }

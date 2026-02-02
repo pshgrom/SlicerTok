@@ -13,8 +13,11 @@ import {
   setTransferQuery,
   transferFinishedQuery
 } from '@/api/adminInfo'
+import { verifyTwoFactorQuery } from '@/api/userInfo.ts'
 import type { ITableParams } from '@/interfaces/AppModel'
 import { useError } from '@/stores/Errors'
+import { useHeaderMain } from '@/stores/HeaderMain.ts'
+import { useUserInfo } from '@/stores/UserInfo.ts'
 
 export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', () => {
   const isLoading = ref<boolean>(false)
@@ -25,6 +28,9 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
   })
   const items = ref<Array<Record<string, unknown>>>([])
   const errorStore = useError()
+  const headerMainStore = useHeaderMain()
+  const userInfo = useUserInfo()
+  const isEnableGoogle2fa = ref(false)
   const adminFinanceInfo = ref<Record<string, unknown> | null>(null)
 
   const setQueryParams = (val: ITableParams) => {
@@ -38,9 +44,28 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
     try {
       const { data } = await getAdminFinanceInfoQuery()
       adminFinanceInfo.value = data?.data ?? {}
+      isEnableGoogle2fa.value = !!data.data?.is_enable_google2fa
     } catch (error: unknown) {
       const axiosError = error as AxiosError<{ message?: string }>
       errorStore.setErrors(axiosError.response?.data?.message ?? '')
+    }
+  }
+
+  const checkCode = async (code: string) => {
+    try {
+      const { data } = await verifyTwoFactorQuery(+code)
+      const isValidCode = data.valid
+      if (isValidCode) {
+        errorStore.setErrors('Верный код', 'success')
+        await getAdminFinanceInfo()
+        headerMainStore.isModalOpen = false
+        userInfo.qrCode = ''
+      } else {
+        errorStore.setErrors('Неверный код', 'error')
+      }
+    } catch (error: any) {
+      const msg = error?.response?.data?.message ?? 'Error'
+      errorStore.setErrors(msg)
     }
   }
 
@@ -193,6 +218,8 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
     getFinishedList,
     transferFinished,
     getTransferListExel,
-    importFile
+    importFile,
+    isEnableGoogle2fa,
+    checkCode
   }
 })

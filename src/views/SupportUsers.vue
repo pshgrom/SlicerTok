@@ -30,16 +30,19 @@ import TablePagination from '@/components/tables/TablePagination.vue'
 import TableSupportUsers from '@/components/tables/TableSupportUsers.vue'
 import { supportUsersHeaders } from '@/constants/tableHeaders'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
+import { useSupport } from '@/stores/Support.ts'
 import { useSupportUsers } from '@/stores/SupportUsers.ts'
 
 const headers = ref<ITableHeaders[]>(supportUsersHeaders)
 
 const supportUsersStore = useSupportUsers()
+const supportStore = useSupport()
 
 const isLoading = computed(() => supportUsersStore.isLoading)
 const router = useRouter()
 
 const calcDataItems = computed<IUserInfoData[]>(() => supportUsersStore.items)
+const userId = computed(() => supportStore.supportInfo?.id)
 
 const queryParams = computed<ITableParams>({
   get() {
@@ -90,7 +93,8 @@ const actionRequest = async (id: number, status: string) => {
   getRequest()
 }
 
-onMounted(() => {
+onMounted(async () => {
+  if (!userId.value) await supportStore.getSupportInfo()
   const { page = 1, perPage = 50 } = router.currentRoute.value.query
   queryParams.value = {
     page,

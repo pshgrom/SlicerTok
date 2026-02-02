@@ -67,6 +67,7 @@ import VueQrcode from 'vue-qrcode'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import VCustomToggle from '@/components/base/VCustomToggle.vue'
+import { useTwoFactor } from '@/composables/useTwoFactor.ts'
 import { useUserInfo } from '@/stores/UserInfo.ts'
 import { requiredRules } from '@/utils/validators.ts'
 
@@ -74,15 +75,29 @@ const props = defineProps({
   modelValue: {
     type: Boolean,
     default: false
+  },
+  role: {
+    type: String,
+    default: ''
   }
 })
 const emit = defineEmits(['update:modelValue', 'submit'])
+
+const { isEnableGoogle2fa } = useTwoFactor(props.role ?? 'slicer')
 
 const formRef = ref(null)
 const code = ref('')
 const userInfo = useUserInfo()
 
-const qrCode = computed(() => userInfo.qrCode)
+const qrCode = computed({
+  get() {
+    return userInfo.qrCode
+  },
+  set(val) {
+    userInfo.qrCode = val
+  }
+})
+
 const secretKey = computed(() => userInfo.secretKey)
 
 const dialog = computed({
@@ -91,15 +106,6 @@ const dialog = computed({
   },
   set(val) {
     emit('update:modelValue', val)
-  }
-})
-
-const isEnableGoogle2fa = computed({
-  get() {
-    return userInfo.isEnableGoogle2fa
-  },
-  set(val) {
-    userInfo.isEnableGoogle2fa = val
   }
 })
 
@@ -117,7 +123,7 @@ const onChange = async (e: boolean) => {
 
 const submit = async () => {
   const isValid = await formRef?.value?.validate()
-  if (!isValid.valid) {
+  if (!isValid?.valid) {
     const formEl = formRef.value?.$el || document.querySelector('.side-panel')
     const invalidField = formEl?.querySelector('.v-input--error, .v-field--error')
 
@@ -126,14 +132,16 @@ const submit = async () => {
         behavior: 'smooth',
         block: 'center'
       })
+    } else {
+      dialog.value = false
     }
     return
   } else {
     emit('submit', code.value)
-    dialog.value = false
   }
   if (!isEnableGoogle2fa.value) {
     dialog.value = false
+    qrCode.value = ''
   }
 }
 </script>

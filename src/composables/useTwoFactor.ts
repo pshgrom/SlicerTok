@@ -1,0 +1,40 @@
+import { computed } from 'vue'
+
+import { ROLES } from '@/constants/roles.ts'
+import { useAdminInfo } from '@/stores/AdminInfo'
+import { useAdminPaymentsFinance } from '@/stores/AdminPaymentsFinance.ts'
+import { useSupport } from '@/stores/Support.ts'
+import { useUserInfo } from '@/stores/UserInfo'
+
+export type TwoFactorRole = 'user' | 'admin' | 'support'
+
+function resolveStore(role: TwoFactorRole) {
+  switch (role) {
+    case ROLES.SLICER:
+      return useUserInfo()
+    case ROLES.ADMIN:
+      return useAdminInfo()
+    case ROLES.SUPPORT:
+      return useSupport()
+    case ROLES.ADMIN_FINANCE:
+      return useAdminPaymentsFinance()
+    case ROLES.ADMIN_MAIN:
+      return 'ttt'
+    default:
+      return useUserInfo()
+  }
+}
+
+export function useTwoFactor(role: TwoFactorRole) {
+  const store = resolveStore(role)
+
+  return {
+    isEnableGoogle2fa: computed({
+      get: () => {
+        return store.isEnableGoogle2fa
+      },
+      set: (val) => (store.isEnableGoogle2fa = val)
+    }),
+    checkCode: (code: string) => store.checkCode(code)
+  }
+}

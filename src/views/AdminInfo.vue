@@ -278,7 +278,8 @@ onMounted(() => {
   }
   getRequest()
   adminInfo.getCoefficient()
-  if (!adminProfileData.value?.id) adminInfo.getAdminInfo()
+  // if (!adminProfileData.value?.id) adminInfo.getAdminInfo()
+  adminInfo.getAdminInfo()
   requestSocketStore.setChannel('publication-new.admin')
   requestSocketStore.connect()
   window.addEventListener('keydown', handleKeydown)

@@ -6,7 +6,7 @@
       </div>
     </div>
     <div class="header__right">
-      <AppMenu v-if="!hideMenu" @update-open-modal="updateOpenModal" />
+      <AppMenu v-if="!hideMenu" @update-open-modal="headerMainStore.updateOpenModal" />
       <div class="header__logout">
         <v-btn icon size="small" @click="logout">
           <v-icon>mdi-logout</v-icon>
@@ -14,32 +14,36 @@
       </div>
     </div>
   </header>
-  <TwoFactorAuth v-if="isModalOpen" v-model="isModalOpen" @submit="checkCode" />
+  <TwoFactorAuth
+    v-if="headerMainStore.isModalOpen"
+    v-model="headerMainStore.isModalOpen"
+    :role="role"
+    @submit="checkCode"
+  />
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 import AppMenu from '@/components/menu/AppMenu.vue'
 import TwoFactorAuth from '@/components/modals/TwoFactorAuth.vue'
+import { useTwoFactor } from '@/composables/useTwoFactor.ts'
 import { ROLES } from '@/constants/roles.ts'
 import { useAuth } from '@/stores/Auth'
-import { useUserInfo } from '@/stores/UserInfo.ts'
+import { useHeaderMain } from '@/stores/HeaderMain.ts'
 
 const authStore = useAuth()
 const router = useRouter()
-const userInfoStore = useUserInfo()
+const headerMainStore = useHeaderMain()
 
-const isModalOpen = ref(false)
 const role = computed(() => authStore.role)
+
+const { checkCode } = useTwoFactor(role.value)
+
 const page = computed(() => router.currentRoute.value.name)
 
 const hideMenu = computed(() => page.value === 'NotFound')
-
-const updateOpenModal = (value: boolean) => {
-  isModalOpen.value = value
-}
 
 const logout = () => {
   authStore.logout()
@@ -49,6 +53,7 @@ const logout = () => {
     router.push({ name: 'LoginAdmin' })
   }
   authStore.role = null
+  authStore.isEnableGoogle2fa = false
 }
 
 const goHome = () => {
@@ -72,10 +77,6 @@ const goHome = () => {
       router.push({ name: 'Support' })
       break
   }
-}
-
-const checkCode = (code: string) => {
-  userInfoStore.checkCode(code)
 }
 
 onMounted(async () => {

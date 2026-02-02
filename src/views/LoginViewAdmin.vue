@@ -127,7 +127,7 @@ const handleLogin = async (): Promise<void> => {
       google2fa_key: isEnableGoogle2fa.value ? code.value : undefined
     }
 
-    const { token, role } = await authStore.login(authData)
+    const { token = null, role = '' } = await authStore.login(authData)
     if (token && role) {
       await handleSuccessfulLogin(token, role)
     }

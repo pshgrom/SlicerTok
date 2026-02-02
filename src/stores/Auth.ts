@@ -31,7 +31,7 @@ export const useAuth = defineStore('authStore', () => {
       const { access_token, is_enable_google2fa } = data ?? {}
       if (is_enable_google2fa) {
         isEnableGoogle2fa.value = true
-        return
+        return { token: null, role: '' }
       }
 
       if (access_token && data.role[0]) {
