@@ -1,6 +1,6 @@
 import type { AxiosError } from 'axios'
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 import {
   actionRequestAdminQuery,
@@ -14,10 +14,14 @@ import {
 import {
   finishCheckStreamerQuery,
   getStreamerAllStatsQuery,
-  getStreamerDailyStatsQuery
+  getStreamerDailyStatsQuery,
+  getStreamerInfoQuery
 } from '@/api/streamers.ts'
+import { verifyTwoFactorQuery } from '@/api/userInfo.ts'
 import type { ITableParams } from '@/interfaces/AppModel'
 import { useError } from '@/stores/Errors'
+import { useHeaderMain } from '@/stores/HeaderMain.ts'
+import { useUserInfo } from '@/stores/UserInfo.ts'
 
 export const useStreamer = defineStore('streamerStore', () => {
   const isLoading = ref<boolean>(false)
@@ -27,9 +31,12 @@ export const useStreamer = defineStore('streamerStore', () => {
     total: 0
   })
   const items = ref([])
+  const isEnableGoogle2fa = ref(false)
   const coeffs = ref([])
   const allStats = ref([])
   const dailyStats = ref([])
+  const headerMainStore = useHeaderMain()
+  const userInfo = useUserInfo()
   const errorStore = useError()
 
   const setQueryParams = (val: ITableParams) => {
@@ -124,6 +131,33 @@ export const useStreamer = defineStore('streamerStore', () => {
     }
   }
 
+  const getStreamerInfo = async () => {
+    try {
+      const { data } = await getStreamerInfoQuery()
+      isEnableGoogle2fa.value = !!data.data?.is_enable_google2fa
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    }
+  }
+
+  const checkCode = async (code: string) => {
+    try {
+      const { data } = await verifyTwoFactorQuery(+code)
+      const isValidCode = data.valid
+      if (isValidCode) {
+        errorStore.setErrors('Верный код', 'success')
+        await getStreamerInfo()
+        headerMainStore.isModalOpen = false
+        userInfo.qrCode = ''
+      } else {
+        errorStore.setErrors('Неверный код', 'error')
+      }
+    } catch (error: any) {
+      const msg = error?.response?.data?.message ?? 'Error'
+      errorStore.setErrors(msg)
+    }
+  }
+
   const getStreamerAllStats = async () => {
     try {
       isLoading.value = true
@@ -193,6 +227,10 @@ export const useStreamer = defineStore('streamerStore', () => {
     }
   }
 
+  onMounted(async () => {
+    await getStreamerInfo()
+  })
+
   return {
     isLoading,
     getPublicationsListMain,
@@ -210,6 +248,8 @@ export const useStreamer = defineStore('streamerStore', () => {
     getStreamerDailyStats,
     getStreamerAllStats,
     dailyStats,
-    allStats
+    allStats,
+    checkCode,
+    isEnableGoogle2fa
   }
 })

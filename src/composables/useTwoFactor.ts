@@ -2,7 +2,9 @@ import { computed } from 'vue'
 
 import { ROLES } from '@/constants/roles.ts'
 import { useAdminInfo } from '@/stores/AdminInfo'
+import { useAdminMain } from '@/stores/AdminMain.ts'
 import { useAdminPaymentsFinance } from '@/stores/AdminPaymentsFinance.ts'
+import { useStreamer } from '@/stores/Streamer.ts'
 import { useSupport } from '@/stores/Support.ts'
 import { useUserInfo } from '@/stores/UserInfo'
 
@@ -19,7 +21,9 @@ function resolveStore(role: TwoFactorRole) {
     case ROLES.ADMIN_FINANCE:
       return useAdminPaymentsFinance()
     case ROLES.ADMIN_MAIN:
-      return 'ttt'
+      return useAdminMain()
+    case ROLES.STREAMER:
+      return useStreamer()
     default:
       return useUserInfo()
   }

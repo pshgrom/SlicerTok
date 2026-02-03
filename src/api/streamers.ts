@@ -11,5 +11,8 @@ export const finishCheckStreamerQuery = (id: number): Promise<AxiosResponse<unkn
 export const getStreamerDailyStatsQuery = (): Promise<AxiosResponse<unknown>> =>
   api.get('/streamer/statistic/get-statistic-daily')
 
+export const getStreamerInfoQuery = (): Promise<AxiosResponse<unknown>> =>
+  api.get('/streamer/profile/get-info')
+
 export const getStreamerAllStatsQuery = (): Promise<AxiosResponse<unknown>> =>
   api.get('/streamer/statistic/get-all-statistic')

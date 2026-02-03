@@ -61,12 +61,16 @@ const menuItems: Partial<Record<RoleType, MenuItem[]>> = {
     }
   ],
   [ROLES.ADMIN_FINANCE]: [{ label: '2FA', onClick: () => emit('updateOpenModal', true) }],
-  [ROLES.ADMIN_MAIN]: [{ label: 'Общая информация', to: '/admin-main' }],
+  [ROLES.ADMIN_MAIN]: [
+    { label: 'Общая информация', to: '/admin-main' },
+    { label: '2FA', onClick: () => emit('updateOpenModal', true) }
+  ],
   [ROLES.STREAMER]: [
     { label: 'Статистика', to: '/streamer-stats' },
     { label: 'Заявки', to: '/streamer' },
     { label: 'Коэффициенты', to: '/streamer-coefficients' },
-    { label: 'Логи', to: '/streamer-logs' }
+    { label: 'Логи', to: '/streamer-logs' },
+    { label: '2FA', onClick: () => emit('updateOpenModal', true) }
   ],
   [ROLES.SUPPORT]: [
     { label: 'Заявки', to: '/support' },

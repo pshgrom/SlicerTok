@@ -51,6 +51,7 @@ const streamers = computed(() => adminMainStore.streamers)
 
 onMounted(() => {
   adminMainStore.getAdminMainInfo()
+  adminMainStore.getMainAdminInfo()
 })
 </script>
 

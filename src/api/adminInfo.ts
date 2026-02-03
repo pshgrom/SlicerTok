@@ -33,6 +33,9 @@ export const getLogListQuery = (data: ITableParams): Promise<AxiosResponse<unkno
 export const getAdminInfoQuery = (): Promise<AxiosResponse<unknown>> =>
   api.get('/admin/profile/get-info')
 
+export const getMainAdminInfoQuery = (): Promise<AxiosResponse<unknown>> =>
+  api.get('/admin-main/profile/get-info')
+
 export const getAdminFinanceInfoQuery = (): Promise<AxiosResponse<unknown>> =>
   api.get('/admin-finance/profile/get-info')
 
