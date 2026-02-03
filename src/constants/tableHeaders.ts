@@ -200,7 +200,9 @@ export const streamerStats = [
   { title: 'Обработано', value: 'processed' },
   { title: 'Принятые', value: 'approved' },
   { title: 'Отклоненные', value: 'rejected' },
-  { title: 'Выплаченные', value: 'amount' }
+  { title: 'Выплаченные', value: 'amount' },
+  { title: 'Количество просмотров за день', value: 'number_of_views' },
+  { title: 'Сумма выплат за день', value: 'approved_amount' }
 ]
 
 export const adminCoeffs = [
