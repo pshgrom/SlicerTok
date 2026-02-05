@@ -4,6 +4,7 @@ import { ref } from 'vue'
 
 import { getAdminMainInfoQuery, getMainAdminInfoQuery } from '@/api/adminInfo'
 import { verifyTwoFactorQuery } from '@/api/userInfo.ts'
+import type { ITableParams } from '@/interfaces/AppModel.ts'
 import { useError } from '@/stores/Errors.ts'
 import { useHeaderMain } from '@/stores/HeaderMain.ts'
 import { useUserInfo } from '@/stores/UserInfo.ts'
@@ -14,6 +15,19 @@ export const useAdminMain = defineStore('adminMainStore', () => {
   const headerMainStore = useHeaderMain()
   const userInfo = useUserInfo()
   const isEnableGoogle2fa = ref(false)
+
+  const queryParams = ref<ITableParams>({
+    page: 1,
+    perPage: 10,
+    total: 0
+  })
+
+  const setQueryParams = (val: ITableParams) => {
+    queryParams.value = {
+      ...queryParams.value,
+      ...val
+    }
+  }
 
   const getAdminMainInfo = async () => {
     try {
@@ -57,6 +71,8 @@ export const useAdminMain = defineStore('adminMainStore', () => {
     streamers,
     checkCode,
     isEnableGoogle2fa,
-    getMainAdminInfo
+    getMainAdminInfo,
+    queryParams,
+    setQueryParams
   }
 })

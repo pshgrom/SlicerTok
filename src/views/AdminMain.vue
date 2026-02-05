@@ -4,7 +4,12 @@
   </div>
   <v-divider />
   <v-list density="compact">
-    <v-list-item v-for="streamer in streamers" :key="streamer.id" class="py-4 px-6 streamer-row">
+    <v-list-item
+      v-for="streamer in streamers"
+      :key="streamer.id"
+      class="py-4 px-6 streamer-row"
+      @click="goToStreamerProfile(streamer.id)"
+    >
       <v-row align="center" class="w-100">
         <v-col cols="12" md="3">
           <div class="text-body-1 font-weight-medium">
@@ -42,12 +47,17 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { useAdminMain } from '@/stores/AdminMain.ts'
 
 const adminMainStore = useAdminMain()
-
+const router = useRouter()
 const streamers = computed(() => adminMainStore.streamers)
+
+const goToStreamerProfile = (id: number) => {
+  router.push({ name: 'StreamerInfo', params: { id } })
+}
 
 onMounted(() => {
   adminMainStore.getAdminMainInfo()

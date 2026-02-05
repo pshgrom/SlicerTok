@@ -8,6 +8,12 @@ export const videoRules = {
   quantityViewsMin: (v: string) => {
     const format = v.replace(/\D/g, '')
     return (!isNaN(+format) && +format >= 100000) || 'Минимум 100 000 просмотров'
+  },
+  onlyTikTok: (requireTikTok: boolean) => (v: string) => {
+    if (requireTikTok) {
+      return v.includes('tiktok.com') || 'Для этого стримера можно вставлять только TikTok'
+    }
+    return true
   }
 }
 

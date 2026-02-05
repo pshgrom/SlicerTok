@@ -14,6 +14,7 @@
             label="Стример"
             class="mb-4"
             :items="streamerStore.streamerList"
+            @update-status="changeStreamer"
           >
             <template #item="{ item, props: slotProps }">
               <v-list-item v-bind="slotProps">
@@ -26,12 +27,7 @@
             v-model.trim="videoFields.videoLink"
             label="Ссылка на видео *"
             :error-messages="videoError"
-            :rules="[
-              videoRules.required,
-              videoRules.url,
-              videoRules.noShare,
-              videoRules.quantityLink
-            ]"
+            :rules="dynamicVideoRules"
             :disabled="editMode"
             autofocus
             class="mb-4"
@@ -108,17 +104,35 @@ const userInfoStore = useUserInfo()
 
 const videoFields = ref<IUploadVideo>({
   videoLink: '',
-  blogger: '',
+  blogger: null,
   videoFile: null,
   number_views: '',
   isBonus: false
 })
+
+const selectedStreamer = ref(null)
+const isGrafSelected = ref(false)
 const errorStore = useError()
 const streamerStore = useStreamers()
+
+const changeStreamer = (id: string) => {
+  selectedStreamer.value = streamerStore.streamerList.find((s) => +s.value === +id)
+  isGrafSelected.value = selectedStreamer.value?.key === 'graf'
+  videoError.value = ''
+  videoInputRef.value?.validate()
+}
 
 const formRef = ref(null)
 const videoInputRef = ref(null)
 const videoError = ref('')
+
+const dynamicVideoRules = computed(() => [
+  videoRules.required,
+  videoRules.url,
+  videoRules.noShare,
+  videoRules.quantityLink,
+  videoRules.onlyTikTok(isGrafSelected.value)
+])
 
 const onInput = (val) => {
   const digitsOnly = val.target.value.replace(/\D/g, '')
@@ -136,6 +150,7 @@ const checkVideoExists = async () => {
 
 const input = () => {
   if (videoError.value) videoError.value = ''
+  videoInputRef.value?.validate()
 }
 
 const dialogModel = computed({

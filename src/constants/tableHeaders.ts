@@ -127,6 +127,14 @@ export const supportUsersHeaders = [
   { title: 'Действия', value: 'actions' }
 ]
 
+export const streamerMainInfoHeaders = [
+  {
+    title: 'ID',
+    value: 'id'
+  },
+  { title: 'Админ', value: 'name' }
+]
+
 export const adminInfoCheckedHeaders = [
   {
     title: 'ID',

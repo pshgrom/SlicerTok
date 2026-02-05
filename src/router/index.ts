@@ -83,6 +83,12 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true, roles: [ROLES.SUPPORT], showChat: false }
   },
   {
+    path: '/streamer/:id',
+    name: 'StreamerInfo',
+    component: () => import('@/views/StreamerInfo.vue'),
+    meta: { requiresAuth: true, roles: [ROLES.ADMIN_MAIN], showChat: false }
+  },
+  {
     path: '/support-users',
     name: 'SupportUsers',
     component: () => import('@/views/SupportUsers.vue'),
