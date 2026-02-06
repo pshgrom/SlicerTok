@@ -9,6 +9,7 @@
     height="70vh"
     fixed-header
     hide-default-footer
+    @click:row="onRowClick"
   >
     <template #loading>
       <v-progress-circular indeterminate color="rgb(169, 55, 244)" />
@@ -18,7 +19,7 @@
 
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 
@@ -40,10 +41,10 @@ const props = defineProps({
     default: 20
   }
 })
-const emit = defineEmits(['goToChat'])
 
 const router = useRouter()
 const headersData = ref(props.headers)
+const route = useRoute()
 
 const computedHeaders = computed<ITableHeaders[]>({
   get() {
@@ -53,6 +54,10 @@ const computedHeaders = computed<ITableHeaders[]>({
     headersData.value = val
   }
 })
-</script>
 
-<style lang="scss" scoped></style>
+const onRowClick = (event, { item }) => {
+  const streamerId = route.params.id
+  const adminId = item.id
+  router.push({ name: 'AdminStats', params: { streamerId, adminId } })
+}
+</script>

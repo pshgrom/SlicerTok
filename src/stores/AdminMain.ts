@@ -2,7 +2,12 @@ import type { AxiosError } from 'axios'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-import { getAdminMainInfoQuery, getMainAdminInfoQuery } from '@/api/adminInfo'
+import {
+  getAdminMainInfoQuery,
+  getAdminsForCurrentStreamerQuery,
+  getAdminStatsQuery,
+  getMainAdminInfoQuery
+} from '@/api/adminInfo'
 import { verifyTwoFactorQuery } from '@/api/userInfo.ts'
 import type { ITableParams } from '@/interfaces/AppModel.ts'
 import { useError } from '@/stores/Errors.ts'
@@ -15,16 +20,20 @@ export const useAdminMain = defineStore('adminMainStore', () => {
   const headerMainStore = useHeaderMain()
   const userInfo = useUserInfo()
   const isEnableGoogle2fa = ref(false)
+  const adminsForCurrentStreamer = ref([])
+  const adminsStats = ref([])
+  const loadingAdminsForCurrentStreamer = ref(false)
+  const loadingStats = ref(false)
 
-  const queryParams = ref<ITableParams>({
+  const queryParamsStats = ref<ITableParams>({
     page: 1,
     perPage: 10,
     total: 0
   })
 
   const setQueryParams = (val: ITableParams) => {
-    queryParams.value = {
-      ...queryParams.value,
+    queryParamsStats.value = {
+      ...queryParamsStats.value,
       ...val
     }
   }
@@ -35,6 +44,21 @@ export const useAdminMain = defineStore('adminMainStore', () => {
       streamers.value = data?.data ?? []
     } catch (error: any) {
       errorStore.setErrors(error.response?.data?.message ?? '')
+    }
+  }
+
+  const getAdminsForCurrentStreamer = async (id: string) => {
+    try {
+      const query = {
+        streamer_id: id
+      }
+      loadingAdminsForCurrentStreamer.value = true
+      const { data } = await getAdminsForCurrentStreamerQuery(query)
+      adminsForCurrentStreamer.value = data?.data?.admin_list ?? []
+    } catch (error: any) {
+      errorStore.setErrors(error.response?.data?.message ?? '')
+    } finally {
+      loadingAdminsForCurrentStreamer.value = false
     }
   }
 
@@ -66,13 +90,42 @@ export const useAdminMain = defineStore('adminMainStore', () => {
     }
   }
 
+  const getAdminStats = async (params, adminId) => {
+    try {
+      const qeury = {
+        page: params.page,
+        perPage: params.perPage ?? 50
+      }
+      loadingStats.value = true
+      const { data } = await getAdminStatsQuery(qeury, adminId)
+      adminsStats.value = data?.data?.data ?? []
+      const queryResp = data.data ?? {}
+      const { current_page, per_page, total } = queryResp
+      queryParamsStats.value = {
+        ...queryParamsStats.value,
+        page: current_page,
+        perPage: per_page
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      loadingStats.value = false
+    }
+  }
+
   return {
     getAdminMainInfo,
     streamers,
     checkCode,
     isEnableGoogle2fa,
     getMainAdminInfo,
-    queryParams,
-    setQueryParams
+    queryParamsStats,
+    setQueryParams,
+    getAdminsForCurrentStreamer,
+    adminsForCurrentStreamer,
+    loadingAdminsForCurrentStreamer,
+    getAdminStats,
+    loadingStats,
+    adminsStats
   }
 })

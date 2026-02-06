@@ -1,4 +1,5 @@
 <template>
+  <AdminBreadcrumbs />
   <div class="table-actions">
     <div class="table-actions__label">Стримеры</div>
   </div>
@@ -49,15 +50,35 @@
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
+import AdminBreadcrumbs from '@/components/base/AdminBreadcrumbs.vue'
 import { useAdminMain } from '@/stores/AdminMain.ts'
 
 const adminMainStore = useAdminMain()
 const router = useRouter()
 const streamers = computed(() => adminMainStore.streamers)
 
-const goToStreamerProfile = (id: number) => {
-  router.push({ name: 'StreamerInfo', params: { id } })
+const goToStreamerProfile = (streamerId: number) => {
+  router.push({ name: 'StreamerAdmins', params: { streamerId } })
 }
+
+// const streamerId = computed(() => route.params.streamerId)
+// const breadcrumbs: BreadcrumbItem[] = [
+//   {
+//     text: 'Стримеры',
+//     href: '/admin-main',
+//     icon: 'mdi-view-dashboard'
+//   },
+//   {
+//     text: 'Админы',
+//     href: `/admin-main/${streamerId.value}/admins`,
+//     icon: 'mdi-account-group'
+//   },
+//   {
+//     text: 'Статистика',
+//     // последняя крошка без href, будет disabled
+//     icon: 'mdi-chart-bar'
+//   }
+// ]
 
 onMounted(() => {
   adminMainStore.getAdminMainInfo()

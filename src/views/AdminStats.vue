@@ -1,13 +1,14 @@
 <template>
+  <AdminBreadcrumbs />
   <div class="table-actions table-actions_admin">
     <div class="table-actions__left">
-      <div class="table-actions__label">Стример</div>
+      <div class="table-actions__label">Статистика за день</div>
     </div>
   </div>
-  <TableStreamerInfo
+  <TableAdminStats
     :headers="headers"
     :is-loading="isLoading"
-    :items="calcDataItems"
+    :items="adminsStats"
     :items-per-page="queryParams.perPage"
   />
   <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
@@ -22,37 +23,36 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
+import AdminBreadcrumbs from '@/components/base/AdminBreadcrumbs.vue'
+import TableAdminStats from '@/components/tables/TableAdminStats.vue'
 import TablePagination from '@/components/tables/TablePagination.vue'
-import TableStreamerInfo from '@/components/tables/TableStreamerInfo.vue'
-import { streamerMainInfoHeaders } from '@/constants/tableHeaders'
+import { streamerStats } from '@/constants/tableHeaders'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import { useAdminMain } from '@/stores/AdminMain.ts'
 
-const headers = ref<ITableHeaders[]>(streamerMainInfoHeaders)
+const headers = ref<ITableHeaders[]>(streamerStats)
 
 const adminMainStore = useAdminMain()
-
-const isLoading = computed(() => adminMainStore.isLoading)
 const router = useRouter()
+const route = useRoute()
 
-const calcDataItems = computed<IUserInfoData[]>(() => adminMainStore.items ?? [])
-
+const isLoading = computed(() => adminMainStore.loadingStats)
 const queryParams = computed<ITableParams>({
   get() {
-    return adminMainStore.queryParams
+    return adminMainStore.queryParamsStats
   },
   set(val) {
     adminMainStore.setQueryParams(val)
   }
 })
-
 const totalPages = computed(() =>
   queryParams.value?.total && queryParams.value?.perPage
     ? Math.ceil(queryParams.value.total / queryParams.value.perPage)
     : 0
 )
+const adminsStats = computed<IUserInfoData[]>(() => adminMainStore.adminsStats)
 
 const changePage = (page: number) => {
   queryParams.value = {
@@ -70,16 +70,8 @@ const getRequest = () => {
       perPage: perPage
     }
   })
-  // adminMainStore.getSlicerList(queryParams.value)
-}
-
-const actionRequest = async (id: number, status: string) => {
-  // const data = {
-  //   id,
-  //   status
-  // }
-  // await supportUsersStore.actionRequest(data)
-  getRequest()
+  const adminId = route.params.adminId
+  adminMainStore.getAdminStats(queryParams.value, adminId)
 }
 
 onMounted(async () => {

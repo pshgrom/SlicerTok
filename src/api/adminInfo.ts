@@ -30,6 +30,9 @@ export const getCompletedListQuery = (data: ITableParams): Promise<AxiosResponse
 export const getLogListQuery = (data: ITableParams): Promise<AxiosResponse<unknown>> =>
   api.get('/admin-main/log/get-log-list', { params: data })
 
+export const getAdminStatsQuery = (data, adminId): Promise<AxiosResponse<unknown>> =>
+  api.get(`/admin-main/streamer/admin/get-statistic-daily?admin_id=${adminId}`, { params: data })
+
 export const getAdminInfoQuery = (): Promise<AxiosResponse<unknown>> =>
   api.get('/admin/profile/get-info')
 
@@ -41,6 +44,9 @@ export const getAdminFinanceInfoQuery = (): Promise<AxiosResponse<unknown>> =>
 
 export const getAdminMainInfoQuery = (): Promise<AxiosResponse<unknown>> =>
   api.get('/admin-main/streamer/get-streamer-list')
+
+export const getAdminsForCurrentStreamerQuery = (data): Promise<AxiosResponse<unknown>> =>
+  api.get('/admin-main/streamer/get-admin-list-by-streamer', { params: data })
 
 export const getCoefficientQuery = (): Promise<AxiosResponse<unknown>> =>
   api.get('/coefficient/get-coefficient-for-admin')
