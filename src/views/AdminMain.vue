@@ -61,25 +61,6 @@ const goToStreamerProfile = (streamerId: number) => {
   router.push({ name: 'StreamerAdmins', params: { streamerId } })
 }
 
-// const streamerId = computed(() => route.params.streamerId)
-// const breadcrumbs: BreadcrumbItem[] = [
-//   {
-//     text: 'Стримеры',
-//     href: '/admin-main',
-//     icon: 'mdi-view-dashboard'
-//   },
-//   {
-//     text: 'Админы',
-//     href: `/admin-main/${streamerId.value}/admins`,
-//     icon: 'mdi-account-group'
-//   },
-//   {
-//     text: 'Статистика',
-//     // последняя крошка без href, будет disabled
-//     icon: 'mdi-chart-bar'
-//   }
-// ]
-
 onMounted(() => {
   adminMainStore.getAdminMainInfo()
   adminMainStore.getMainAdminInfo()

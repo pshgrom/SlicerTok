@@ -28,11 +28,11 @@ import { useRoute, useRouter } from 'vue-router'
 import AdminBreadcrumbs from '@/components/base/AdminBreadcrumbs.vue'
 import TableAdminStats from '@/components/tables/TableAdminStats.vue'
 import TablePagination from '@/components/tables/TablePagination.vue'
-import { streamerStats } from '@/constants/tableHeaders'
+import { adminStats } from '@/constants/tableHeaders'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/interfaces/AppModel'
 import { useAdminMain } from '@/stores/AdminMain.ts'
 
-const headers = ref<ITableHeaders[]>(streamerStats)
+const headers = ref<ITableHeaders[]>(adminStats)
 
 const adminMainStore = useAdminMain()
 const router = useRouter()

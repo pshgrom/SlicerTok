@@ -213,6 +213,18 @@ export const streamerStats = [
   { title: 'Сумма выплат за день', value: 'approved_amount' }
 ]
 
+export const adminStats = [
+  {
+    title: 'ID',
+    value: 'id'
+  },
+  { title: 'Дата', value: 'date' },
+  { title: 'Одобренные', value: 'approved' },
+  { title: 'Доп. проверка', value: 'na' },
+  { title: 'Отклоненные', value: 'rejected' },
+  { title: 'Общее количество проверенных', value: 'total_verified' }
+]
+
 export const adminCoeffs = [
   { title: 'Значение', value: 'rate' },
   { title: '', value: 'actions' }
