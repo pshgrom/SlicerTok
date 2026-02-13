@@ -26,7 +26,9 @@ const route = useRoute()
 
 const isLoading = computed(() => adminMainStore.loadingAdminsForCurrentStreamer)
 
-const calcDataItems = computed(() => adminMainStore.adminsForCurrentStreamer ?? [])
+const calcDataItems = computed(
+  () => adminMainStore.adminsForCurrentStreamer.filter((el) => !el?.name?.includes('Finance')) ?? []
+)
 
 onMounted(async () => {
   await router.isReady()
