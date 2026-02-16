@@ -6,21 +6,23 @@
         <v-btn icon="mdi-close" variant="text" @click="dialog = false" />
       </v-card-title>
       <v-card-text>
-        <VCustomSelect
-          v-model="streamerRules"
-          :clearable="false"
-          style="max-width: 500px"
-          :rules="[videoRules.required]"
-          label="Стример *"
-          class="mb-4 mt-2"
-          :items="streamerStore.streamerList"
-        >
-          <template #item="{ item, props: slotProps }">
-            <v-list-item v-bind="slotProps">
-              {{ item.text }}
-            </v-list-item>
-          </template>
-        </VCustomSelect>
+        <div class="custom-modal__select">
+          <VCustomSelect
+            v-model="streamerRules"
+            :clearable="false"
+            style="max-width: 500px"
+            :rules="[videoRules.required]"
+            label="Стример *"
+            class="mb-4 mt-2"
+            :items="streamerStore.streamerList"
+          >
+            <template #item="{ item, props: slotProps }">
+              <v-list-item v-bind="slotProps">
+                {{ item.text }}
+              </v-list-item>
+            </template>
+          </VCustomSelect>
+        </div>
         <v-divider class="mt-8" />
         <div v-if="currentStreamer === 'mellstroy'" class="custom-rules-container">
           <h2 class="mt-8">Важная информация:</h2>
@@ -1180,5 +1182,13 @@ a {
     font-size: 14px;
     letter-spacing: 0;
   }
+}
+
+.custom-modal__select {
+  background: #fff;
+  z-index: 99;
+  position: sticky;
+  padding: 5px 0;
+  top: 0;
 }
 </style>
