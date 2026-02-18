@@ -1070,15 +1070,14 @@ const closeModal = () => {
 :deep(.v-card-actions) {
   position: sticky;
   bottom: 0;
-  background: #fff;
 }
 
 :deep(.v-card-title) {
   position: sticky;
   top: 0;
-  background: #fff !important;
   z-index: 1;
 }
+
 :deep(.v-card-text) {
   padding-top: 0 !important;
   padding-left: 20px !important;
@@ -1092,6 +1091,7 @@ h2 {
   font-size: 16px;
   margin-bottom: 12px;
   letter-spacing: 0;
+  color: rgb(var(--v-theme-primary));
 }
 p {
   font-weight: 400;
@@ -1185,7 +1185,7 @@ a {
 }
 
 .custom-modal__select {
-  background: #fff;
+  background: rgb(var(--v-theme-background));
   z-index: 99;
   position: sticky;
   padding: 5px 0;

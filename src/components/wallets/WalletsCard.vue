@@ -2,10 +2,7 @@
   <div class="wallets">
     <div class="wallets__wrapper">
       <div class="wallets__top">
-        <div class="wallets__label">
-          Кошельки
-          <span class="wallets__length">{{ wallets.length }}</span>
-        </div>
+        <div class="wallets__label">Кошельки</div>
         <VCusomButton
           v-if="!readonly"
           :custom-class="['light']"
@@ -86,15 +83,9 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
 .wallets {
   padding: 17px 0 0 20px;
   width: 100%;
-  min-width: 474px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 1);
   position: relative;
-
-  @media (max-width: 1024px) {
-    min-width: 358px;
-    height: auto;
-  }
+  background: rgb(var(--v-theme-background));
 
   @media (max-width: 767px) {
     padding-bottom: 0;
@@ -102,25 +93,10 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
 
   &__label {
     font-weight: 500;
-    color: rgba(17, 17, 17, 1);
     display: inline-flex;
     align-items: center;
     font-size: 18px;
-  }
-
-  &__length {
-    border-radius: 50%;
-    background: rgba(245, 245, 245, 1);
-    border: 1px solid rgba(232, 232, 232, 1);
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(17, 17, 17, 1);
-    font-weight: 500;
-    font-size: 12px;
-    margin-left: 8px;
+    color: rgb(var(--v-theme-primary));
   }
 
   &__wrapper {
@@ -134,10 +110,9 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
   }
 
   &__list {
-    overflow-x: auto;
     padding-top: 14px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
   }
 
   &-empty {

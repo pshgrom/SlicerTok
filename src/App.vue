@@ -2,7 +2,8 @@
   <v-app>
     <ErrorAlert />
     <GlobalLoader v-if="loader.isLoading" />
-    <v-main class="main">
+    <v-main class="main" color="main">
+      <HeaderMain v-if="showContent || showForSlicer" />
       <v-container
         class="custom-container"
         fluid
@@ -11,7 +12,6 @@
           'custom-container_none': landing || terms || privacyPolicy
         }"
       >
-        <HeaderMain v-if="showContent || showForSlicer" />
         <div v-if="showChat && !isMobile" class="chat-user" @click="toggleChat">
           <SvgIcon :disabled="isSlicer && !userName" name="chat" class="chat-open" />
           <span
@@ -35,8 +35,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, watch } from 'vue'
+import { computed, nextTick, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useTheme } from 'vuetify'
 
 import ErrorAlert from '@/components/base/ErrorAlert.vue'
 import SvgIcon from '@/components/base/SvgIcon.vue'
@@ -47,6 +48,7 @@ import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 import { useAuth } from '@/stores/Auth.ts'
 import { useError } from '@/stores/Errors.ts'
 import { useLoader } from '@/stores/GlobalLoader.ts'
+import { useThemeStore } from '@/stores/Theme.ts'
 import { useChatStore } from '@/stores/UserChat.ts'
 import { useUserInfo } from '@/stores/UserInfo.ts'
 
@@ -58,6 +60,8 @@ const authStore = useAuth()
 const userInfoStore = useUserInfo()
 const chatStore = useChatStore()
 const { isMobile } = useDeviceDetection()
+const themeStore = useThemeStore()
+const theme = useTheme()
 
 const page = computed(() => router.currentRoute.value.name)
 
@@ -124,12 +128,23 @@ const terms = computed(() => page.value === 'Terms')
 const privacyPolicy = computed(() => page.value === 'PrivacyPolicy')
 
 const showForSlicer = computed(() => page.value === 'UserInfo')
+
+watch(
+  () => themeStore.current,
+  (val) => {
+    theme.change(val)
+  }
+)
+
+onMounted(() => {
+  theme.change(themeStore.current)
+})
 </script>
 
 <style lang="scss">
 @use './assets/sass/style.scss' as *;
 
 .main {
-  background: rgba(226, 238, 243, 1);
+  background-color: rgb(var(--v-theme-main));
 }
 </style>

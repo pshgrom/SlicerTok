@@ -5,7 +5,10 @@
     style="height: 100vh"
   >
     <v-card class="pa-6 login-view" max-width="400" min-width="400">
-      <SvgIcon class="login-view__logo" name="logo" />
+      <SvgIcon
+        class="login-view__logo"
+        :name="themeStore.current === 'dark' ? 'logo-dark' : 'logo'"
+      />
 
       <h3 class="login-view__title">
         {{ stepTitle }}
@@ -98,6 +101,7 @@ import VCustomInput from '@/components/base/VCustomInput.vue'
 import type { IAuthByPhone, IAuthConfirmation } from '@/interfaces/Auth'
 import { useAuth } from '@/stores/Auth'
 import { useError } from '@/stores/Errors'
+import { useThemeStore } from '@/stores/Theme.ts'
 import { cleanPhoneNumber } from '@/utils/formatNumbers'
 import { infoRules, requiredRules } from '@/utils/validators.ts'
 
@@ -114,6 +118,7 @@ const isGoogle2faEnabled = ref(false)
 
 const authStore = useAuth()
 const errorStore = useError()
+const themeStore = useThemeStore()
 const router = useRouter()
 const countryCodes = computed(() => authStore.countryCodes ?? [])
 const currentCountryCode = computed({
@@ -277,13 +282,13 @@ onMounted(() => {
     font-size: 18px;
     letter-spacing: 0;
     margin-bottom: 10px;
-    color: rgba(0, 0, 0, 1);
+    color: rgb(var(--v-theme-primary));
   }
 
   &__description {
     font-size: 14px;
     margin-bottom: 40px;
-    color: rgba(17, 17, 17, 1);
+    color: rgb(var(--v-theme-primary));
     font-weight: 400;
   }
 
@@ -317,7 +322,7 @@ onMounted(() => {
 
   .v-autocomplete__selection {
     font-size: 14px !important;
-    color: rgba(17, 17, 17, 1);
+    color: rgb(var(--v-theme-primary));
   }
 
   input {

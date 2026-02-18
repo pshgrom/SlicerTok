@@ -106,7 +106,7 @@ const clearSelect = () => {
 .v-custom-select {
   :deep(.v-select__selection-text) {
     font-size: 14px !important;
-    color: rgba(17, 17, 17, 1);
+    color: rgb(var(--v-theme-primary));
   }
 }
 :deep(.v-field--outlined) {

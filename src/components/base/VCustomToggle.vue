@@ -83,7 +83,7 @@ const handleChange = (value: boolean | string | number) => {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .toggle-switch-wrapper {
   display: inline-flex;
   flex-direction: column;
@@ -128,7 +128,7 @@ const handleChange = (value: boolean | string | number) => {
     padding: 0;
     margin-right: 84px;
     font-size: 14px;
-    color: rgba(0, 0, 0, 1);
+    color: rgb(var(--v-theme-primary));
   }
 }
 </style>

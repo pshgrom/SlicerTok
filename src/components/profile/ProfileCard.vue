@@ -43,25 +43,31 @@
       <div class="profile-info">
         <div class="profile-info__wrap">
           <div class="profile-info-item">
-            <div class="profile-info-item__icon">
-              <SvgIcon name="phone" />
-            </div>
-            <div class="profile-info-item__value">
-              <a v-if="user.phone" :href="`tel:${user.phone}`">
-                {{ user.phone }}
-              </a>
-              <span v-else>не указано</span>
+            <div class="profile-info-item__label">Телефон</div>
+            <div class="d-flex">
+              <div class="profile-info-item__value">
+                <a v-if="user.phone" :href="`tel:${user.phone}`">
+                  {{ user.phone }}
+                </a>
+                <span v-else>не указано</span>
+              </div>
+              <div class="profile-info-item__icon" @click="copyContent(user.phone)">
+                <SvgIcon name="copy-second" />
+              </div>
             </div>
           </div>
           <div class="profile-info-item">
-            <div class="profile-info-item__icon">
-              <SvgIcon name="message" />
-            </div>
-            <div class="profile-info-item__value">
-              <a v-if="user.email" :href="`mailto:${user.phone}`">
-                {{ user.email }}
-              </a>
-              <span v-else>не указано</span>
+            <div class="profile-info-item__label">Email</div>
+            <div class="d-flex">
+              <div class="profile-info-item__value">
+                <a v-if="user.email" :href="`mailto:${user.phone}`">
+                  {{ user.email }}
+                </a>
+                <span v-else>не указано</span>
+              </div>
+              <div class="profile-info-item__icon" @click="copyContent(user.email)">
+                <SvgIcon name="copy-second" />
+              </div>
             </div>
           </div>
           <div v-if="readonly" class="profile-info-item">
@@ -73,11 +79,14 @@
             </div>
           </div>
           <div class="profile-info-item">
-            <div class="profile-info-item__icon">
-              <SvgIcon name="key" />
-            </div>
-            <div class="profile-info-item__value">
-              {{ user.key }}
+            <div class="profile-info-item__label">Ключ</div>
+            <div class="d-flex">
+              <div class="profile-info-item__value">
+                {{ user.key }}
+              </div>
+              <div class="profile-info-item__icon" @click="copyContent(user.key)">
+                <SvgIcon name="copy-second" />
+              </div>
             </div>
           </div>
           <div v-if="readonly" class="profile-info-item">
@@ -87,14 +96,17 @@
             <div class="profile-info-item__value">{{ formatDate(user.created_at) }}</div>
           </div>
           <div class="profile-info-item">
-            <div class="profile-info-item__icon">
-              <SvgIcon name="telegram" />
-            </div>
-            <div class="profile-info-item__value">
-              <template v-if="user.telegram">
-                {{ user.telegram }}
-              </template>
-              <span v-else>не указано</span>
+            <div class="profile-info-item__label">Telagram</div>
+            <div class="d-flex">
+              <div class="profile-info-item__value">
+                <template v-if="user.telegram">
+                  {{ user.telegram }}
+                </template>
+                <span v-else>не указано</span>
+              </div>
+              <div class="profile-info-item__icon" @click="copyContent(user.telegram)">
+                <SvgIcon name="copy-second" />
+              </div>
             </div>
           </div>
         </div>
@@ -111,6 +123,7 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import SmallLoader from '@/components/SmallLoader.vue'
 import type { IUser } from '@/interfaces/Slicer'
+import { useError } from '@/stores/Errors.ts'
 import { useSupportUsers } from '@/stores/SupportUsers.ts'
 import { formatDate } from '@/utils/formatDate.ts'
 import { formatNumber } from '@/utils/formatNumbers.ts'
@@ -136,6 +149,7 @@ defineProps({
 })
 const emit = defineEmits(['update:dialog', 'verifyUser'])
 const router = useRouter()
+const errorStore = useError()
 const supportUsersStore = useSupportUsers()
 
 const showDialog = (val: boolean) => {
@@ -151,16 +165,50 @@ const goToChat = async (id: string | number) => {
   const { chat_room_id } = resp
   if (chat_room_id) await router.push({ name: 'SupportChat', params: { id: chat_room_id } })
 }
+
+const copyContent = async (value: string) => {
+  if (!value) return
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    try {
+      await navigator.clipboard.writeText(value)
+      errorStore.setErrors('Успешно скопировано', 'success')
+    } catch (err) {
+      console.error('Clipboard API error:', err)
+      fallbackCopyTextToClipboard(value)
+    }
+  } else {
+    fallbackCopyTextToClipboard(value)
+  }
+}
+
+const fallbackCopyTextToClipboard = (text: string) => {
+  const textArea = document.createElement('textarea')
+  textArea.value = text
+  document.body.appendChild(textArea)
+  textArea.focus()
+  textArea.select()
+  try {
+    const successful = document.execCommand('copy')
+    if (successful) {
+      errorStore.setErrors('Успешно скопировано', 'success')
+    } else {
+      throw new Error('execCommand failed')
+    }
+  } catch (err) {
+    console.error('Fallback copy failed:', err)
+    errorStore.setErrors('Не удалось скопировать текст.')
+  }
+  document.body.removeChild(textArea)
+}
 </script>
 
 <style scoped lang="scss">
 .profile {
-  border: 4px solid rgba(255, 255, 255, 1);
-  min-width: 474px;
   border-radius: 16px;
-  width: 100%;
+  width: 297px;
   position: relative;
-  background: #fff;
+  background: rgb(var(--v-theme-background));
 
   &:after {
     content: '';
@@ -174,18 +222,13 @@ const goToChat = async (id: string | number) => {
     border-radius: 16px;
   }
 
-  @media (max-width: 1024px) {
-    min-width: 358px;
-    height: auto;
-  }
-
   @media (max-width: 767px) {
     margin-right: 0;
     margin-bottom: 12px;
   }
 
   &__wrapper {
-    background: #fff;
+    //background: #fff;
     padding: 16px;
     margin-top: 60px;
     border-radius: 16px;
@@ -226,7 +269,7 @@ const goToChat = async (id: string | number) => {
   }
 
   &__name {
-    color: rgba(17, 17, 17, 1);
+    color: rgb(var(--v-theme-primary));
     font-size: 18px;
     font-weight: 500;
     margin-bottom: 10px;
@@ -245,23 +288,30 @@ const goToChat = async (id: string | number) => {
 
     &__wrap {
       display: flex;
-      align-items: center;
-      flex-wrap: wrap;
+      flex-direction: column;
     }
 
     &-item {
-      background: rgba(229, 236, 253, 1);
+      background: rgb(var(--v-theme-chipBg));
       border-radius: 8px;
-      display: inline-flex;
-      align-items: center;
+      display: flex;
+      flex-direction: column;
       margin: 2px;
-      height: 32px;
-      padding: 0 8px;
+      padding: 12px;
+      max-height: 69px;
+      min-height: 69px;
+
+      &__label {
+        color: rgb(var(--v-theme-chipColor));
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 8px;
+      }
 
       &__value {
-        color: rgba(17, 17, 17, 1);
-        margin-left: 8px;
+        color: rgb(var(--v-theme-primary));
         font-weight: 500;
+        font-size: 14px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -270,6 +320,11 @@ const goToChat = async (id: string | number) => {
         span {
           color: rgba(143, 150, 165, 1);
         }
+      }
+
+      &__icon {
+        cursor: pointer;
+        margin-left: 10px;
       }
     }
   }

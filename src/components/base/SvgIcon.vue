@@ -9,10 +9,11 @@
       v-if="width && height"
       :class="className"
       :fill="fill"
+      :stroke="stroke"
       :width="width"
       :height="height"
     />
-    <component :is="dynamicComponent" v-else :class="className" :fill="fill" />
+    <component :is="dynamicComponent" v-else :class="className" :fill="fill" :stroke="stroke" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -31,6 +32,11 @@ const props = defineProps({
     default: ''
   },
   fill: {
+    type: String,
+    default: 'none',
+    required: false
+  },
+  stroke: {
     type: String,
     default: 'none',
     required: false

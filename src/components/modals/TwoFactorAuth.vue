@@ -176,7 +176,6 @@ const submit = async () => {
 :deep(.v-card-title) {
   position: sticky;
   top: 0;
-  background: #fff !important;
   z-index: 1;
   padding-bottom: 10px !important;
 }
@@ -184,12 +183,11 @@ const submit = async () => {
 :deep(.v-card-actions) {
   position: sticky;
   bottom: 0;
-  background: #fff;
 }
 
 .get-code {
   &__description {
-    color: rgba(17, 17, 17, 1);
+    color: rgb(var(--v-theme-primary));
     font-size: 14px;
     line-height: 140%;
     letter-spacing: 0;

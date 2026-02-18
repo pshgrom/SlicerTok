@@ -49,14 +49,12 @@ const closeModal = () => {
 :deep(.v-card-actions) {
   position: sticky;
   bottom: 0;
-  background: #fff;
 }
 
 :deep(.v-card-title) {
   position: sticky;
   top: 0;
   padding-bottom: 0;
-  background: #fff;
 }
 
 :deep(.v-card-text) {

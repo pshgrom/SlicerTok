@@ -1,63 +1,64 @@
 <template>
-  <div class="user-info">
-    <div class="user-info__wrapper">
-      <ProfileCard v-model:dialog="editDialog" :user="user" :is-loading="isLoading" />
-      <WalletsCard
-        :wallets="sortedWallets"
-        :is-loading="loadingWallets"
-        @set-as-main="setAsMain"
-        @remove-wallet="removeWallet"
-        @open-modal-wallet="openModalWallet"
-      />
-      <EditProfileDialog
-        v-if="editDialog"
-        v-model:dialog="editDialog"
-        :end-date="endDate"
-        :user="user"
-        @update="updateUser"
-      />
-    </div>
-
-    <WalletModal v-if="isModalOpen" v-model="isModalOpen" @save="saveWallet" />
-
-    <div class="table-actions">
-      <div class="table-actions__left">
-        <div class="table-actions__label">Ваши видео</div>
-      </div>
-      <div class="table-actions__right">
-        <VCusomButton :custom-class="['dark']" @click="handlePaymentRequest">
-          Подать заявку
-        </VCusomButton>
+  <div class="main-info">
+    <div class="user-info">
+      <div class="user-info__wrapper">
+        <ProfileCard v-model:dialog="editDialog" :user="user" :is-loading="isLoading" />
+        <WalletsCard
+          :wallets="sortedWallets"
+          :is-loading="loadingWallets"
+          @set-as-main="setAsMain"
+          @remove-wallet="removeWallet"
+          @open-modal-wallet="openModalWallet"
+        />
+        <EditProfileDialog
+          v-if="editDialog"
+          v-model:dialog="editDialog"
+          :end-date="endDate"
+          :user="user"
+          @update="updateUser"
+        />
       </div>
     </div>
+    <div class="table-wrap">
+      <div class="table-actions">
+        <div class="table-actions__left">
+          <div class="table-actions__label">Заявки</div>
+        </div>
+        <div class="table-actions__right">
+          <VCusomButton :custom-class="['dark', 'avg']" @click="handlePaymentRequest">
+            Подать заявку
+          </VCusomButton>
+        </div>
+      </div>
 
-    <TableUserInfo
-      :headers="headers"
-      :is-loading="loadingUser"
-      :items="userInfoData"
-      :items-per-page="queryParams.perPage"
-      @resubmission-publication="resubmissionPublication"
-    />
-
-    <div v-if="showPagination" class="sticky-pagination custom-pagination">
-      <TablePagination
-        v-model:query-params="queryParams"
-        :loading="isLoading"
-        :total-pages="totalPages"
-        @change-page="handlePageChange"
+      <TableUserInfo
+        :headers="headers"
+        :is-loading="loadingUser"
+        :items="userInfoData"
+        :items-per-page="queryParams.perPage"
+        @resubmission-publication="resubmissionPublication"
       />
-    </div>
 
-    <AddVideoDialog
-      v-if="dialogVideo"
-      v-model="dialogVideo"
-      :wallet="mainWallet"
-      :loading="isSubmittingVideo"
-      :edit-mode="editMode"
-      :video-link="videoLink"
-      @submit="handleVideoSubmit"
-    />
+      <div v-if="showPagination" class="sticky-pagination custom-pagination">
+        <TablePagination
+          v-model:query-params="queryParams"
+          :loading="isLoading"
+          :total-pages="totalPages"
+          @change-page="handlePageChange"
+        />
+      </div>
+    </div>
   </div>
+  <WalletModal v-if="isModalOpen" v-model="isModalOpen" @save="saveWallet" />
+  <AddVideoDialog
+    v-if="dialogVideo"
+    v-model="dialogVideo"
+    :wallet="mainWallet"
+    :loading="isSubmittingVideo"
+    :edit-mode="editMode"
+    :video-link="videoLink"
+    @submit="handleVideoSubmit"
+  />
   <RulesDialog v-if="showRules" v-model="showRules" @save="saveWallet" />
 </template>
 
@@ -66,9 +67,9 @@ import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import VCusomButton from '@/components/base/VCusomButton.vue'
-import AddVideoDialog from '@/components/modals/AddVideoDialog.vue'
 import EditProfileDialog from '@/components/modals/EditProfileDialog.vue'
 const RulesDialog = defineAsyncComponent(() => import('@/components/modals/RulesDialog.vue'))
+import AddVideoDialog from '@/components/modals/AddVideoDialog.vue'
 import WalletModal from '@/components/modals/WalletModal.vue'
 import ProfileCard from '@/components/profile/ProfileCard.vue'
 import TablePagination from '@/components/tables/TablePagination.vue'
@@ -358,12 +359,25 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
+.main-info {
+  display: flex;
+  width: 100%;
+}
+
+.table-wrap {
+  width: 100%;
+}
+
 .user-info {
+  display: flex;
+  max-width: 297px;
+  margin-right: 9px;
+
   &__wrapper {
     display: flex;
+    flex-direction: column;
     margin-bottom: 14px;
     gap: 14px;
-    align-items: stretch;
 
     @media (max-width: 767px) {
       flex-direction: column;

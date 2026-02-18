@@ -1,6 +1,12 @@
 <!doctype html>
 <html lang="en" translate="no">
   <head>
+  <script>
+      const savedTheme = localStorage.getItem('theme')
+      if (savedTheme === 'dark') {
+          document.documentElement.classList.add('v-theme--dark')
+      }
+  </script>
     <meta charset="UTF-8" content="notranslate"  />
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
 <!--    <meta name="viewport" content="width=device-width, initial-scale=1.0" />-->

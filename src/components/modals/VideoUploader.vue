@@ -137,7 +137,7 @@ const onDrop = (e) => {
 
 <style lang="scss" scoped>
 .upload-video {
-  background: rgba(242, 246, 254, 1);
+  background: rgb(var(--v-theme-uploadVideoBg));
   width: 100%;
   display: flex;
   align-items: center;

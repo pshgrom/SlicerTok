@@ -100,7 +100,7 @@ const onClear = () => {
 .custom-input {
   :deep(input) {
     font-size: 14px !important;
-    color: rgba(17, 17, 17, 1);
+    color: rgb(var(--v-theme-primary));
   }
 
   //&.avg :deep(.v-field),

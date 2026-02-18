@@ -5,7 +5,10 @@
     style="height: 100vh"
   >
     <v-card max-width="400" min-width="400" class="pa-6 login-admin">
-      <SvgIcon class="login-admin__logo" name="logo" />
+      <SvgIcon
+        class="login-admin__logo"
+        :name="themeStore.current === 'dark' ? 'logo-dark' : 'logo'"
+      />
       <h3 class="login-admin__title">Введите свои учетные данные</h3>
 
       <v-form ref="formRef" @submit.prevent="handleLogin">
@@ -58,6 +61,7 @@ import { ADMIN_ROUTE_MAP } from '@/constants/routes'
 import type { IAuth } from '@/interfaces/Auth'
 import { useAuth } from '@/stores/Auth'
 import { useError } from '@/stores/Errors'
+import { useThemeStore } from '@/stores/Theme.ts'
 import { handleApiError } from '@/utils/errorHandler'
 import { requiredRules } from '@/utils/validators'
 
@@ -78,6 +82,7 @@ const code = ref('')
 
 const authStore = useAuth()
 const errorStore = useError()
+const themeStore = useThemeStore()
 const router = useRouter()
 const CODE_LENGTH = 6
 
@@ -164,7 +169,7 @@ const handleLogin = async (): Promise<void> => {
     font-weight: 500;
     font-size: 18px;
     letter-spacing: 0;
-    color: rgba(0, 0, 0, 1);
+    color: rgb(var(--v-theme-primary));
     margin-bottom: 25px;
   }
 }

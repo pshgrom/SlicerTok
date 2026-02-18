@@ -8,7 +8,7 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 
   .v-pagination {
-    background: white;
+    background: rgb(var(--v-theme-background));
     padding: 5px 15px;
     border-radius: 8px;
 
@@ -16,7 +16,7 @@
 
       .v-btn {
         font-size: 14px;
-        color: rgba(0, 0, 0, 0.87);
+        color: rgb(var(--v-theme-primary));
         font-weight: 400;
 
         &:hover {
@@ -35,7 +35,7 @@
   }
 
   .v-btn {
-    color: rgba(0, 0, 0, 0.87);
+    color: rgb(var(--v-theme-primary));
     font-weight: bold;
     border-radius: 50%;
     transition: background-color 0.2s ease, color 0.2s ease;
@@ -59,7 +59,7 @@
   box-shadow: none;
   margin: 0;
   padding: 0;
-  background: #fff !important;
+  background: rgb(var(--v-theme-background));
   height: 58px;
   display: flex;
   align-items: center;

@@ -141,7 +141,7 @@ const cancel = () => {
   height: 44px;
   display: flex;
   align-items: center;
-  background: rgba(242, 246, 254, 1);
+  background: rgb(var(--v-theme-chipBg));
   border-radius: 12px;
   padding: 0 12px;
   margin-bottom: 25px;
@@ -151,6 +151,7 @@ const cancel = () => {
     margin-left: 10px;
     letter-spacing: 0;
     line-height: normal;
+    color: rgb(var(--v-theme-primary));
   }
 
   @media (max-width: 767px) {

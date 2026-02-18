@@ -11,9 +11,10 @@
 
   .v-card {
     border-radius: 16px !important;
+    background: rgb(var(--v-theme-background));
 
     &-title {
-      color: rgba(17, 17, 17, 1);
+      color: rgb(var(--v-theme-primary));
       font-weight: 500;
       font-size: 18px;
       letter-spacing: 0;
@@ -31,6 +32,7 @@
 
   .v-card-actions {
     padding: 12px 20px 20px 20px !important;
+    background: rgb(var(--v-theme-background));
   }
 
   .v-card-text {

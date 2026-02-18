@@ -1,5 +1,5 @@
 <template>
-  <div class="wallet" :class="{ wallet_read: onlyRead }" :style="{ backgroundColor: getBgColor() }">
+  <div class="wallet" :class="{ wallet_read: onlyRead }">
     <div class="wallet__wrapper">
       <div v-if="wallet.is_main" class="wallet__main">Основной</div>
       <div class="wallet__value" :class="{ wallet__value_offset: !wallet.is_main }">
@@ -76,24 +76,6 @@ const errorStore = useError()
 
 const menuRef = ref<HTMLElement | null>(null)
 
-const getBgColor = () => {
-  if (props.index && !props.onlyRead) {
-    switch (props.index) {
-      case 0:
-        return 'rgba(179, 246, 255, 1)'
-      case 1:
-        return 'rgba(241, 229, 255, 1)'
-      case 2:
-        return 'rgba(254, 243, 197, 1)'
-      default:
-        return 'rgba(179, 246, 255, 1)'
-    }
-  } else if (props.onlyRead) {
-    // return 'rgb(242, 246, 254)'
-    return 'rgba(179, 246, 255, 1)'
-  }
-}
-
 const openIndex = computed({
   get() {
     return props.openIndex
@@ -118,7 +100,6 @@ const copyWallet = async (wallet: string) => {
   } else {
     fallbackCopyTextToClipboard(wallet)
   }
-
   closeDialog()
 }
 
@@ -200,14 +181,11 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 .wallet {
-  min-width: 214px;
-  height: 176px;
+  height: 80px;
   border-radius: 16px;
-  background: rgba(179, 246, 255, 1);
   margin-right: 8px;
   padding: 16px;
   position: relative;
-  background-image: url('@/static/img/pattern.png');
   z-index: 1;
   margin-bottom: 20px;
 
@@ -257,7 +235,7 @@ onBeforeUnmount(() => {
 
   &__value {
     font-weight: 500;
-    color: rgba(17, 17, 17, 1);
+    color: rgb(var(--v-theme-primary));
     font-size: 14px;
     position: relative;
 

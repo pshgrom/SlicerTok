@@ -245,7 +245,6 @@ watch(
 :deep(.v-card-title) {
   position: sticky;
   top: 0;
-  background: #fff !important;
   z-index: 1;
   padding-bottom: 10px !important;
 }

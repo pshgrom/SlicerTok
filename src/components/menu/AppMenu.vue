@@ -1,6 +1,7 @@
 <template>
   <ul class="menu">
     <li v-for="item in visibleMenuItems" :key="item.label">
+      <SvgIcon v-if="item.icon" :name="item.icon" />
       <RouterLink v-if="item.to" :to="item.to" class="menu-link" active-class="active">
         {{ item.label }}
       </RouterLink>
@@ -14,6 +15,13 @@
         </span>
       </span>
     </li>
+    <li>
+      <v-btn icon size="sm" @click="themeStore.toggle()">
+        <v-icon>
+          {{ themeStore.current === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night' }}
+        </v-icon>
+      </v-btn>
+    </li>
   </ul>
 </template>
 
@@ -22,18 +30,22 @@ import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 
+import SvgIcon from '@/components/base/SvgIcon.vue'
 import { useDeviceDetection } from '@/composables/useDeviceDetection.ts'
 import { ROLES, type RoleType } from '@/constants/roles'
 import { useAuth } from '@/stores/Auth.ts'
+import { useThemeStore } from '@/stores/Theme.ts'
 import { useChatStore } from '@/stores/UserChat.ts'
 import { useUserInfo } from '@/stores/UserInfo.ts'
 
 const emit = defineEmits(['updateOpenModal'])
 const chatStore = useChatStore()
+const themeStore = useThemeStore()
 
 type MenuItem = {
   label: string
   to?: string
+  icon?: string
   onClick?: () => void
   show?: () => boolean
   isChat?: () => boolean
@@ -48,35 +60,42 @@ const { showChat, showRules } = storeToRefs(userInfoStore)
 const menuItems: Partial<Record<RoleType, MenuItem[]>> = {
   [ROLES.ADMIN]: [
     { label: 'Заявки', to: '/admin-info' },
-    { label: '2FA', onClick: () => emit('updateOpenModal', true) }
+    { label: '2FA', onClick: () => emit('updateOpenModal', true), icon: '2fa' }
   ],
   [ROLES.SLICER]: [
-    { label: 'Правила', onClick: () => (showRules.value = !showRules.value) },
-    { label: '2FA', onClick: () => emit('updateOpenModal', true) },
+    {
+      label: 'Правила загрузки',
+      onClick: () => (showRules.value = !showRules.value),
+      icon: 'rules'
+    },
     {
       label: 'Поддержка',
+      icon: 'support',
       isChat: true,
       show: () => isMobile.value,
       onClick: () => (showChat.value = !showChat.value)
-    }
+    },
+    { label: '2FA', onClick: () => emit('updateOpenModal', true), icon: '2fa' }
   ],
-  [ROLES.ADMIN_FINANCE]: [{ label: '2FA', onClick: () => emit('updateOpenModal', true) }],
+  [ROLES.ADMIN_FINANCE]: [
+    { label: '2FA', onClick: () => emit('updateOpenModal', true), icon: '2fa' }
+  ],
   [ROLES.ADMIN_MAIN]: [
     { label: 'Общая информация', to: '/admin-main' },
-    { label: '2FA', onClick: () => emit('updateOpenModal', true) }
+    { label: '2FA', onClick: () => emit('updateOpenModal', true), icon: '2fa' }
   ],
   [ROLES.STREAMER]: [
     { label: 'Статистика', to: '/streamer-stats' },
     { label: 'Заявки', to: '/streamer' },
     { label: 'Коэффициенты', to: '/streamer-coefficients' },
     { label: 'Логи', to: '/streamer-logs' },
-    { label: '2FA', onClick: () => emit('updateOpenModal', true) }
+    { label: '2FA', onClick: () => emit('updateOpenModal', true), icon: '2fa' }
   ],
   [ROLES.SUPPORT]: [
     { label: 'Заявки', to: '/support' },
     { label: 'Пользователи', to: '/support-users' },
     { label: 'Чат', to: '/support-chat' },
-    { label: '2FA', onClick: () => emit('updateOpenModal', true) }
+    { label: '2FA', onClick: () => emit('updateOpenModal', true), icon: '2fa' }
   ]
 }
 
@@ -89,32 +108,43 @@ const visibleMenuItems = computed(() =>
 .menu {
   display: flex;
   align-items: center;
-  margin-right: 40px;
-
-  @media (max-width: 767px) {
-    margin-right: 15px;
-  }
+  margin-right: 12px;
 
   li {
-    color: rgba(17, 17, 17, 1);
-    font-size: 14px;
-    font-weight: 500;
+    background: rgb(var(--v-theme-chipBg));
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(var(--v-theme-chipColor));
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0 8px 0 10px;
     cursor: pointer;
-    transition: color 0.15s ease-in;
+    transition: opacity 0.15s ease-in;
+
+    .svg-icon {
+      margin-right: 8px;
+    }
 
     & + li {
-      margin-left: 20px;
+      margin-left: 4px;
+    }
 
-      @media (max-width: 767px) {
-        margin-left: 15px;
-      }
+    :deep(svg path) {
+      transition: all 0.2s ease-in;
+      stroke: rgb(var(--v-theme-chipColor));
     }
 
     &:hover {
-      color: rgba(169, 55, 244, 1);
+      :deep(svg path) {
+        stroke: rgba(169, 55, 244, 1);
+      }
     }
   }
 }
+
 .menu-link.active {
   color: rgba(169, 55, 244, 1);
   pointer-events: none !important;
