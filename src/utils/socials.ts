@@ -38,14 +38,35 @@ export const getStatusColor = (status: string): string => {
     case 'moderation':
     case 'awaiting_payment':
     case 'process_payment':
-      return 'rgba(229, 236, 253, 1)'
+      return 'rgb(var(--v-theme-statusProcessBg))'
     case 'approved':
     case 'paid':
-      return 'rgba(187, 251, 228, 1)'
+      return 'rgb(var(--v-theme-statusApprovedBg))'
     case 'rejected':
-      return 'rgba(255, 224, 224, 1)'
+      return 'rgb(var(--v-theme-statusRejectBg))'
     case 'na':
       return 'rgba(255, 241, 221, 1)'
+    default:
+      return ''
+  }
+}
+
+export const getColor = (status: string): string => {
+  switch (status) {
+    case 'create':
+    case 'todo':
+      return 'rgba(169, 55, 244, 1)'
+    case 'moderation':
+    case 'awaiting_payment':
+    case 'process_payment':
+      return 'rgb(var(--v-theme-statusProcessColor))'
+    case 'approved':
+    case 'paid':
+      return 'rgb(var(--v-theme-statusApprovedColor))'
+    case 'rejected':
+      return 'rgb(var(--v-theme-statusRejectColor))'
+    case 'na':
+      return 'rgba(235, 142, 4, 1)'
     default:
       return ''
   }
@@ -63,27 +84,6 @@ export const getIconSocial = (url: string): string => {
     icon = 'vk'
   }
   return icon
-}
-
-export const getColor = (status: string): string => {
-  switch (status) {
-    case 'create':
-    case 'todo':
-      return 'rgba(169, 55, 244, 1)'
-    case 'moderation':
-    case 'awaiting_payment':
-    case 'process_payment':
-      return 'rgba(169, 55, 244, 1)'
-    case 'approved':
-    case 'paid':
-      return 'rgba(16, 154, 106, 1)'
-    case 'rejected':
-      return 'rgba(255, 0, 0, 1)'
-    case 'na':
-      return 'rgba(235, 142, 4, 1)'
-    default:
-      return ''
-  }
 }
 
 export const getIcon = (status: string): string => {

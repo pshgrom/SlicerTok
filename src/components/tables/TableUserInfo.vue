@@ -83,14 +83,14 @@
         </VCusomButton>
         <v-tooltip text="Переподать видео" location="bottom">
           <template #activator="{ props }">
-            <VCusomButton
+            <button
               v-if="item.is_resubmission"
               v-bind="props"
-              :custom-class="['light', 'only-icon']"
+              class="button-action"
               @click="resubmissionPublication(item)"
             >
-              <SvgIcon name="resend" />
-            </VCusomButton>
+              <SvgIcon name="resubmission" />
+            </button>
           </template>
         </v-tooltip>
       </div>
