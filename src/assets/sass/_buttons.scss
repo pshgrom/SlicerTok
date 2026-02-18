@@ -1,0 +1,19 @@
+.button-action {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 12px;
+  background: rgb(var(--v-theme-chipBg));
+  color: rgb(var(--v-theme-chipColor));
+
+  svg path {
+    stroke: rgba(169, 55, 244, 1);
+  }
+
+  &_disabled {
+    background: gray;
+  }
+}

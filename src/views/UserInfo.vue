@@ -376,7 +376,7 @@ onMounted(async () => {
     display: flex;
     flex-direction: column;
     margin-bottom: 14px;
-    gap: 14px;
+    gap: 8px;
 
     @media (max-width: 767px) {
       flex-direction: column;

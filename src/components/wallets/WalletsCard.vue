@@ -5,9 +5,9 @@
         <div class="wallets__label">Кошельки</div>
         <button
           v-if="!readonly"
-          class="wallets__add"
+          class="button-action"
           :disabled="wallets.length >= 3"
-          :class="{ wallets__add_disabled: wallets.length >= 3 }"
+          :class="{ 'button-action_disabled': wallets.length >= 3 }"
           @click="openDialog"
         >
           <SvgIcon name="plus" scale=".9" />

@@ -1,6 +1,6 @@
 export const getNameSocialMedia = (url: string): string => {
   if (url.includes('inst')) return 'Instagram'
-  if (url.includes('tik')) return 'TikTok'
+  if (url.includes('tik')) return 'Tik Tok'
   if (url.includes('shorts')) return 'Shorts'
   if (url.includes('vk')) return 'VK Video'
   return 'Unknown'

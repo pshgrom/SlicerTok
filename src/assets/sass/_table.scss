@@ -4,6 +4,7 @@
   
   &__payment {
     color: #109A6A;
+    font-weight: 400;
   }
 
   .v-table__wrapper {
@@ -80,6 +81,7 @@
   &-views {
     display: flex;
     align-items: center;
+    font-weight: 400;
 
     svg path{
       stroke: rgb(var(--v-theme-primary));
@@ -103,23 +105,22 @@
     display: flex;
     align-items: center;
     border: none;
-    border-radius: 12px;
+    border-radius: 8px;
     cursor: pointer;
     padding: 0 8px;
     width: max-content;
     transition: all .15s ease-in;
     background: rgb(var(--v-theme-chipBg));
 
-    &__social {
-      margin-right: 6px;
-    }
-
     span {
       display: inline-flex;
       margin-right: 8px;
+      margin-left: 6px;
+      font-weight: 400;
     }
 
     div:last-child {
+      margin-right: 4px;
       svg {
         stroke: rgb(var(--v-theme-primary)) ;
       }
@@ -137,10 +138,10 @@
   }
 
   td {
-    height: 66px !important;
-    border-bottom: 1px solid rgba(238, 238, 238, 1) !important;
+    height: 60px !important;
+    border-bottom: 1px solid rgb(var(--v-theme-borderColor)) !important;
     color: rgb(var(--v-theme-primary));
-    font-weight: 400;
+    font-weight: 500;
   }
 
 }

@@ -1,5 +1,6 @@
 <template>
   <div class="profile">
+    <div class="profile__bg"></div>
     <div class="profile__wrapper">
       <div class="profile__top">
         <div class="profile__avatar">
@@ -25,9 +26,6 @@
             <SvgIcon name="msg" /> Чат
           </VCusomButton>
         </div>
-        <VCusomButton v-if="!readonly" :custom-class="['light']" @click="showDialog(true)"
-          >Изменить
-        </VCusomButton>
       </div>
       <div class="profile__content">
         <div class="profile__name" :class="{ profile__name_readonly: readonly }">
@@ -39,6 +37,9 @@
           </template>
           <span v-else>Ваше имя</span>
         </div>
+        <button v-if="!readonly" class="button-action" @click="showDialog(true)">
+          <SvgIcon name="edit" />
+        </button>
       </div>
       <div class="profile-info">
         <div class="profile-info__wrap">
@@ -173,27 +174,13 @@ const goToChat = async (id: string | number) => {
   position: relative;
   background: rgb(var(--v-theme-background));
 
-  &:after {
-    content: '';
-    width: 100%;
-    height: 100px;
-    position: absolute;
-    background: rgba(0, 212, 254, 1);
-    background-image: url('@/static/img/profile-bg.png');
-    left: 0;
-    top: 0;
-    border-radius: 16px;
-  }
-
   @media (max-width: 767px) {
     margin-right: 0;
     margin-bottom: 12px;
   }
 
   &__wrapper {
-    //background: #fff;
     padding: 16px;
-    margin-top: 60px;
     border-radius: 16px;
     padding-bottom: 12px;
     position: relative;
@@ -202,6 +189,32 @@ const goToChat = async (id: string | number) => {
     @media (max-width: 1024px) {
       border-radius: 0;
       border-top-right-radius: 16px;
+    }
+  }
+
+  &__bg {
+    height: 74px;
+    width: 100%;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    background: linear-gradient(
+      150deg,
+      rgba(169, 55, 244, 1),
+      rgba(200, 118, 255, 1),
+      rgba(64, 0, 107, 1)
+    );
+    background-size: contain;
+    position: relative;
+
+    &:after {
+      content: '';
+      background-image: url('@/static/img/profile-bg.png');
+      background-size: contain;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
     }
   }
 
@@ -217,13 +230,13 @@ const goToChat = async (id: string | number) => {
   }
 
   &__avatar {
-    max-width: 99px;
-    margin-top: -61px;
+    max-width: 82px;
+    margin-top: -60px;
     border-radius: 50%;
 
     img {
       border-radius: 50%;
-      border: 4px solid rgba(255, 255, 255, 1);
+      border: 2px solid rgb(var(--v-theme-inversionPrimary));
     }
   }
 
@@ -231,11 +244,19 @@ const goToChat = async (id: string | number) => {
     margin-left: 5px;
   }
 
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
   &__name {
-    color: rgb(var(--v-theme-primary));
-    font-size: 18px;
+    font-size: 16px;
+    font-family: 'Unbounded', sans-serif;
     font-weight: 500;
-    margin-bottom: 10px;
+    color: rgb(var(--v-theme-primary));
+    letter-spacing: 2%;
 
     span {
       color: rgba(143, 150, 165, 1);
@@ -256,7 +277,7 @@ const goToChat = async (id: string | number) => {
 
     &-item {
       background: rgb(var(--v-theme-chipBg));
-      border-radius: 8px;
+      border-radius: 12px;
       display: flex;
       flex-direction: column;
       margin: 2px;
