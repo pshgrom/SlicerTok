@@ -123,8 +123,8 @@ import SvgIcon from '@/components/base/SvgIcon.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import SmallLoader from '@/components/SmallLoader.vue'
 import type { IUser } from '@/interfaces/Slicer'
-import { useError } from '@/stores/Errors.ts'
 import { useSupportUsers } from '@/stores/SupportUsers.ts'
+import { copyContent } from '@/utils/copyContent.ts'
 import { formatDate } from '@/utils/formatDate.ts'
 import { formatNumber } from '@/utils/formatNumbers.ts'
 // import ImageUploader from '@/components/base/ImageUploader.vue'
@@ -149,7 +149,6 @@ defineProps({
 })
 const emit = defineEmits(['update:dialog', 'verifyUser'])
 const router = useRouter()
-const errorStore = useError()
 const supportUsersStore = useSupportUsers()
 
 const showDialog = (val: boolean) => {
@@ -165,48 +164,12 @@ const goToChat = async (id: string | number) => {
   const { chat_room_id } = resp
   if (chat_room_id) await router.push({ name: 'SupportChat', params: { id: chat_room_id } })
 }
-
-const copyContent = async (value: string) => {
-  if (!value) return
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    try {
-      await navigator.clipboard.writeText(value)
-      errorStore.setErrors('Успешно скопировано', 'success')
-    } catch (err) {
-      console.error('Clipboard API error:', err)
-      fallbackCopyTextToClipboard(value)
-    }
-  } else {
-    fallbackCopyTextToClipboard(value)
-  }
-}
-
-const fallbackCopyTextToClipboard = (text: string) => {
-  const textArea = document.createElement('textarea')
-  textArea.value = text
-  document.body.appendChild(textArea)
-  textArea.focus()
-  textArea.select()
-  try {
-    const successful = document.execCommand('copy')
-    if (successful) {
-      errorStore.setErrors('Успешно скопировано', 'success')
-    } else {
-      throw new Error('execCommand failed')
-    }
-  } catch (err) {
-    console.error('Fallback copy failed:', err)
-    errorStore.setErrors('Не удалось скопировать текст.')
-  }
-  document.body.removeChild(textArea)
-}
 </script>
 
 <style scoped lang="scss">
 .profile {
   border-radius: 16px;
-  width: 297px;
+  width: 325px;
   position: relative;
   background: rgb(var(--v-theme-background));
 
@@ -325,6 +288,10 @@ const fallbackCopyTextToClipboard = (text: string) => {
       &__icon {
         cursor: pointer;
         margin-left: 10px;
+
+        :deep(svg path) {
+          stroke: rgb(var(--v-theme-chipColor));
+        }
       }
     }
   }

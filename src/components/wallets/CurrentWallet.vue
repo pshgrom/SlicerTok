@@ -1,10 +1,16 @@
 <template>
-  <div class="wallet" :class="{ wallet_read: onlyRead }">
+  <div class="wallet" :class="{ wallet_read: onlyRead, wallet_active: openIndex === index }">
     <div class="wallet__wrapper">
-      <div v-if="wallet.is_main" class="wallet__main">Основной</div>
-      <div class="wallet__value" :class="{ wallet__value_offset: !wallet.is_main }">
+      <div class="wallet__icon">
+        <SvgIcon :name="`wallet-${index! + 1}`" />
+      </div>
+      <div class="wallet__value">
         {{ formatWallet(wallet.address) }}
       </div>
+      <div class="wallet__copy" @click="copyContent(wallet.address)">
+        <SvgIcon name="copy-second" />
+      </div>
+      <div v-if="wallet.is_main" class="wallet__main">Основной</div>
     </div>
     <div v-if="!onlyRead && !readonly" class="wallet-menu">
       <div class="wallet-menu-icon" @click="openDialog">
@@ -18,10 +24,6 @@
         >
           <SvgIcon name="main" :fill="wallet.is_main ? '#000' : '#fff'" />
           <span>Основной</span>
-        </li>
-        <li class="dropdown-menu-item" @click="copyWallet(wallet.address)">
-          <SvgIcon name="copy" />
-          <span>Скопировать</span>
         </li>
         <li
           :class="{
@@ -41,8 +43,9 @@
 import type { PropType } from 'vue'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
+import SvgIcon from '@/components/base/SvgIcon.vue'
 import type { IWallet } from '@/interfaces/Slicer'
-import { useError } from '@/stores/Errors'
+import { copyContent } from '@/utils/copyContent.ts'
 
 const props = defineProps({
   wallet: {
@@ -55,7 +58,7 @@ const props = defineProps({
   },
   index: {
     type: [Number, null],
-    default: null
+    default: 0
   },
   openIndex: {
     type: [Number, null],
@@ -72,7 +75,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:openIndex', 'setAsMain', 'removeWallet'])
-const errorStore = useError()
 
 const menuRef = ref<HTMLElement | null>(null)
 
@@ -84,46 +86,6 @@ const openIndex = computed({
     emit('update:openIndex', value)
   }
 })
-
-const copyWallet = async (wallet: string) => {
-  if (!wallet) return
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    try {
-      await navigator.clipboard.writeText(wallet)
-      errorStore.setErrors('Адрес успешно скопирован', 'success')
-    } catch (err) {
-      console.error('Clipboard API error:', err)
-      // Попытка fallback
-      fallbackCopyTextToClipboard(wallet)
-    }
-  } else {
-    fallbackCopyTextToClipboard(wallet)
-  }
-  closeDialog()
-}
-
-const fallbackCopyTextToClipboard = (text: string) => {
-  const textArea = document.createElement('textarea')
-  textArea.value = text
-  document.body.appendChild(textArea)
-  textArea.focus()
-  textArea.select()
-
-  try {
-    const successful = document.execCommand('copy')
-    if (successful) {
-      errorStore.setErrors('Адрес успешно скопирован', 'success')
-    } else {
-      throw new Error('execCommand failed')
-    }
-  } catch (err) {
-    console.error('Fallback copy failed:', err)
-    errorStore.setErrors('Не удалось скопировать текст.')
-  }
-
-  document.body.removeChild(textArea)
-}
 
 function handleClickOutside(event: MouseEvent) {
   if (
@@ -179,25 +141,41 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .wallet {
-  height: 80px;
+  height: 66px;
   border-radius: 16px;
-  margin-right: 8px;
-  padding: 16px;
+  padding: 12px;
   position: relative;
   z-index: 1;
-  margin-bottom: 20px;
+  background: rgb(var(--v-theme-chipBg));
+
+  &_active {
+    z-index: 100;
+  }
 
   @media (max-width: 767px) {
     height: 140px;
     margin-bottom: 60px;
   }
 
+  &__wrapper {
+    display: flex;
+    align-items: center;
+  }
+
+  &__icon {
+    margin-right: 12px;
+  }
+
+  & + .wallet {
+    margin-top: 4px;
+  }
+
   &-menu {
     position: absolute;
     right: 16px;
-    top: 16px;
+    top: 50%;
 
     &-icon {
       cursor: pointer;
@@ -221,16 +199,16 @@ onBeforeUnmount(() => {
   }
 
   &__main {
-    background: rgba(17, 17, 17, 1);
     padding: 0 8px;
     display: inline-flex;
     align-items: center;
-    height: 23px;
+    height: 24px;
     border-radius: 16px;
-    color: rgba(255, 255, 255, 1);
-    font-weight: 500;
+    font-weight: 600;
     font-size: 12px;
-    margin-bottom: 8px;
+    margin-left: 7px;
+    background: rgb(var(--v-theme-chipBg));
+    color: rgb(var(--v-theme-chipColor));
   }
 
   &__value {
@@ -238,23 +216,25 @@ onBeforeUnmount(() => {
     color: rgb(var(--v-theme-primary));
     font-size: 14px;
     position: relative;
+    margin-right: 8px;
+  }
 
-    &_offset {
-      top: 8px;
-    }
+  &__copy {
+    cursor: pointer;
   }
 }
 
 .dropdown-menu {
-  background: rgba(255, 255, 255, 1);
+  background: rgb(var(--v-theme-chipBg));
   position: absolute;
-  bottom: -140px;
+  bottom: -110px;
   left: -114px;
   width: 146px;
   border-radius: 12px;
   padding: 4px;
   user-select: none;
   box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+  z-index: 50;
 
   &-item {
     transition: background-color 0.15s ease-in;
@@ -265,8 +245,8 @@ onBeforeUnmount(() => {
     align-items: center;
     font-family: 'Inter', sans-serif;
     font-size: 14px;
-    color: rgba(17, 17, 17, 1);
     padding-left: 12px;
+    color: rgb(var(--v-theme-primary));
 
     &_disabled {
       pointer-events: none;
@@ -297,7 +277,6 @@ onBeforeUnmount(() => {
     height: 110px;
     margin: 0;
     border: 1px solid rgb(211, 219, 237) !important;
-    background-image: url('@/static/img/pattern.png');
 
     @media (max-width: 1024px) {
       width: 237px;

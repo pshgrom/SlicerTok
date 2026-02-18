@@ -370,8 +370,7 @@ onMounted(async () => {
 
 .user-info {
   display: flex;
-  max-width: 297px;
-  margin-right: 9px;
+  margin-right: 16px;
 
   &__wrapper {
     display: flex;

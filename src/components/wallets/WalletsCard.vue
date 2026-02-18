@@ -3,13 +3,15 @@
     <div class="wallets__wrapper">
       <div class="wallets__top">
         <div class="wallets__label">Кошельки</div>
-        <VCusomButton
+        <button
           v-if="!readonly"
-          :custom-class="['light']"
+          class="wallets__add"
           :disabled="wallets.length >= 3"
+          :class="{ wallets__add_disabled: wallets.length >= 3 }"
           @click="openDialog"
-          >Добавить
-        </VCusomButton>
+        >
+          <SvgIcon name="plus" scale=".9" />
+        </button>
       </div>
       <div v-if="wallets.length" class="wallets__list">
         <CurrentWallet
@@ -41,7 +43,6 @@
 import { type PropType, ref } from 'vue'
 
 import SvgIcon from '@/components/base/SvgIcon.vue'
-import VCusomButton from '@/components/base/VCusomButton.vue'
 import SmallLoader from '@/components/SmallLoader.vue'
 import CurrentWallet from '@/components/wallets/CurrentWallet.vue'
 import { type IWallet } from '@/interfaces/Slicer'
@@ -81,21 +82,43 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
 
 <style scoped lang="scss">
 .wallets {
-  padding: 17px 0 0 20px;
   width: 100%;
   border-radius: 16px;
   position: relative;
   background: rgb(var(--v-theme-background));
+  padding: 16px 16px 21px 16px;
 
   @media (max-width: 767px) {
     padding-bottom: 0;
   }
 
+  &__add {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 12px;
+    background: rgb(var(--v-theme-chipBg));
+    color: rgb(var(--v-theme-chipColor));
+
+    :deep(svg path) {
+      stroke: rgba(169, 55, 244, 1);
+    }
+
+    &_disabled {
+      background: gray;
+    }
+  }
+
   &__label {
+    font-family: 'Unbounded', sans-serif;
     font-weight: 500;
+    letter-spacing: 2%;
     display: inline-flex;
     align-items: center;
-    font-size: 18px;
+    font-size: 16px;
     color: rgb(var(--v-theme-primary));
   }
 
@@ -106,11 +129,10 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
   &__top {
     display: flex;
     justify-content: space-between;
-    padding-right: 20px;
+    margin-bottom: 10px;
   }
 
   &__list {
-    padding-top: 14px;
     display: flex;
     flex-direction: column;
   }

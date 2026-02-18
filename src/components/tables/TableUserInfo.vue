@@ -38,7 +38,7 @@
       </button>
     </template>
     <template #[`item.expected_reward`]="{ item }">
-      <div>~ {{ formatCompactUSD(item.expected_reward) }}</div>
+      <div class="custom-table__payment">~ {{ formatCompactUSD(item.expected_reward) }}</div>
     </template>
     <template #[`item.number_views`]="{ item }">
       <div

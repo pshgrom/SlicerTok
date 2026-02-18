@@ -89,7 +89,7 @@ onMounted(async () => {
 .header {
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
-  height: 64px;
+  height: 54px;
   display: flex;
   align-items: center;
   transition-duration: 0.2s;

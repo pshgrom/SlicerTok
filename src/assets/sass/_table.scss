@@ -1,6 +1,10 @@
 .custom-table {
   padding: 0 16px;
   background: rgb(var(--v-theme-background)) !important;
+  
+  &__payment {
+    color: #109A6A;
+  }
 
   .v-table__wrapper {
     border-radius: 8px !important;
@@ -153,8 +157,9 @@
   transition: all .28s;
 
   &__label {
+    font-family: 'Unbounded', sans-serif;
     font-weight: 500;
-    color: rgba(17, 17, 17, 1);
+    letter-spacing: 2%;
     font-size: 16px;
     color: rgb(var(--v-theme-primary));
   }
