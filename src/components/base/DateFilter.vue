@@ -21,7 +21,7 @@
         class="date-filter__input"
       >
         <template #prepend-inner>
-          <SvgIcon name="calendar-search" />
+          <SvgIcon class-name="date-filter__icon" name="calendar-search" />
         </template>
         <template #append-inner>
           <v-icon v-if="formattedDate" size="18" class="cursor-pointer" @click.stop="clearDate">
@@ -97,6 +97,11 @@ watch(
   max-width: 250px;
   min-width: 250px;
   font-size: 16px;
+  background: rgb(var(--v-theme-background));
+
+  :deep(svg) {
+    stroke: rgb(var(--v-theme-primary));
+  }
 
   :deep(.v-field__input) {
     padding: 4px 8px;

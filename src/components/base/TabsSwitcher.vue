@@ -82,11 +82,15 @@ const handleTabClick = (tabId: string, redirect: string): void => {
 .content-card {
   border: none;
   box-shadow: none;
-  background: transparent;
   height: 40px;
+  border-radius: 50px;
 
   :deep(.v-slide-group) {
-    width: fit-content !important;
+    background: rgb(var(--v-theme-chipBg)) !important;
+
+    button {
+      color: rgb(var(--v-theme-chipColor)) !important;
+    }
   }
 }
 </style>

@@ -147,9 +147,9 @@ const showViolations = (rules: Violation[]) => {
   }
 
   &-item {
-    background: rgba(242, 246, 254, 1);
     border-radius: 16px;
     padding: 12px;
+    background: rgb(var(--v-theme-chipBg));
 
     &__title {
       color: rgba(143, 150, 165, 1);
@@ -169,7 +169,6 @@ const showViolations = (rules: Violation[]) => {
   padding-bottom: 0 !important;
   position: sticky;
   top: 0;
-  background: #fff !important;
   z-index: 1;
 }
 

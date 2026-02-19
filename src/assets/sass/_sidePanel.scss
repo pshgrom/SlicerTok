@@ -11,7 +11,6 @@
   .v-card-title {
     position: sticky;
     top: 0;
-    background: #fff !important;
     z-index: 1;
     padding: 0 !important;
     display: flex;
@@ -27,7 +26,6 @@
 
   .v-card-actions {
     position: absolute;
-    background: #fff;
     left: 0;
     bottom: 0;
     width: 100%;

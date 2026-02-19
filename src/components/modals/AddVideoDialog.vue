@@ -257,7 +257,6 @@ watch(
     justify-content: end !important;
     position: sticky;
     bottom: 0;
-    background: #fff;
   }
 
   button {

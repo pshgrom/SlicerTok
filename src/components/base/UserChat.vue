@@ -52,10 +52,7 @@
           </transition-group>
         </template>
 
-        <h3 v-else class="chat-messages__empty">
-          <template v-if="!streamer">Выберите стримера </template>
-          <template v-else>Пока нет сообщений</template>
-        </h3>
+        <h3 v-else class="chat-messages__empty">Пока нет сообщений</h3>
       </div>
     </div>
 
@@ -65,7 +62,7 @@
         autofocus
         label="Введите текст"
         class="mr-1"
-        :disabled="!streamer"
+        :disabled="isSlicer ? !streamer : false"
         :rules="[requiredRules.maxLength]"
         @input="removeEmoji"
         @keyup.enter="sendMessage"
@@ -132,7 +129,7 @@ const scrollToBottom = (smooth = true) => {
 }
 
 const sendMessage = async () => {
-  if (!streamer.value) return
+  if (isSlicer.value && !streamer.value) return
   if (!newMessage.value.trim()) return
   const isValid = await formRef?.value?.validate()
   if (isValid.valid) {
