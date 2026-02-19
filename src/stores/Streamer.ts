@@ -172,14 +172,14 @@ export const useStreamer = defineStore('streamerStore', () => {
 
   const getStreamerDailyStats = async (params: ITableParams) => {
     try {
-      const data: ITableParams = {
+      const dataQuery: ITableParams = {
         page: params.page,
         perPage: params.perPage ?? 50
       }
       isLoading.value = true
-      const resp = await getStreamerDailyStatsQuery(data)
-      dailyStats.value = resp?.data?.data ?? []
-      const queryResp = resp?.data?.meta ?? {}
+      const { data } = await getStreamerDailyStatsQuery(dataQuery)
+      dailyStats.value = data?.data?.data ?? []
+      const queryResp = data.data ?? {}
       const { current_page = 1, per_page = 50, total } = queryResp
       queryParams.value = {
         ...queryParams.value,

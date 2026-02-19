@@ -124,6 +124,8 @@ export default defineConfig({
             if (id.includes('axios')) return 'vendor_axios'
             if (id.includes('vue-router')) return 'vendor_router'
             if (id.includes('pinia')) return 'vendor_pinia'
+            if (id.includes('chart.js')) return 'vendor_chart'
+            if (id.includes('vue-chartjs')) return 'vendor_chart'
             return 'vendor_misc'
           }
 
