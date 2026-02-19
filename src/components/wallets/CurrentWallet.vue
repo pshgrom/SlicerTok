@@ -154,11 +154,6 @@ onBeforeUnmount(() => {
     z-index: 100;
   }
 
-  @media (max-width: 767px) {
-    height: 140px;
-    margin-bottom: 60px;
-  }
-
   &__wrapper {
     display: flex;
     align-items: center;
@@ -166,6 +161,10 @@ onBeforeUnmount(() => {
 
   &__icon {
     margin-right: 12px;
+
+    :deep(svg path) {
+      stroke: rgb(var(--v-theme-inversionPrimary));
+    }
   }
 
   & + .wallet {

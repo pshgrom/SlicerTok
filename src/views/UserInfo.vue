@@ -362,6 +362,10 @@ onMounted(async () => {
 .main-info {
   display: flex;
   width: 100%;
+
+  @media (max-width: 1440px) {
+    flex-direction: column;
+  }
 }
 
 .table-wrap {
@@ -372,11 +376,21 @@ onMounted(async () => {
   display: flex;
   margin-right: 16px;
 
+  @media (max-width: 1440px) {
+    margin-right: 0;
+  }
+
   &__wrapper {
     display: flex;
     flex-direction: column;
     margin-bottom: 14px;
     gap: 8px;
+
+    @media (max-width: 1440px) {
+      flex-direction: row;
+      width: 100%;
+      margin-bottom: 8px;
+    }
 
     @media (max-width: 767px) {
       flex-direction: column;

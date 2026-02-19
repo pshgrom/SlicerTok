@@ -88,8 +88,13 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
   background: rgb(var(--v-theme-background));
   padding: 16px 16px 21px 16px;
 
+  @media (max-width: 1440px) {
+    max-width: 400px;
+    width: 100%;
+  }
+
   @media (max-width: 767px) {
-    padding-bottom: 0;
+    max-width: 100%;
   }
 
   &__add {

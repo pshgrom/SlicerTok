@@ -174,9 +174,14 @@ const goToChat = async (id: string | number) => {
   position: relative;
   background: rgb(var(--v-theme-background));
 
+  @media (max-width: 1440px) {
+    max-width: 872px;
+    width: 100%;
+  }
+
   @media (max-width: 767px) {
     margin-right: 0;
-    margin-bottom: 12px;
+    margin-bottom: 0;
   }
 
   &__wrapper {
@@ -249,6 +254,11 @@ const goToChat = async (id: string | number) => {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 12px;
+
+    @media (max-width: 1440px) {
+      margin-top: -43px;
+      margin-bottom: 6px;
+    }
   }
 
   &__name {
@@ -257,6 +267,11 @@ const goToChat = async (id: string | number) => {
     font-weight: 500;
     color: rgb(var(--v-theme-primary));
     letter-spacing: 2%;
+
+    @media (max-width: 1440px) {
+      position: relative;
+      left: 84px;
+    }
 
     span {
       color: rgba(143, 150, 165, 1);
@@ -273,6 +288,11 @@ const goToChat = async (id: string | number) => {
     &__wrap {
       display: flex;
       flex-direction: column;
+
+      @media (max-width: 1440px) {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
     }
 
     &-item {
@@ -284,6 +304,10 @@ const goToChat = async (id: string | number) => {
       padding: 12px;
       max-height: 69px;
       min-height: 69px;
+
+      @media (max-width: 1440px) {
+        width: calc(50% - 4px);
+      }
 
       &__label {
         color: rgb(var(--v-theme-chipColor));
