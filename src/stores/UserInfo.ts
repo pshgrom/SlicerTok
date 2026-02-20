@@ -32,7 +32,8 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     name: '',
     phone: authStore.phone || '',
     email: '',
-    telegram: ''
+    telegram: '',
+    avatar: ''
   })
   const qrCode = ref('')
   const secretKey = ref('')

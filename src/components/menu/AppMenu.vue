@@ -1,11 +1,11 @@
 <template>
   <ul class="menu">
-    <li v-for="item in visibleMenuItems" :key="item.label">
+    <li v-for="item in visibleMenuItems" :key="item.label" @click="item.onClick?.()">
       <SvgIcon v-if="item.icon" :name="item.icon" />
       <RouterLink v-if="item.to" :to="item.to" class="menu-link" active-class="active">
         {{ item.label }}
       </RouterLink>
-      <span v-else class="menu-el" @click="item.onClick?.()">
+      <span v-else class="menu-el">
         {{ item.label }}
         <span
           v-if="item.isChat && chatStore.unreadCount > 0 && !userInfoStore.showChat"

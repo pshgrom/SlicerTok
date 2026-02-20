@@ -181,6 +181,7 @@ import ViewsSelectField from '@/components/base/ViewsSelectField.vue'
 import { useAdminInfo } from '@/stores/AdminInfo.ts'
 import { useSupportUsers } from '@/stores/SupportUsers.ts'
 import { formatNumber } from '@/utils/formatNumbers.ts'
+import { formatLabel } from '@/utils/sidePanelData.ts'
 import { getColor, getIcon, getStatusColor, getTextStatus } from '@/utils/socials.ts'
 import { videoRules } from '@/utils/validators.ts'
 
@@ -362,15 +363,6 @@ const goToUser = async () => {
   await router.push({ name: 'User', params: { id: userId.value } })
 }
 
-const formatLabel = (label: string) => {
-  switch (label) {
-    case 'group_a_current':
-      return 'Админ группы А'
-    case 'group_b_current':
-      return 'Админ группы B'
-  }
-}
-
 const resetForm = () => {
   currentItem.value = { ...initialValue.value }
 }
@@ -467,7 +459,7 @@ const activePanelVal = computed({
   &__title {
     font-weight: 500;
     font-size: 14px;
-    color: rgba(17, 17, 17, 1);
+    color: rgb(var(--v-theme-primary));
     margin-bottom: 12px;
     letter-spacing: 0;
 
@@ -487,7 +479,7 @@ const activePanelVal = computed({
       margin-bottom: 5px;
     }
     &__value {
-      color: rgba(0, 0, 0, 1);
+      color: rgb(var(--v-theme-primary));
       font-size: 14px;
       line-height: 140%;
     }

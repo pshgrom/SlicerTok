@@ -15,6 +15,7 @@
             <span v-if="!isEqualDate">Следующий раз {{ endDate }}</span>
           </div>
         </div>
+        <UploaderImage v-model="form.avatar" />
         <v-form ref="formRef">
           <VCustomInput
             v-model.trim="form.name"
@@ -62,6 +63,7 @@
 import type { PropType } from 'vue'
 import { computed, ref, watch } from 'vue'
 
+import UploaderImage from '@/components/base/UploaderImage.vue'
 import VCusomButton from '@/components/base/VCusomButton.vue'
 import VCustomInput from '@/components/base/VCustomInput.vue'
 import type { IUser } from '@/interfaces/Slicer'

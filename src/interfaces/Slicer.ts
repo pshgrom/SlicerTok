@@ -11,6 +11,7 @@ export interface IUser {
   phone: string
   email: string
   telegram: string
+  avatar: string
 }
 
 export interface IWallet {

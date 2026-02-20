@@ -67,9 +67,8 @@ import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import VCusomButton from '@/components/base/VCusomButton.vue'
-import EditProfileDialog from '@/components/modals/EditProfileDialog.vue'
-const RulesDialog = defineAsyncComponent(() => import('@/components/modals/RulesDialog.vue'))
 import AddVideoDialog from '@/components/modals/AddVideoDialog.vue'
+import EditProfileDialog from '@/components/modals/EditProfileDialog.vue'
 import WalletModal from '@/components/modals/WalletModal.vue'
 import ProfileCard from '@/components/profile/ProfileCard.vue'
 import TablePagination from '@/components/tables/TablePagination.vue'
@@ -81,6 +80,7 @@ import type { IUploadVideo, IUser, IWallet } from '@/interfaces/Slicer'
 import { useError } from '@/stores/Errors'
 import { useRequestSocket } from '@/stores/RequestsSocket.ts'
 import { useUserInfo } from '@/stores/UserInfo'
+const RulesDialog = defineAsyncComponent(() => import('@/components/modals/RulesDialog.vue'))
 
 const headers = ref<ITableHeaders[]>(userInfoHeaders)
 

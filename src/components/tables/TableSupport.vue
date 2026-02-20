@@ -150,6 +150,7 @@ import VCusomButton from '@/components/base/VCusomButton.vue'
 import VideoPlayModal from '@/components/modals/VideoPlayModal.vue'
 import type { ITableHeaders, IUserInfoData } from '@/interfaces/AppModel'
 import { formatNumber } from '@/utils/formatNumbers.ts'
+import { formatLabel } from '@/utils/sidePanelData.ts'
 import {
   getColor,
   getIcon,
@@ -237,15 +238,6 @@ const rowProps = (item) => ({
   onClick: () => emit('rowClick', item)
 })
 
-const formatLabel = (label: string) => {
-  switch (label) {
-    case 'group_a_current':
-      return 'Админ группы А'
-    case 'group_b_current':
-      return 'Админ группы B'
-  }
-}
-
 watch(
   () => props.selectedIndex,
   async (newIndex) => {
@@ -269,7 +261,7 @@ watch(
   &__title {
     font-weight: 500;
     font-size: 14px;
-    color: rgba(17, 17, 17, 1);
+    color: rgb(var(--v-theme-primary));
     margin-bottom: 12px;
   }
 
@@ -282,7 +274,7 @@ watch(
       font-weight: 500;
     }
     &__value {
-      color: rgba(0, 0, 0, 1);
+      color: rgb(var(--v-theme-primary));
       font-size: 14px;
       line-height: 140%;
 

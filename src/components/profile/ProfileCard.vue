@@ -4,8 +4,7 @@
     <div class="profile__wrapper">
       <div class="profile__top">
         <div class="profile__avatar">
-          <!--          <ImageUploader v-model="imageFile" />-->
-          <img src="@/static/img/avatar.png" alt="аватарка" />
+          <img :src="user.avatar" alt="аватарка" />
         </div>
         <div v-if="readonly" class="profile__actions">
           <VCusomButton
@@ -128,7 +127,6 @@ import { useSupportUsers } from '@/stores/SupportUsers.ts'
 import { copyContent } from '@/utils/copyContent.ts'
 import { formatDate } from '@/utils/formatDate.ts'
 import { formatNumber } from '@/utils/formatNumbers.ts'
-// import ImageUploader from '@/components/base/ImageUploader.vue'
 
 defineProps({
   dialog: {
@@ -235,14 +233,13 @@ const goToChat = async (id: string | number) => {
   }
 
   &__avatar {
+    min-width: 82px;
     max-width: 82px;
+    max-height: 82px;
+    min-height: 82px;
     margin-top: -60px;
     border-radius: 50%;
-
-    img {
-      border-radius: 50%;
-      border: 2px solid rgb(var(--v-theme-inversionPrimary));
-    }
+    border: 2px solid rgb(var(--v-theme-inversionPrimary));
   }
 
   &__verify {
