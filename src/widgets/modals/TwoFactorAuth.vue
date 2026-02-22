@@ -1,0 +1,213 @@
+<template>
+  <v-dialog v-model="dialog" class="custom-modal" max-width="500px">
+    <v-card>
+      <v-card-title>
+        <span class="headline">Двухфакторка</span>
+        <v-btn icon="mdi-close" variant="text" @click="dialog = false" />
+      </v-card-title>
+      <v-card-text>
+        <VCustomToggle
+          v-model="isEnableGoogle2fa"
+          :density="'compact'"
+          :hide-details="true"
+          label="Включение двухфакторной аутентификации"
+          color="rgba(169, 55, 244, 1)"
+          @change="onChange"
+        />
+        <transition name="fade" mode="out-in">
+          <div v-if="isEnableGoogle2fa && qrCode">
+            <div class="instruction">
+              <div class="instruction__title">Инструкция:</div>
+              <ul class="instruction-list">
+                <li class="instruction-list__item">
+                  1. Скачайте Google Authenticator или другое приложение.
+                </li>
+                <li class="instruction-list__item">
+                  2. Отсканируйте QR-код или введите вручную ключ.
+                </li>
+                <li class="instruction-list__item">3. Введите код ниже, чтобы подтвердить.</li>
+              </ul>
+            </div>
+            <v-divider class="mt-8 mb-8" />
+            <div class="get-code">
+              <div class="get-code__description">
+                Сканируйте QR-код в приложении Google Authenticator или другом совместимом.
+              </div>
+              <div class="get-code__code">
+                <VueQrcode :value="qrCode" type="image/png" :width="225" />
+              </div>
+              <div class="get-code__text">
+                или используйте этот ключ <span> {{ secretKey }} </span>
+              </div>
+            </div>
+            <v-form ref="formRef">
+              <VCustomInput
+                v-model="code"
+                label="Введите код из приложения"
+                required
+                :rules="[requiredRules.required]"
+              />
+            </v-form>
+          </div>
+        </transition>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <VCusomButton :custom-class="['light', 'avg']" @click="closeModal"> Отмена </VCusomButton>
+        <VCusomButton :custom-class="['dark', 'avg']" @click="submit"> Сохранить </VCusomButton>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+</template>
+
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import VueQrcode from 'vue-qrcode'
+
+import { useUserInfo } from '@/entities/user'
+import { requiredRules, useTwoFactor } from '@/shared/lib'
+import VCusomButton from '@/shared/ui/VCusomButton.vue'
+import VCustomInput from '@/shared/ui/VCustomInput.vue'
+import VCustomToggle from '@/shared/ui/VCustomToggle.vue'
+
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false
+  },
+  role: {
+    type: String,
+    default: ''
+  }
+})
+const emit = defineEmits(['update:modelValue', 'submit'])
+
+const { isEnableGoogle2fa } = useTwoFactor(props.role ?? 'slicer')
+
+const formRef = ref(null)
+const code = ref('')
+const userInfo = useUserInfo()
+
+const qrCode = computed({
+  get() {
+    return userInfo.qrCode
+  },
+  set(val) {
+    userInfo.qrCode = val
+  }
+})
+
+const secretKey = computed(() => userInfo.secretKey)
+
+const dialog = computed({
+  get() {
+    return props.modelValue
+  },
+  set(val) {
+    emit('update:modelValue', val)
+  }
+})
+
+const closeModal = () => {
+  dialog.value = false
+}
+
+const onChange = async (e: boolean) => {
+  if (e) {
+    await userInfo.enableTwoFactor()
+  } else {
+    await userInfo.disabledTwoFactor()
+  }
+}
+
+const submit = async () => {
+  const isValid = await formRef?.value?.validate()
+  if (!isValid?.valid) {
+    const formEl = formRef.value?.$el || document.querySelector('.side-panel')
+    const invalidField = formEl?.querySelector('.v-input--error, .v-field--error')
+
+    if (invalidField) {
+      invalidField.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      })
+    } else {
+      dialog.value = false
+    }
+    return
+  } else {
+    emit('submit', code.value)
+  }
+  if (!isEnableGoogle2fa.value) {
+    dialog.value = false
+    qrCode.value = ''
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.instruction {
+  background: rgba(229, 236, 253, 1);
+  border-radius: 8px;
+  padding: 16px;
+
+  &__title {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: rgba(17, 17, 17, 1);
+  }
+
+  &-list {
+    padding-left: 5px;
+
+    &__item {
+      color: rgba(17, 17, 17, 1);
+      font-size: 14px;
+      letter-spacing: 0;
+
+      & + .instruction-list__item {
+        margin-top: 3px;
+      }
+    }
+  }
+}
+
+:deep(.v-card-title) {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding-bottom: 10px !important;
+}
+
+:deep(.v-card-actions) {
+  position: sticky;
+  bottom: 0;
+}
+
+.get-code {
+  &__description {
+    color: rgb(var(--v-theme-primary));
+    font-size: 14px;
+    line-height: 140%;
+    letter-spacing: 0;
+  }
+
+  &__code {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__text {
+    font-size: 14px;
+    text-align: center;
+    position: relative;
+    top: -13px;
+    margin-bottom: 5px;
+
+    span {
+      display: block;
+      font-weight: 700;
+    }
+  }
+}
+</style>
