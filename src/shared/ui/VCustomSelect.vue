@@ -20,6 +20,11 @@
       @click:clear="clearSelect"
       @update:model-value="updateStatus"
     >
+      <template #selection="{ item }">
+        <slot name="selection" :item="item">
+          {{ item?.raw?.label ?? item?.title ?? '' }}
+        </slot>
+      </template>
       <template #item="{ props: slotProps, item }">
         <slot name="item" :item="item" :props="{ ...slotProps, disabled: item.raw.disabled }">
           <v-list-item v-bind="slotProps" :disabled="item.raw.disabled">

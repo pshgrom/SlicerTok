@@ -44,10 +44,11 @@ export const useStreamers = defineStore('streamersStore', () => {
     }
   }
 
-  const setStreamer = (value: number | string) => {
-    streamer.value = value
+  const setStreamer = (value: number | string | null) => {
+    const normalized = value != null ? String(value) : null
+    streamer.value = normalized
     if (authStore.role === ROLES.SLICER) {
-      localStorage.setItem('streamerChat', String(value))
+      localStorage.setItem('streamerChat', normalized ?? '')
     }
   }
 

@@ -63,7 +63,6 @@ const goToStreamerProfile = (streamerId: number) => {
 
 onMounted(() => {
   adminMainStore.getAdminMainInfo()
-  adminMainStore.getMainAdminInfo()
 })
 </script>
 

@@ -120,7 +120,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
       const { data } = await userApi.disabledTwoFactorQuery()
       const msg = (data as Record<string, unknown>)?.message ?? ''
       errorStore.setErrors(String(msg), 'success')
-      await getInfo()
+      if (authStore.role === 'slicer') await getInfo()
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } }
       errorStore.setErrors(err?.response?.data?.message ?? 'Error')

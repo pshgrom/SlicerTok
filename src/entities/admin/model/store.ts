@@ -1,6 +1,6 @@
 import type { AxiosError } from 'axios'
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 import { useError, useHeaderMain } from '@/app/stores'
 import { useUserInfo } from '@/entities/user'
@@ -279,6 +279,10 @@ export const useAdminMain = defineStore('adminMainStore', () => {
       loadingStats.value = false
     }
   }
+
+  onMounted(async () => {
+    getMainAdminInfo()
+  })
 
   return {
     streamers,
