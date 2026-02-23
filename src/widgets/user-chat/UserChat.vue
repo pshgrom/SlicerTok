@@ -79,6 +79,7 @@ import { useAuth, useUserInfo } from '@/entities'
 import { useChatSocketStore, useChatStore } from '@/entities/chat'
 import { useStreamers } from '@/entities/streamer'
 import { requiredRules, throttle, useDeviceDetection } from '@/shared/lib'
+import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCustomInput from '@/shared/ui/VCustomInput.vue'
 import VCustomSelect from '@/shared/ui/VCustomSelect.vue'
 
@@ -101,7 +102,7 @@ const authStore = useAuth()
 const isSlicer = computed(() => authStore.role === 'slicer')
 
 const streamerName = computed(() => {
-  return streamerStore.streamerList?.find((el) => (el.value = streamer.value)).label
+  return streamerStore.streamerList?.find((el) => el.value === streamer.value)?.label ?? ''
 })
 
 const streamer = computed({

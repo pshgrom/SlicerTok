@@ -95,6 +95,7 @@ import {
 import { useSupport } from '@/entities/support'
 import type { ChatMessage, Room } from '@/shared/config/types/chat'
 import { debounce, requiredRules } from '@/shared/lib'
+import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCustomInput from '@/shared/ui/VCustomInput.vue'
 
 const chatStore = useChatSocketStore()

@@ -62,7 +62,10 @@
             :key="groupName"
           >
             <v-col
-              v-if="groupName === 'group_a_current' || groupName === 'group_b_current'"
+              v-if="
+                groupName.toString() === 'group_a_current' ||
+                groupName.toString() === 'group_b_current'
+              "
               style="margin: 0 2px"
             >
               <v-card
@@ -96,7 +99,14 @@
                     offset="4"
                   >
                     <template #activator="{ props: menuProps }">
-                      <SvgIcon v-bind="menuProps" name="eye" @click.stop />
+                      <SvgIcon
+                        v-bind="menuProps"
+                        :class="{
+                          icon_light: themeStore.current !== 'dark'
+                        }"
+                        name="show"
+                        @click.stop
+                      />
                     </template>
                     <div class="tooltip-content" v-html="showViolations(group.rules)"></div>
                   </v-menu>
@@ -171,9 +181,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { useThemeStore } from '@/app/stores'
 import { useAdminInfo } from '@/entities/admin'
 import { useSupportUsers } from '@/entities/support'
 import {
@@ -220,7 +231,7 @@ const emit = defineEmits([
 const supportUsersStore = useSupportUsers()
 
 const initialValue = ref({})
-
+const themeStore = useThemeStore()
 const formRef = ref(null)
 const router = useRouter()
 const adminInfo = useAdminInfo()
@@ -380,11 +391,25 @@ const activePanelVal = computed({
     emit('update:activePanel', val)
   }
 })
+
+const handleKeydown = (e: KeyboardEvent) => {
+  if (e.key === 'Escape' && activePanelVal.value) {
+    closeDialog()
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown)
+})
 </script>
 
 <style scoped lang="scss">
 .user-card {
-  background-color: #f5f9ff;
+  background: rgb(var(--v-theme-chipBg));
   padding: 16px;
   height: 82px;
   margin-bottom: 4px;
@@ -409,7 +434,7 @@ const activePanelVal = computed({
 .user-card__name {
   font-size: 14px;
   margin-bottom: 8px;
-  color: rgba(17, 17, 17, 1);
+  color: rgb(var(--v-theme-primary));
   letter-spacing: 0;
 }
 
@@ -491,7 +516,7 @@ const activePanelVal = computed({
   }
 
   &_dialog {
-    background: rgba(242, 246, 254, 1);
+    background: rgb(var(--v-theme-chipBg));
     padding: 16px;
   }
 }
@@ -501,7 +526,7 @@ const activePanelVal = computed({
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(242, 246, 254, 1);
+  background: rgb(var(--v-theme-chipBg));
   border-radius: 16px;
   margin-bottom: 4px;
 

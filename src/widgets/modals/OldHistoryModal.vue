@@ -54,7 +54,7 @@
                     offset="4"
                   >
                     <template #activator="{ props: menuProps }">
-                      <SvgIcon v-bind="menuProps" name="eye" @click.stop />
+                      <SvgIcon v-bind="menuProps" name="show" @click.stop />
                     </template>
                     <div class="tooltip-content" v-html="showViolations(item.rules)"></div>
                   </v-menu>

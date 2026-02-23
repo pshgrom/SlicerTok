@@ -60,7 +60,7 @@
                         :custom-class="['light', 'avg', 'only-icon']"
                         @click.stop
                       >
-                        <SvgIcon name="eye" />
+                        <SvgIcon name="show" />
                       </VCusomButton>
                     </template>
                     <div class="tooltip-content" v-html="showViolations(group.rules)"></div>
@@ -173,9 +173,9 @@ import {
   getStatusColor,
   getTextStatus
 } from '@/shared/lib'
-import VideoPlayModal from '@/widgets/modals/VideoPlayModal.vue'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
+import VideoPlayModal from '@/widgets/modals/VideoPlayModal.vue'
 
 const emit = defineEmits(['rowClick', 'update:activePanel', 'finishCheck'])
 

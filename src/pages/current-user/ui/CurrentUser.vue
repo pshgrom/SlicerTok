@@ -1,33 +1,38 @@
 <template>
-  <div class="user-info">
-    <Breadcrumbs :items="breadcrumbs" divider="/" />
-    <div class="user-info__wrapper">
-      <ProfileCard
-        v-model:dialog="editDialog"
-        :user="currentUser"
-        :readonly="true"
-        @verify-user="verifyUser"
-      />
-      <WalletsCard :wallets="wallets" :readonly="true" />
-    </div>
-    <div class="table-actions">
-      <div class="table-actions__left">
-        <div class="table-actions__label">Ваши видео</div>
+  <Breadcrumbs :items="breadcrumbs" divider="/" />
+  <div class="main-info">
+    <div class="user-info">
+      <div class="user-info__wrapper">
+        <ProfileCard
+          v-model:dialog="editDialog"
+          :user="currentUser"
+          :readonly="true"
+          @verify-user="verifyUser"
+        />
+        <WalletsCard :wallets="wallets" :readonly="true" />
       </div>
     </div>
-    <TableUserInfo
-      :headers="headers"
-      :is-loading="isLoading"
-      :items="slicerItems"
-      :items-per-page="queryParams.perPage"
-    />
-    <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
-      <TablePagination
-        v-model:query-params="queryParams"
-        :loading="isLoading"
-        :total-pages="totalPages"
-        @change-page="changePage"
+
+    <div class="table-wrap">
+      <div class="table-actions">
+        <div class="table-actions__left">
+          <div class="table-actions__label">Ваши видео</div>
+        </div>
+      </div>
+      <TableUserInfo
+        :headers="headers"
+        :is-loading="isLoading"
+        :items="slicerItems"
+        :items-per-page="queryParams.perPage"
       />
+      <div v-if="totalPages !== 0" class="sticky-pagination custom-pagination">
+        <TablePagination
+          v-model:query-params="queryParams"
+          :loading="isLoading"
+          :total-pages="totalPages"
+          @change-page="changePage"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -40,8 +45,8 @@ import { useSupport } from '@/entities/support'
 import { userInfoHeaders } from '@/shared/config'
 import type { ITableHeaders, ITableParams } from '@/shared/config/types/app-model'
 import type { BreadcrumbItem } from '@/shared/config/types/breadcrumb'
-import Breadcrumbs from '@/shared/ui/Breadcrumbs.vue'
 import { TablePagination } from '@/shared/ui'
+import Breadcrumbs from '@/shared/ui/Breadcrumbs.vue'
 import { ProfileCard } from '@/widgets/profile-card'
 import { TableUserInfo } from '@/widgets/tables'
 import { WalletsCard } from '@/widgets/wallets'
@@ -128,12 +133,37 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
+.main-info {
+  display: flex;
+  width: 100%;
+
+  @media (max-width: 1440px) {
+    flex-direction: column;
+  }
+}
+
+.table-wrap {
+  width: 100%;
+}
 .user-info {
+  display: flex;
+  margin-right: 16px;
+
+  @media (max-width: 1440px) {
+    margin-right: 0;
+  }
+
   &__wrapper {
     display: flex;
+    flex-direction: column;
     margin-bottom: 14px;
-    gap: 14px;
-    align-items: stretch;
+    gap: 8px;
+
+    @media (max-width: 1440px) {
+      flex-direction: row;
+      width: 100%;
+      margin-bottom: 8px;
+    }
 
     @media (max-width: 767px) {
       flex-direction: column;

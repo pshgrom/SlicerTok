@@ -74,4 +74,10 @@ const dynamicComponent = computed(() => {
     }
   }
 }
+
+.icon_light {
+  :deep(svg path) {
+    stroke: rgb(var(--v-theme-primary));
+  }
+}
 </style>

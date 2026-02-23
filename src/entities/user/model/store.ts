@@ -103,6 +103,30 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     }
   }
 
+  const enableTwoFactor = async () => {
+    try {
+      const { data } = await userApi.enableTwoFactorQuery()
+      const res = data as Record<string, unknown>
+      qrCode.value = (res?.qr_code_url as string) ?? ''
+      secretKey.value = (res?.secret as string) ?? ''
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } }
+      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+    }
+  }
+
+  const disabledTwoFactor = async () => {
+    try {
+      const { data } = await userApi.disabledTwoFactorQuery()
+      const msg = (data as Record<string, unknown>)?.message ?? ''
+      errorStore.setErrors(String(msg), 'success')
+      await getInfo()
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } }
+      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+    }
+  }
+
   const addWallet = async (data: Record<string, unknown>) => {
     try {
       return await userApi.addWalletQuery(data)
@@ -209,6 +233,10 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     showChat,
     showRules,
     checkCode,
+    enableTwoFactor,
+    disabledTwoFactor,
+    qrCode,
+    secretKey,
     isEnableGoogle2fa,
     updateUserInfoItem,
     resubmissionPublication,

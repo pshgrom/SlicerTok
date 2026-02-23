@@ -87,11 +87,16 @@ export const useSupport = defineStore('supportStore', () => {
 
   const getSlicer = async (id: number) => {
     try {
+      isLoading.value = true
       const { data } = await supportApi.getSlicerQuery(id)
-      return (data as Record<string, unknown>)?.data ?? {}
+      const result = (data as Record<string, unknown>)?.data ?? {}
+      currentUser.value = result as Record<string, unknown>
+      return result
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } }
       errorStore.setErrors(err?.response?.data?.message ?? '')
+    } finally {
+      isLoading.value = false
     }
   }
 
@@ -128,6 +133,56 @@ export const useSupport = defineStore('supportStore', () => {
     }
   }
 
+  const getWallets = async (id: number) => {
+    try {
+      isLoading.value = true
+      const { data } = await supportApi.getWalletsQuery(id)
+      const res = data as Record<string, unknown>
+      wallets.value = (res?.data as IWallet[]) ?? []
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } }
+      errorStore.setErrors(err?.response?.data?.message ?? '')
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const getInfo = async (id: number) => {
+    try {
+      const newData = {
+        ...queryParamsSlicer.value,
+        id,
+        total: undefined
+      }
+      isLoading.value = true
+      const { data } = await supportApi.getInfoQuery(newData)
+      const res = data as Record<string, unknown>
+      slicerItems.value = (res?.data as unknown[]) ?? []
+      const meta = res?.meta as Record<string, unknown>
+      const { current_page = 1, per_page = 20, total } = meta ?? {}
+      queryParamsSlicer.value = {
+        ...queryParamsSlicer.value,
+        page: (current_page as number) ?? 1,
+        perPage: (per_page as number) ?? 20,
+        total: total as number
+      }
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } }
+      errorStore.setErrors(err?.response?.data?.message ?? '')
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const actionRequest = async (id: number) => {
+    try {
+      await supportApi.actionRequestQuery(id)
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } }
+      errorStore.setErrors(err?.response?.data?.message ?? '')
+    }
+  }
+
   const changeFinalValues = async (payload: Record<string, unknown>) => {
     try {
       return await supportApi.changeFinalValuesQuery(payload)
@@ -152,12 +207,16 @@ export const useSupport = defineStore('supportStore', () => {
     supportInfo,
     checkCode,
     getPublicationList,
+    getPublicationsList: getPublicationList,
+    actionRequest,
     items,
     queryParams,
     setQueryParams,
     getSlicer,
     getSlicerPublications,
     getSlicerWallets,
+    getWallets,
+    getInfo,
     wallets,
     queryParamsSlicer,
     setQueryParamsSlicer,

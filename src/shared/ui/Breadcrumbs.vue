@@ -66,7 +66,7 @@ const processedItems = computed(() => {
 
 :deep(.breadcrumb-item--active) {
   font-weight: 500;
-  color: rgba(17, 17, 17, 1);
+  color: rgb(var(--v-theme-primary));
   font-size: 12px;
   opacity: 1;
 }

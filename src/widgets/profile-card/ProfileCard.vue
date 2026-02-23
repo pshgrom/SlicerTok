@@ -71,11 +71,14 @@
             </div>
           </div>
           <div v-if="readonly" class="profile-info-item">
-            <div class="profile-info-item__icon">
-              <SvgIcon name="show" />
-            </div>
-            <div class="profile-info-item__value">
-              <div>{{ formatNumber(user.total_views ?? 0) }}</div>
+            <div class="profile-info-item__label">Суммарные просмотры</div>
+            <div class="d-flex">
+              <div class="profile-info-item__value">
+                <div>{{ formatNumber(user.total_views ?? 0) }}</div>
+              </div>
+              <div class="profile-info-item__icon" @click="copyContent(user.total_views ?? 0)">
+                <SvgIcon name="copy-second" />
+              </div>
             </div>
           </div>
           <div class="profile-info-item">
@@ -90,9 +93,7 @@
             </div>
           </div>
           <div v-if="readonly" class="profile-info-item">
-            <div class="profile-info-item__icon">
-              <SvgIcon name="calendar" />
-            </div>
+            <div class="profile-info-item__label">Дата создания</div>
             <div class="profile-info-item__value">{{ formatDate(user.created_at) }}</div>
           </div>
           <div class="profile-info-item">
@@ -226,8 +227,10 @@ const goToChat = async (id: string | number) => {
   }
 
   &__actions {
+    display: flex;
     position: relative;
-    top: 5px;
+    left: -55px;
+    margin-top: 40px;
   }
 
   &__avatar {

@@ -173,11 +173,11 @@ import {
   getStatusColor,
   getTextStatus
 } from '@/shared/lib'
+import SvgIcon from '@/shared/ui/SvgIcon.vue'
+import VCusomButton from '@/shared/ui/VCusomButton.vue'
 import AddMarkModal from '@/widgets/modals/AddMarkModal.vue'
 import OldHistoryModal from '@/widgets/modals/OldHistoryModal.vue'
 import VideoPlayModal from '@/widgets/modals/VideoPlayModal.vue'
-import SvgIcon from '@/shared/ui/SvgIcon.vue'
-import VCusomButton from '@/shared/ui/VCusomButton.vue'
 
 const emit = defineEmits([
   'finishCheck',
@@ -233,7 +233,8 @@ const computedHeaders = computed<ITableHeaders[]>({
 
 const rowProps = (item) => ({
   id: `row-${item.index}`,
-  class: ['cursor-pointer', item.index === props.selectedIndex ? 'bg-blue-lighten-4' : ''],
+  class: ['cursor-pointer'],
+  style: item.index === props.selectedIndex ? { background: 'rgb(var(--v-theme-chipBg))' } : {},
   onClick: () => emit('rowClick', item)
 })
 
