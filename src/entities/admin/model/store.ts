@@ -255,12 +255,23 @@ export const useAdminMain = defineStore('adminMainStore', () => {
   const getAdminStats = async (params: ITableParams, adminId: string) => {
     try {
       loadingStats.value = true
-      const { data } = await adminApi.getAdminStatsQuery(
-        { page: params.page, perPage: params.perPage ?? 50 },
-        adminId
-      )
+      const query = {
+        page: params.page ?? 1,
+        perPage: params.perPage ?? 50
+      }
+      const { data } = await adminApi.getAdminStatsQuery(query, adminId)
       const res = data as Record<string, unknown>
-      adminsStats.value = (res?.data as unknown[]) ?? []
+      const payload = res?.data as Record<string, unknown> | undefined
+      adminsStats.value = (payload?.data as unknown[]) ?? []
+      const current_page = (payload?.current_page as number) ?? 1
+      const per_page = (payload?.per_page as number) ?? 50
+      const total = (payload?.total as number) ?? 0
+      queryParamsStats.value = {
+        ...queryParamsStats.value,
+        page: current_page,
+        perPage: per_page,
+        total
+      }
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } }
       errorStore.setErrors(err?.response?.data?.message ?? '')

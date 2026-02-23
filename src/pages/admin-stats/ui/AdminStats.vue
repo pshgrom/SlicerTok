@@ -2,7 +2,7 @@
   <AdminBreadcrumbs />
   <div class="table-actions table-actions_admin">
     <div class="table-actions__left">
-      <div class="table-actions__label">Статистика за день1</div>
+      <div class="table-actions__label">Статистика за день</div>
     </div>
   </div>
   <TableAdminStats
