@@ -75,7 +75,7 @@ export const useStreamer = defineStore('streamerStore', () => {
   const items = ref<unknown[]>([])
   const isEnableGoogle2fa = ref(false)
   const coeffs = ref<unknown[]>([])
-  const allStats = ref<unknown[]>([])
+  const allStats = ref<Record<string, unknown>>({})
   const dailyStats = ref<unknown[]>([])
   const headerMainStore = useHeaderMain()
   const userInfoStore = useUserInfo()
@@ -183,25 +183,50 @@ export const useStreamer = defineStore('streamerStore', () => {
     }
   }
 
-  const getStreamerDailyStats = async () => {
+  const getStreamerDailyStats = async (params: ITableParams) => {
     try {
-      const { data } = await streamerApi.getStreamerDailyStatsQuery()
+      isLoading.value = true
+      const dataQuery: ITableParams = {
+        ...queryParams.value,
+        page: params.page ?? 1,
+        perPage: params.perPage ?? 50
+      }
+      const { data } = await streamerApi.getStreamerDailyStatsQuery(dataQuery)
       const res = data as Record<string, unknown>
-      dailyStats.value = (res?.data as unknown[]) ?? []
+      const payload = res?.data as Record<string, unknown>
+      dailyStats.value = (payload?.data as unknown[]) ?? []
+      const current_page = (payload?.current_page as number) ?? 1
+      const per_page = (payload?.per_page as number) ?? 50
+      const total = (payload?.total as number) ?? 0
+      queryParams.value = {
+        ...queryParams.value,
+        page: current_page,
+        perPage: per_page,
+        total
+      }
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } }
       errorStore.setErrors(err?.response?.data?.message ?? '')
+    } finally {
+      isLoading.value = false
     }
   }
 
   const getStreamerAllStats = async () => {
     try {
+      isLoading.value = true
       const { data } = await streamerApi.getStreamerAllStatsQuery()
       const res = data as Record<string, unknown>
-      allStats.value = (res?.data as unknown[]) ?? []
+      const payload = res?.data as Record<string, unknown> | undefined
+      const statistic = payload?.statistic ?? payload
+      allStats.value = (
+        statistic && typeof statistic === 'object' && !Array.isArray(statistic) ? statistic : {}
+      ) as Record<string, unknown>
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } }
       errorStore.setErrors(err?.response?.data?.message ?? '')
+    } finally {
+      isLoading.value = false
     }
   }
 
