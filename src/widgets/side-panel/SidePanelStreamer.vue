@@ -114,6 +114,8 @@ import VCusomButton from '@/shared/ui/VCusomButton.vue'
 import VCustomSelect from '@/shared/ui/VCustomSelect.vue'
 import ViewsSelectField from '@/shared/ui/ViewsSelectField.vue'
 
+import { useSidePanelDrawer } from './composables/useSidePanelDrawer'
+
 const props = defineProps({
   isFirst: {
     type: Boolean,
@@ -141,7 +143,14 @@ const emit = defineEmits([
   'changeState'
 ])
 
-const initialValue = ref({})
+const {
+  activePanelVal,
+  currentItem,
+  formRef,
+  closeDialog,
+  validateAndScroll
+} = useSidePanelDrawer(props, emit)
+
 const streamerStore = useStreamer()
 
 const selectAll = ref(false)
@@ -155,8 +164,6 @@ const allStatuses = [
   { label: 'Отклонено', value: 'rejected' }
 ]
 
-const formRef = ref(null)
-
 const toggleSelectAll = () => {
   if (selectAll.value) {
     selectedTasks.value = allTasks.value.map((item) => item.key)
@@ -165,20 +172,10 @@ const toggleSelectAll = () => {
   }
 }
 
-const currentItem = computed({
-  get: () => props.currentItem,
-  set: (val) => emit('update:currentItem', val)
-})
-
 const allTasks = computed(() => currentItem.value?.task?.rules ?? [])
 const coeffs = computed(() =>
   streamerStore.coeffs.map(({ id, rate }) => ({ label: rate, value: id }))
 )
-
-const closeDialog = () => {
-  resetForm()
-  activePanelVal.value = false
-}
 
 type StatusItem = { value: string }
 const getItemStyle = (item: StatusItem) => {
@@ -186,10 +183,6 @@ const getItemStyle = (item: StatusItem) => {
     return 'color: rgb(169, 55, 244)'
   }
   return ''
-}
-
-const resetForm = () => {
-  currentItem.value = { ...initialValue.value }
 }
 
 const setCoeff = computed({
@@ -216,30 +209,18 @@ const setCoeff = computed({
 })
 
 const change = async () => {
-  const isValid = await formRef?.value?.validate()
-  if (!isValid.valid) {
-    const formEl = formRef.value?.$el || document.querySelector('.side-panel')
-    const invalidField = formEl?.querySelector('.v-input--error, .v-field--error')
-
-    if (invalidField) {
-      invalidField.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center'
-      })
-    }
+  const isValid = await validateAndScroll()
+  if (!isValid) return
+  if (
+    currentItem.value.status_moderation_streamer?.current === 'rejected' &&
+    !selectedTasks.value.length
+  ) {
+    showError.value = true
     return
-  } else {
-    if (
-      currentItem.value.status_moderation_streamer.current === 'rejected' &&
-      !selectedTasks.value.length
-    ) {
-      showError.value = true
-      return
-    }
-    showError.value = false
-    emit('changeState', currentItem.value, selectedTasks.value)
-    activePanelVal.value = false
   }
+  showError.value = false
+  emit('changeState', currentItem.value, selectedTasks.value)
+  activePanelVal.value = false
 }
 
 const onInput = (val) => {
@@ -280,14 +261,5 @@ watch(
 onMounted(() => {
   if (currentItem.value?.status_moderation_streamer?.number_views_moderation)
     onInput(currentItem.value.status_moderation_streamer.number_views_moderation)
-})
-
-const activePanelVal = computed({
-  get() {
-    return props.activePanel
-  },
-  set(val) {
-    emit('update:activePanel', val)
-  }
 })
 </script>

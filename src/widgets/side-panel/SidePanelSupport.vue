@@ -181,7 +181,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { useThemeStore } from '@/app/stores'
@@ -200,6 +200,8 @@ import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
 import VCustomSelect from '@/shared/ui/VCustomSelect.vue'
 import ViewsSelectField from '@/shared/ui/ViewsSelectField.vue'
+
+import { useSidePanelDrawer } from './composables/useSidePanelDrawer'
 
 const props = defineProps({
   isFirst: {
@@ -228,11 +230,13 @@ const emit = defineEmits([
   'next'
 ])
 
-const supportUsersStore = useSupportUsers()
+const { activePanelVal, currentItem, formRef, closeDialog, validateAndScroll } = useSidePanelDrawer(
+  props,
+  emit
+)
 
-const initialValue = ref({})
+const supportUsersStore = useSupportUsers()
 const themeStore = useThemeStore()
-const formRef = ref(null)
 const router = useRouter()
 const adminInfo = useAdminInfo()
 
@@ -260,11 +264,6 @@ const currentCoefficient = computed({
     )
   },
   set: (val) => (currentItem.value.status_moderation_support.current.coefficient = val)
-})
-
-const currentItem = computed({
-  get: () => props.currentItem,
-  set: (val) => emit('update:currentItem', val)
 })
 
 const coeffs = computed(() => adminInfo.coeffs ?? [])
@@ -312,37 +311,20 @@ const sameCoeffs = computed(() => {
   return false
 })
 
-const closeDialog = () => {
-  resetForm()
-  activePanelVal.value = false
-}
-
 const cleanNumber = (str: string) => str.replace(/\D/g, '')
 
 const change = async () => {
-  const isValid = await formRef?.value?.validate()
-  if (!isValid.valid) {
-    const formEl = formRef.value?.$el || document.querySelector('.side-panel')
-    const invalidField = formEl?.querySelector('.v-input--error, .v-field--error')
-
-    if (invalidField) {
-      invalidField.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center'
-      })
-    }
-    return
-  } else {
-    const { status } = currentItem.value?.status_moderation_support?.current ?? {}
-    const data = {
-      id: props.currentItem.id,
-      status: !sameStatuses.value ? status : undefined,
-      coefficient_id: !sameCoeffs.value ? currentCoefficient.value : undefined,
-      number_views_moderation: !sameViews.value ? cleanNumber(currentNumberViews.value) : undefined
-    }
-    emit('changeFinalValues', data)
-    closeDialog()
+  const isValid = await validateAndScroll()
+  if (!isValid) return
+  const { status } = currentItem.value?.status_moderation_support?.current ?? {}
+  const data = {
+    id: props.currentItem.id,
+    status: !sameStatuses.value ? status : undefined,
+    coefficient_id: !sameCoeffs.value ? currentCoefficient.value : undefined,
+    number_views_moderation: !sameViews.value ? cleanNumber(currentNumberViews.value) : undefined
   }
+  emit('changeFinalValues', data)
+  closeDialog()
 }
 
 const videoApprover = computed(
@@ -378,33 +360,6 @@ const goToChat = async () => {
 const goToUser = async () => {
   await router.push({ name: 'User', params: { id: userId.value } })
 }
-
-const resetForm = () => {
-  currentItem.value = { ...initialValue.value }
-}
-
-const activePanelVal = computed({
-  get() {
-    return props.activePanel
-  },
-  set(val) {
-    emit('update:activePanel', val)
-  }
-})
-
-const handleKeydown = (e: KeyboardEvent) => {
-  if (e.key === 'Escape' && activePanelVal.value) {
-    closeDialog()
-  }
-}
-
-onMounted(() => {
-  window.addEventListener('keydown', handleKeydown)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleKeydown)
-})
 </script>
 
 <style scoped lang="scss">
