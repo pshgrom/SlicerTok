@@ -1,5 +1,9 @@
 <template>
-  <v-form v-click-outside="closeChat" class="chat" :class="{ chat_mobile: isMobile }">
+  <v-form
+    v-click-outside="closeChat"
+    class="chat"
+    :class="{ chat_mobile: isMobile, 'chat--dark': isDark }"
+  >
     <div class="chat-box">
       <div class="chat__title">
         <span>Чат с поддержкой</span>
@@ -74,6 +78,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
+import { useThemeStore } from '@/app/stores'
 import { useAuth, useUserInfo } from '@/entities'
 import { useChatSocketStore, useChatStore } from '@/entities/chat'
 import { useStreamers } from '@/entities/streamer'
@@ -97,6 +102,8 @@ let scrollListenerAttached = false
 let initialScrollDone = false
 const streamerStore = useStreamers()
 const authStore = useAuth()
+const themeStore = useThemeStore()
+const isDark = computed(() => themeStore.current === 'dark')
 
 const isSlicer = computed(() => authStore.role === 'slicer')
 
@@ -245,15 +252,34 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
+// Чат в teleport to body — переменные Vuetify недоступны, только явные цвета
 .chat {
   bottom: 87px;
   right: 24px;
   position: fixed;
-  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
   width: 432px;
   border-radius: 16px;
   z-index: 200;
-  background: rgb(var(--v-theme-background)) !important;
+
+  /* light */
+  background: #fff;
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+
+  &__title {
+    font-weight: 500;
+    font-size: 18px;
+    color: rgba(17, 17, 17, 1);
+  }
+
+  &--dark {
+    background: #1e1e1e;
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.35);
+
+    .chat__title {
+      color: rgba(255, 255, 255, 0.87);
+      border-bottom-color: rgba(255, 255, 255, 0.12);
+    }
+  }
 
   &_mobile {
     position: fixed;
@@ -263,16 +289,8 @@ onBeforeUnmount(() => {
     height: 100%;
   }
 
-  &__title {
-    font-weight: 500;
-    font-size: 18px;
-    color: rgb(var(--v-theme-on-surface));
-  }
-
-  &-messages {
-    &-item {
-      max-width: 350px;
-    }
+  &-messages-item {
+    max-width: 350px;
   }
 }
 </style>

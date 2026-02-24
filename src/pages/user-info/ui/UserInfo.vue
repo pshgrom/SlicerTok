@@ -315,8 +315,8 @@ const fetchUserInfo = async () => {
       ...contacts,
       name: userName,
       key,
-      avatar: icon.path,
-      avatarEnd: icon.can_upload
+      avatar: icon?.path ?? '',
+      avatarEnd: icon?.can_upload ?? ''
     }
   } catch (error) {
     console.error('Ошибка загрузки информации пользователя:', error)

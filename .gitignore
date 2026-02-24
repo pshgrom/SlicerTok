@@ -2,6 +2,7 @@
 node_modules
 /dist
 bundle-report.html
+bundle-report.json
 html
 
 # local .env files

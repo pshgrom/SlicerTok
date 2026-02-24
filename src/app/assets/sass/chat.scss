@@ -28,7 +28,8 @@
     padding: 0 20px;
   }
 
-  .v-theme--dark &__title {
+  .v-theme--dark &__title,
+  &.chat--dark &__title {
     border-bottom-color: rgba(255, 255, 255, 0.12);
   }
 
@@ -45,7 +46,8 @@
       color: rgba(17, 17, 17, 1);
     }
 
-    .v-theme--dark &__empty {
+    .v-theme--dark &__empty,
+    .chat--dark &__empty {
       color: rgba(255, 255, 255, 0.87);
     }
 
@@ -73,12 +75,12 @@
       }
 
       &__role {
-        color: rgb(var(--v-theme-primary));
         font-weight: 500;
         font-size: 12px;
         position: absolute;
         left: 0;
         top: -22px;
+        color: rgba(17, 17, 17, 1);
 
         &-name {
           color: rgba(143, 150, 165, 1);
@@ -109,7 +111,17 @@
         text-align: right;
       }
 
+      /* Тема внутри v-app (SupportChat и др.) */
+      .v-theme--dark & {
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .v-theme--dark &__msg {
+        color: rgba(255, 255, 255, 0.87);
+      }
+
       .v-theme--dark &__role {
+        color: rgb(var(--v-theme-primary));
 
         &-name {
           color: rgba(255, 255, 255, 0.6);
@@ -118,6 +130,26 @@
             background: rgba(255, 255, 255, 0.4);
           }
         }
+      }
+
+      .v-theme--dark &__time {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .chat--dark &__role {
+        color: rgba(255, 255, 255, 0.87);
+
+        &-name {
+          color: rgba(255, 255, 255, 0.6);
+
+          &:before {
+            background: rgba(255, 255, 255, 0.4);
+          }
+        }
+      }
+
+      .chat--dark &__time {
+        color: rgba(255, 255, 255, 0.6);
       }
 
       &_unread {

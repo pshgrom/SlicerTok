@@ -105,7 +105,7 @@ export default defineConfig({
     sourcemap: false,
     cssCodeSplit: true,
     minify: 'esbuild',
-    assetsInlineLimit: 2048,
+    assetsInlineLimit: 4096,
     emptyOutDir: true,
     chunkSizeWarningLimit: 2000,
     modulePreload: { polyfill: false },
@@ -120,13 +120,13 @@ export default defineConfig({
         manualChunks(id) {
           if (id.includes('node_modules')) {
             if (id.includes('vuetify')) return 'vendor_vuetify'
+            if (id.includes('vue-chartjs') || id.includes('chart.js')) return 'vendor_chart'
             if (id.includes('vue')) return 'vendor_vue'
             if (id.includes('axios')) return 'vendor_axios'
             if (id.includes('vue-router')) return 'vendor_router'
             if (id.includes('pinia')) return 'vendor_pinia'
-            if (id.includes('chart.js')) return 'vendor_chart'
-            if (id.includes('vue-chartjs')) return 'vendor_chart'
-            return 'vendor_misc'
+            const pkgMatch = id.match(/node_modules\/(?:@[^/]+\/)?([^/]+)/)
+            return pkgMatch ? `vendor_${pkgMatch[1].replace(/\./g, '_')}` : 'vendor_misc'
           }
 
           if (id.includes('src/pages/')) {
@@ -159,9 +159,16 @@ export default defineConfig({
       'axios',
       'dompurify',
       'click-outside-vue3',
-      'vue-qrcode'
+      'vue-qrcode',
+      'chart.js',
+      'vue-chartjs'
     ],
-    exclude: ['vuetify']
+    exclude: ['vuetify'],
+    // Быстрее старт dev: не ждём полного обхода статики
+    holdUntilCrawlEnd: false,
+    esbuildOptions: {
+      target: 'esnext'
+    }
   },
 
   resolve: {
