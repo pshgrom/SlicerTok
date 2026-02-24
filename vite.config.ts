@@ -88,7 +88,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@use "@/assets/sass/variables.scss" as *;`
+        additionalData: `@use "@/app/assets/sass/variables.scss" as *;`
       }
     }
   },
@@ -129,18 +129,19 @@ export default defineConfig({
             return 'vendor_misc'
           }
 
-          if (id.includes('src/views/')) {
-            return 'view_' + id.split('src/views/')[1].split('/')[0]
+          if (id.includes('src/pages/')) {
+            const match = id.match(/src\/pages\/([^/]+)\//)
+            return match ? 'page_' + match[1] : 'pages'
           }
-
-          if (id.includes('src/components/modals/')) {
-            const name = id.split('src/components/modals/')[1].split('/')[0]
-            return 'modal_' + name
+          if (id.includes('src/shared/ui/modals/')) {
+            const match = id.match(/src\/shared\/ui\/modals\/([^/]+)/)
+            return match ? 'modal_' + match[1] : 'modals'
           }
-          if (id.includes('src/components/landing/')) return 'components_landing'
-          if (id.includes('src/components/tables/')) return 'components_tables'
-          if (id.includes('src/components/base/')) return 'components_base'
-          if (id.includes('src/components/')) return 'components_misc'
+          if (id.includes('src/shared/ui/')) return 'shared_ui'
+          if (id.includes('src/widgets/')) {
+            const match = id.match(/src\/widgets\/([^/]+)/)
+            return match ? 'widget_' + match[1] : 'widgets'
+          }
         },
 
         chunkFileNames: 'assets/[name]-[hash].js',

@@ -1,0 +1,173 @@
+<template>
+  <v-container
+    class="d-flex justify-center align-center auth-container"
+    fill-height
+    style="height: 100vh"
+  >
+    <v-card max-width="400" min-width="400" class="pa-6 login-admin">
+      <SvgIcon
+        class="login-admin__logo"
+        :name="themeStore.current === 'dark' ? 'logo-dark' : 'logo'"
+      />
+      <h3 class="login-admin__title">Введите свои учетные данные</h3>
+
+      <v-form ref="formRef" @submit.prevent="handleLogin">
+        <VCustomInput
+          v-model.trim="credentials.login"
+          label="Имя пользователя"
+          autofocus
+          :rules="[requiredRules.required]"
+          class="mb-3"
+        />
+
+        <VCustomInput
+          v-model.trim="credentials.password"
+          label="Пароль"
+          type="password"
+          :rules="[requiredRules.required]"
+          class="mb-3"
+        />
+
+        <VCustomInput
+          v-if="isEnableGoogle2fa"
+          v-model="code"
+          label="Код подтверждения"
+          placeholder="123456"
+          class="mb-4"
+          autofocus
+          :rules="[codeValidationRule]"
+          required
+        />
+
+        <div class="login-admin__actions">
+          <VCusomButton type="submit" :custom-class="['dark', 'avg']" :loading="isLoading">
+            Войти
+          </VCusomButton>
+        </div>
+      </v-form>
+    </v-card>
+  </v-container>
+</template>
+
+<script setup lang="ts">
+import { computed, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+import { useError, useThemeStore } from '@/app/stores'
+import { useAuth } from '@/entities/auth'
+import { ADMIN_ROUTE_MAP, ROLES } from '@/shared/config'
+import type { IAuth } from '@/shared/config/types/auth'
+import { handleApiError, requiredRules } from '@/shared/lib'
+import SvgIcon from '@/shared/ui/SvgIcon.vue'
+import VCusomButton from '@/shared/ui/VCusomButton.vue'
+import VCustomInput from '@/shared/ui/VCustomInput.vue'
+
+interface LoginCredentials {
+  login: string
+  password: string
+}
+
+const formRef = ref<HTMLFormElement | null>(null)
+const isLoading = ref(false)
+
+const credentials = reactive<LoginCredentials>({
+  login: '',
+  password: ''
+})
+
+const code = ref('')
+
+const authStore = useAuth()
+const errorStore = useError()
+const themeStore = useThemeStore()
+const router = useRouter()
+const CODE_LENGTH = 6
+
+const isEnableGoogle2fa = computed(() => authStore.isEnableGoogle2fa)
+
+// const isFormValid = computed(() => credentials.login.trim() && credentials.password.trim())
+
+const getRouteForRole = (role: number): string => {
+  const routeMap: Record<number, string> = {
+    [ROLES.ADMIN]: ADMIN_ROUTE_MAP.ADMIN,
+    [ROLES.ADMIN_FINANCE]: ADMIN_ROUTE_MAP.FINANCE,
+    [ROLES.ADMIN_MAIN]: ADMIN_ROUTE_MAP.MAIN,
+    [ROLES.SUPPORT]: ADMIN_ROUTE_MAP.SUPPORT,
+    [ROLES.STREAMER]: ADMIN_ROUTE_MAP.STREAMER
+  }
+
+  return routeMap[role] || ADMIN_ROUTE_MAP.DEFAULT
+}
+
+const codeValidationRule = (value: string) => {
+  return value.length === CODE_LENGTH || 'Код должен быть из 6 цифр'
+}
+
+const handleSuccessfulLogin = async (token: string, role: number) => {
+  const routeName = getRouteForRole(role)
+
+  if (routeName === ADMIN_ROUTE_MAP.DEFAULT) {
+    errorStore.setErrors('Неизвестная роль пользователя')
+    return
+  }
+
+  await router.push({ name: routeName })
+}
+
+const handleLogin = async (): Promise<void> => {
+  if (!formRef.value) return
+
+  const { valid } = await formRef.value.validate()
+  if (!valid) return
+
+  try {
+    isLoading.value = true
+
+    const authData: IAuth = {
+      login: credentials.login.trim(),
+      password: credentials.password.trim(),
+      google2fa_key: isEnableGoogle2fa.value ? code.value : undefined
+    }
+
+    const { token = null, role = '' } = await authStore.login(authData)
+    if (token && role) {
+      await handleSuccessfulLogin(token, role)
+    }
+  } catch (error: unknown) {
+    const errorMessage = handleApiError(error)
+    errorStore.setErrors(errorMessage)
+  } finally {
+    isLoading.value = false
+  }
+}
+</script>
+
+<style scoped lang="scss">
+.auth-container {
+  height: 100vh;
+  position: relative;
+  top: -16px;
+}
+
+.login-admin {
+  box-shadow: none !important;
+  border-radius: 12px;
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__logo {
+    margin-bottom: 25px;
+  }
+
+  &__title {
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: 0;
+    color: rgb(var(--v-theme-primary));
+    margin-bottom: 25px;
+  }
+}
+</style>

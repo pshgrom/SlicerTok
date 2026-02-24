@@ -1,0 +1,169 @@
+import type { AxiosError } from 'axios'
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
+
+import { useError, useHeaderMain } from '@/app/stores'
+import { useUserInfo } from '@/entities/user'
+import { verifyTwoFactorQuery } from '@/entities/user/api/api.ts'
+import type { ITableParams } from '@/shared/config/types/app-model.ts'
+
+import * as paymentApi from '../api/api.ts'
+
+export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', () => {
+  const isLoading = ref<boolean>(false)
+  const queryParams = ref<ITableParams>({ page: 1, perPage: 10, total: 0 })
+  const items = ref<Array<Record<string, unknown>>>([])
+  const errorStore = useError()
+  const headerMainStore = useHeaderMain()
+  const userInfoStore = useUserInfo()
+  const isEnableGoogle2fa = ref(false)
+  const adminFinanceInfo = ref<Record<string, unknown> | null>(null)
+
+  const setQueryParams = (val: Partial<ITableParams>) => {
+    queryParams.value = { ...queryParams.value, ...val }
+  }
+
+  const getAdminFinanceInfo = async () => {
+    try {
+      const { data } = await paymentApi.getAdminFinanceInfoQuery()
+      const res = data as Record<string, unknown>
+      adminFinanceInfo.value = (res?.data as Record<string, unknown>) ?? {}
+      isEnableGoogle2fa.value = !!(res?.data as Record<string, unknown>)?.is_enable_google2fa
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+    }
+  }
+
+  const checkCode = async (code: string) => {
+    try {
+      const { data } = await verifyTwoFactorQuery(+code)
+      const isValidCode = (data as Record<string, unknown>)?.valid
+      if (isValidCode) {
+        errorStore.setErrors('Верный код', 'success')
+        await getAdminFinanceInfo()
+        headerMainStore.updateOpenModal(false)
+        userInfoStore.qrCode = ''
+      } else {
+        errorStore.setErrors('Неверный код', 'error')
+      }
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } }
+      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+    }
+  }
+
+  const getPublicationListPayment = async (params: ITableParams) => {
+    try {
+      isLoading.value = true
+      const resp = await paymentApi.getPublicationListPaymentQuery(params)
+      const res = resp.data as Record<string, unknown>
+      items.value = (res?.data as Array<Record<string, unknown>>) ?? []
+      const meta = res?.meta as Record<string, unknown>
+      const { current_page = 1, per_page = 50, total } = meta ?? {}
+      queryParams.value = {
+        ...queryParams.value,
+        page: (current_page as number) ?? 1,
+        perPage: (per_page as number) ?? 50,
+        total: total as number
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const getTransferList = async (params: ITableParams) => {
+    try {
+      isLoading.value = true
+      const resp = await paymentApi.getTransferListQuery(params)
+      const res = resp.data as Record<string, unknown>
+      items.value = (res?.data as Array<Record<string, unknown>>) ?? []
+      const meta = res?.meta as Record<string, unknown>
+      const { current_page = 1, per_page = 50, total } = meta ?? {}
+      queryParams.value = {
+        ...queryParams.value,
+        page: (current_page as number) ?? 1,
+        perPage: (per_page as number) ?? 50,
+        total: total as number
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const getFinishedList = async (params: ITableParams) => {
+    try {
+      isLoading.value = true
+      const resp = await paymentApi.getFinishedListQuery(params)
+      const res = resp.data as Record<string, unknown>
+      items.value = (res?.data as Array<Record<string, unknown>>) ?? []
+      const meta = res?.meta as Record<string, unknown>
+      const { current_page = 1, per_page = 50, total } = meta ?? {}
+      queryParams.value = {
+        ...queryParams.value,
+        page: (current_page as number) ?? 1,
+        perPage: (per_page as number) ?? 50,
+        total: total as number
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const setMakeTransfer = async (data: Array<string | number>) => {
+    try {
+      return await paymentApi.setTransferQuery({
+        publication_ids: [...data]
+      })
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+    }
+  }
+
+  const cancelTransfer = async (data: Array<string | number>) => {
+    try {
+      return await paymentApi.cancelTransferQuery({
+        transfer_ids: [...data]
+      })
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+    }
+  }
+
+  const importFile = async (formData: FormData) => {
+    try {
+      return await paymentApi.importFileQuery(formData)
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+    }
+  }
+
+  return {
+    isLoading,
+    queryParams,
+    setQueryParams,
+    items,
+    getAdminFinanceInfo,
+    adminFinanceInfo,
+    checkCode,
+    getPublicationListPayment,
+    getTransferList,
+    getFinishedList,
+    setMakeTransfer,
+    cancelTransfer,
+    importFile,
+    isEnableGoogle2fa
+  }
+})
