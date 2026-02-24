@@ -32,6 +32,8 @@ import { ref, watch } from 'vue'
 import { useError } from '@/app/stores'
 import { useUserInfo } from '@/entities'
 
+import defaultAvatarImg from '@/shared/assets/images/avatar.png'
+
 const props = defineProps({
   modelValue: {
     type: String,
@@ -39,7 +41,7 @@ const props = defineProps({
   },
   defaultAvatar: {
     type: String,
-    default: '/img/avatar.png'
+    default: defaultAvatarImg
   }
 })
 

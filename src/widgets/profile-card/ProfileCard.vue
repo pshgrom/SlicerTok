@@ -4,7 +4,7 @@
     <div class="profile__wrapper">
       <div class="profile__top">
         <div class="profile__avatar">
-          <img :src="user.avatar" alt="аватарка" />
+          <img :src="user.avatar || defaultAvatarImg" alt="аватарка" />
         </div>
         <div v-if="readonly" class="profile__actions">
           <VCusomButton
@@ -121,6 +121,7 @@ import { type PropType } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { useSupportUsers } from '@/entities/support'
+import defaultAvatarImg from '@/shared/assets/images/avatar.png'
 import type { IUser } from '@/shared/config/types/slicer'
 import { copyContent, formatDate, formatNumber } from '@/shared/lib'
 import SmallLoader from '@/shared/ui/SmallLoader.vue'
@@ -244,6 +245,9 @@ const goToChat = async (id: string | number) => {
 
     img {
       border-radius: 50%;
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
     }
   }
 
