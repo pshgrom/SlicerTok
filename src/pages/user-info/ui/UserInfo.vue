@@ -16,6 +16,7 @@
           :end-date="endDate"
           :user="user"
           @update="updateUser"
+          @update:avatar="onAvatarPreview"
         />
       </div>
     </div>
@@ -155,6 +156,10 @@ const showPagination = computed(() => totalPages.value > 0)
 
 const cleanNumber = (str: string): string => {
   return str.replace(/\D/g, '')
+}
+
+const onAvatarPreview = (avatar: string) => {
+  user.value = { ...user.value, avatar }
 }
 
 const updateUser = async (newData: IUser) => {

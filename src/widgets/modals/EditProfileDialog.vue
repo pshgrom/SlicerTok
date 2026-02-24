@@ -83,7 +83,7 @@ const props = defineProps({
     default: () => ({})
   }
 })
-const emit = defineEmits(['update', 'update:dialog'])
+const emit = defineEmits(['update', 'update:dialog', 'update:avatar'])
 
 const initialUser = ref({ ...props.user })
 const formRef = ref(null)
@@ -120,6 +120,13 @@ watch(
   }
 )
 
+watch(
+  () => form.value.avatar,
+  (avatar) => {
+    emit('update:avatar', avatar ?? '')
+  }
+)
+
 const resetForm = () => {
   form.value = { ...initialUser.value }
 }
@@ -133,6 +140,7 @@ const save = async () => {
 }
 
 const cancel = () => {
+  emit('update:avatar', initialUser.value.avatar ?? '')
   resetForm()
   dialogModel.value = false
 }
