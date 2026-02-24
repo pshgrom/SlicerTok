@@ -45,7 +45,7 @@ export default createVuetify({
           chipColor: '#7E81A0',
           chipBg: '#212132',
           uploadVideoBg: '#212132',
-          // borderColor: 'rgba(38, 37, 62, 1)',
+          borderColor: 'rgba(38, 37, 62, 1)',
           statusProcessBg: '#311f4a',
           statusProcessColor: 'rgba(169, 77, 250, 1)',
           statusRejectBg: '#5a141e',

@@ -53,9 +53,9 @@ const customClasses = computed(() => props.customClass.join(' '))
   }
 
   &.light {
-    color: rgba(17, 17, 17, 1) !important;
-    border: 1px solid rgba(224, 224, 224, 1);
-    background: #fff !important;
+    color: rgb(var(--v-theme-primary)) !important;
+    border: 1px solid rgb(var(--v-theme-borderColor));
+    background: rgb(var(--v-theme-background)) !important;
 
     &:hover {
       border-color: rgba(0, 212, 254, 1);
