@@ -281,7 +281,7 @@ export const useAdminMain = defineStore('adminMainStore', () => {
   }
 
   onMounted(async () => {
-    getMainAdminInfo()
+    await getMainAdminInfo()
   })
 
   return {

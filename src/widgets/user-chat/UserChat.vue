@@ -55,7 +55,6 @@
         <h3 v-else class="chat-messages__empty">Пока нет сообщений</h3>
       </div>
     </div>
-
     <v-form ref="formRef" class="chat__actions" @submit.prevent>
       <VCustomInput
         v-model.trim="newMessage"
@@ -250,11 +249,11 @@ onBeforeUnmount(() => {
   bottom: 87px;
   right: 24px;
   position: fixed;
-  background: #fff;
   box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
   width: 432px;
   border-radius: 16px;
   z-index: 200;
+  background: rgb(var(--v-theme-background)) !important;
 
   &_mobile {
     position: fixed;
@@ -267,6 +266,7 @@ onBeforeUnmount(() => {
   &__title {
     font-weight: 500;
     font-size: 18px;
+    color: rgb(var(--v-theme-on-surface));
   }
 
   &-messages {

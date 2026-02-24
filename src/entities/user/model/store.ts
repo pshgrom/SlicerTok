@@ -85,6 +85,17 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     }
   }
 
+  const updateAvatar = async (base64: string) => {
+    try {
+      const { data } = await userApi.updateAvatarQuery(base64)
+      const msg = (data as Record<string, unknown>)?.message ?? ''
+      errorStore.setErrors(String(msg), 'success')
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } }
+      throw err?.response?.data?.message ?? 'Error'
+    }
+  }
+
   const checkCode = async (code: string) => {
     try {
       const { data } = await userApi.verifyTwoFactorQuery(+code)
@@ -224,6 +235,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     setQueryParams,
     createPublication,
     updateContact,
+    updateAvatar,
     getInfo,
     addWallet,
     getWallets,

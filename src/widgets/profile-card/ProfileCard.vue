@@ -74,7 +74,7 @@
             <div class="profile-info-item__label">Суммарные просмотры</div>
             <div class="d-flex">
               <div class="profile-info-item__value">
-                <div>{{ formatNumber(user.total_views ?? 0) }}</div>
+                <div>{{ formatNumber(user.total_views ?? 0) || 0 }}</div>
               </div>
               <div class="profile-info-item__icon" @click="copyContent(user.total_views ?? 0)">
                 <SvgIcon name="copy-second" />
@@ -241,6 +241,10 @@ const goToChat = async (id: string | number) => {
     margin-top: -60px;
     border-radius: 50%;
     border: 2px solid rgb(var(--v-theme-inversionPrimary));
+
+    img {
+      border-radius: 50%;
+    }
   }
 
   &__verify {

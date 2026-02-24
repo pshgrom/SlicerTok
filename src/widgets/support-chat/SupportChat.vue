@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <div class="chat">
+    <div class="chat" :class="{ 'chat--dark': isDark }">
       <div class="chat-box">
         <div class="chat__title">
           <span @click="goToProfile">{{ currentRoom?.name || 'Чат' }}</span>
@@ -85,6 +85,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+import { useThemeStore } from '@/app/stores'
 import {
   getChatsSupportQuery,
   getMessagesQuery,
@@ -98,6 +99,7 @@ import { debounce, requiredRules } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCustomInput from '@/shared/ui/VCustomInput.vue'
 
+const themeStore = useThemeStore()
 const chatStore = useChatSocketStore()
 const supportStore = useSupport()
 const route = useRoute()
@@ -456,7 +458,8 @@ watch(
 }
 
 .chat {
-  background: #fff;
+  background: rgb(var(--v-theme-background));
+  color: rgb(var(--v-theme-on-surface));
   box-shadow: none;
   width: 636px;
   border-radius: 16px;
@@ -466,7 +469,7 @@ watch(
   }
 
   &-list {
-    background: #fff;
+    background: rgb(var(--v-theme-background));
     min-width: 312px;
     border-radius: 16px;
     margin-right: 12px;
@@ -485,7 +488,7 @@ watch(
 
     &__title {
       font-size: 18px;
-      color: rgba(17, 17, 17, 1);
+      color: rgb(var(--v-theme-on-surface));
       font-weight: 500;
     }
 
@@ -497,7 +500,7 @@ watch(
       display: flex;
       align-items: center;
       z-index: 1;
-      background: #fff;
+      background: rgb(var(--v-theme-surface));
 
       @media (max-width: 767px) {
         display: none;
@@ -515,6 +518,7 @@ watch(
       transition: background-color 0.2s ease-in;
       margin-bottom: 2px;
       position: relative;
+      color: rgb(var(--v-theme-on-surface));
 
       &__badge {
         width: 20px;
@@ -538,12 +542,12 @@ watch(
       }
 
       &_active {
-        background: rgba(242, 246, 254, 1);
+        background: rgba(var(--v-theme-on-surface), 0.08);
         pointer-events: none;
       }
 
       &:hover {
-        background: rgba(242, 246, 254, 1);
+        background: rgba(var(--v-theme-on-surface), 0.06);
       }
     }
   }
@@ -553,6 +557,7 @@ watch(
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s ease;
+    color: rgb(var(--v-theme-on-surface));
 
     &:hover {
       opacity: 0.7;

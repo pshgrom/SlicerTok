@@ -72,13 +72,13 @@ import { useUserInfo } from '@/entities/user'
 import { userInfoHeaders } from '@/shared/config'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/shared/config/types/app-model'
 import type { IUploadVideo, IUser, IWallet } from '@/shared/config/types/slicer'
+import { TablePagination } from '@/shared/ui'
+import VCusomButton from '@/shared/ui/VCusomButton.vue'
 import AddVideoDialog from '@/widgets/modals/AddVideoDialog.vue'
 import EditProfileDialog from '@/widgets/modals/EditProfileDialog.vue'
 import WalletModal from '@/widgets/modals/WalletModal.vue'
 import { ProfileCard } from '@/widgets/profile-card'
-import { TablePagination } from '@/shared/ui'
 import { TableUserInfo } from '@/widgets/tables'
-import VCusomButton from '@/shared/ui/VCusomButton.vue'
 import { WalletsCard } from '@/widgets/wallets'
 const RulesDialog = defineAsyncComponent(() => import('@/widgets/modals/RulesDialog.vue'))
 
@@ -303,13 +303,15 @@ const fetchUserInfo = async () => {
   try {
     loadingUser.value = true
     const response = await userInfoStore.getInfo()
-    const { contacts, name: userName, key } = response?.data?.profile ?? {}
+    const { contacts, name: userName, key, icon } = response?.data?.profile ?? {}
     endDate.value = response.data?.inf_updated_at
     userId.value = response.data?.id
     user.value = {
       ...contacts,
       name: userName,
-      key
+      key,
+      avatar: icon.path,
+      avatarEnd: icon.can_upload
     }
   } catch (error) {
     console.error('Ошибка загрузки информации пользователя:', error)

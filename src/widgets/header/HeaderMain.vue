@@ -28,9 +28,9 @@ import { useHeaderMain, useThemeStore } from '@/app/stores'
 import { useAuth } from '@/entities/auth'
 import { ROLES } from '@/shared/config'
 import { useTwoFactor } from '@/shared/lib'
-import TwoFactorAuth from '@/widgets/modals/TwoFactorAuth.vue'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import AppMenu from '@/widgets/menu'
+import TwoFactorAuth from '@/widgets/modals/TwoFactorAuth.vue'
 
 const authStore = useAuth()
 const router = useRouter()
@@ -91,7 +91,6 @@ onMounted(async () => {
   height: 54px;
   display: flex;
   align-items: center;
-  transition-duration: 0.2s;
   justify-content: space-between;
   position: sticky;
   top: 0;

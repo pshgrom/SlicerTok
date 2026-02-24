@@ -2,17 +2,35 @@
   <div class="avatar-upload">
     <div class="avatar-preview">
       <img :src="avatarUrl || defaultAvatar" alt="Аватар" />
+      <div v-if="isUploading" class="overlay">
+        <v-progress-circular indeterminate color="rgba(169, 55, 244, 1)" size="24" />
+      </div>
     </div>
+
     <div class="avatar-actions">
       <input ref="inputFile" type="file" accept="image/*" hidden @change="onFileChange" />
-      <v-btn outlined small @click="$refs.inputFile.click()">Выбрать фото</v-btn>
-      <v-btn v-if="avatarUrl" outlined small color="red" @click="removeAvatar">Удалить</v-btn>
+      <v-btn outlined small :disabled="isUploading" @click="$refs.inputFile.click()">
+        Выбрать фото
+      </v-btn>
+      <v-btn
+        v-if="avatarUrl"
+        outlined
+        small
+        color="red"
+        :disabled="isUploading"
+        @click="onRemoveAvatar"
+      >
+        Удалить
+      </v-btn>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineEmits, defineProps, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
+
+import { useError } from '@/app/stores'
+import { useUserInfo } from '@/entities'
 
 const props = defineProps({
   modelValue: {
@@ -21,47 +39,71 @@ const props = defineProps({
   },
   defaultAvatar: {
     type: String,
-    default: '@/static/img/avatar.png'
+    default: '/img/avatar.png'
   }
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits<{
+  'update:modelValue': [value: string]
+}>()
+
+const userInfoStore = useUserInfo()
 
 const avatarUrl = ref(props.modelValue)
-const inputFile = ref<HTMLInputElement | null>(null)
+const isUploading = ref(false)
+const errorStore = useError()
 
 watch(
   () => props.modelValue,
-  (newVal) => {
-    avatarUrl.value = newVal
-  }
+  (val) => (avatarUrl.value = val)
 )
 
+const fileToBase64 = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = reject
+  })
+
 const onFileChange = async (event: Event) => {
-  const files = (event.target as HTMLInputElement).files
-  if (!files || !files.length) return
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (!file) return
 
-  const file = files[0]
+  const base64 = await fileToBase64(file)
+  const oldAvatar = avatarUrl.value
 
-  // временный preview
-  avatarUrl.value = URL.createObjectURL(file)
+  avatarUrl.value = base64
+  emit('update:modelValue', base64)
 
-  // мок загрузки на сервер
-  await mockUpload(file)
-
-  // отдаём результат родителю
-  emit('update:modelValue', avatarUrl.value)
+  isUploading.value = true
+  try {
+    await userInfoStore.updateAvatar(base64)
+  } catch (err) {
+    errorStore.setErrors(err)
+    avatarUrl.value = oldAvatar
+    emit('update:modelValue', oldAvatar)
+  } finally {
+    isUploading.value = false
+  }
 }
 
-const removeAvatar = () => {
+const onRemoveAvatar = async () => {
+  const oldAvatar = avatarUrl.value
   avatarUrl.value = ''
   emit('update:modelValue', '')
-}
 
-// мок функция загрузки
-const mockUpload = async (file: File) => {
-  console.log('Загрузка аватара на сервер...', file.name)
-  return new Promise((resolve) => setTimeout(resolve, 1000))
+  isUploading.value = true
+  try {
+    // await updateAvatarQuery('') // если сервер принимает пустую строку для удаления
+    console.log('remove')
+  } catch (err) {
+    console.error('Не удалось удалить аватар', err)
+    avatarUrl.value = oldAvatar
+    emit('update:modelValue', oldAvatar)
+  } finally {
+    isUploading.value = false
+  }
 }
 </script>
 
@@ -72,6 +114,7 @@ const mockUpload = async (file: File) => {
   margin-bottom: 16px;
 
   .avatar-preview {
+    position: relative;
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -83,6 +126,15 @@ const mockUpload = async (file: File) => {
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.6);
     }
   }
 

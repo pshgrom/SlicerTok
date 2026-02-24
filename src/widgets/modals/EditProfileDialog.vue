@@ -6,6 +6,7 @@
         <v-btn icon="mdi-close" variant="text" @click="dialogModel = false" />
       </v-card-title>
       <v-card-text>
+        <UploaderImage v-model="form.avatar" />
         <div class="change-info">
           <div class="change-info__icon">
             <SvgIcon name="info" />
@@ -15,7 +16,6 @@
             <span v-if="!isEqualDate">Следующий раз {{ endDate }}</span>
           </div>
         </div>
-        <UploaderImage v-model="form.avatar" />
         <v-form ref="formRef">
           <VCustomInput
             v-model.trim="form.name"
