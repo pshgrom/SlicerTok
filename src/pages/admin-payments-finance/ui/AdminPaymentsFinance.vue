@@ -41,9 +41,9 @@ import { useAdminPaymentsFinance } from '@/entities/payment'
 import { adminPaymentsFinance } from '@/shared/config'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/shared/config/types/app-model'
 import { TablePagination } from '@/shared/ui'
-import { TableAdminPaymentsFinance } from '@/widgets/tables'
 import TabsSwitcher from '@/shared/ui/TabsSwitcher.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
+import { TableAdminPaymentsFinance } from '@/widgets/tables'
 
 const headers = ref<ITableHeaders[]>(adminPaymentsFinance)
 const selectedIds = ref<number[]>([])

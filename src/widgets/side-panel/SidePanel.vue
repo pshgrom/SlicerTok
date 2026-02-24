@@ -143,13 +143,10 @@ const emit = defineEmits([
   'changeState'
 ])
 
-const {
-  activePanelVal,
-  currentItem,
-  formRef,
-  closeDialog,
-  validateAndScroll
-} = useSidePanelDrawer(props, emit)
+const { activePanelVal, currentItem, formRef, closeDialog, validateAndScroll } = useSidePanelDrawer(
+  props,
+  emit
+)
 
 const adminInfo = useAdminInfo()
 

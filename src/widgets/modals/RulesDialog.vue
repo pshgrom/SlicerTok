@@ -1017,10 +1017,10 @@ import { computed, ref } from 'vue'
 
 import { useStreamers } from '@/entities/streamer'
 import { videoRules } from '@/shared/lib'
-import VideoPlayModal from '@/widgets/modals/VideoPlayModal.vue'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
 import VCustomSelect from '@/shared/ui/VCustomSelect.vue'
+import VideoPlayModal from '@/widgets/modals/VideoPlayModal.vue'
 
 const props = defineProps({
   modelValue: {

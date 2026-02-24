@@ -50,10 +50,10 @@ import { useAdminPaymentsFinance } from '@/entities/payment'
 import { adminProcessPayments } from '@/shared/config'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/shared/config/types/app-model'
 import { TablePagination } from '@/shared/ui'
-import { ImportDocuments } from '@/widgets/import-documents'
-import { TableAdminProcessPayments } from '@/widgets/tables'
 import TabsSwitcher from '@/shared/ui/TabsSwitcher.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
+import { ImportDocuments } from '@/widgets/import-documents'
+import { TableAdminProcessPayments } from '@/widgets/tables'
 
 const headers = ref<ITableHeaders[]>(adminProcessPayments)
 

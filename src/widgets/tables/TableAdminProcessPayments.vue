@@ -72,9 +72,9 @@ import { computed, type PropType, ref } from 'vue'
 
 import { useAdminPaymentsFinance } from '@/entities/payment'
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
-import PaymentsModal from '@/widgets/modals/PaymentsModal.vue'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
+import PaymentsModal from '@/widgets/modals/PaymentsModal.vue'
 
 const props = defineProps({
   headers: {

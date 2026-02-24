@@ -96,6 +96,11 @@ const customClasses = computed(() => props.customClass.join(' '))
     height: 40px !important;
     padding: 0 16px !important;
   }
+  &.lg {
+    height: 48px !important;
+    padding: 0 20px !important;
+    font-size: 16px !important;
+  }
   &.v-btn--disabled {
     background: rgba(229, 236, 253, 1) !important;
     color: rgba(143, 150, 165, 1) !important;

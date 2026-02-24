@@ -16,4 +16,10 @@
   &_disabled {
     background: gray;
   }
+
+  &_no-stroke {
+    svg path {
+      stroke: transparent;
+    }
+  }
 }

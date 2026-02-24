@@ -26,7 +26,7 @@
           <div class="table-actions__label">Заявки</div>
         </div>
         <div class="table-actions__right">
-          <VCusomButton :custom-class="['dark', 'avg']" @click="handlePaymentRequest">
+          <VCusomButton :custom-class="['dark', 'lg']" @click="handlePaymentRequest">
             Подать заявку
           </VCusomButton>
         </div>

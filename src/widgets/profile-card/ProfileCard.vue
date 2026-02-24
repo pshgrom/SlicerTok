@@ -36,7 +36,11 @@
           </template>
           <span v-else>Ваше имя</span>
         </div>
-        <button v-if="!readonly" class="button-action" @click="showDialog(true)">
+        <button
+          v-if="!readonly"
+          class="button-action button-action_no-stroke"
+          @click="showDialog(true)"
+        >
           <SvgIcon name="edit" />
         </button>
       </div>

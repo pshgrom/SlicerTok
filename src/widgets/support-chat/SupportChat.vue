@@ -500,7 +500,6 @@ watch(
       display: flex;
       align-items: center;
       z-index: 1;
-      background: rgb(var(--v-theme-surface));
 
       @media (max-width: 767px) {
         display: none;

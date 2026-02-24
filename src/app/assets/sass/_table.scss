@@ -113,16 +113,19 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    padding: 0 8px;
+    padding: 0 12px;
     width: max-content;
     transition: all .15s ease-in;
     background: rgb(var(--v-theme-chipBg));
 
+    &__social {
+      margin-right: 6px;
+    }
+
     span {
       display: inline-flex;
       margin-right: 8px;
-      margin-left: 6px;
-      font-weight: 400;
+      font-weight: 500;
     }
 
     div:last-child {
