@@ -47,7 +47,10 @@
       <div class="profile-info">
         <div class="profile-info__wrap">
           <div class="profile-info-item">
-            <div class="profile-info-item__label">Телефон</div>
+            <div class="d-flex profile-info-item__top">
+              <SvgIcon name="profile-phone" />
+              <div class="profile-info-item__label">Телефон</div>
+            </div>
             <div class="d-flex">
               <div class="profile-info-item__value">
                 <a v-if="user.phone" :href="`tel:${user.phone}`">
@@ -61,7 +64,10 @@
             </div>
           </div>
           <div class="profile-info-item">
-            <div class="profile-info-item__label">Email</div>
+            <div class="d-flex profile-info-item__top">
+              <SvgIcon name="profile-email" />
+              <div class="profile-info-item__label">Email</div>
+            </div>
             <div class="d-flex">
               <div class="profile-info-item__value">
                 <a v-if="user.email" :href="`mailto:${user.phone}`">
@@ -86,7 +92,10 @@
             </div>
           </div>
           <div class="profile-info-item">
-            <div class="profile-info-item__label">Ключ</div>
+            <div class="d-flex profile-info-item__top">
+              <SvgIcon name="profile-key" />
+              <div class="profile-info-item__label">Ключ</div>
+            </div>
             <div class="d-flex">
               <div class="profile-info-item__value">
                 {{ user.key }}
@@ -101,7 +110,10 @@
             <div class="profile-info-item__value">{{ formatDate(user.created_at) }}</div>
           </div>
           <div class="profile-info-item">
-            <div class="profile-info-item__label">Telagram</div>
+            <div class="d-flex profile-info-item__top">
+              <SvgIcon name="profile-telegram" />
+              <div class="profile-info-item__label">Telegram</div>
+            </div>
             <div class="d-flex">
               <div class="profile-info-item__value">
                 <template v-if="user.telegram">
@@ -320,11 +332,20 @@ const goToChat = async (id: string | number) => {
         width: calc(50% - 4px);
       }
 
+      &__top {
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+
+        :deep(svg) {
+          margin-right: 4px;
+        }
+      }
+
       &__label {
         color: rgb(var(--v-theme-chipColor));
         font-size: 14px;
         font-weight: 500;
-        margin-bottom: 8px;
       }
 
       &__value {
