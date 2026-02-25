@@ -1,4 +1,5 @@
 // Только доменно-независимые компоненты (без бизнес-логики)
+export { default as AdminPaymentsTabs } from './AdminPaymentsTabs.vue'
 export { default as Breadcrumbs } from './Breadcrumbs.vue'
 export { default as DateFilter } from './DateFilter.vue'
 export { default as ErrorAlert } from './ErrorAlert.vue'

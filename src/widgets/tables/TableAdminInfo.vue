@@ -100,7 +100,7 @@
             <VCusomButton
               v-bind="props"
               class="mr-3"
-              :custom-class="['light', 'avg', 'only-icon']"
+              :custom-class="[themeStore.current !== 'dark' ? 'light' : '', 'avg', 'only-icon']"
               :disabled="!!item.user_requires_verification"
               @click.stop="requestVerification(item.id, item.user_requires_verification)"
             >
@@ -113,7 +113,7 @@
             <VCusomButton
               v-bind="props"
               class="mr-1"
-              :custom-class="['light', 'avg', 'only-icon']"
+              :custom-class="[themeStore.current !== 'dark' ? 'light' : '', 'avg', 'only-icon']"
               @click.stop="openMarkModal(item.id)"
             >
               <SvgIcon name="sticky-note" />
@@ -125,7 +125,7 @@
             <VCusomButton
               v-bind="props"
               class="mr-1"
-              :custom-class="['light', 'avg', 'only-icon']"
+              :custom-class="[themeStore.current !== 'dark' ? 'light' : '', 'avg', 'only-icon']"
               @click="showDialog(item)"
             >
               <SvgIcon name="open-modal" />
@@ -136,7 +136,7 @@
           <template #activator="{ props }">
             <VCusomButton
               v-bind="props"
-              :custom-class="['dark', 'avg', 'only-icon']"
+              :custom-class="[themeStore.current !== 'dark' ? 'light' : '', 'avg', 'only-icon']"
               :disabled="
                 item.status_moderation_admin.current.status === 'todo' ||
                 !item.status_moderation_admin.current.status
@@ -162,6 +162,7 @@
 <script setup lang="ts">
 import { computed, nextTick, type PropType, ref, watch } from 'vue'
 
+import { useThemeStore } from '@/app/stores'
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
 import {
   formatDate,
@@ -214,6 +215,7 @@ const headersData = ref(props.headers)
 const dialog = ref(false)
 const currentItem = ref({})
 const isModalOpen = ref(false)
+const themeStore = useThemeStore()
 const itemHistory = ref({})
 const idItemHistory = ref(null)
 const isModalOpenVideo = ref(false)

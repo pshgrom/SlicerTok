@@ -3,7 +3,7 @@
     <div class="table-actions__left">
       <div class="table-actions__label">Заявки</div>
       <div>
-        <TabsSwitcher :tabs="tabsContent" initial-tab="tab2" @tab-click="goToPage" />
+        <AdminPaymentsTabs />
       </div>
     </div>
     <div class="table-actions__right">
@@ -49,23 +49,12 @@ import { useRouter } from 'vue-router'
 import { useAdminPaymentsFinance } from '@/entities/payment'
 import { adminProcessPayments } from '@/shared/config'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/shared/config/types/app-model'
-import { TablePagination } from '@/shared/ui'
-import TabsSwitcher from '@/shared/ui/TabsSwitcher.vue'
+import { AdminPaymentsTabs, TablePagination } from '@/shared/ui'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
 import { ImportDocuments } from '@/widgets/import-documents'
 import { TableAdminProcessPayments } from '@/widgets/tables'
 
 const headers = ref<ITableHeaders[]>(adminProcessPayments)
-
-const tabsContent = [
-  { id: 'tab1', title: 'Все заявки', count: 0, redirect: '/admin-payments-finance' },
-  { id: 'tab2', title: 'В процессе выплат', count: 0, redirect: '/admin-process-payments' },
-  { id: 'tab3', title: 'Оплаченные', count: 0, redirect: '/admin-finished-list' }
-]
-
-const goToPage = (path: string) => {
-  router.push(`${path.redirect}?page=1`)
-}
 
 const selectedIds = ref<number[]>([])
 const adminPaymentsFinanceStore = useAdminPaymentsFinance()

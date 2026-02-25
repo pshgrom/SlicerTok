@@ -99,7 +99,7 @@ watch(
   font-size: 16px;
   background: rgb(var(--v-theme-background));
 
-  :deep(svg) {
+  :deep(svg path) {
     stroke: rgb(var(--v-theme-primary));
   }
 
@@ -108,7 +108,7 @@ watch(
   }
 
   :deep(.v-label) {
-    font-size: 0.75rem;
+    font-size: 12px;
   }
 }
 

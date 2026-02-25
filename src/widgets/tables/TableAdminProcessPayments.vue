@@ -49,7 +49,7 @@
             <VCusomButton
               v-bind="activatorProps"
               class="mr-1"
-              :custom-class="['light', 'avg', 'only-icon']"
+              :custom-class="[themeStore.current !== 'dark' ? 'light' : '', 'avg', 'only-icon']"
               @click="showDialog(item)"
             >
               <SvgIcon name="open-modal" /> </VCusomButton
@@ -70,6 +70,7 @@
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
 
+import { useThemeStore } from '@/app/stores'
 import { useAdminPaymentsFinance } from '@/entities/payment'
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
@@ -101,6 +102,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:selectedIds', 'pay'])
 const adminPaymentsFinanceStore = useAdminPaymentsFinance()
+const themeStore = useThemeStore()
 const isModalOpen = ref(false)
 const currentItem = ref({})
 const loadingPay = ref(false)
