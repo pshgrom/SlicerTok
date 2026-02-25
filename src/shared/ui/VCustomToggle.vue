@@ -126,9 +126,11 @@ const handleChange = (value: boolean | string | number) => {
   :deep(.v-label) {
     order: -1;
     padding: 0;
-    margin-right: 84px;
     font-size: 14px;
     color: rgb(var(--v-theme-primary));
+  }
+  :deep(.v-selection-control) {
+    justify-content: space-between;
   }
 }
 </style>

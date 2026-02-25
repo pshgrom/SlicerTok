@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog" class="custom-modal" max-width="500px">
     <v-card>
       <v-card-title>
-        <span class="headline">Двухфакторка</span>
+        <span class="headline">2FA</span>
         <v-btn icon="mdi-close" variant="text" @click="dialog = false" />
       </v-card-title>
       <v-card-text>
@@ -10,7 +10,7 @@
           v-model="isEnableGoogle2fa"
           :density="'compact'"
           :hide-details="true"
-          label="Включение двухфакторной аутентификации"
+          label="2FA защита"
           color="rgba(169, 55, 244, 1)"
           @change="onChange"
         />
