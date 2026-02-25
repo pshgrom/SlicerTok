@@ -314,6 +314,7 @@ const goToChat = async (id: string | number) => {
       padding: 12px;
       max-height: 69px;
       min-height: 69px;
+      transition: background-color 0.2s ease;
 
       @media (max-width: 1440px) {
         width: calc(50% - 4px);
@@ -343,10 +344,25 @@ const goToChat = async (id: string | number) => {
       &__icon {
         cursor: pointer;
         margin-left: 10px;
+        transition: opacity 0.2s ease;
 
         :deep(svg path) {
           stroke: rgb(var(--v-theme-chipColor));
         }
+
+        @media (hover: hover) {
+          opacity: 0;
+        }
+      }
+
+      @media (hover: hover) {
+        &:hover &__icon {
+          opacity: 1;
+        }
+      }
+
+      &:hover {
+        background: #28283c;
       }
     }
   }

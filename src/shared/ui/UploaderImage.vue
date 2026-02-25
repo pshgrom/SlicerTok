@@ -31,7 +31,6 @@ import { ref, watch } from 'vue'
 
 import { useError } from '@/app/stores'
 import { useUserInfo } from '@/entities'
-
 import defaultAvatarImg from '@/shared/assets/images/avatar.png'
 
 const props = defineProps({
@@ -97,10 +96,8 @@ const onRemoveAvatar = async () => {
 
   isUploading.value = true
   try {
-    // await updateAvatarQuery('') // если сервер принимает пустую строку для удаления
-    console.log('remove')
+    await userInfoStore.deleteAvatar()
   } catch (err) {
-    console.error('Не удалось удалить аватар', err)
     avatarUrl.value = oldAvatar
     emit('update:modelValue', oldAvatar)
   } finally {

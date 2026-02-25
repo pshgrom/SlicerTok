@@ -33,7 +33,7 @@ import SvgIcon from '@/shared/ui/SvgIcon.vue'
     margin-top: 30px;
     font-weight: 500;
     font-size: 18px;
-    color: rgba(22, 22, 22, 1);
+    color: rgb(var(--v-theme-primary));
     margin-bottom: 10px;
   }
 
@@ -41,7 +41,7 @@ import SvgIcon from '@/shared/ui/SvgIcon.vue'
     text-align: center;
     font-size: 14px;
     line-height: 140%;
-    color: rgba(22, 22, 22, 1);
+    color: rgb(var(--v-theme-primary));
   }
 }
 </style>

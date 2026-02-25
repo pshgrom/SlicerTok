@@ -252,7 +252,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
-// Чат в teleport to body — переменные Vuetify недоступны, только явные цвета
 .chat {
   bottom: 87px;
   right: 24px;
@@ -261,7 +260,6 @@ onBeforeUnmount(() => {
   border-radius: 16px;
   z-index: 200;
 
-  /* light */
   background: #fff;
   box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
 
@@ -269,6 +267,11 @@ onBeforeUnmount(() => {
     font-weight: 500;
     font-size: 18px;
     color: rgba(17, 17, 17, 1);
+
+    @media (max-width: 767px) {
+      position: sticky;
+      top: 0;
+    }
   }
 
   &--dark {

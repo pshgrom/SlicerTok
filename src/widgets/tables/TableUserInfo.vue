@@ -79,7 +79,7 @@
           class="mr-2"
           @click="showReasonsReject(item.rules)"
         >
-          Показать
+          Смотреть
         </VCusomButton>
         <v-tooltip text="Переподать видео" location="bottom">
           <template #activator="{ props }">
@@ -118,10 +118,10 @@ import {
   getStatusColor,
   getTextStatus
 } from '@/shared/lib'
-import ReasonsRejectModal from '@/widgets/modals/ReasonsRejectModal.vue'
-import VideoPlayModal from '@/widgets/modals/VideoPlayModal.vue'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
+import ReasonsRejectModal from '@/widgets/modals/ReasonsRejectModal.vue'
+import VideoPlayModal from '@/widgets/modals/VideoPlayModal.vue'
 
 const props = defineProps({
   headers: {

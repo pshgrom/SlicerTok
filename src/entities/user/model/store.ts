@@ -96,6 +96,17 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     }
   }
 
+  const deleteAvatar = async () => {
+    try {
+      const { data } = await userApi.deleteAvatarQuery()
+      const msg = (data as Record<string, unknown>)?.message ?? ''
+      errorStore.setErrors(String(msg), 'success')
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } }
+      throw err?.response?.data?.message ?? 'Error'
+    }
+  }
+
   const checkCode = async (code: string) => {
     try {
       const { data } = await userApi.verifyTwoFactorQuery(+code)
@@ -252,6 +263,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     isEnableGoogle2fa,
     updateUserInfoItem,
     resubmissionPublication,
-    user
+    user,
+    deleteAvatar
   }
 })

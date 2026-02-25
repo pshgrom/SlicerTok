@@ -99,8 +99,10 @@ export const getIcon = (status: string): string => {
       icon = 'status-awaiting-payment'
       break
     case 'approved':
-    case 'paid':
       icon = 'status-ok'
+      break
+    case 'paid':
+      icon = 'status-paid'
       break
     case 'rejected':
       icon = 'status-bad'

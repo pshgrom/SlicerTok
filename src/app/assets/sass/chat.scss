@@ -28,11 +28,6 @@
     padding: 0 20px;
   }
 
-  .v-theme--dark &__title,
-  &.chat--dark &__title {
-    border-bottom-color: rgba(255, 255, 255, 0.12);
-  }
-
   &-messages {
     max-height: 450px;
     min-height: 450px;
@@ -44,11 +39,6 @@
     &__empty {
       font-size: 16px;
       color: rgba(17, 17, 17, 1);
-    }
-
-    .v-theme--dark &__empty,
-    .chat--dark &__empty {
-      color: rgba(255, 255, 255, 0.87);
     }
 
     &-item {
@@ -111,24 +101,8 @@
         text-align: right;
       }
 
-      .v-theme--dark &__role {
-        color: rgb(var(--v-theme-primary));
-
-        &-name {
-          color: rgba(255, 255, 255, 0.6);
-
-          &:before {
-            background: rgba(255, 255, 255, 0.4);
-          }
-        }
-      }
-
-      .v-theme--dark &__time {
-        color: rgba(255, 255, 255, 0.6);
-      }
-
       .chat--dark &__role {
-        color: rgba(255, 255, 255, 0.87);
+        color: rgba(255, 255, 255, 0.4);
 
         &-name {
           color: rgba(255, 255, 255, 0.6);
@@ -137,10 +111,6 @@
             background: rgba(255, 255, 255, 0.4);
           }
         }
-      }
-
-      .chat--dark &__time {
-        color: rgba(255, 255, 255, 0.6);
       }
 
       &_unread {
@@ -207,4 +177,12 @@
   font-size: 14px;
   font-weight: 500;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.chat-dark {
+  .chat-messages-item {
+    &__role {
+      color: rgba(255, 255, 255, 1);
+    }
+  }
 }

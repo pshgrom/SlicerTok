@@ -28,6 +28,9 @@ export const updateContactQuery = (
 export const updateAvatarQuery = (base64: string): Promise<AxiosResponse<unknown>> =>
   api.post('/slicer/profile/update-icon', { icon: base64 })
 
+export const deleteAvatarQuery = (): Promise<AxiosResponse<unknown>> =>
+  api.post('/slicer/profile/delete-icon')
+
 export const addWalletQuery = (data: Record<string, unknown>): Promise<AxiosResponse<unknown>> =>
   api.post('/slicer/profile/wallet/add-wallet', data)
 

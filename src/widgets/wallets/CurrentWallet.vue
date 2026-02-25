@@ -2,7 +2,7 @@
   <div class="wallet" :class="{ wallet_read: onlyRead, wallet_active: openIndex === index }">
     <div class="wallet__wrapper">
       <div class="wallet__icon">
-        <SvgIcon :name="`wallet-${index! + 1}`" />
+        <SvgIcon :name="'wallet-icon'" />
       </div>
       <div class="wallet__value">
         {{ formatWallet(wallet.address) }}
@@ -143,14 +143,16 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .wallet {
-  height: 66px;
+  height: 56px;
   border-radius: 16px;
   padding: 12px;
   position: relative;
   z-index: 1;
   background: rgb(var(--v-theme-chipBg));
+  transition: background-color 0.2s ease;
 
   &_active {
+    background: #28283c;
     z-index: 100;
   }
 
@@ -160,11 +162,7 @@ onBeforeUnmount(() => {
   }
 
   &__icon {
-    margin-right: 12px;
-
-    :deep(svg path) {
-      stroke: rgb(var(--v-theme-inversionPrimary));
-    }
+    margin-right: 8px;
   }
 
   & + .wallet {
@@ -201,12 +199,13 @@ onBeforeUnmount(() => {
     padding: 0 8px;
     display: inline-flex;
     align-items: center;
-    height: 24px;
+    height: 22px;
     border-radius: 16px;
     font-weight: 600;
-    font-size: 12px;
+    font-size: 11px;
     margin-left: 7px;
-    background: rgb(var(--v-theme-chipBg));
+    background: #29273d;
+    border: 1px solid #2d2d43;
     color: rgb(var(--v-theme-chipColor));
   }
 
@@ -220,6 +219,21 @@ onBeforeUnmount(() => {
 
   &__copy {
     cursor: pointer;
+    transition: opacity 0.2s ease;
+
+    @media (hover: hover) {
+      opacity: 0;
+    }
+  }
+
+  @media (hover: hover) {
+    &:hover &__copy {
+      opacity: 1;
+    }
+  }
+
+  &:hover {
+    background: #28283c;
   }
 }
 
