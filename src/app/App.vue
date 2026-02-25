@@ -46,9 +46,9 @@ import { useUserInfo } from '@/entities/user'
 import { useDeviceDetection } from '@/shared/lib'
 import ErrorAlert from '@/shared/ui/ErrorAlert.vue'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
-import { UserChat } from '@/widgets/user-chat'
 import GlobalLoader from '@/widgets/global-loader'
 import HeaderMain from '@/widgets/header'
+import { UserChat } from '@/widgets/user-chat'
 
 const loader = useLoader()
 const errorStore = useError()
@@ -144,5 +144,6 @@ onMounted(() => {
 
 .main {
   background-color: rgb(var(--v-theme-main));
+  transition: none !important;
 }
 </style>
