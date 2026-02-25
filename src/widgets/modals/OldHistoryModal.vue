@@ -56,7 +56,7 @@
                     <template #activator="{ props: menuProps }">
                       <SvgIcon v-bind="menuProps" name="show" @click.stop />
                     </template>
-                    <div class="tooltip-content" v-html="showViolations(item.rules)"></div>
+                    <div class="tooltip-content" v-html="sanitizeHtml(showViolations(item.rules))"></div>
                   </v-menu>
                   <div v-else>-</div>
                 </div>
@@ -83,7 +83,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { formatNumber, getColor, getIcon, getStatusColor, getTextStatus } from '@/shared/lib'
+import { formatNumber, getColor, getIcon, getStatusColor, getTextStatus, sanitizeHtml } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
 

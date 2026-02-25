@@ -5,7 +5,9 @@
         <span>Причины отказа</span>
         <v-btn icon="mdi-close" variant="text" @click="dialog = false" />
       </v-card-title>
-      <v-card-text> <div v-html="currentReasonsReject"></div></v-card-text>
+      <v-card-text>
+        <div v-html="sanitizeHtml(reasonsHtml)"></div>
+      </v-card-text>
       <v-card-actions>
         <v-spacer />
         <VCusomButton :custom-class="['light', 'avg']" @click="closeModal"> Ok </VCusomButton>
@@ -17,6 +19,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
+import { sanitizeHtml } from '@/shared/lib'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
 
 const props = defineProps({
@@ -30,6 +33,11 @@ const props = defineProps({
   }
 })
 const emit = defineEmits(['update:modelValue'])
+
+const reasonsHtml = computed(() => {
+  const v = props.currentReasonsReject
+  return Array.isArray(v) ? v.join('<br>') : (v ?? '')
+})
 
 const dialog = computed({
   get() {

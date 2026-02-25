@@ -108,7 +108,10 @@
                         @click.stop
                       />
                     </template>
-                    <div class="tooltip-content" v-html="showViolations(group.rules)"></div>
+                    <div
+                      class="tooltip-content"
+                      v-html="sanitizeHtml(showViolations(group.rules))"
+                    ></div>
                   </v-menu>
                 </div>
                 <div class="info-admin-comment">
@@ -194,6 +197,7 @@ import {
   getIcon,
   getStatusColor,
   getTextStatus,
+  sanitizeHtml,
   videoRules
 } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'

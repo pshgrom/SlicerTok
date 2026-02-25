@@ -105,7 +105,7 @@
                         <SvgIcon name="show" />
                       </VCusomButton>
                     </template>
-                    <div class="tooltip-content" v-html="showViolations(group.rules)"></div>
+                    <div class="tooltip-content" v-html="sanitizeHtml(showViolations(group.rules))"></div>
                   </v-menu>
                   <div class="badge">{{ group.rules?.length }}</div>
                 </div>
@@ -154,7 +154,8 @@ import {
   getIconSocial,
   getNameSocialMedia,
   getStatusColor,
-  getTextStatus
+  getTextStatus,
+  sanitizeHtml
 } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
