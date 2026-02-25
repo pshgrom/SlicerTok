@@ -136,7 +136,7 @@
           <template #activator="{ props }">
             <VCusomButton
               v-bind="props"
-              :custom-class="[themeStore.current !== 'dark' ? 'light' : '', 'avg', 'only-icon']"
+              :custom-class="['dark', 'avg', 'only-icon']"
               :disabled="
                 item.status_moderation_admin.current.status === 'todo' ||
                 !item.status_moderation_admin.current.status

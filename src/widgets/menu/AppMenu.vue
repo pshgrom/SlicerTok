@@ -1,16 +1,17 @@
 <template>
   <ul class="menu">
-    <li
-      v-for="item in visibleMenuItems"
-      :key="item.label"
-      :class="{ active: item.to && isLinkActive(item.to) }"
-      @click="item.onClick?.()"
-    >
-      <SvgIcon v-if="item.icon" :name="item.icon" />
-      <RouterLink v-if="item.to" :to="item.to" class="menu-link">
+    <li v-for="item in visibleMenuItems" :key="item.label">
+      <RouterLink
+        v-if="item.to"
+        :to="item.to"
+        class="menu-item"
+        :class="{ active: isLinkActive(item.to) }"
+      >
+        <SvgIcon v-if="item.icon" :name="item.icon" />
         {{ item.label }}
       </RouterLink>
-      <span v-else class="menu-el">
+      <span v-else class="menu-item menu-el" @click="item.onClick?.()">
+        <SvgIcon v-if="item.icon" :name="item.icon" />
         {{ item.label }}
         <span
           v-if="item.isChat && chatStore.unreadCount > 0 && !userInfoStore.showChat"
@@ -21,7 +22,9 @@
       </span>
     </li>
     <li class="change-mode" @click="themeStore.toggle()">
-      <SvgIcon :name="themeStore.current === 'dark' ? 'dark-mode' : 'light-mode'" />
+      <div class="menu-item">
+        <SvgIcon :name="themeStore.current === 'dark' ? 'dark-mode' : 'light-mode'" />
+      </div>
     </li>
   </ul>
 </template>
@@ -117,25 +120,31 @@ const visibleMenuItems = computed(() =>
   margin-right: 12px;
 
   li {
-    background: rgb(var(--v-theme-chipBg));
-    height: 28px;
+    display: flex;
+    list-style: none;
+
+    & + li {
+      margin-left: 4px;
+    }
+  }
+
+  .menu-item {
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 28px;
+    padding: 0 8px 0 10px;
     color: rgb(var(--v-theme-chipColor));
     font-size: 12px;
     font-weight: 600;
+    text-decoration: none;
+    background: rgb(var(--v-theme-chipBg));
     border-radius: 8px;
-    padding: 0 8px 0 10px;
     cursor: pointer;
     transition: background-color 0.2s ease;
 
     .svg-icon {
       margin-right: 8px;
-    }
-
-    & + li {
-      margin-left: 4px;
     }
 
     :deep(svg path) {
@@ -181,37 +190,37 @@ const visibleMenuItems = computed(() =>
 
     li {
       width: 100%;
-      justify-content: flex-start;
       margin-left: 0;
-      height: 52px;
-      border-radius: 0;
-      border-bottom: 1px solid rgba(var(--v-theme-borderColor));
-      padding-left: 16px;
 
       & + li {
         margin-left: 0;
       }
+    }
 
-      .menu-el {
-        color: #fff;
-        font-size: 16px;
-        letter-spacing: 0;
-        font-weight: 400;
-      }
+    .menu-item {
+      width: 100%;
+      justify-content: flex-start;
+      height: 52px;
+      border-radius: 0;
+      border-bottom: 1px solid rgba(var(--v-theme-borderColor));
+      padding-left: 16px;
+    }
 
-      .svg-icon {
-        margin-right: 12px;
-        transform: scale(1.2) !important;
-      }
+    .menu-item.menu-el {
+      color: #fff;
+      font-size: 16px;
+      letter-spacing: 0;
+      font-weight: 400;
+    }
 
-      &.active {
-        color: rgba(169, 55, 244, 1);
-        background: rgba(169, 55, 244, 0.08);
+    .menu-item .svg-icon {
+      margin-right: 12px;
+      transform: scale(1.2) !important;
+    }
 
-        .menu-link {
-          color: inherit;
-        }
-      }
+    .menu-item.active {
+      color: rgba(169, 55, 244, 1);
+      background: rgba(169, 55, 244, 0.08);
     }
   }
   .change-mode {
@@ -222,6 +231,11 @@ const visibleMenuItems = computed(() =>
     width: 100% !important;
     max-width: none;
     min-width: auto;
+    color: rgb(var(--v-theme-chipColor));
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    background: rgb(var(--v-theme-chipBg));
   }
 }
 </style>

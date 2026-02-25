@@ -57,13 +57,20 @@
                     <template #activator="{ props }">
                       <VCusomButton
                         v-bind="props"
-                        :custom-class="['light', 'avg', 'only-icon']"
+                        :custom-class="[
+                          themeStore.current !== 'dark' ? 'light' : '',
+                          'avg',
+                          'only-icon'
+                        ]"
                         @click.stop
                       >
-                        <SvgIcon name="show" />
+                        <SvgIcon name="eye" />
                       </VCusomButton>
                     </template>
-                    <div class="tooltip-content" v-html="sanitizeHtml(showViolations(group.rules))"></div>
+                    <div
+                      class="tooltip-content"
+                      v-html="sanitizeHtml(showViolations(group.rules))"
+                    ></div>
                   </v-menu>
                   <div class="badge">{{ group.rules?.length }}</div>
                 </div>
@@ -121,7 +128,11 @@
       <div class="d-flex align-center">
         <v-tooltip text="Открыть заявку" location="bottom">
           <template #activator="{ props }">
-            <VCusomButton v-bind="props" class="mr-1" :custom-class="['light', 'avg', 'only-icon']">
+            <VCusomButton
+              v-bind="props"
+              class="mr-1"
+              :custom-class="[themeStore.current !== 'dark' ? 'light' : '', 'avg', 'only-icon']"
+            >
               <SvgIcon name="open-modal" />
             </VCusomButton>
           </template>
@@ -161,6 +172,7 @@
 <script setup lang="ts">
 import { computed, nextTick, type PropType, ref, watch } from 'vue'
 
+import { useThemeStore } from '@/app/stores'
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
 import {
   formatDate,
@@ -220,6 +232,7 @@ const computedHeaders = computed<ITableHeaders[]>({
     headersData.value = val
   }
 })
+const themeStore = useThemeStore()
 
 const finishCheck = (id: number | string, status: string) => {
   if (status === 'todo' || !status) return

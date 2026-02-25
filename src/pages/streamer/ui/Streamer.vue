@@ -47,8 +47,8 @@ import { useStreamer } from '@/entities/streamer'
 import { adminMain } from '@/shared/config'
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
 import { useTableQuery } from '@/shared/lib'
-import { SidePanelStreamer } from '@/widgets/side-panel'
 import { TablePagination } from '@/shared/ui'
+import { SidePanelStreamer } from '@/widgets/side-panel'
 import { TableStreamer } from '@/widgets/tables'
 
 const headers = ref<ITableHeaders[]>(adminMain)
