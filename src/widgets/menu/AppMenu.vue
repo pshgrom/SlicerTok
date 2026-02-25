@@ -15,12 +15,8 @@
         </span>
       </span>
     </li>
-    <li>
-      <v-btn icon size="sm" @click="themeStore.toggle()">
-        <v-icon>
-          {{ themeStore.current === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night' }}
-        </v-icon>
-      </v-btn>
+    <li class="change-mode" @click="themeStore.toggle()">
+      <SvgIcon :name="themeStore.current === 'dark' ? 'dark-mode' : 'light-mode'" />
     </li>
   </ul>
 </template>
@@ -121,7 +117,7 @@ const visibleMenuItems = computed(() =>
     border-radius: 8px;
     padding: 0 8px 0 10px;
     cursor: pointer;
-    transition: opacity 0.15s ease-in;
+    transition: background-color 0.2s ease;
 
     .svg-icon {
       margin-right: 8px;
@@ -133,13 +129,10 @@ const visibleMenuItems = computed(() =>
 
     :deep(svg path) {
       transition: all 0.2s ease-in;
-      stroke: rgb(var(--v-theme-chipColor));
     }
 
     &:hover {
-      :deep(svg path) {
-        stroke: rgba(169, 55, 244, 1);
-      }
+      background: rgb(var(--v-theme-actionBg));
     }
   }
 }
@@ -155,6 +148,16 @@ const visibleMenuItems = computed(() =>
   &__badge {
     top: -15px;
     right: -10px;
+  }
+}
+
+.change-mode {
+  padding: 0 !important;
+  min-width: 30px;
+  max-width: 30px;
+
+  .svg-icon {
+    margin-right: 0 !important;
   }
 }
 </style>

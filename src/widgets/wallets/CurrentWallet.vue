@@ -152,7 +152,7 @@ onBeforeUnmount(() => {
   transition: background-color 0.2s ease;
 
   &_active {
-    background: #28283c;
+    background: rgb(var(--v-theme-actionBg));
     z-index: 100;
   }
 
@@ -204,8 +204,8 @@ onBeforeUnmount(() => {
     font-weight: 600;
     font-size: 11px;
     margin-left: 7px;
-    background: #29273d;
-    border: 1px solid #2d2d43;
+    background: rgb(var(--v-theme-actionBg));
+    border: 1px solid rgb(var(--v-theme-borderColor));
     color: rgb(var(--v-theme-chipColor));
   }
 
@@ -233,7 +233,7 @@ onBeforeUnmount(() => {
   }
 
   &:hover {
-    background: #28283c;
+    background: rgb(var(--v-theme-actionBg));
   }
 }
 

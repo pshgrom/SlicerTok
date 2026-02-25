@@ -1028,7 +1028,7 @@ const props = defineProps({
     default: false
   }
 })
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'save'])
 const streamerStore = useStreamers()
 
 const isModalOpenVideo = ref(false)

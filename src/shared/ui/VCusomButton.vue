@@ -58,7 +58,7 @@ const customClasses = computed(() => props.customClass.join(' '))
     background: rgb(var(--v-theme-background)) !important;
 
     &:hover {
-      background: #28283c;
+      background: rgb(var(--v-theme-actionBg)) !important;
       box-shadow: none !important;
     }
 
@@ -75,8 +75,9 @@ const customClasses = computed(() => props.customClass.join(' '))
   &.dark {
     background: rgba(169, 55, 244, 1) !important;
     color: rgba(255, 255, 255, 1) !important;
+
     &:hover {
-      background: $primary-color;
+      background: rgba(189, 117, 255, 1) !important;
       box-shadow: none !important;
     }
 

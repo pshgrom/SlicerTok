@@ -113,15 +113,10 @@ onMounted(async () => {
     border-radius: 8px;
     background: rgb(var(--v-theme-chipBg));
     color: rgb(var(--v-theme-chipColor));
-
-    :deep(svg path) {
-      transition: all 0.2s ease-in;
-    }
+    transition: all 0.2s ease;
 
     &:hover {
-      :deep(svg path) {
-        stroke: rgba(169, 55, 244, 1);
-      }
+      background: rgb(var(--v-theme-actionBg));
     }
   }
 

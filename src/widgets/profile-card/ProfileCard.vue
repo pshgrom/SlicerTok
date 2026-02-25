@@ -362,7 +362,7 @@ const goToChat = async (id: string | number) => {
       }
 
       &:hover {
-        background: #28283c;
+        background: rgb(var(--v-theme-actionBg));
       }
     }
   }

@@ -13,13 +13,23 @@
     stroke: rgba(169, 55, 244, 1);
   }
 
-  &_disabled {
-    background: gray;
-  }
-
   &_no-stroke {
     svg path {
       stroke: transparent;
+    }
+  }
+
+  &:hover {
+    background: rgb(var(--v-theme-actionBg));
+  }
+
+  &_disabled {
+    color: rgba(98, 97, 135, 1);
+    pointer-events: none !important;
+
+    svg path {
+      stroke: rgba(98, 97, 135, 1);
+      border-color: rgba(38, 37, 62, 1);
     }
   }
 }
