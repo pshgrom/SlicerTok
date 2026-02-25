@@ -19,6 +19,9 @@
         </nav>
 
         <div class="header-lp__actions">
+          <button class="change-mode" @click="themeStore.toggle()">
+            <SvgIcon :name="themeStore.current === 'dark' ? 'dark-mode' : 'light-mode'" />
+          </button>
           <v-btn class="header-lp__login" to="/login">Войти</v-btn>
         </div>
       </div>
@@ -30,6 +33,10 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { useThemeStore } from '@/app/stores'
+
+import SvgIcon from '../../shared/ui/SvgIcon.vue'
+
 defineProps({
   hideMenu: {
     type: Boolean,
@@ -38,6 +45,7 @@ defineProps({
 })
 
 const router = useRouter()
+const themeStore = useThemeStore()
 
 const isScrolled = ref(false)
 
@@ -141,5 +149,11 @@ onUnmounted(() => {
       }
     }
   }
+}
+
+.change-mode {
+  min-width: 30px;
+  max-width: 30px;
+  margin-right: 4px;
 }
 </style>

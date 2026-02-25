@@ -160,4 +160,48 @@ const visibleMenuItems = computed(() =>
     margin-right: 0 !important;
   }
 }
+
+@media (max-width: 767px) {
+  .menu {
+    flex-direction: column;
+    align-items: stretch;
+    margin-right: 0;
+    background: rgb(var(--v-theme-background));
+
+    li {
+      width: 100%;
+      justify-content: flex-start;
+      margin-left: 0;
+      height: 52px;
+      border-radius: 0;
+      border-bottom: 1px solid rgba(var(--v-theme-borderColor));
+      padding-left: 16px;
+
+      & + li {
+        margin-left: 0;
+      }
+
+      .menu-el {
+        color: #fff;
+        font-size: 16px;
+        letter-spacing: 0;
+        font-weight: 400;
+      }
+
+      .svg-icon {
+        margin-right: 12px;
+        transform: scale(1.2) !important;
+      }
+    }
+  }
+  .change-mode {
+    height: 52px;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(var(--v-theme-borderColor));
+    padding-left: 16px !important;
+    width: 100% !important;
+    max-width: none;
+    min-width: auto;
+  }
+}
 </style>

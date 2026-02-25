@@ -19,6 +19,12 @@
     }
   }
 
+  &_default-stroke {
+    svg path {
+      stroke: #fff;
+    }
+  }
+
   &:hover {
     background: rgb(var(--v-theme-actionBg));
   }
