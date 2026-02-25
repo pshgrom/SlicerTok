@@ -1,8 +1,13 @@
 <template>
   <ul class="menu">
-    <li v-for="item in visibleMenuItems" :key="item.label" @click="item.onClick?.()">
+    <li
+      v-for="item in visibleMenuItems"
+      :key="item.label"
+      :class="{ active: item.to && isLinkActive(item.to) }"
+      @click="item.onClick?.()"
+    >
       <SvgIcon v-if="item.icon" :name="item.icon" />
-      <RouterLink v-if="item.to" :to="item.to" class="menu-link" active-class="active">
+      <RouterLink v-if="item.to" :to="item.to" class="menu-link">
         {{ item.label }}
       </RouterLink>
       <span v-else class="menu-el">
@@ -24,7 +29,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 
 import { useThemeStore } from '@/app/stores'
 import { useAuth, useUserInfo } from '@/entities'
@@ -46,8 +51,14 @@ type MenuItem = {
   isChat?: () => boolean
 }
 
+const route = useRoute()
 const authStore = useAuth()
 const { isMobile } = useDeviceDetection()
+
+const isLinkActive = (to: string) => {
+  const path = route.path
+  return path === to || path.startsWith(to + '/')
+}
 
 const userInfoStore = useUserInfo()
 const { showChat, showRules } = storeToRefs(userInfoStore)
@@ -134,12 +145,12 @@ const visibleMenuItems = computed(() =>
     &:hover {
       background: rgb(var(--v-theme-actionBg));
     }
-  }
-}
 
-.menu-link.active {
-  color: rgba(169, 55, 244, 1);
-  pointer-events: none !important;
+    &.active {
+      background: rgb(var(--v-theme-actionBg));
+      pointer-events: none !important;
+    }
+  }
 }
 
 .menu-el {
@@ -191,6 +202,15 @@ const visibleMenuItems = computed(() =>
       .svg-icon {
         margin-right: 12px;
         transform: scale(1.2) !important;
+      }
+
+      &.active {
+        color: rgba(169, 55, 244, 1);
+        background: rgba(169, 55, 244, 0.08);
+
+        .menu-link {
+          color: inherit;
+        }
       }
     }
   }

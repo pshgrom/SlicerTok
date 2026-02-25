@@ -562,5 +562,9 @@ watch(
       opacity: 0.7;
     }
   }
+
+  .chat-messages-item__role {
+    color: rgb(var(--v-theme-primary));
+  }
 }
 </style>

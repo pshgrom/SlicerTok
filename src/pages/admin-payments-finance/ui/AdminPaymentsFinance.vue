@@ -103,7 +103,7 @@ const getRequest = () => {
       perPage: perPage
     }
   })
-  adminPaymentsFinanceStore.getPublicationsListPayment(queryParams.value)
+  adminPaymentsFinanceStore.getPublicationListPayment(queryParams.value)
 }
 
 onMounted(() => {

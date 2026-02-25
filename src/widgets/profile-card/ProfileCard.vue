@@ -81,7 +81,9 @@
             </div>
           </div>
           <div v-if="readonly" class="profile-info-item">
-            <div class="profile-info-item__label">Суммарные просмотры</div>
+            <div class="d-flex profile-info-item__top">
+              <div class="profile-info-item__label">Суммарные просмотры</div>
+            </div>
             <div class="d-flex">
               <div class="profile-info-item__value">
                 <div>{{ formatNumber(user.total_views ?? 0) || 0 }}</div>
@@ -106,7 +108,9 @@
             </div>
           </div>
           <div v-if="readonly" class="profile-info-item">
-            <div class="profile-info-item__label">Дата создания</div>
+            <div class="d-flex profile-info-item__top">
+              <div class="profile-info-item__label">Дата создания</div>
+            </div>
             <div class="profile-info-item__value">{{ formatDate(user.created_at) }}</div>
           </div>
           <div class="profile-info-item">
@@ -289,6 +293,10 @@ const goToChat = async (id: string | number) => {
     font-weight: 500;
     color: rgb(var(--v-theme-primary));
     letter-spacing: 2%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 280px;
 
     @media (max-width: 1440px) {
       position: relative;
