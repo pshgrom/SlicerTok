@@ -152,8 +152,14 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
+
 import Footer from '@/widgets/landing/Footer.vue'
 import Header from '@/widgets/landing/Header.vue'
+
+onMounted(() => {
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+})
 </script>
 
 <style scoped lang="scss">
