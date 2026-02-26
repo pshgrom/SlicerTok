@@ -31,15 +31,15 @@ const compressionPlugins = [
 const analyzerPlugins = isAnalyze
   ? [
       visualizer({
-        filename: 'bundle-report.html',
+        filename: 'dist/bundle-report.html',
         template: 'treemap',
         brotliSize: true,
         gzipSize: true,
-        open: true
+        open: false
       }),
       visualizer({
-        filename: 'bundle-report.json',
-        json: true,
+        filename: 'dist/bundle-report.json',
+        template: 'raw-data',
         brotliSize: true,
         gzipSize: true
       })
@@ -121,6 +121,7 @@ export default defineConfig({
           if (id.includes('node_modules')) {
             if (id.includes('vuetify')) return 'vendor_vuetify'
             if (id.includes('vue-chartjs') || id.includes('chart.js')) return 'vendor_chart'
+            if (id.includes('vue-qrcode') || id.includes('qrcode')) return 'vendor_qrcode'
             if (id.includes('vue')) return 'vendor_vue'
             if (id.includes('axios')) return 'vendor_axios'
             if (id.includes('vue-router')) return 'vendor_router'
