@@ -176,6 +176,10 @@ onBeforeUnmount(() => {
 
     &-icon {
       cursor: pointer;
+      padding: 10px;
+      position: relative;
+      top: -10px;
+      right: -10px;
 
       :deep(.svg-icon) {
         transition: all 0.15s ease-in;
@@ -240,8 +244,8 @@ onBeforeUnmount(() => {
 .dropdown-menu {
   background: rgb(var(--v-theme-chipBg));
   position: absolute;
-  bottom: -110px;
-  left: -114px;
+  bottom: -80px;
+  left: -110px;
   width: 146px;
   border-radius: 12px;
   padding: 4px;

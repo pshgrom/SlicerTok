@@ -6,7 +6,7 @@
   >
     <div class="chat-box">
       <div class="chat__title">
-        <span>Чат с поддержкой</span>
+        <span>Поддержка</span>
         <VCustomSelect
           v-if="isSlicer"
           v-model="streamer"
@@ -259,9 +259,8 @@ onBeforeUnmount(() => {
   width: 432px;
   border-radius: 16px;
   z-index: 200;
-
   background: #fff;
-  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 32px 0 rgba(0, 0, 0, 0.3);
 
   &__title {
     font-weight: 500;
