@@ -257,8 +257,8 @@
               показывать подробную статистику, в случае, если в статистике будут прочерки,
               опубликованный Reels не будет принят. (ГАЙД, КАК СДЕЛАТЬ БИЗНЕС АККАУНТ, ЧТОБЫ БЫЛА
               ВИДНА СТАТИСТИКА
-              <button class="custom-table-ref mt-2 mb-2" @click.stop>
-                <span @click="openVideo"> Смотреть </span>
+              <button class="custom-table-ref mt-2 mb-2" @click="openVideo">
+                <span> Смотреть </span>
                 <SvgIcon name="arrow-up-right" />
               </button>
             </li>

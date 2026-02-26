@@ -64,8 +64,8 @@
       </div>
     </template>
     <template #[`item.video_stat_link`]="{ item }">
-      <button class="custom-table-ref" @click.stop>
-        <span @click="openVideo(item.video_stat_link)"> Смотреть </span>
+      <button class="custom-table-ref" @click="openVideo(item.video_stat_link)">
+        <span> Смотреть </span>
         <SvgIcon name="arrow-up-right" />
       </button>
     </template>
