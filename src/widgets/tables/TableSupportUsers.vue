@@ -59,11 +59,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, type PropType, ref } from 'vue'
+import { type PropType } from 'vue'
 import { useRouter } from 'vue-router'
 
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
-import { formatNumber } from '@/shared/lib'
+import { formatNumber, useTableHeaders } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
 
@@ -88,16 +88,7 @@ const props = defineProps({
 const emit = defineEmits(['goToChat'])
 
 const router = useRouter()
-const headersData = ref(props.headers)
-
-const computedHeaders = computed<ITableHeaders[]>({
-  get() {
-    return headersData.value
-  },
-  set(val) {
-    headersData.value = val
-  }
-})
+const { computedHeaders } = useTableHeaders(props.headers)
 
 const onRowClick = (event, { item }) => {
   router.push({ name: 'User', params: { id: item.id } })
@@ -174,5 +165,3 @@ const getCheckColor = (is_verified: boolean) => {
   }
 }
 </script>
-
-<style lang="scss" scoped></style>

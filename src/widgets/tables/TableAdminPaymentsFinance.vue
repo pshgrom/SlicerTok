@@ -35,10 +35,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, type PropType, ref } from 'vue'
+import type { PropType } from 'vue'
 
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
-import { formatCompactUSD } from '@/shared/lib'
+import { formatCompactUSD, useTableHeaders, useTableSelection } from '@/shared/lib'
 
 const props = defineProps({
   headers: {
@@ -65,23 +65,9 @@ const props = defineProps({
 
 const emit = defineEmits(['update:selectedIds'])
 
-const headersData = ref(props.headers)
-
-const computedHeaders = computed<ITableHeaders[]>({
-  get() {
-    return headersData.value
-  },
-  set(val) {
-    headersData.value = val
-  }
-})
-
-const selectedIds = computed({
-  get() {
-    return props.selectedIds
-  },
-  set(val) {
-    emit('update:selectedIds', val)
-  }
-})
+const { computedHeaders } = useTableHeaders(props.headers)
+const selectedIds = useTableSelection(
+  () => props.selectedIds,
+  (val) => emit('update:selectedIds', val)
+)
 </script>

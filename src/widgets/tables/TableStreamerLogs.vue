@@ -20,9 +20,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, type PropType, ref } from 'vue'
+import type { PropType } from 'vue'
 
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
+import { useTableHeaders } from '@/shared/lib'
 
 const props = defineProps({
   headers: {
@@ -43,16 +44,7 @@ const props = defineProps({
   }
 })
 
-const headersData = ref(props.headers)
-
-const computedHeaders = computed<ITableHeaders[]>({
-  get() {
-    return headersData.value
-  },
-  set(val) {
-    headersData.value = val
-  }
-})
+const { computedHeaders } = useTableHeaders(props.headers)
 
 const formatDate = (dateStr: string) => {
   const date = new Date(dateStr)

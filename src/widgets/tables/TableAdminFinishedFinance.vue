@@ -37,9 +37,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-
 import type { IAdminFinishedFinanceItem, ITableHeaders } from '@/shared/config/types/app-model'
+import { formatCompactUSD, useTableHeaders } from '@/shared/lib'
 
 interface Props {
   headers: ITableHeaders[]
@@ -50,23 +49,5 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const headersData = ref<ITableHeaders[]>(props.headers)
-
-const computedHeaders = computed<ITableHeaders[]>({
-  get() {
-    return headersData.value
-  },
-  set(val) {
-    headersData.value = val
-  }
-})
-
-const formatCompactUSD = (amount: number) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    notation: 'compact',
-    maximumFractionDigits: 1
-  }).format(amount)
-}
+const { computedHeaders } = useTableHeaders(props.headers)
 </script>

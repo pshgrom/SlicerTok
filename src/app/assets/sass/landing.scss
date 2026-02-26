@@ -2,8 +2,8 @@
   font-family: 'Manrope', sans-serif;
   font-weight: 500;
   font-size: 16px;
-  color: rgba(17, 17, 17, 1);
-  background: #fff;
+  color: rgb(var(--v-theme-primary));
+  background-color: rgb(var(--v-theme-main));
   padding: 0 8px;
 
   @media (max-width: 767px) {

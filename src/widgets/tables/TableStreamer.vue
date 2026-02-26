@@ -170,7 +170,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, nextTick, type PropType, ref, watch } from 'vue'
+import { defineAsyncComponent, type PropType, ref } from 'vue'
 
 import { useThemeStore } from '@/app/stores'
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
@@ -184,7 +184,9 @@ import {
   getNameSocialMedia,
   getStatusColor,
   getTextStatus,
-  sanitizeHtml
+  sanitizeHtml,
+  useTableHeaders,
+  useTableRowScroll
 } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
@@ -220,19 +222,10 @@ const props = defineProps({
   }
 })
 
-const headersData = ref(props.headers)
+const { computedHeaders } = useTableHeaders(props.headers)
 const isModalOpenVideo = ref(false)
 const videoSrc = ref('')
 const tableRef = ref(null)
-
-const computedHeaders = computed<ITableHeaders[]>({
-  get() {
-    return headersData.value
-  },
-  set(val) {
-    headersData.value = val
-  }
-})
 const themeStore = useThemeStore()
 
 const finishCheck = (id: number | string, status: string) => {
@@ -261,20 +254,7 @@ const rowProps = (item) => ({
   onClick: () => emit('rowClick', item)
 })
 
-watch(
-  () => props.selectedIndex,
-  async (newIndex) => {
-    if (newIndex < 0) return
-    await nextTick()
-    const rowEl = tableRef.value?.$el.querySelector(`#row-${newIndex}`)
-    if (rowEl) {
-      rowEl.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest'
-      })
-    }
-  }
-)
+useTableRowScroll(tableRef, () => props.selectedIndex)
 </script>
 
 <style lang="scss" scoped>

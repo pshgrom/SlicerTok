@@ -146,7 +146,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, nextTick, type PropType, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, type PropType, ref } from 'vue'
 
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
 import {
@@ -158,7 +158,9 @@ import {
   getNameSocialMedia,
   getStatusColor,
   getTextStatus,
-  sanitizeHtml
+  sanitizeHtml,
+  useTableHeaders,
+  useTableRowScroll
 } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
@@ -194,20 +196,11 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['actionRequest', 'update:modelValue', 'rowClick', 'update:activePanel'])
-const headersData = ref(props.headers)
 
+const { computedHeaders } = useTableHeaders(props.headers)
 const isModalOpenVideo = ref(false)
 const videoSrc = ref('')
 const tableRef = ref(null)
-
-const computedHeaders = computed<ITableHeaders[]>({
-  get() {
-    return headersData.value
-  },
-  set(val) {
-    headersData.value = val
-  }
-})
 
 const activePanelVal = computed({
   get() {
@@ -244,20 +237,7 @@ const rowProps = (item) => ({
   onClick: () => emit('rowClick', item)
 })
 
-watch(
-  () => props.selectedIndex,
-  async (newIndex) => {
-    if (newIndex < 0) return
-    await nextTick()
-    const rowEl = tableRef.value?.$el.querySelector(`#row-${newIndex}`)
-    if (rowEl) {
-      rowEl.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest'
-      })
-    }
-  }
-)
+useTableRowScroll(tableRef, () => props.selectedIndex)
 </script>
 
 <style lang="scss" scoped>

@@ -73,6 +73,7 @@ import { computed, defineAsyncComponent, type PropType, ref } from 'vue'
 import { useThemeStore } from '@/app/stores'
 import { useAdminPaymentsFinance } from '@/entities/payment'
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
+import { useTableHeaders, useTableSelection } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
 
@@ -108,25 +109,11 @@ const isModalOpen = ref(false)
 const currentItem = ref({})
 const loadingPay = ref(false)
 
-const headersData = ref(props.headers)
-
-const computedHeaders = computed<ITableHeaders[]>({
-  get() {
-    return headersData.value
-  },
-  set(val) {
-    headersData.value = val
-  }
-})
-
-const selectedIds = computed({
-  get() {
-    return props.selectedIds
-  },
-  set(val) {
-    emit('update:selectedIds', val)
-  }
-})
+const { computedHeaders } = useTableHeaders(props.headers)
+const selectedIds = useTableSelection(
+  () => props.selectedIds,
+  (val) => emit('update:selectedIds', val)
+)
 
 const pay = async (data) => {
   try {

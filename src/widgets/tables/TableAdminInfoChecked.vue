@@ -74,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, type PropType, ref } from 'vue'
+import { defineAsyncComponent, type PropType, ref } from 'vue'
 
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
 import {
@@ -84,7 +84,8 @@ import {
   getIconSocial,
   getNameSocialMedia,
   getStatusColor,
-  getTextStatus
+  getTextStatus,
+  useTableHeaders
 } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 
@@ -109,18 +110,9 @@ const props = defineProps({
   }
 })
 
-const headersData = ref(props.headers)
+const { computedHeaders } = useTableHeaders(props.headers)
 const isModalOpenVideo = ref(false)
 const videoSrc = ref('')
-
-const computedHeaders = computed<ITableHeaders[]>({
-  get() {
-    return headersData.value
-  },
-  set(val) {
-    headersData.value = val
-  }
-})
 
 const openVideo = (url: string) => {
   isModalOpenVideo.value = true

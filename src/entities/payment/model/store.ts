@@ -141,6 +141,15 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
     }
   }
 
+  const transferFinished = async (data: Record<string, unknown>) => {
+    try {
+      return await paymentApi.transferFinishedQuery(data)
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>
+      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+    }
+  }
+
   const importFile = async (formData: FormData) => {
     try {
       return await paymentApi.importFileQuery(formData)
@@ -163,6 +172,7 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
     getFinishedList,
     setMakeTransfer,
     cancelTransfer,
+    transferFinished,
     importFile,
     isEnableGoogle2fa
   }

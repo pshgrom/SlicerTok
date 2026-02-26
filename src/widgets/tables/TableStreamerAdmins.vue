@@ -18,10 +18,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, type PropType, ref } from 'vue'
+import type { PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
+import { useTableHeaders } from '@/shared/lib'
 
 const props = defineProps({
   headers: {
@@ -43,17 +44,8 @@ const props = defineProps({
 })
 
 const router = useRouter()
-const headersData = ref(props.headers)
 const route = useRoute()
-
-const computedHeaders = computed<ITableHeaders[]>({
-  get() {
-    return headersData.value
-  },
-  set(val) {
-    headersData.value = val
-  }
-})
+const { computedHeaders } = useTableHeaders(props.headers)
 
 const onRowClick = (event, { item }) => {
   const streamerId = route.params.id

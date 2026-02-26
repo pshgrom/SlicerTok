@@ -44,59 +44,28 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import { useAdminPaymentsFinance } from '@/entities/payment'
 import { adminProcessPayments } from '@/shared/config'
-import type { ITableHeaders, ITableParams, IUserInfoData } from '@/shared/config/types/app-model'
+import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
+import { useTableQuery } from '@/shared/lib'
 import { AdminPaymentsTabs, TablePagination } from '@/shared/ui'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
 import { ImportDocuments } from '@/widgets/import-documents'
 import { TableAdminProcessPayments } from '@/widgets/tables'
 
 const headers = ref<ITableHeaders[]>(adminProcessPayments)
-
 const selectedIds = ref<number[]>([])
 const adminPaymentsFinanceStore = useAdminPaymentsFinance()
 
-const isLoading = computed(() => adminPaymentsFinanceStore.isLoading)
-const router = useRouter()
-
-const calcDataItems = computed<IUserInfoData[]>(() => adminPaymentsFinanceStore.items)
-
-const queryParams = computed<ITableParams>({
-  get() {
-    return adminPaymentsFinanceStore.queryParams
-  },
-  set(val) {
-    adminPaymentsFinanceStore.setQueryParams(val)
-  }
+const { queryParams, totalPages, changePage, getRequest } = useTableQuery({
+  getQueryParams: () => adminPaymentsFinanceStore.queryParams,
+  setQueryParams: (params) => adminPaymentsFinanceStore.setQueryParams(params),
+  fetchData: (params) => adminPaymentsFinanceStore.getTransferList(params)
 })
 
-const totalPages = computed(() =>
-  queryParams.value?.total && queryParams.value?.perPage
-    ? Math.ceil(queryParams.value.total / queryParams.value.perPage)
-    : 0
-)
-
-const changePage = (page: number) => {
-  queryParams.value = {
-    ...queryParams.value,
-    page: +page
-  }
-  getRequest()
-}
-
-const getRequest = () => {
-  const { page, perPage } = queryParams.value
-  router.push({
-    query: {
-      page: page ?? 1,
-      perPage: perPage
-    }
-  })
-  adminPaymentsFinanceStore.getTransferList(queryParams.value)
-}
+const isLoading = computed(() => adminPaymentsFinanceStore.isLoading)
+const calcDataItems = computed<IUserInfoData[]>(() => adminPaymentsFinanceStore.items)
 
 const handleSelected = async () => {
   if (!selectedIds.value.length) return
@@ -121,12 +90,6 @@ const downLoadExcel = async () => {
 }
 
 onMounted(() => {
-  const { page = 1, perPage = 50 } = router.currentRoute.value.query
-  queryParams.value = {
-    page,
-    perPage
-  }
-  getRequest()
   adminPaymentsFinanceStore.getAdminFinanceInfo()
 })
 </script>

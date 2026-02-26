@@ -1,9 +1,9 @@
 <template>
-  <header class="header-lp" :class="{ 'header-lp_scrolled': isScrolled }">
+  <v-sheet class="header-lp" :class="{ 'header-lp_scrolled': isScrolled }" color="header">
     <v-container class="container">
       <div class="header-lp__wrapper">
         <div class="header-lp__logo" @click="goHome()">
-          <SvgIcon name="logo" />
+          <SvgIcon :name="themeStore.current === 'dark' ? 'logo-dark' : 'logo'" />
         </div>
 
         <nav v-if="!hideMenu" class="header-lp-nav">
@@ -26,7 +26,7 @@
         </div>
       </div>
     </v-container>
-  </header>
+  </v-sheet>
 </template>
 
 <script setup lang="ts">
@@ -46,7 +46,6 @@ defineProps({
 
 const router = useRouter()
 const themeStore = useThemeStore()
-
 const isScrolled = ref(false)
 
 const handleScroll = () => {

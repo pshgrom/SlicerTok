@@ -105,7 +105,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, type PropType, ref } from 'vue'
+import { defineAsyncComponent, type PropType, ref } from 'vue'
 
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
 import {
@@ -116,7 +116,8 @@ import {
   getIconSocial,
   getNameSocialMedia,
   getStatusColor,
-  getTextStatus
+  getTextStatus,
+  useTableHeaders
 } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
@@ -149,24 +150,16 @@ const emit = defineEmits(['resubmissionPublication'])
 
 const isModalOpenVideo = ref(false)
 const videoSrc = ref('')
-const headersData = ref(props.headers)
 const isModalOpen = ref(false)
 const currentReasonsReject = ref([])
+
+const { computedHeaders } = useTableHeaders(props.headers)
 
 const showReasonsReject = (rules) => {
   currentReasonsReject.value =
     rules.map((el, index) => `<p>${index + 1}. ${el.description}</p>`).join('<br>') || '-'
   isModalOpen.value = true
 }
-
-const computedHeaders = computed<ITableHeaders[]>({
-  get() {
-    return headersData.value
-  },
-  set(val) {
-    headersData.value = val
-  }
-})
 
 const resubmissionPublication = (item) => {
   emit('resubmissionPublication', item)
