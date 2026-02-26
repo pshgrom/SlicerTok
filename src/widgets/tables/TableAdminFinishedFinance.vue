@@ -37,36 +37,28 @@
 </template>
 
 <script setup lang="ts">
-import { computed, type PropType, ref } from 'vue'
+import { computed, ref } from 'vue'
 
-import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
+import type {
+  IAdminFinishedFinanceItem,
+  ITableHeaders
+} from '@/shared/config/types/app-model'
 
-const props = defineProps({
-  headers: {
-    type: Array as PropType<ITableHeaders[]>,
-    default: () => []
-  },
-  items: {
-    type: Array as PropType<IUserInfoData[]>,
-    default: () => []
-  },
-  isLoading: {
-    type: Boolean,
-    default: false
-  },
-  itemsPerPage: {
-    type: [Number, String],
-    default: 20
-  },
-  selectedIds: {
-    type: Array,
-    default: () => []
-  }
-})
+interface Props {
+  headers: ITableHeaders[]
+  items: IAdminFinishedFinanceItem[]
+  isLoading: boolean
+  itemsPerPage: number | string
+  selectedIds: (string | number)[]
+}
 
-const emit = defineEmits(['update:selectedIds'])
+const props = defineProps<Props>()
 
-const headersData = ref(props.headers)
+const emit = defineEmits<{
+  'update:selectedIds': [(string | number)[]]
+}>()
+
+const headersData = ref<ITableHeaders[]>(props.headers)
 
 const computedHeaders = computed<ITableHeaders[]>({
   get() {
@@ -77,7 +69,7 @@ const computedHeaders = computed<ITableHeaders[]>({
   }
 })
 
-const selectedIds = computed({
+const selectedIds = computed<(string | number)[]>({
   get() {
     return props.selectedIds
   },

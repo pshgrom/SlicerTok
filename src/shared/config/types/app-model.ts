@@ -116,3 +116,19 @@ export interface INewPublication {
   key: string
   link: string
 }
+
+export interface IAdminFinishedFinancePublication {
+  id: string | number
+  amount: number
+}
+
+export interface IAdminFinishedFinanceWallet {
+  address: string
+}
+
+export interface IAdminFinishedFinanceItem extends IUserInfoData {
+  link: string
+  wallet?: IAdminFinishedFinanceWallet | null
+  publication: IAdminFinishedFinancePublication[]
+  amount: number
+}

@@ -9,7 +9,11 @@
         closable
         @click:close="close(message.id)"
       >
-        <div class="error-alert__text" :class="message.type" v-html="sanitizeHtml(message.msg)"></div>
+        <div
+          class="error-alert__text"
+          :class="message.type"
+          v-html="sanitizeHtml(message.msg)"
+        ></div>
       </VAlert>
     </transition-group>
   </div>
@@ -20,6 +24,8 @@ import { onBeforeUnmount, watch } from 'vue'
 
 import { useError } from '@/app/stores'
 import { sanitizeHtml } from '@/shared/lib'
+
+const MAX_ALERTS = 3
 
 const props = defineProps({
   duration: { type: Number, default: 4000 }
@@ -43,6 +49,11 @@ watch(
         timers.set(msg.id, timeout)
       }
     })
+
+    if (newMessages.length > MAX_ALERTS) {
+      const overflow = newMessages.slice(0, newMessages.length - MAX_ALERTS)
+      overflow.forEach((msg) => close(msg.id))
+    }
   },
   { immediate: true }
 )
