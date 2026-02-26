@@ -39,24 +39,16 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
-import type {
-  IAdminFinishedFinanceItem,
-  ITableHeaders
-} from '@/shared/config/types/app-model'
+import type { IAdminFinishedFinanceItem, ITableHeaders } from '@/shared/config/types/app-model'
 
 interface Props {
   headers: ITableHeaders[]
   items: IAdminFinishedFinanceItem[]
   isLoading: boolean
   itemsPerPage: number | string
-  selectedIds: (string | number)[]
 }
 
 const props = defineProps<Props>()
-
-const emit = defineEmits<{
-  'update:selectedIds': [(string | number)[]]
-}>()
 
 const headersData = ref<ITableHeaders[]>(props.headers)
 
@@ -66,15 +58,6 @@ const computedHeaders = computed<ITableHeaders[]>({
   },
   set(val) {
     headersData.value = val
-  }
-})
-
-const selectedIds = computed<(string | number)[]>({
-  get() {
-    return props.selectedIds
-  },
-  set(val) {
-    emit('update:selectedIds', val)
   }
 })
 

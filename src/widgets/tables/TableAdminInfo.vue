@@ -177,15 +177,9 @@ import {
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
 
-const AddMarkModal = defineAsyncComponent(
-  () => import('@/widgets/modals/AddMarkModal.vue')
-)
-const OldHistoryModal = defineAsyncComponent(
-  () => import('@/widgets/modals/OldHistoryModal.vue')
-)
-const VideoPlayModal = defineAsyncComponent(
-  () => import('@/widgets/modals/VideoPlayModal.vue')
-)
+const AddMarkModal = defineAsyncComponent(() => import('@/widgets/modals/AddMarkModal.vue'))
+const OldHistoryModal = defineAsyncComponent(() => import('@/widgets/modals/OldHistoryModal.vue'))
+const VideoPlayModal = defineAsyncComponent(() => import('@/widgets/modals/VideoPlayModal.vue'))
 
 const emit = defineEmits([
   'finishCheck',

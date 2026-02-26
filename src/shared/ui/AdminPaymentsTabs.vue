@@ -1,9 +1,5 @@
 <template>
-  <TabsSwitcher
-    :tabs="tabsWithCounts"
-    :initial-tab="activeTabId"
-    @tab-click="goToPage"
-  />
+  <TabsSwitcher :tabs="tabsWithCounts" :initial-tab="activeTabId" @tab-click="goToPage" />
 </template>
 
 <script setup lang="ts">

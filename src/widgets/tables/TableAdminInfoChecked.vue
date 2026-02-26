@@ -88,9 +88,7 @@ import {
 } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 
-const VideoPlayModal = defineAsyncComponent(
-  () => import('@/widgets/modals/VideoPlayModal.vue')
-)
+const VideoPlayModal = defineAsyncComponent(() => import('@/widgets/modals/VideoPlayModal.vue'))
 
 const props = defineProps({
   headers: {

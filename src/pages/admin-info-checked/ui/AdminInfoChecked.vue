@@ -32,8 +32,8 @@ import { adminInfoCheckedHeaders } from '@/shared/config'
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
 import { useTableQuery } from '@/shared/lib'
 import { TablePagination } from '@/shared/ui'
-import { TableAdminInfoChecked } from '@/widgets/tables'
 import TabsSwitcher from '@/shared/ui/TabsSwitcher.vue'
+import { TableAdminInfoChecked } from '@/widgets/tables'
 
 const headers = ref<ITableHeaders[]>(adminInfoCheckedHeaders)
 

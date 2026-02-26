@@ -189,9 +189,7 @@ import {
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
 
-const VideoPlayModal = defineAsyncComponent(
-  () => import('@/widgets/modals/VideoPlayModal.vue')
-)
+const VideoPlayModal = defineAsyncComponent(() => import('@/widgets/modals/VideoPlayModal.vue'))
 
 const emit = defineEmits(['rowClick', 'update:activePanel', 'finishCheck'])
 

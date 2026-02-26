@@ -76,9 +76,7 @@ import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-mod
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
 
-const PaymentsModal = defineAsyncComponent(
-  () => import('@/widgets/modals/PaymentsModal.vue')
-)
+const PaymentsModal = defineAsyncComponent(() => import('@/widgets/modals/PaymentsModal.vue'))
 
 const props = defineProps({
   headers: {

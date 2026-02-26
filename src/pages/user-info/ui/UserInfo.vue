@@ -78,9 +78,7 @@ import VCusomButton from '@/shared/ui/VCusomButton.vue'
 import { ProfileCard } from '@/widgets/profile-card'
 import { TableUserInfo } from '@/widgets/tables'
 import { WalletsCard } from '@/widgets/wallets'
-const AddVideoDialog = defineAsyncComponent(
-  () => import('@/widgets/modals/AddVideoDialog.vue')
-)
+const AddVideoDialog = defineAsyncComponent(() => import('@/widgets/modals/AddVideoDialog.vue'))
 const EditProfileDialog = defineAsyncComponent(
   () => import('@/widgets/modals/EditProfileDialog.vue')
 )

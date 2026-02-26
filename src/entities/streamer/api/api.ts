@@ -9,9 +9,7 @@ export const streamerListQuery = (): Promise<AxiosResponse<unknown>> =>
 export const finishCheckStreamerQuery = (id: number): Promise<AxiosResponse<unknown>> =>
   api.post('/streamer/publication/complete-moderation', { id })
 
-export const getStreamerDailyStatsQuery = (
-  params: ITableParams
-): Promise<AxiosResponse<unknown>> =>
+export const getStreamerDailyStatsQuery = (params: ITableParams): Promise<AxiosResponse<unknown>> =>
   api.get('/streamer/statistic/get-statistic-daily', {
     params: { page: params.page ?? 1, perPage: params.perPage ?? 50 }
   })

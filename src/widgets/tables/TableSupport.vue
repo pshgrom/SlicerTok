@@ -105,7 +105,10 @@
                         <SvgIcon name="show" />
                       </VCusomButton>
                     </template>
-                    <div class="tooltip-content" v-html="sanitizeHtml(showViolations(group.rules))"></div>
+                    <div
+                      class="tooltip-content"
+                      v-html="sanitizeHtml(showViolations(group.rules))"
+                    ></div>
                   </v-menu>
                   <div class="badge">{{ group.rules?.length }}</div>
                 </div>
@@ -160,9 +163,7 @@ import {
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
 
-const VideoPlayModal = defineAsyncComponent(
-  () => import('@/widgets/modals/VideoPlayModal.vue')
-)
+const VideoPlayModal = defineAsyncComponent(() => import('@/widgets/modals/VideoPlayModal.vue'))
 
 const props = defineProps({
   headers: {
