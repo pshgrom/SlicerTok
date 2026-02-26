@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 
 import { useError } from '@/app/stores'
 import { useStreamer } from '@/entities/streamer'
@@ -28,8 +28,9 @@ import { adminCoeffs } from '@/shared/config'
 import type { ITableHeaders, ITableParams, IUserInfoData } from '@/shared/config/types/app-model'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
-import AddCoeffsModal from '@/widgets/modals/AddCoeffsModal.vue'
 import { TableStreamerCoeffs } from '@/widgets/tables'
+
+const AddCoeffsModal = defineAsyncComponent(() => import('@/widgets/modals/AddCoeffsModal.vue'))
 
 const headers = ref<ITableHeaders[]>(adminCoeffs)
 

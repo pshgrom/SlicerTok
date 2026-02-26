@@ -74,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, type PropType, ref } from 'vue'
+import { computed, defineAsyncComponent, type PropType, ref } from 'vue'
 
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
 import {
@@ -86,8 +86,11 @@ import {
   getStatusColor,
   getTextStatus
 } from '@/shared/lib'
-import VideoPlayModal from '@/widgets/modals/VideoPlayModal.vue'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
+
+const VideoPlayModal = defineAsyncComponent(
+  () => import('@/widgets/modals/VideoPlayModal.vue')
+)
 
 const props = defineProps({
   headers: {

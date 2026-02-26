@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { useHeaderMain, useThemeStore } from '@/app/stores'
@@ -54,7 +54,8 @@ import { ROLES } from '@/shared/config'
 import { useDeviceDetection, useTwoFactor } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import AppMenu from '@/widgets/menu'
-import TwoFactorAuth from '@/widgets/modals/TwoFactorAuth.vue'
+
+const TwoFactorAuth = defineAsyncComponent(() => import('@/widgets/modals/TwoFactorAuth.vue'))
 
 const authStore = useAuth()
 const router = useRouter()

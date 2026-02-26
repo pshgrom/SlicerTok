@@ -35,7 +35,7 @@ const analyzerPlugins = isAnalyze
         template: 'treemap',
         brotliSize: true,
         gzipSize: true,
-        open: false
+        open: true
       }),
       visualizer({
         filename: 'dist/bundle-report.json',

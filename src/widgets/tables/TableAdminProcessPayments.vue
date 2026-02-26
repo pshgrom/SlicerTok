@@ -68,14 +68,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, type PropType, ref } from 'vue'
+import { computed, defineAsyncComponent, type PropType, ref } from 'vue'
 
 import { useThemeStore } from '@/app/stores'
 import { useAdminPaymentsFinance } from '@/entities/payment'
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
-import PaymentsModal from '@/widgets/modals/PaymentsModal.vue'
+
+const PaymentsModal = defineAsyncComponent(
+  () => import('@/widgets/modals/PaymentsModal.vue')
+)
 
 const props = defineProps({
   headers: {

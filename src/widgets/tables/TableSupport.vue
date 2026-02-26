@@ -143,7 +143,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, type PropType, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, nextTick, type PropType, ref, watch } from 'vue'
 
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
 import {
@@ -159,7 +159,10 @@ import {
 } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
-import VideoPlayModal from '@/widgets/modals/VideoPlayModal.vue'
+
+const VideoPlayModal = defineAsyncComponent(
+  () => import('@/widgets/modals/VideoPlayModal.vue')
+)
 
 const props = defineProps({
   headers: {

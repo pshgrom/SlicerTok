@@ -75,12 +75,16 @@ import type { ITableHeaders, ITableParams, IUserInfoData } from '@/shared/config
 import type { IUploadVideo, IUser, IWallet } from '@/shared/config/types/slicer'
 import { TablePagination } from '@/shared/ui'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
-import AddVideoDialog from '@/widgets/modals/AddVideoDialog.vue'
-import EditProfileDialog from '@/widgets/modals/EditProfileDialog.vue'
-import WalletModal from '@/widgets/modals/WalletModal.vue'
 import { ProfileCard } from '@/widgets/profile-card'
 import { TableUserInfo } from '@/widgets/tables'
 import { WalletsCard } from '@/widgets/wallets'
+const AddVideoDialog = defineAsyncComponent(
+  () => import('@/widgets/modals/AddVideoDialog.vue')
+)
+const EditProfileDialog = defineAsyncComponent(
+  () => import('@/widgets/modals/EditProfileDialog.vue')
+)
+const WalletModal = defineAsyncComponent(() => import('@/widgets/modals/WalletModal.vue'))
 const RulesDialog = defineAsyncComponent(() => import('@/widgets/modals/RulesDialog.vue'))
 
 const headers = ref<ITableHeaders[]>(userInfoHeaders)

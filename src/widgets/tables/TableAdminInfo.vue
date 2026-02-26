@@ -160,7 +160,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, type PropType, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, nextTick, type PropType, ref, watch } from 'vue'
 
 import { useThemeStore } from '@/app/stores'
 import type { ITableHeaders, IUserInfoData } from '@/shared/config/types/app-model'
@@ -176,9 +176,16 @@ import {
 } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCusomButton from '@/shared/ui/VCusomButton.vue'
-import AddMarkModal from '@/widgets/modals/AddMarkModal.vue'
-import OldHistoryModal from '@/widgets/modals/OldHistoryModal.vue'
-import VideoPlayModal from '@/widgets/modals/VideoPlayModal.vue'
+
+const AddMarkModal = defineAsyncComponent(
+  () => import('@/widgets/modals/AddMarkModal.vue')
+)
+const OldHistoryModal = defineAsyncComponent(
+  () => import('@/widgets/modals/OldHistoryModal.vue')
+)
+const VideoPlayModal = defineAsyncComponent(
+  () => import('@/widgets/modals/VideoPlayModal.vue')
+)
 
 const emit = defineEmits([
   'finishCheck',
