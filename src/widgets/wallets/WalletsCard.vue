@@ -146,11 +146,8 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100%;
     justify-content: center;
     position: relative;
-    top: -7px;
-    margin-left: -20px;
 
     @media (max-width: 767px) {
       margin-top: 15px;
