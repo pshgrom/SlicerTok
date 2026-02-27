@@ -9,19 +9,26 @@
 
     <div class="avatar-actions">
       <input ref="inputFile" type="file" accept="image/*" hidden @change="onFileChange" />
-      <v-btn outlined small :disabled="isUploading" @click="$refs.inputFile.click()">
-        Выбрать фото
-      </v-btn>
-      <v-btn
+      <VCusomButton
+        :custom-class="['dark', 'with-icon']"
+        :disabled="isUploading"
+        @click="$refs.inputFile.click()"
+      >
+        <SvgIcon name="upload" />
+        Загрузить
+      </VCusomButton>
+      <VCusomButton
         v-if="avatarUrl"
+        :custom-class="['dark', 'with-icon', 'black']"
         outlined
         small
         color="red"
         :disabled="isUploading"
         @click="onRemoveAvatar"
       >
+        <SvgIcon name="remove" />
         Удалить
-      </v-btn>
+      </VCusomButton>
     </div>
   </div>
 </template>
@@ -32,6 +39,8 @@ import { ref, watch } from 'vue'
 import { useError } from '@/app/stores'
 import { useUserInfo } from '@/entities'
 import defaultAvatarImg from '@/shared/assets/images/avatar.png'
+import SvgIcon from '@/shared/ui/SvgIcon.vue'
+import VCusomButton from '@/shared/ui/VCusomButton.vue'
 
 const props = defineProps({
   modelValue: {
@@ -110,16 +119,15 @@ const onRemoveAvatar = async () => {
 .avatar-upload {
   display: flex;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 40px;
 
   .avatar-preview {
     position: relative;
-    width: 60px;
-    height: 60px;
+    width: 84px;
+    height: 84px;
     border-radius: 50%;
     overflow: hidden;
     margin-right: 12px;
-    border: 1px solid rgb(var(--v-theme-primary));
 
     img {
       width: 100%;
@@ -140,7 +148,7 @@ const onRemoveAvatar = async () => {
   .avatar-actions {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
   }
 }
 </style>

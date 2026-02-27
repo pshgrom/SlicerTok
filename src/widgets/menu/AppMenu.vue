@@ -118,6 +118,7 @@ const visibleMenuItems = computed(() =>
   display: flex;
   align-items: center;
   margin-right: 12px;
+  user-select: none;
 
   li {
     display: flex;

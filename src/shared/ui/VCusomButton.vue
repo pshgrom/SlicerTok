@@ -75,6 +75,7 @@ const customClasses = computed(() => props.customClass.join(' '))
   &.dark {
     background: rgba(169, 55, 244, 1) !important;
     color: rgba(255, 255, 255, 1) !important;
+    border-radius: 8px !important;
 
     &:hover {
       background: rgba(189, 117, 255, 1) !important;
@@ -118,6 +119,14 @@ const customClasses = computed(() => props.customClass.join(' '))
 
     :deep(.svg-icon) {
       margin: 0;
+    }
+  }
+  &.black {
+    background: rgb(var(--v-theme-chipBg)) !important;
+    color: rgba(255, 0, 0, 1) !important;
+
+    &:hover {
+      background: rgb(var(--v-theme-actionBg)) !important;
     }
   }
 }

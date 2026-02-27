@@ -6,15 +6,18 @@
         <v-btn icon="mdi-close" variant="text" @click="dialogModel = false" />
       </v-card-title>
       <v-card-text>
-        <UploaderImage v-model="form.avatar" />
         <div class="change-info">
           <div class="change-info__icon">
             <SvgIcon name="info" />
           </div>
           <div class="change-info__text">
-            Вы можете менять информацию 1 раз в неделю.
+            Вы можете менять личные данные и аватар 1 раз в неделю.
             <span v-if="!isEqualDate">Следующий раз {{ endDate }}</span>
           </div>
+        </div>
+        <div class="upload-image">
+          <span>Аватар</span>
+          <UploaderImage v-model="form.avatar" />
         </div>
         <v-form ref="formRef">
           <VCustomInput
@@ -154,7 +157,7 @@ const cancel = () => {
   background: rgb(var(--v-theme-chipBg));
   border-radius: 12px;
   padding: 0 12px;
-  margin-bottom: 25px;
+  margin-bottom: 18px;
 
   &__text {
     font-size: 12px;
@@ -172,5 +175,16 @@ const cancel = () => {
 
 :deep(.v-card-text) {
   padding-top: 0 !important;
+}
+
+.upload-image {
+  span {
+    color: rgba(143, 150, 165, 1);
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 12px;
+    display: inline-block;
+    letter-spacing: 0;
+  }
 }
 </style>
