@@ -1,4 +1,3 @@
-import type { AxiosError } from 'axios'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -7,6 +6,7 @@ import { useUserInfo } from '@/entities/user'
 import { verifyTwoFactorQuery } from '@/entities/user/api/api.ts'
 import type { IAdminInfoData, ITableParams, IUserInfo } from '@/shared/config/types/app-model.ts'
 import type { IWallet } from '@/shared/config/types/slicer.ts'
+import { handleApiError } from '@/shared/lib'
 
 import * as supportApi from '../api/api.ts'
 
@@ -40,8 +40,7 @@ export const useSupport = defineStore('supportStore', () => {
       supportInfo.value = (res?.data as Record<string, unknown>) ?? {}
       isEnableGoogle2fa.value = !!(res?.data as Record<string, unknown>)?.is_enable_google2fa
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -58,8 +57,7 @@ export const useSupport = defineStore('supportStore', () => {
         errorStore.setErrors('Неверный код', 'error')
       }
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -78,8 +76,7 @@ export const useSupport = defineStore('supportStore', () => {
         total: total as number
       }
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       isLoading.value = false
     }
@@ -93,8 +90,7 @@ export const useSupport = defineStore('supportStore', () => {
       currentUser.value = result as Record<string, unknown>
       return result
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       isLoading.value = false
     }
@@ -115,8 +111,7 @@ export const useSupport = defineStore('supportStore', () => {
         total: total as number
       }
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       isLoading.value = false
     }
@@ -128,8 +123,7 @@ export const useSupport = defineStore('supportStore', () => {
       const res = data as Record<string, unknown>
       wallets.value = (res?.data as IWallet[]) ?? []
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -140,8 +134,7 @@ export const useSupport = defineStore('supportStore', () => {
       const res = data as Record<string, unknown>
       wallets.value = (res?.data as IWallet[]) ?? []
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       isLoading.value = false
     }
@@ -167,8 +160,7 @@ export const useSupport = defineStore('supportStore', () => {
         total: total as number
       }
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       isLoading.value = false
     }
@@ -178,8 +170,7 @@ export const useSupport = defineStore('supportStore', () => {
     try {
       await supportApi.actionRequestQuery(id)
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -187,8 +178,7 @@ export const useSupport = defineStore('supportStore', () => {
     try {
       return await supportApi.changeFinalValuesQuery(payload)
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -196,8 +186,7 @@ export const useSupport = defineStore('supportStore', () => {
     try {
       return await supportApi.verifyUserQuery(payload)
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -246,8 +235,7 @@ export const useSupportUsers = defineStore('supportUsersStore', () => {
         typeof data === 'number' ? data : (data as { id: number }).id
       )
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -257,8 +245,7 @@ export const useSupportUsers = defineStore('supportUsersStore', () => {
       const { data } = await getChatByUserQuery(userId)
       return (data as Record<string, unknown>)?.data ?? {}
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -280,8 +267,7 @@ export const useSupportUsers = defineStore('supportUsersStore', () => {
         total: total as number
       }
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       isLoading.value = false
     }

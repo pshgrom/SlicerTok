@@ -1,4 +1,3 @@
-import type { AxiosError } from 'axios'
 import { defineStore } from 'pinia'
 import { onMounted, ref } from 'vue'
 
@@ -6,6 +5,7 @@ import { useError, useHeaderMain } from '@/app/stores'
 import { useUserInfo } from '@/entities/user'
 import { verifyTwoFactorQuery } from '@/entities/user/api/api.ts'
 import type { IAdminInfoData, ITableParams, IUserInfo } from '@/shared/config/types/app-model.ts'
+import { handleApiError } from '@/shared/lib'
 
 import * as adminApi from '../api/api.ts'
 
@@ -40,8 +40,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     try {
       return await adminApi.finishCheckQuery(id)
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -54,8 +53,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
       }>
       coeffs.value = raw.map(({ id, rate }) => ({ label: rate, value: id }))
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -63,8 +61,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     try {
       return await adminApi.requestVerificationQuery(id)
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -75,8 +72,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
       adminProfileData.value = (res?.data as Record<string, unknown>) ?? {}
       isEnableGoogle2fa.value = !!(res?.data as Record<string, unknown>)?.is_enable_google2fa
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -93,8 +89,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
         errorStore.setErrors('Неверный код', 'error')
       }
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -102,8 +97,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
     try {
       return await adminApi.saveMarkQuery(markData)
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -126,8 +120,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
         total: total as number
       }
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       isLoading.value = false
     }
@@ -151,8 +144,7 @@ export const useAdminInfo = defineStore('adminInfoStore', () => {
         total: total as number
       }
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       isLoading.value = false
     }
@@ -202,8 +194,7 @@ export const useAdminMain = defineStore('adminMainStore', () => {
       const res = data as Record<string, unknown>
       streamers.value = (res?.data as unknown[]) ?? []
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -216,8 +207,7 @@ export const useAdminMain = defineStore('adminMainStore', () => {
       const res = data as Record<string, unknown>
       adminsForCurrentStreamer.value = (res?.data as Record<string, unknown>)?.admin_list ?? []
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       loadingAdminsForCurrentStreamer.value = false
     }
@@ -229,8 +219,7 @@ export const useAdminMain = defineStore('adminMainStore', () => {
       const res = data as Record<string, unknown>
       isEnableGoogle2fa.value = !!(res?.data as Record<string, unknown>)?.is_enable_google2fa
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -247,8 +236,7 @@ export const useAdminMain = defineStore('adminMainStore', () => {
         errorStore.setErrors('Неверный код', 'error')
       }
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -273,8 +261,7 @@ export const useAdminMain = defineStore('adminMainStore', () => {
         total
       }
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       loadingStats.value = false
     }

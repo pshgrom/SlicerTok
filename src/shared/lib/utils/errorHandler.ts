@@ -8,7 +8,7 @@ export function handleApiError(error: unknown): string {
   if (error instanceof Error) {
     const axiosError = error as AxiosError<{ message?: string; error?: string }>
     const apiMessage = axiosError.response?.data?.message || axiosError.response?.data?.error
-    return apiMessage || error.message || 'Произошла ошибка при авторизации'
+    return apiMessage || error.message || 'Произошла ошибка'
   }
 
   return 'Неизвестная ошибка'

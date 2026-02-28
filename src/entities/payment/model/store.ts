@@ -1,4 +1,3 @@
-import type { AxiosError } from 'axios'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -6,6 +5,7 @@ import { useError, useHeaderMain } from '@/app/stores'
 import { useUserInfo } from '@/entities/user'
 import { verifyTwoFactorQuery } from '@/entities/user/api/api.ts'
 import type { ITableParams } from '@/shared/config/types/app-model.ts'
+import { handleApiError } from '@/shared/lib'
 
 import * as paymentApi from '../api/api.ts'
 
@@ -30,8 +30,7 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
       adminFinanceInfo.value = (res?.data as Record<string, unknown>) ?? {}
       isEnableGoogle2fa.value = !!(res?.data as Record<string, unknown>)?.is_enable_google2fa
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -48,8 +47,7 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
         errorStore.setErrors('Неверный код', 'error')
       }
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -68,8 +66,7 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
         total: total as number
       }
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       isLoading.value = false
     }
@@ -90,8 +87,7 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
         total: total as number
       }
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       isLoading.value = false
     }
@@ -112,8 +108,7 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
         total: total as number
       }
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       isLoading.value = false
     }
@@ -125,8 +120,7 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
         publication_ids: [...data]
       })
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -136,8 +130,7 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
         transfer_ids: [...data]
       })
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -145,8 +138,7 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
     try {
       return await paymentApi.transferFinishedQuery(data)
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -154,8 +146,7 @@ export const useAdminPaymentsFinance = defineStore('adminPaymentsFinanceStore', 
     try {
       return await paymentApi.importFileQuery(formData)
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>
-      errorStore.setErrors(axiosError.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 

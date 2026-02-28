@@ -8,6 +8,7 @@ import { useUserInfo } from '@/entities/user'
 import { verifyTwoFactorQuery } from '@/entities/user/api/api.ts'
 import { ROLES } from '@/shared/config'
 import type { ITableParams } from '@/shared/config/types/app-model.ts'
+import { handleApiError } from '@/shared/lib'
 
 import * as streamerApi from '../api/api.ts'
 
@@ -114,8 +115,7 @@ export const useStreamer = defineStore('streamerStore', () => {
         total: total as number
       }
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       isLoading.value = false
     }
@@ -125,8 +125,7 @@ export const useStreamer = defineStore('streamerStore', () => {
     try {
       return await streamerApi.finishCheckStreamerQuery(id)
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -148,8 +147,7 @@ export const useStreamer = defineStore('streamerStore', () => {
         total: total as number
       }
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       isLoading.value = false
     }
@@ -161,8 +159,7 @@ export const useStreamer = defineStore('streamerStore', () => {
       const res = data as Record<string, unknown>
       coeffs.value = (res?.data as unknown[]) ?? []
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -170,8 +167,7 @@ export const useStreamer = defineStore('streamerStore', () => {
     try {
       return await adminApi.addNewCoeffQuery(value)
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -179,8 +175,7 @@ export const useStreamer = defineStore('streamerStore', () => {
     try {
       return await adminApi.removeCoeffQuery(id)
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -206,8 +201,7 @@ export const useStreamer = defineStore('streamerStore', () => {
         total
       }
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       isLoading.value = false
     }
@@ -224,8 +218,7 @@ export const useStreamer = defineStore('streamerStore', () => {
         statistic && typeof statistic === 'object' && !Array.isArray(statistic) ? statistic : {}
       ) as Record<string, unknown>
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? '')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       isLoading.value = false
     }
@@ -243,8 +236,7 @@ export const useStreamer = defineStore('streamerStore', () => {
         errorStore.setErrors('Неверный код', 'error')
       }
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 

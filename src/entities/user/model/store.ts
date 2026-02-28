@@ -9,6 +9,7 @@ import type {
   IUserInfoData
 } from '@/shared/config/types/app-model.ts'
 import type { IUser } from '@/shared/config/types/slicer.ts'
+import { handleApiError } from '@/shared/lib'
 
 import * as userApi from '../api/api.ts'
 
@@ -80,8 +81,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
       const msg = (data as Record<string, unknown>)?.message ?? ''
       errorStore.setErrors(String(msg), 'success')
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -120,8 +120,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
         errorStore.setErrors('Неверный код', 'error')
       }
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -132,8 +131,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
       qrCode.value = (res?.qr_code_url as string) ?? ''
       secretKey.value = (res?.secret as string) ?? ''
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -144,8 +142,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
       errorStore.setErrors(String(msg), 'success')
       if (authStore.role === 'slicer') await getInfo()
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -162,8 +159,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
     try {
       return await userApi.getWalletsQuery()
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -173,8 +169,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
       const msg = (data as Record<string, unknown>)?.message ?? ''
       errorStore.setErrors(String(msg), 'success')
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -184,8 +179,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
       const msg = (data as Record<string, unknown>)?.message ?? ''
       errorStore.setErrors(String(msg), 'success')
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -194,8 +188,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
       const { data } = await userApi.checkLinkPublicationQuery(url)
       return data
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -207,8 +200,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
       isEnableGoogle2fa.value = !!(res?.data as Record<string, unknown>)?.is_enable_google2fa
       return data
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -230,8 +222,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
         total: total as number
       }
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } }
-      errorStore.setErrors(err?.response?.data?.message ?? 'Error')
+      errorStore.setErrors(handleApiError(error))
     } finally {
       isLoading.value = false
     }
