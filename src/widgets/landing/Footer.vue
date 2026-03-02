@@ -19,8 +19,7 @@
         </div>
       </div>
       <div class="footer__logo-big">
-        <SvgIcon v-if="themeStore.current !== 'dark'" name="logo-big" />
-        <SvgIcon v-else name="logo-big-dark" />
+        <SvgIcon :name="themeStore.current !== 'dark' ? 'logo-big' : 'logo-big-dark'" />
       </div>
     </v-container>
   </footer>
@@ -74,7 +73,7 @@ const { isMobile } = useDeviceDetection()
     }
 
     &-big {
-      margin-top: 29px;
+      //margin-top: 29px;
       position: absolute;
       bottom: 0;
       max-width: 1120px;

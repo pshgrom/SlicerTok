@@ -228,7 +228,6 @@ const visibleMenuItems = computed(() =>
     height: 52px;
     border-radius: 0;
     border-bottom: 1px solid rgba(var(--v-theme-borderColor));
-    padding-left: 16px !important;
     width: 100% !important;
     max-width: none;
     min-width: auto;
@@ -237,6 +236,7 @@ const visibleMenuItems = computed(() =>
     font-weight: 600;
     text-decoration: none;
     background: rgb(var(--v-theme-chipBg));
+    padding-left: 0;
   }
 }
 </style>
