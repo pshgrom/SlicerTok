@@ -143,7 +143,6 @@ onMounted(() => {
 @use 'assets/sass/style' as *;
 
 .main {
-  background-color: rgb(var(--v-theme-main));
   transition: none !important;
 }
 </style>

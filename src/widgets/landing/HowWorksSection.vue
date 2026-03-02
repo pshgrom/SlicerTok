@@ -33,6 +33,7 @@
 .how {
   padding-top: 103px;
   padding-bottom: 104px;
+  background: rgb(var(--v-theme-secondLandingBg));
 
   @media (max-width: 767px) {
     padding-top: 118px;
@@ -71,6 +72,7 @@
   width: 360px;
   background: rgba(246, 241, 249, 1);
   padding: 20px;
+  background: rgb(var(--v-theme-cardBg));
   border-radius: 24px;
   box-shadow: none;
 
@@ -78,7 +80,7 @@
     font-family: 'Unbounded', sans-serif;
     font-weight: 500;
     color: #fff;
-    background: rgba(17, 17, 17, 1);
+    background: rgb(var(--v-theme-numberBg));
     width: 50px;
     height: 50px;
     display: flex;

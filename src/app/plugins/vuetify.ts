@@ -16,12 +16,15 @@ export default createVuetify({
           inversionPrimary: 'rgba(255, 255, 255, 1)',
           loaderSmall: 'rgba(255, 255, 255, 0.7)',
           background: '#FFFFFF',
+          secondLandingBg: '#fff',
           actionBg: 'rgba(229, 236, 253, 1)',
           surface: '#FFFFFF',
           header: '#FFFFFF',
+          headerLp: '#FFFFFF',
           main: '#EFF0F6',
           chipColor: '#626187',
           chipBg: '#EFF0F6',
+          cardBg: 'rgba(246, 241, 249, 1)',
           uploadVideoBg: 'rgba(242, 246, 254, 1)',
           borderColor: 'rgba(223, 225, 237, 1)',
           // statusCreateBg: 'rgba(223, 225, 237, 1)'
@@ -30,7 +33,9 @@ export default createVuetify({
           statusRejectBg: '#ffcccc',
           statusRejectColor: 'rgba(255, 0, 0, 1)',
           statusApprovedBg: '#e7f5f0',
-          statusApprovedColor: 'rgba(16, 154, 106, 1)'
+          statusApprovedColor: 'rgba(16, 154, 106, 1)',
+          numberBg: 'rgba(17, 17, 17, 1)',
+          colorLink: 'rgba(126, 126, 126, 1)'
         }
       },
       dark: {
@@ -40,9 +45,12 @@ export default createVuetify({
           inversionPrimary: 'rgba(17, 17, 17, 1)',
           loaderSmall: 'rgba(17, 17, 17, 0.7)',
           background: 'rgba(26, 26, 41, 1)',
+          secondLandingBg: 'rgba(20, 20, 34, 1)',
           actionBg: '#28283c',
           surface: '#1E1E1E',
           header: '#1A1A29',
+          cardBg: 'rgba(26, 26, 41, 1)',
+          headerLp: '#141422',
           main: '#141422',
           chipColor: '#7E81A0',
           chipBg: '#212132',
@@ -53,7 +61,9 @@ export default createVuetify({
           statusRejectBg: '#5a141e',
           statusRejectColor: 'rgba(255, 0, 0, 1)',
           statusApprovedBg: '#182e32',
-          statusApprovedColor: 'rgba(16, 154, 106, 1)'
+          statusApprovedColor: 'rgba(16, 154, 106, 1)',
+          numberBg: 'rgba(33, 33, 50, 1)',
+          colorLink: 'rgba(255, 255, 255, 0.7)'
         }
       }
     }

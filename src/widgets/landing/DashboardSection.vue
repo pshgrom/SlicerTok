@@ -42,7 +42,8 @@
         </div>
         <div class="dashboard__right">
           <div class="dashboard__img">
-            <img src="../../shared/assets/images/progress.png" alt="Progress" />
+            <img :src="progressDark" alt="Progress" />
+            <!--            <img v-else :src="progress" alt="Progress" />-->
           </div>
         </div>
       </div>
@@ -51,7 +52,11 @@
 </template>
 
 <script setup lang="ts">
+import { useThemeStore } from '@/app/stores'
+import progressDark from '@/shared/assets/images/progress-dark.png'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
+
+const themeStore = useThemeStore()
 </script>
 
 <style scoped lang="scss">
@@ -61,6 +66,7 @@ import SvgIcon from '@/shared/ui/SvgIcon.vue'
   background-image: url('@/shared/assets/images/ellipse.png');
   background-position-x: 80%;
   background-position-y: -150%;
+  background-color: rgb(var(--v-theme-secondLandingBg));
 
   .container {
     @media (max-width: 767px) {
@@ -94,6 +100,7 @@ import SvgIcon from '@/shared/ui/SvgIcon.vue'
   &__content {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 20px;
 
     @media (max-width: 767px) {

@@ -1,5 +1,5 @@
 <template>
-  <section id="hero" v-reveal class="hero">
+  <section id="hero" v-reveal class="hero" :class="{ hero_dark: themeStore.current === 'dark' }">
     <v-container class="container">
       <div class="hero-social">
         <div class="hero-social__item"><SvgIcon name="tiktok" scale="1.4" /></div>
@@ -18,7 +18,10 @@
           Стать клипмейкером
           <SvgIcon name="arrow-top" />
         </v-btn>
-        <v-btn class="hero__btn hero__btn--dark" @click.prevent="scrollToSection('how')"
+        <v-btn
+          class="hero__btn hero__btn_second"
+          :class="{ 'hero__btn--dark': themeStore.current === 'dark' }"
+          @click.prevent="scrollToSection('how')"
           >Как это работает
           <SvgIcon name="video" />
         </v-btn>
@@ -45,7 +48,10 @@
 </template>
 
 <script setup lang="ts">
+import { useThemeStore } from '@/app/stores'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
+
+const themeStore = useThemeStore()
 
 const scrollToSection = (id: string) => {
   const el = document.getElementById(id)
@@ -63,6 +69,10 @@ const scrollToSection = (id: string) => {
   border-radius: 24px;
   padding-bottom: 100px;
   padding-top: 103px;
+
+  &_dark {
+    background-image: url('@/shared/assets/images/hero-bg_dark.png');
+  }
 
   &-social {
     display: flex;
@@ -116,6 +126,10 @@ const scrollToSection = (id: string) => {
     padding: 0 24px;
     box-shadow: none;
 
+    &_second {
+      background: rgba(17, 17, 17, 1);
+    }
+
     :deep(.svg-icon) {
       margin-left: 12px;
     }
@@ -125,7 +139,7 @@ const scrollToSection = (id: string) => {
     }
 
     &--dark {
-      background: rgba(17, 17, 17, 1);
+      background: rgba(255, 255, 255, 0.1);
 
       &:hover {
         background: rgba(59, 59, 59, 1);
@@ -171,7 +185,7 @@ const scrollToSection = (id: string) => {
     margin-bottom: 2px;
 
     h3 {
-      color: rgba(17, 17, 17, 1);
+      color: rgb(var(--v-theme-primary));
       font-size: 22px;
       line-height: 160%;
       font-family: 'Unbounded', sans-serif;

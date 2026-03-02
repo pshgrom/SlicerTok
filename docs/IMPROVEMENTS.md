@@ -42,35 +42,6 @@
 
 ---
 
-### 1.3 Централизованная обработка ошибок API
-
-**Проблема:** В каждом store повторяется один и тот же блок:
-
-```ts
-} catch (error: unknown) {
-  const axiosError = error as AxiosError<{ message?: string }>
-  errorStore.setErrors(axiosError.response?.data?.message ?? '')
-}
-```
-
-Уже есть `handleApiError()` в `@/shared/lib/utils/errorHandler.ts`, но он используется только в `LoginViewAdmin`.
-
-**Рекомендация:** Использовать `handleApiError` во всех entity-stores:
-
-```ts
-import { useError } from '@/app/stores'
-import { handleApiError } from '@/shared/lib'
-
-// в catch:
-} catch (error: unknown) {
-  errorStore.setErrors(handleApiError(error))
-}
-```
-
-При необходимости расширить `handleApiError` (например, поддержка `error.response?.data?.errors` или кодов).
-
----
-
 ### 1.4 Глобальный перехватчик ошибок axios (опционально)
 
 **Проблема:** Ошибки обрабатываются только в catch в каждом вызове. При забытом catch пользователь может не увидеть сообщение.

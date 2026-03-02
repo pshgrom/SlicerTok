@@ -4,7 +4,7 @@
       <div class="footer__content">
         <div class="footer__left">
           <div class="footer__logo">
-            <SvgIcon name="logo" />
+            <SvgIcon :name="themeStore.current === 'dark' ? 'logo-dark' : 'logo'" />
           </div>
         </div>
         <p v-if="!isMobile" class="footer__copyright">{{ year }} SlicerTok. Все права защищены</p>
@@ -19,13 +19,15 @@
         </div>
       </div>
       <div class="footer__logo-big">
-        <img src="../../shared/assets/images/logo-big.png" alt="logo" />
+        <SvgIcon v-if="themeStore.current !== 'dark'" name="logo-big" />
+        <SvgIcon v-else name="logo-big-dark" />
       </div>
     </v-container>
   </footer>
 </template>
 
 <script setup lang="ts">
+import { useThemeStore } from '@/app/stores'
 import { useDeviceDetection } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 
@@ -36,6 +38,7 @@ defineProps({
   }
 })
 
+const themeStore = useThemeStore()
 const year: number = new Date().getFullYear()
 const { isMobile } = useDeviceDetection()
 </script>
@@ -43,9 +46,9 @@ const { isMobile } = useDeviceDetection()
 <style scoped lang="scss">
 .footer {
   position: relative;
-  background: #fff;
   padding-top: 4px;
   padding-bottom: 18px;
+  background-color: rgb(var(--v-theme-secondLandingBg));
 
   @media (max-width: 767px) {
     padding-top: 0;
@@ -75,6 +78,12 @@ const { isMobile } = useDeviceDetection()
       position: absolute;
       bottom: 0;
       max-width: 1120px;
+
+      :deep(svg) {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
     }
   }
 
@@ -91,7 +100,7 @@ const { isMobile } = useDeviceDetection()
 
   &__copyright {
     font-size: 12px;
-    color: rgba(17, 17, 17, 0.5);
+    color: rgb(126, 126, 126);
     letter-spacing: -0.2px;
     height: 100%;
     position: relative;
@@ -117,7 +126,7 @@ const { isMobile } = useDeviceDetection()
       transition: color 0.2s ease-in;
 
       &:hover {
-        color: rgba(17, 17, 17, 1);
+        color: rgb(var(--v-theme-primary));
       }
     }
 

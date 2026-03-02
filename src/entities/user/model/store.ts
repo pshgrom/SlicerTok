@@ -21,7 +21,7 @@ export const useUserInfo = defineStore('userInfoStore', () => {
   const showRules = ref<boolean>(false)
   const user = ref<IUser>({
     name: '',
-    phone: authStore.phone || '',
+    phone: '',
     email: '',
     telegram: '',
     avatar: ''

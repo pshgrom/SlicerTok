@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="header-lp" :class="{ 'header-lp_scrolled': isScrolled }" color="header">
+  <v-sheet class="header-lp" :class="{ 'header-lp_scrolled': isScrolled }" color="headerLp">
     <v-container class="container">
       <div class="header-lp__wrapper">
         <div class="header-lp__logo" @click="goHome()">
@@ -7,13 +7,25 @@
         </div>
 
         <nav v-if="!hideMenu" class="header-lp-nav">
-          <a href="#how" class="header-lp-nav__link" @click.prevent="scrollToSection('how')"
+          <a
+            href="#how"
+            class="header-lp-nav__link"
+            :class="{ 'header-lp-nav__link_dark': themeStore.current === 'dark' }"
+            @click.prevent="scrollToSection('how')"
             >Как работает</a
           >
-          <a href="#why" class="header-lp-nav__link" @click.prevent="scrollToSection('why')"
+          <a
+            href="#why"
+            class="header-lp-nav__link"
+            :class="{ 'header-lp-nav__link_dark': themeStore.current === 'dark' }"
+            @click.prevent="scrollToSection('why')"
             >Почему SlicerTok</a
           >
-          <a href="#join" class="header-lp-nav__link" @click.prevent="scrollToSection('join')"
+          <a
+            href="#join"
+            class="header-lp-nav__link"
+            :class="{ 'header-lp-nav__link_dark': themeStore.current === 'dark' }"
+            @click.prevent="scrollToSection('join')"
             >Присоединяйся</a
           >
         </nav>
@@ -22,7 +34,12 @@
           <button class="change-mode" @click="themeStore.toggle()">
             <SvgIcon :name="themeStore.current === 'dark' ? 'dark-mode' : 'light-mode'" />
           </button>
-          <v-btn class="header-lp__login" to="/login">Войти</v-btn>
+          <v-btn
+            class="header-lp__login"
+            :class="{ 'header-lp__login_dark': themeStore.current === 'dark' }"
+            to="/login"
+            >Войти</v-btn
+          >
         </div>
       </div>
     </v-container>
@@ -74,11 +91,11 @@ onUnmounted(() => {
 
 <style scoped lang="scss">
 .header-lp {
-  background: #fff;
   height: 72px;
   position: sticky;
   top: 0;
   z-index: 150;
+  background: transparent;
   border-bottom: 1px solid transparent;
 
   &.header-lp_scrolled {
@@ -108,7 +125,7 @@ onUnmounted(() => {
     background-color: rgba(17, 17, 17, 1);
     font-family: 'Manrope', sans-serif;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 16px;
     border-radius: 14px;
     text-transform: none;
     letter-spacing: -0.2px;
@@ -116,6 +133,10 @@ onUnmounted(() => {
     color: #fff;
     box-shadow: none;
     align-self: flex-end;
+
+    &_dark {
+      background: rgba(255, 255, 255, 0.1);
+    }
 
     &:hover {
       background: rgba(59, 59, 59, 1);
@@ -135,16 +156,23 @@ onUnmounted(() => {
     }
 
     &__link {
-      color: rgba(126, 126, 126, 1);
+      color: rgb(var(--v-theme-colorLink));
       font-family: 'Manrope', sans-serif;
       font-weight: 600;
       font-size: 14px;
       display: block;
       letter-spacing: -0.4px;
-      transition: color 0.2s ease-in;
+      transition: all 0.2s ease;
 
       &:hover {
         color: rgba(17, 17, 17, 1);
+      }
+
+      &_dark {
+        &:hover {
+          color: rgb(var(--v-theme-colorLink));
+          opacity: 0.7;
+        }
       }
     }
   }
@@ -154,5 +182,7 @@ onUnmounted(() => {
   min-width: 30px;
   max-width: 30px;
   margin-right: 4px;
+  position: relative;
+  top: 2px;
 }
 </style>

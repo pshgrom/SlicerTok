@@ -3,8 +3,8 @@
   font-weight: 500;
   font-size: 16px;
   color: rgb(var(--v-theme-primary));
-  background-color: rgb(var(--v-theme-main));
   padding: 0 8px;
+  background: rgb(var(--v-theme-secondLandingBg));
 
   @media (max-width: 767px) {
     padding: 0 16px;
@@ -16,7 +16,7 @@ h1, h2 {
   font-size: 40px;
   line-height: 52px;
   font-weight: 700;
-  color: rgba(17, 17, 17, 1);
+  color: rgb(var(--v-theme-primary));
   margin-bottom: 20px;
 
   @media (max-width: 767px) {

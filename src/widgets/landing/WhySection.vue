@@ -1,11 +1,11 @@
 <template>
-  <section id="why" v-reveal class="why">
+  <section id="why" v-reveal class="why" :class="{ why_dark: themeStore.current === 'dark' }">
     <v-container class="container">
       <h2 class="why__title">Почему SlicerTok</h2>
       <p class="why__subtitle">Платформа для честного взаимодействия блогеров и клипмейкеров</p>
 
       <div class="why__grid">
-        <v-card class="why-item">
+        <v-card class="why-item" :class="{ 'why-item_dark': themeStore.current === 'dark' }">
           <div class="why-item__icon">
             <SvgIcon name="why-1" />
           </div>
@@ -16,7 +16,7 @@
           </p>
         </v-card>
 
-        <v-card class="why-item">
+        <v-card class="why-item" :class="{ 'why-item_dark': themeStore.current === 'dark' }">
           <div class="why-item__icon">
             <SvgIcon name="why-2" />
           </div>
@@ -26,7 +26,7 @@
           </p>
         </v-card>
 
-        <v-card class="why-item">
+        <v-card class="why-item" :class="{ 'why-item_dark': themeStore.current === 'dark' }">
           <div class="why-item__icon">
             <SvgIcon name="why-3" />
           </div>
@@ -37,7 +37,7 @@
           </p>
         </v-card>
 
-        <v-card class="why-item">
+        <v-card class="why-item" :class="{ 'why-item_dark': themeStore.current === 'dark' }">
           <div class="why-item__icon">
             <SvgIcon name="why-4" />
           </div>
@@ -53,7 +53,10 @@
 </template>
 
 <script setup lang="ts">
+import { useThemeStore } from '@/app/stores'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
+
+const themeStore = useThemeStore()
 </script>
 
 <style scoped lang="scss">
@@ -63,6 +66,10 @@ import SvgIcon from '@/shared/ui/SvgIcon.vue'
   padding-top: 102px;
   padding-bottom: 103px;
   border-radius: 24px;
+
+  &_dark {
+    background-image: url('@/shared/assets/images/hero-bg_dark.png');
+  }
 
   @media (max-width: 767px) {
     padding-top: 63px;
@@ -96,7 +103,11 @@ import SvgIcon from '@/shared/ui/SvgIcon.vue'
     padding: 20px;
     border-radius: 24px;
     background: #fff;
-    box-shadow: none;
+    box-shadow: 0 0 24.7px 0 rgba(0, 0, 0, 0.02);
+
+    &_dark {
+      background: rgba(255, 255, 255, 0.07) !important;
+    }
 
     @media (max-width: 767px) {
       height: auto;

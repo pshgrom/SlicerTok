@@ -264,7 +264,7 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .privacy-policy {
-  background: #fff;
+  background: rgb(var(--v-theme-secondLandingBg));
 
   &-content {
     margin-top: 42px;
@@ -305,7 +305,7 @@ onMounted(() => {
     border-bottom: 1px solid rgba(126, 126, 126, 1);
 
     &:hover {
-      color: rgba(17, 17, 17, 1);
+      color: rgb(var(--v-theme-primary));
     }
   }
 
