@@ -46,7 +46,6 @@ const { isMobile } = useDeviceDetection()
 .footer {
   position: relative;
   padding-top: 4px;
-  padding-bottom: 18px;
   background-color: rgb(var(--v-theme-secondLandingBg));
 
   @media (max-width: 767px) {
@@ -73,10 +72,8 @@ const { isMobile } = useDeviceDetection()
     }
 
     &-big {
-      //margin-top: 29px;
-      position: absolute;
-      bottom: 0;
       max-width: 1120px;
+      margin: 0 auto;
 
       :deep(svg) {
         width: 100%;
