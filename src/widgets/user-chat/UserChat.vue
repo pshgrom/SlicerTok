@@ -266,6 +266,8 @@ onBeforeUnmount(() => {
     font-weight: 500;
     font-size: 18px;
     color: rgba(17, 17, 17, 1);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
 
     @media (max-width: 767px) {
       position: sticky;
@@ -274,12 +276,13 @@ onBeforeUnmount(() => {
   }
 
   &--dark {
-    background: #1e1e1e;
-    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.35);
+    background: rgba(26, 26, 41, 1);
+    box-shadow: 0 0 32px 0 rgba(0, 0, 0, 0.3);
 
     .chat__title {
       color: rgba(255, 255, 255, 0.87);
-      border-bottom-color: rgba(255, 255, 255, 0.12);
+      border-bottom-color: rgba(38, 37, 62, 1);
+      background: rgba(38, 37, 62, 1);
     }
   }
 

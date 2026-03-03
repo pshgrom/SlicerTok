@@ -30,7 +30,7 @@
             </div>
             <v-divider class="mt-8 mb-8" />
             <div class="get-code">
-              <div class="get-code__description">
+              <div class="get-code__description mb-2">
                 Сканируйте QR-код в приложении Google Authenticator или другом совместимом.
               </div>
               <div class="get-code__code">
