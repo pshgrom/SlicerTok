@@ -236,10 +236,16 @@ onMounted(async () => {
       padding-top: 0;
       padding-left: 16px;
       justify-content: flex-start;
-      color: #fff;
       font-size: 16px;
       font-weight: 400;
       gap: 0;
+      color: rgb(var(--v-theme-primary));
+      background: rgb(var(--v-theme-menuBg)) !important;
+      transition: all 0.2s ease;
+
+      &:hover {
+        opacity: 0.7 !important;
+      }
 
       .svg-icon {
         margin-right: 12px;
