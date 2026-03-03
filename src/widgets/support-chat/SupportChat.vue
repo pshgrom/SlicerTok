@@ -95,7 +95,7 @@ import {
 } from '@/entities/chat'
 import { useSupport } from '@/entities/support'
 import type { ChatMessage, Room } from '@/shared/config/types/chat'
-import { debounce, requiredRules } from '@/shared/lib'
+import { debounce, requiredRules, useChatCommon } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCustomInput from '@/shared/ui/VCustomInput.vue'
 
@@ -114,6 +114,7 @@ const messages = ref<Record<number, ChatMessage[]>>({})
 const newMessage = ref('')
 const newMessageCount = ref(0)
 const chatBoxRef = ref<HTMLElement | null>(null)
+const { scrollToBottom, sanitizeMessage } = useChatCommon(chatBoxRef)
 const unreadCounts = ref<Record<number, number>>({})
 const loadingMessages = ref(false)
 const userScrolledUp = ref(false)
@@ -168,8 +169,10 @@ function addMessage(msg: ChatMessage, targetRoomId: number) {
   roomMsgs.push(msg)
 }
 
-const removeEmoji = (e) => {
-  const cleaned = e.target.value.replace(/[^a-zA-Zа-яА-Я0-9\s.,!?'"()\-:;@]/g, '')
+const removeEmoji = (e: Event) => {
+  const target = e.target as HTMLInputElement | null
+  if (!target) return
+  const cleaned = sanitizeMessage(target.value)
   newMessage.value = cleaned
 }
 
@@ -193,13 +196,6 @@ function scrollToBottomAnimated() {
   }
   requestAnimationFrame(animate)
 }
-
-const scrollToBottom = () =>
-  nextTick(() => {
-    if (chatBoxRef.value) {
-      chatBoxRef.value.scrollTop = chatBoxRef.value.scrollHeight
-    }
-  })
 
 // Проверяем, какие сообщения видимы в области прокрутки
 function getVisibleMessages(container: HTMLElement): ChatMessage[] {
@@ -415,8 +411,11 @@ onBeforeUnmount(() => {
 // )
 
 watch(
-  () => chatStore.messages[chatStore.messages.length - 1],
-  (msg) => {
+  () => chatStore.messages.length,
+  (length) => {
+    if (!length) return
+
+    const msg = chatStore.messages[length - 1]
     if (!msg || msg.event !== 'MessageSent') return
 
     const roomIdFromMsg = Number(msg.channel?.split('.')[1])

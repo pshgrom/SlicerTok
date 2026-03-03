@@ -82,7 +82,7 @@ import { useThemeStore } from '@/app/stores'
 import { useAuth, useUserInfo } from '@/entities'
 import { useChatSocketStore, useChatStore } from '@/entities/chat'
 import { useStreamers } from '@/entities/streamer'
-import { requiredRules, throttle, useDeviceDetection } from '@/shared/lib'
+import { requiredRules, throttle, useChatCommon, useDeviceDetection } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCustomInput from '@/shared/ui/VCustomInput.vue'
 import VCustomSelect from '@/shared/ui/VCustomSelect.vue'
@@ -97,6 +97,7 @@ const { isMobile } = useDeviceDetection()
 const formRef = ref(null)
 
 const chatBoxRef = ref<HTMLElement | null>(null)
+const { scrollToBottom, sanitizeMessage } = useChatCommon(chatBoxRef)
 const newMessage = ref('')
 let scrollListenerAttached = false
 let initialScrollDone = false
@@ -120,17 +121,6 @@ const streamer = computed({
   }
 })
 
-const scrollToBottom = (smooth = true) => {
-  nextTick(() => {
-    if (chatBoxRef.value) {
-      chatBoxRef.value.scrollTo({
-        top: chatBoxRef.value.scrollHeight,
-        behavior: smooth ? 'smooth' : 'auto'
-      })
-    }
-  })
-}
-
 const sendMessage = async () => {
   if (isSlicer.value && !streamer.value) return
   if (!newMessage.value.trim()) return
@@ -142,8 +132,10 @@ const sendMessage = async () => {
   }
 }
 
-const removeEmoji = (e) => {
-  const cleaned = e.target.value.replace(/[^a-zA-Zа-яА-Я0-9\s.,!?'"()\-:;@]/g, '')
+const removeEmoji = (e: Event) => {
+  const target = e.target as HTMLInputElement | null
+  if (!target) return
+  const cleaned = sanitizeMessage(target.value)
   newMessage.value = cleaned
 }
 

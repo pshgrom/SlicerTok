@@ -1,3 +1,4 @@
+export * from './composables/useChatCommon'
 export * from './composables/useDeviceDetection'
 export * from './composables/useSafeHtml'
 export * from './composables/useTableHeaders'
