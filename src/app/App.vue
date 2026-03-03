@@ -2,7 +2,7 @@
   <v-app>
     <ErrorAlert />
     <GlobalLoader v-if="loader.isLoading" />
-    <v-main class="main" color="main">
+    <v-main class="main">
       <HeaderMain v-if="showContent || showForSlicer" />
       <v-container
         class="custom-container"
@@ -143,6 +143,7 @@ onMounted(() => {
 @use 'assets/sass/style' as *;
 
 .main {
+  background-color: rgb(var(--v-theme-main));
   transition: none !important;
 }
 </style>

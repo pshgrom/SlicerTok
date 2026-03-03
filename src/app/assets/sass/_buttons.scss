@@ -25,6 +25,12 @@
     }
   }
 
+  &_black {
+    svg path {
+      stroke: #000;
+    }
+  }
+
   &:hover {
     background: rgb(var(--v-theme-actionBg));
   }

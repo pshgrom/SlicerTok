@@ -40,7 +40,7 @@
         />
 
         <div class="login-admin__actions">
-          <VCusomButton type="submit" :custom-class="['dark', 'avg']" :loading="isLoading">
+          <VCusomButton type="submit" :custom-class="['dark', 'lg']" :loading="isLoading">
             Войти
           </VCusomButton>
         </div>
@@ -152,6 +152,7 @@ const handleLogin = async (): Promise<void> => {
 .login-admin {
   box-shadow: none !important;
   border-radius: 12px;
+  background: rgb(var(--v-theme-background));
 
   &__actions {
     display: flex;

@@ -1,5 +1,5 @@
 <template>
-  <div class="wallets">
+  <div class="wallets" :class="{ wallets_user: route.name === 'UserInfo' }">
     <div class="wallets__wrapper">
       <div class="wallets__top">
         <div class="wallets__label">Кошельки</div>
@@ -41,6 +41,7 @@
 </template>
 <script setup lang="ts">
 import { type PropType, ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 import type { IWallet } from '@/shared/config/types/slicer'
 import SmallLoader from '@/shared/ui/SmallLoader.vue'
@@ -64,6 +65,7 @@ const props = defineProps({
 
 const emit = defineEmits(['openModalWallet', 'setAsMain', 'removeWallet'])
 const openIndex = ref(null)
+const route = useRoute()
 
 const openDialog = () => {
   if (props.wallets.length <= 3) {
@@ -91,6 +93,13 @@ const removeWallet = (index: number, id: number, is_main: boolean) => {
   @media (max-width: 1440px) {
     max-width: 400px;
     width: 100%;
+  }
+
+  &_user {
+    @media (max-width: 1440px) {
+      max-width: 100%;
+      width: 100%;
+    }
   }
 
   @media (max-width: 767px) {

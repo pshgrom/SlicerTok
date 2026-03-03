@@ -25,6 +25,7 @@ export default createVuetify({
           chipColor: '#626187',
           chipBg: '#EFF0F6',
           cardBg: 'rgba(246, 241, 249, 1)',
+          menuBg: 'rgba(255, 255, 255, 1)',
           uploadVideoBg: 'rgba(242, 246, 254, 1)',
           borderColor: 'rgba(223, 225, 237, 1)',
           // statusCreateBg: 'rgba(223, 225, 237, 1)'
@@ -50,6 +51,7 @@ export default createVuetify({
           surface: '#1E1E1E',
           header: '#1A1A29',
           cardBg: 'rgba(26, 26, 41, 1)',
+          menuBg: 'rgba(26, 26, 41, 1)',
           headerLp: '#141422',
           main: '#141422',
           chipColor: '#7E81A0',

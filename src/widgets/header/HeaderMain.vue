@@ -10,6 +10,7 @@
       <button
         v-if="!hideMenu && isMobile"
         class="button-action button-action_default-stroke"
+        :class="{ 'button-action_black': themeStore.current !== 'dark' }"
         type="button"
         @click="toggleMobileMenu"
       >

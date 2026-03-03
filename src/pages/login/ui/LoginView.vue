@@ -77,12 +77,12 @@
           <VCusomButton
             v-if="!isPhoneStep"
             class="mr-1"
-            :custom-class="['light', 'avg']"
+            :custom-class="['light', 'lg']"
             @click="handleBack"
           >
             Назад
           </VCusomButton>
-          <VCusomButton type="submit" :custom-class="['dark', 'avg']" :loading="isLoading">
+          <VCusomButton type="submit" :custom-class="['dark', 'lg']" :loading="isLoading">
             {{ submitButtonText }}
           </VCusomButton>
         </div>
@@ -270,6 +270,7 @@ onMounted(() => {
 .login-view {
   box-shadow: none !important;
   border-radius: 12px;
+  background: rgb(var(--v-theme-background));
 
   &__logo {
     margin-bottom: 40px;

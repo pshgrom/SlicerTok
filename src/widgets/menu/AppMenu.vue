@@ -135,7 +135,7 @@ const visibleMenuItems = computed(() =>
     justify-content: center;
     height: 28px;
     padding: 0 8px 0 10px;
-    color: rgb(var(--v-theme-chipColor));
+    color: rgb(var(--v-theme-primary)) !important;
     font-size: 12px;
     font-weight: 600;
     text-decoration: none;
@@ -187,7 +187,7 @@ const visibleMenuItems = computed(() =>
     flex-direction: column;
     align-items: stretch;
     margin-right: 0;
-    background: rgb(var(--v-theme-background));
+    background: rgb(var(--v-theme-menuBg));
 
     li {
       width: 100%;
@@ -208,7 +208,6 @@ const visibleMenuItems = computed(() =>
     }
 
     .menu-item.menu-el {
-      color: #fff;
       font-size: 16px;
       letter-spacing: 0;
       font-weight: 400;

@@ -135,3 +135,8 @@ img {
   font-size: 12px;
   color: #fff;
 }
+
+.v-list .v-list-item,
+.v-menu .v-list-item {
+  background: rgb(var(--v-theme-background));
+}

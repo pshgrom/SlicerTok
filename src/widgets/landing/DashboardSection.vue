@@ -42,8 +42,8 @@
         </div>
         <div class="dashboard__right">
           <div class="dashboard__img">
-            <img :src="progressDark" alt="Progress" />
-            <!--            <img v-else :src="progress" alt="Progress" />-->
+            <img v-if="themeStore.current === 'dark'" :src="progressDark" alt="Progress" />
+            <img v-else :src="progressLight" alt="Progress" />
           </div>
         </div>
       </div>
@@ -54,6 +54,7 @@
 <script setup lang="ts">
 import { useThemeStore } from '@/app/stores'
 import progressDark from '@/shared/assets/images/progress-dark.png'
+import progressLight from '@/shared/assets/images/progress-light.png'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 
 const themeStore = useThemeStore()
