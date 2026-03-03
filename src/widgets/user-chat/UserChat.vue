@@ -1,5 +1,5 @@
 <template>
-  <v-form
+  <div
     v-click-outside="closeChat"
     class="chat"
     :class="{ chat_mobile: isMobile, 'chat--dark': isDark }"
@@ -72,7 +72,7 @@
       />
       <SvgIcon class="chat__actions-send" name="send" @click="sendMessage" />
     </v-form>
-  </v-form>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -194,12 +194,12 @@ watch(
 )
 
 watch(
-  () => chatSocket.messages,
-  (newMessages) => {
-    const last = newMessages[newMessages.length - 1]
+  () => chatSocket.messages.length,
+  (length) => {
+    if (!length) return
+    const last = chatSocket.messages[length - 1]
     if (last) chatStore.handleIncomingMessage(last)
-  },
-  { deep: true }
+  }
 )
 
 watch(
