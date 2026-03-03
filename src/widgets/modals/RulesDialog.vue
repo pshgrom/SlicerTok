@@ -84,19 +84,34 @@
           <div class="elements mb-5">
             <div class="element mb-2">
               <div class="element__img">
-                <SvgIcon name="user" />
+                <SvgIcon
+                  name="user"
+                  :class="{
+                    icon_light: themeStore.current === 'dark'
+                  }"
+                />
               </div>
               <div class="element__text">Имя</div>
             </div>
             <div class="element mb-2">
               <div class="element__img">
-                <SvgIcon name="phone" />
+                <SvgIcon
+                  name="phone"
+                  :class="{
+                    icon_light: themeStore.current === 'dark'
+                  }"
+                />
               </div>
               <div class="element__text">Телефон</div>
             </div>
             <div class="element mb-2">
               <div class="element__img">
-                <SvgIcon name="message" />
+                <SvgIcon
+                  name="message"
+                  :class="{
+                    icon_light: themeStore.current === 'dark'
+                  }"
+                />
               </div>
               <div class="element__text">Почта</div>
             </div>
@@ -1015,6 +1030,7 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, ref } from 'vue'
 
+import { useThemeStore } from '@/app/stores'
 import { useStreamers } from '@/entities/streamer'
 import { videoRules } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
@@ -1031,6 +1047,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue', 'save'])
 const streamerStore = useStreamers()
+const themeStore = useThemeStore()
 
 const isModalOpenVideo = ref(false)
 const videoSrc = ref('')
