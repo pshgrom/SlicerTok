@@ -85,7 +85,6 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import { useThemeStore } from '@/app/stores'
 import {
   getChatsSupportQuery,
   getMessagesQuery,
@@ -99,7 +98,6 @@ import { debounce, requiredRules, useChatCommon } from '@/shared/lib'
 import SvgIcon from '@/shared/ui/SvgIcon.vue'
 import VCustomInput from '@/shared/ui/VCustomInput.vue'
 
-const themeStore = useThemeStore()
 const chatStore = useChatSocketStore()
 const supportStore = useSupport()
 const route = useRoute()
