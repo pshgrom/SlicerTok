@@ -125,9 +125,9 @@ export const adminCoeffs = [
 
 export const adminMainLogs = [
   { title: 'ID', value: 'id' },
-  { title: 'Действия', value: 'action' },
+  { title: 'Админ', value: 'admin.name' },
+  { title: 'Действие', value: 'action_text' },
   { title: 'Дата действия', value: 'datetime' },
-  { title: 'Описание', value: 'description' },
-  { title: 'IP', value: 'ip' },
-  { title: 'Id юзера', value: 'user_id' }
+  { title: 'Описание', value: 'description_text' },
+  { title: 'IP', value: 'ip' }
 ]

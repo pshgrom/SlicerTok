@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import { useError, useHeaderMain } from '@/app/stores'
 import * as adminApi from '@/entities/admin/api/api.ts'
 import { useAuth } from '@/entities/auth'
+import type { ILogsActions, ILogsAdmins } from '@/entities/streamer/model/types.ts'
 import { useUserInfo } from '@/entities/user'
 import { verifyTwoFactorQuery } from '@/entities/user/api/api.ts'
 import { ROLES } from '@/shared/config'
@@ -75,6 +76,7 @@ export const useStreamer = defineStore('streamerStore', () => {
   const isLoading = ref<boolean>(false)
   const queryParams = ref<ITableParams>({ page: 1, perPage: 10, total: 0 })
   const items = ref<unknown[]>([])
+  const logs = ref<unknown[]>([])
   const isEnableGoogle2fa = ref(false)
   const coeffs = ref<unknown[]>([])
   const allStats = ref<Record<string, unknown>>({})
@@ -82,6 +84,8 @@ export const useStreamer = defineStore('streamerStore', () => {
   const headerMainStore = useHeaderMain()
   const userInfoStore = useUserInfo()
   const errorStore = useError()
+  const actions = ref<ILogsActions[]>([])
+  const admins = ref<ILogsAdmins[]>([])
 
   const setQueryParams = (val: Partial<ITableParams>) => {
     queryParams.value = { ...queryParams.value, ...val }
@@ -134,10 +138,12 @@ export const useStreamer = defineStore('streamerStore', () => {
       isLoading.value = true
       const resp = await adminApi.getLogListQuery({
         page: params.page ?? 1,
-        perPage: params.perPage ?? 50
+        perPage: params.perPage ?? 50,
+        action: params.action ?? undefined,
+        admin_id: params.admin_id ?? undefined
       })
       const res = resp.data as Record<string, unknown>
-      items.value = (res?.data as unknown[]) ?? []
+      logs.value = (res?.data as unknown[]) ?? []
       const meta = res?.meta as Record<string, unknown>
       const { current_page = 1, per_page = 50, total } = meta ?? {}
       queryParams.value = {
@@ -150,6 +156,36 @@ export const useStreamer = defineStore('streamerStore', () => {
       errorStore.setErrors(handleApiError(error))
     } finally {
       isLoading.value = false
+    }
+  }
+
+  const getActions = async () => {
+    try {
+      const { data } = await adminApi.getActionsQuery()
+      const res = data?.data ?? []
+      actions.value = Object.keys(res).map((el) => {
+        return {
+          label: res[el],
+          value: res[el]
+        }
+      })
+    } catch (error: unknown) {
+      errorStore.setErrors(handleApiError(error))
+    }
+  }
+
+  const getAdmins = async () => {
+    try {
+      const { data } = await adminApi.getAdminsQuery()
+      const res = data?.data ?? []
+      admins.value = res.map((el) => {
+        return {
+          label: el.name,
+          value: el.id
+        }
+      })
+    } catch (error: unknown) {
+      errorStore.setErrors(handleApiError(error))
     }
   }
 
@@ -245,6 +281,7 @@ export const useStreamer = defineStore('streamerStore', () => {
     queryParams,
     setQueryParams,
     items,
+    logs,
     getPublicationsListMain,
     setPublicationStreamerStatus,
     finishCheckStreamer,
@@ -258,6 +295,10 @@ export const useStreamer = defineStore('streamerStore', () => {
     dailyStats,
     allStats,
     isEnableGoogle2fa,
-    checkCode
+    checkCode,
+    getActions,
+    getAdmins,
+    admins,
+    actions
   }
 })

@@ -29,7 +29,13 @@ export const getCompletedListQuery = (data: ITableParams): Promise<AxiosResponse
   })
 
 export const getLogListQuery = (data: ITableParams): Promise<AxiosResponse<unknown>> =>
-  api.get('/admin-main/log/get-log-list', { params: data })
+  api.get('/streamer/logs/get-log-list', { params: data })
+
+export const getActionsQuery = (): Promise<AxiosResponse<unknown>> =>
+  api.get('/streamer/logs/get-action-list')
+
+export const getAdminsQuery = (): Promise<AxiosResponse<unknown>> =>
+  api.get('/streamer/logs/get-admin-list')
 
 export const getAdminStatsQuery = (
   data: ITableParams,
