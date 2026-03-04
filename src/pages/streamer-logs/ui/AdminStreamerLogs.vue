@@ -65,7 +65,7 @@ const headers = ref<ITableHeaders[]>(adminMainLogs)
 
 const streamer = useStreamer()
 const actionLog = ref<string | null>(null)
-const adminLog = ref<string | null>(null)
+const adminLog = ref<number | null>(null)
 const allStatuses = computed(() => streamer.actions)
 const allAdmins = computed(() => streamer.admins)
 
@@ -118,7 +118,7 @@ const changeActionLog = (val: string) => {
   getRequest()
 }
 
-const changeAdminLog = (val: string) => {
+const changeAdminLog = (val: string | number | null) => {
   queryParams.value = {
     ...queryParams.value,
     admin_id: val || undefined
@@ -135,7 +135,7 @@ onMounted(() => {
     admin_id
   }
   actionLog.value = action?.toString()
-  adminLog.value = admin_id?.toString()
+  adminLog.value = admin_id ? Number(admin_id) : null
   getRequest()
   streamer.getActions()
   streamer.getAdmins()

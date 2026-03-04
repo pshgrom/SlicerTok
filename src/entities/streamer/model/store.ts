@@ -4,7 +4,7 @@ import { ref } from 'vue'
 import { useError, useHeaderMain } from '@/app/stores'
 import * as adminApi from '@/entities/admin/api/api.ts'
 import { useAuth } from '@/entities/auth'
-import type { ILogsActions, ILogsAdmins } from '@/entities/streamer/model/types.ts'
+import type { ILogsActions, ILogsAdmins, ILogsData } from '@/entities/streamer/model/types.ts'
 import { useUserInfo } from '@/entities/user'
 import { verifyTwoFactorQuery } from '@/entities/user/api/api.ts'
 import { ROLES } from '@/shared/config'
@@ -76,7 +76,7 @@ export const useStreamer = defineStore('streamerStore', () => {
   const isLoading = ref<boolean>(false)
   const queryParams = ref<ITableParams>({ page: 1, perPage: 10, total: 0 })
   const items = ref<unknown[]>([])
-  const logs = ref<unknown[]>([])
+  const logs = ref<ILogsData[]>([])
   const isEnableGoogle2fa = ref(false)
   const coeffs = ref<unknown[]>([])
   const allStats = ref<Record<string, unknown>>({})
@@ -143,7 +143,7 @@ export const useStreamer = defineStore('streamerStore', () => {
         admin_id: params.admin_id ?? undefined
       })
       const res = resp.data as Record<string, unknown>
-      logs.value = (res?.data as unknown[]) ?? []
+      logs.value = res?.data ?? []
       const meta = res?.meta as Record<string, unknown>
       const { current_page = 1, per_page = 50, total } = meta ?? {}
       queryParams.value = {
